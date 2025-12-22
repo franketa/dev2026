@@ -23,7 +23,25 @@ rightTrack.style.transform = 'translateY(-' + (totalSections - 1) * 100 + 'vh)';
 
 function goToSection(index) {
     if (isScrolling || index < 0 || index >= totalSections) return;
-    if (!isFullpageMode && !isMobile) { enterFullpage(); }
+
+    // Mobile: scroll to section instead of fullpage animation
+    if (isMobile) {
+        menuToggle.classList.remove('active');
+        navMenu.classList.remove('active');
+        navLinks.forEach(function(link, i) { link.classList.toggle('active', i === index); });
+
+        var anchors = ['#inicio', '#experiencias', '#nosotros', '#contacto'];
+        var target = document.querySelector(anchors[index]);
+        if (target) {
+            setTimeout(function() {
+                target.scrollIntoView({ behavior: 'smooth' });
+            }, 100); // Small delay to let menu close first
+        }
+        return;
+    }
+
+    // Desktop: fullpage mode animation
+    if (!isFullpageMode) { enterFullpage(); }
 
     isScrolling = true;
     currentSection = index;
