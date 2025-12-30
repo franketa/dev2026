@@ -21,6 +21,11 @@ var exitDirection = 'down';
 leftTrack.style.transform = 'translateY(0)';
 rightTrack.style.transform = 'translateY(-' + (totalSections - 1) * 100 + 'vh)';
 
+// Remove no-transition class after a short delay to enable animations
+setTimeout(function() {
+    document.body.classList.remove('no-transition');
+}, 100);
+
 function goToSection(index) {
     if (isScrolling || index < 0 || index >= totalSections) return;
 
