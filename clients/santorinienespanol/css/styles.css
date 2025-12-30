@@ -249,3 +249,524 @@ body.normal-scroll .normal-content { display: block; }
 @media (min-width: 769px) {
     .mobile-hero { display: none !important; }
 }
+
+/* ==================== */
+/* TOUR DETAIL PAGES    */
+/* ==================== */
+
+.tour-detail-page {
+    background: var(--color-bg-cream);
+}
+
+.tour-detail-page .header {
+    background: rgba(255, 255, 255, 0.98);
+    backdrop-filter: blur(20px);
+    box-shadow: 0 2px 40px rgba(0, 0, 0, 0.1);
+}
+
+.tour-detail-page .logo-text,
+.tour-detail-page .nav-link,
+.tour-detail-page .menu-toggle span {
+    color: var(--color-primary);
+}
+
+/* Tour Hero */
+.tour-hero {
+    position: relative;
+    height: 70vh;
+    min-height: 500px;
+    overflow: hidden;
+    margin-top: 0;
+}
+
+.tour-hero img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.tour-hero-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(15, 40, 64, 0.95) 0%, rgba(15, 40, 64, 0.5) 40%, rgba(15, 40, 64, 0.2) 100%);
+    display: flex;
+    align-items: flex-end;
+    padding: 60px;
+}
+
+.tour-hero-content {
+    max-width: 900px;
+    color: var(--color-text-light);
+}
+
+.tour-hero-content .section-label {
+    margin-bottom: 15px;
+}
+
+.tour-hero-content .section-title {
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    margin-bottom: 15px;
+    color: var(--color-text-light);
+}
+
+.tour-hero-subtitle {
+    font-family: var(--font-display);
+    font-size: 1.3rem;
+    font-style: italic;
+    color: var(--color-accent-light);
+    margin-bottom: 25px;
+}
+
+.tour-meta {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.tour-meta-item {
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(10px);
+    padding: 10px 22px;
+    border-radius: 30px;
+    font-size: 0.95rem;
+    font-weight: 500;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.tour-meta-item.price {
+    background: var(--color-accent);
+    color: var(--color-text-dark);
+    font-weight: 700;
+    border: none;
+}
+
+/* Inclusions Banner */
+.tour-inclusions-banner {
+    background: var(--color-accent);
+    color: var(--color-text-dark);
+    text-align: center;
+    padding: 20px 30px;
+    font-weight: 600;
+    font-size: 1.05rem;
+}
+
+.tour-inclusions-banner span {
+    display: inline-block;
+    margin-right: 8px;
+}
+
+/* Tour Content Section */
+.tour-content-section {
+    background: var(--color-bg-cream);
+    padding: 80px 20px;
+}
+
+.tour-content-section .container {
+    max-width: 1000px;
+}
+
+.tour-section-title {
+    font-family: var(--font-display);
+    font-size: 2rem;
+    color: var(--color-primary);
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.tour-description {
+    max-width: 800px;
+    margin: 0 auto 50px;
+    font-size: 1.1rem;
+    line-height: 1.9;
+    color: var(--color-text-dark);
+}
+
+.tour-description p {
+    margin-bottom: 20px;
+}
+
+.tour-description p:last-child {
+    margin-bottom: 0;
+}
+
+/* Ideal For / Checkmark List */
+.tour-ideal-for {
+    max-width: 700px;
+    margin: 0 auto;
+    padding: 40px;
+    background: var(--color-text-light);
+    border-radius: 20px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+}
+
+.tour-ideal-for h3 {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    color: var(--color-primary);
+    margin-bottom: 25px;
+    text-align: center;
+}
+
+.checkmark-list {
+    list-style: none;
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+.checkmark-list li {
+    position: relative;
+    padding-left: 40px;
+    margin-bottom: 18px;
+    font-size: 1.05rem;
+    line-height: 1.5;
+    color: var(--color-text-dark);
+}
+
+.checkmark-list li::before {
+    content: '✓';
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 28px;
+    height: 28px;
+    background: var(--color-accent);
+    color: var(--color-text-dark);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 0.9rem;
+}
+
+/* Sub-Tour Options (for cruceristas) */
+.tour-sub-options {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+    gap: 40px;
+    margin-top: 50px;
+}
+
+.sub-tour-card {
+    background: var(--color-text-light);
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 15px 50px rgba(0, 0, 0, 0.1);
+    transition: all 0.4s var(--transition-smooth);
+}
+
+.sub-tour-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.15);
+}
+
+.sub-tour-image {
+    height: 280px;
+    overflow: hidden;
+}
+
+.sub-tour-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.6s var(--transition-smooth);
+}
+
+.sub-tour-card:hover .sub-tour-image img {
+    transform: scale(1.05);
+}
+
+.sub-tour-content {
+    padding: 35px;
+}
+
+.sub-tour-title {
+    font-family: var(--font-display);
+    font-size: 1.6rem;
+    color: var(--color-primary);
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.sub-tour-title .star {
+    color: var(--color-accent);
+}
+
+.sub-tour-duration {
+    color: var(--color-accent);
+    font-weight: 600;
+    font-size: 1rem;
+    margin-bottom: 20px;
+}
+
+.sub-tour-description {
+    color: var(--color-text-muted);
+    line-height: 1.8;
+    margin-bottom: 25px;
+}
+
+.sub-tour-ideal {
+    margin-bottom: 25px;
+}
+
+.sub-tour-ideal h4 {
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--color-primary);
+    margin-bottom: 12px;
+}
+
+.sub-tour-ideal ul {
+    list-style: none;
+}
+
+.sub-tour-ideal li {
+    padding-left: 25px;
+    position: relative;
+    margin-bottom: 8px;
+    color: var(--color-text-muted);
+    font-size: 0.95rem;
+}
+
+.sub-tour-ideal li::before {
+    content: '✓';
+    position: absolute;
+    left: 0;
+    color: var(--color-accent);
+    font-weight: bold;
+}
+
+/* Itinerary List */
+.itinerary-section h4 {
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--color-primary);
+    margin-bottom: 15px;
+}
+
+.itinerary-list {
+    list-style: none;
+    counter-reset: itinerary;
+}
+
+.itinerary-list li {
+    position: relative;
+    padding-left: 45px;
+    margin-bottom: 15px;
+    counter-increment: itinerary;
+    font-size: 1rem;
+    color: var(--color-text-dark);
+}
+
+.itinerary-list li::before {
+    content: counter(itinerary);
+    position: absolute;
+    left: 0;
+    width: 30px;
+    height: 30px;
+    background: var(--color-primary);
+    color: var(--color-text-light);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+/* Route/Highlights Section */
+.tour-route {
+    max-width: 800px;
+    margin: 50px auto 0;
+    padding: 40px;
+    background: var(--color-text-light);
+    border-radius: 20px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+}
+
+.tour-route h3 {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    color: var(--color-primary);
+    margin-bottom: 25px;
+    text-align: center;
+}
+
+.tour-route-image {
+    margin-top: 30px;
+    border-radius: 15px;
+    overflow: hidden;
+}
+
+.tour-route-image img {
+    width: 100%;
+    height: 350px;
+    object-fit: cover;
+}
+
+/* WhatsApp CTA Section */
+.tour-cta-section {
+    background: var(--color-primary-dark);
+    color: var(--color-text-light);
+    text-align: center;
+    padding: 80px 20px;
+}
+
+.tour-cta-section h2 {
+    font-family: var(--font-display);
+    font-size: clamp(1.8rem, 4vw, 2.5rem);
+    margin-bottom: 15px;
+}
+
+.tour-cta-section p {
+    font-size: 1.1rem;
+    opacity: 0.85;
+    margin-bottom: 35px;
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.whatsapp-cta-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 15px;
+    background: #25D366;
+    color: white;
+    padding: 20px 45px;
+    border-radius: 50px;
+    font-size: 1.15rem;
+    font-weight: 600;
+    transition: all 0.4s var(--transition-smooth);
+    box-shadow: 0 10px 30px rgba(37, 211, 102, 0.3);
+}
+
+.whatsapp-cta-button:hover {
+    transform: translateY(-4px) scale(1.02);
+    box-shadow: 0 15px 40px rgba(37, 211, 102, 0.4);
+}
+
+.whatsapp-cta-button svg {
+    width: 26px;
+    height: 26px;
+    fill: currentColor;
+}
+
+/* Back Link */
+.back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--color-primary);
+    font-weight: 500;
+    padding: 10px 0;
+    transition: all 0.3s ease;
+}
+
+.back-link:hover {
+    color: var(--color-accent);
+    gap: 12px;
+}
+
+.back-link svg {
+    width: 20px;
+    height: 20px;
+}
+
+/* Tour Detail Responsive */
+@media (max-width: 768px) {
+    .tour-hero {
+        height: 60vh;
+        min-height: 400px;
+    }
+
+    .tour-hero-overlay {
+        padding: 30px 20px;
+    }
+
+    .tour-hero-content .section-title {
+        font-size: 1.8rem;
+    }
+
+    .tour-hero-subtitle {
+        font-size: 1rem;
+    }
+
+    .tour-meta {
+        gap: 10px;
+    }
+
+    .tour-meta-item {
+        padding: 8px 16px;
+        font-size: 0.85rem;
+    }
+
+    .tour-content-section {
+        padding: 50px 20px;
+    }
+
+    .tour-description {
+        font-size: 1rem;
+    }
+
+    .tour-ideal-for {
+        padding: 30px 25px;
+    }
+
+    .tour-sub-options {
+        grid-template-columns: 1fr;
+        gap: 30px;
+    }
+
+    .sub-tour-image {
+        height: 220px;
+    }
+
+    .sub-tour-content {
+        padding: 25px;
+    }
+
+    .tour-cta-section {
+        padding: 60px 20px;
+    }
+
+    .whatsapp-cta-button {
+        padding: 16px 35px;
+        font-size: 1rem;
+    }
+
+    .tour-route-image img {
+        height: 250px;
+    }
+}
+
+@media (max-width: 480px) {
+    .tour-hero {
+        height: 55vh;
+        min-height: 350px;
+    }
+
+    .tour-hero-content .section-title {
+        font-size: 1.5rem;
+    }
+
+    .tour-meta {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .checkmark-list li {
+        font-size: 0.95rem;
+        padding-left: 35px;
+    }
+
+    .checkmark-list li::before {
+        width: 24px;
+        height: 24px;
+        font-size: 0.8rem;
+    }
+}

@@ -1,0 +1,95 @@
+{
+  "globalInclusions": "Todos nuestros tours incluyen agua, snack y regalo sorpresa para todos",
+  "whatsappNumber": "306976739893",
+  "email": "santorinienespanol@gmail.com",
+  "tours": [
+    {
+      "id": "tour-privado",
+      "slug": "tour-privado",
+      "title": "Tour Privado \"A Tu Medida\"",
+      "subtitle": "Armá tu día perfecto en Santorini. Vos elegís qué ver y a qué ritmo.",
+      "pageTitle": "Explora Santorini con calma y a tu ritmo",
+      "image": "resources/images/FIRA.jpg",
+      "duration": "3-12 Horas",
+      "maxPeople": "Máx. 20",
+      "price": "desde €90",
+      "description": "Si te alojás en la isla, nuestros tours están pensados para ofrecerte una experiencia más relajada y flexible. Te recogemos directamente en tu hotel y adaptamos los horarios para evitar las horas de mayor afluencia turística.",
+      "idealFor": [
+        "Personas que viajan solas",
+        "Parejas, amigos, familias",
+        "Viajeros que buscan una experiencia única",
+        "Repetidores o amantes de lo auténtico"
+      ]
+    },
+    {
+      "id": "tour-cruceristas",
+      "slug": "tour-cruceristas",
+      "title": "Tours Para Cruceristas 🚢",
+      "subtitle": "Aprovechá cada minuto de tu escala en Santorini",
+      "image": "resources/images/CRUCEROS_.png",
+      "duration": "4-7 Horas",
+      "maxPeople": "Máx. 20",
+      "price": "Consultar",
+      "description": "Nuestros tours para cruceristas están cuidadosamente diseñados para ajustarse a los horarios de llegada y salida de los barcos.",
+      "subTours": [
+        {
+          "name": "Santorini Express",
+          "duration": "4 horas",
+          "image": "resources/images/Megalochori Iglesia_.jpg",
+          "description": "Ideal para cruceristas con tiempo limitado.",
+          "idealFor": ["Escalas cortas", "Primer contacto con la isla", "Ver lo esencial en pocas horas"],
+          "itinerary": ["Oia", "Monte Profitis Ilias", "Pueblo tradicional de Megalochori", "Playa Roja", "Fira"]
+        },
+        {
+          "name": "Santorini al Máximo",
+          "duration": "6-7 horas",
+          "image": "resources/images/RED BEACH.jpg",
+          "description": "La experiencia más completa para cruceristas.",
+          "idealFor": ["Escalas largas", "Viajeros que quieren una visión completa de la isla", "Fotos, cultura y paisajes inolvidables"],
+          "itinerary": ["Oía", "Vista panorámica desde Firostefani", "Monte Profitis Ilias", "Pueblo tradicional de Pyrgos", "Playa Roja", "Faro de Akrotiri", "Playa negra de Perissa", "Fira"]
+        }
+      ]
+    },
+    {
+      "id": "tour-dia-completo",
+      "slug": "tour-dia-completo",
+      "title": "Santorini Día Completo",
+      "subtitle": "Explorá cada rincón de la isla",
+      "image": "resources/images/Nea Kameni.jpg",
+      "heroImage": "resources/images/AKROTIRI.jpg",
+      "duration": "6-10 Horas",
+      "maxPeople": "Máx. 20",
+      "price": "desde €180",
+      "description": "Descubrí Santorini sin prisas y en toda su esencia con este tour de día completo.",
+      "highlights": [
+        "Oía - casas blancas y cúpulas azules",
+        "Firostefani - balcón natural de la caldera",
+        "Profitis Ilias - punto más alto de la isla",
+        "Megalochori - pueblo tradicional auténtico",
+        "Playa Roja - acantilados volcánicos",
+        "Faro de Akrotiri - vistas al mar",
+        "Playa Negra de Perissa - arena volcánica"
+      ]
+    },
+    {
+      "id": "tour-grupos",
+      "slug": "tour-grupos",
+      "title": "Tours para Grupos y Agencias de Viajes",
+      "subtitle": "Soluciones personalizadas para grupos grandes",
+      "image": "resources/images/PYRGOS.jpg",
+      "duration": "A coordinar",
+      "maxPeople": "Sin límite",
+      "price": "Consultar",
+      "description": "Trabajamos de la mano con agencias de viajes y coordinadores para diseñar tours en español adaptados al ritmo del grupo.",
+      "services": [
+        "Coordinación de grupos de cualquier tamaño",
+        "Itinerarios 100% personalizados",
+        "Guías en español certificados",
+        "Facturación para agencias",
+        "Precios especiales por volumen",
+        "Gestión de reservas y logística",
+        "Flexibilidad en horarios y rutas"
+      ]
+    }
+  ]
+}
