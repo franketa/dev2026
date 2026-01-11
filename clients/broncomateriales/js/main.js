@@ -49,12 +49,14 @@ function handleHeaderScroll() {
 function toggleMobileMenu() {
     nav.classList.toggle('active');
     menuToggle.classList.toggle('active');
+    header.classList.toggle('menu-open');
     document.body.style.overflow = nav.classList.contains('active') ? 'hidden' : '';
 }
 
 function closeMobileMenu() {
     nav.classList.remove('active');
     menuToggle.classList.remove('active');
+    header.classList.remove('menu-open');
     document.body.style.overflow = '';
 }
 
@@ -64,6 +66,12 @@ function closeMobileMenu() {
 function smoothScrollToSection(e) {
     const href = e.currentTarget.getAttribute('href');
 
+    // Close mobile menu for any navigation link click
+    if (nav.classList.contains('active')) {
+        closeMobileMenu();
+    }
+
+    // Only handle internal anchor links
     if (href.startsWith('#')) {
         e.preventDefault();
         const targetId = href.substring(1);
@@ -78,13 +86,11 @@ function smoothScrollToSection(e) {
                 behavior: 'smooth'
             });
 
-            // Close mobile menu if open
-            closeMobileMenu();
-
             // Update URL without triggering scroll
             history.pushState(null, '', href);
         }
     }
+    // External links (like index.html#section) will navigate normally
 }
 
 // ===================================
