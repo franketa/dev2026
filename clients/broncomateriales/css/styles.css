@@ -315,6 +315,25 @@ button {
     transform: rotate(-45deg) translate(5px, -5px);
 }
 
+/* Hamburger bars should be white when menu is open */
+.header__menu-toggle.active span {
+    background-color: var(--color-text-light);
+}
+
+/* Styles when mobile menu is open */
+.header.menu-open {
+    background: transparent;
+    box-shadow: none;
+}
+
+.header.menu-open .header__cta {
+    display: none;
+}
+
+.header.menu-open .header__logo-img {
+    filter: brightness(0) invert(1);
+}
+
 /* Mobile Navigation */
 .header__nav.active {
     display: flex;
