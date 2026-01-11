@@ -1,0 +1,2810 @@
+[
+  {
+    "id": 1,
+    "nombre": "PERFIL MONTANTE 35 mm x 2,60 mts",
+    "categoria": "Construcción en Seco",
+    "subcategoria": "PERFILES PARA CONSTRUCCIÓN EN SECO",
+    "codigo": null,
+    "medida": "35mm x 2.60m"
+  },
+  {
+    "id": 2,
+    "nombre": "PERFIL MONTANTE 70mm x 2,60",
+    "categoria": "Construcción en Seco",
+    "subcategoria": "PERFILES PARA CONSTRUCCIÓN EN SECO",
+    "codigo": null,
+    "medida": "70mm x 2.60m"
+  },
+  {
+    "id": 3,
+    "nombre": "PERFIL SOLERA 35mm x 2,60mts",
+    "categoria": "Construcción en Seco",
+    "subcategoria": "PERFILES PARA CONSTRUCCIÓN EN SECO",
+    "codigo": null,
+    "medida": "35mm x 2.60m"
+  },
+  {
+    "id": 4,
+    "nombre": "PERFIL SOLERA 70mm x 2,60mts",
+    "categoria": "Construcción en Seco",
+    "subcategoria": "PERFILES PARA CONSTRUCCIÓN EN SECO",
+    "codigo": null,
+    "medida": "70mm x 2.60m"
+  },
+  {
+    "id": 5,
+    "nombre": "OMEGA 12.5 x 2,60mts",
+    "categoria": "Construcción en Seco",
+    "subcategoria": "PERFILES PARA CONSTRUCCIÓN EN SECO",
+    "codigo": null,
+    "medida": "12.5 x 2.60m"
+  },
+  {
+    "id": 6,
+    "nombre": "BUÑA PERIMETRAL Z",
+    "categoria": "Construcción en Seco",
+    "subcategoria": "PERFILES PARA CONSTRUCCIÓN EN SECO",
+    "codigo": null,
+    "medida": null
+  },
+  {
+    "id": 7,
+    "nombre": "CANTONERA METALICA",
+    "categoria": "Construcción en Seco",
+    "subcategoria": "PERFILES PARA CONSTRUCCIÓN EN SECO",
+    "codigo": null,
+    "medida": null
+  },
+  {
+    "id": 8,
+    "nombre": "ANGULO AJUSTE 2,60mt",
+    "categoria": "Construcción en Seco",
+    "subcategoria": "PERFILES PARA CONSTRUCCIÓN EN SECO",
+    "codigo": null,
+    "medida": "2.60m"
+  },
+  {
+    "id": 9,
+    "nombre": "PLACA DE YESO PLACO 1,20x2,40mts x 9,5 mm",
+    "categoria": "Construcción en Seco",
+    "subcategoria": "PLACAS DE YESO Y ACCESORIOS",
+    "codigo": null,
+    "medida": "1.20x2.40m x 9.5mm"
+  },
+  {
+    "id": 10,
+    "nombre": "PLACA DE YESO PLACO STD 1,20x2,40mts x 12,5 mm",
+    "categoria": "Construcción en Seco",
+    "subcategoria": "PLACAS DE YESO Y ACCESORIOS",
+    "codigo": null,
+    "medida": "1.20x2.40m x 12.5mm"
+  },
+  {
+    "id": 11,
+    "nombre": "PLACA DE YESO PLACO RH 1,20x2,40mts x 12.5 mm",
+    "categoria": "Construcción en Seco",
+    "subcategoria": "PLACAS DE YESO Y ACCESORIOS",
+    "codigo": null,
+    "medida": "1.20x2.40m x 12.5mm"
+  },
+  {
+    "id": 12,
+    "nombre": "PLACA DE YESO PLACO RF 1,20x2,40mts x 12.5 mm",
+    "categoria": "Construcción en Seco",
+    "subcategoria": "PLACAS DE YESO Y ACCESORIOS",
+    "codigo": null,
+    "medida": "1.20x2.40m x 12.5mm"
+  },
+  {
+    "id": 13,
+    "nombre": "MASILLA PLACO LPU x 28 KG",
+    "categoria": "Construcción en Seco",
+    "subcategoria": "PLACAS DE YESO Y ACCESORIOS",
+    "codigo": null,
+    "medida": "28 kg"
+  },
+  {
+    "id": 14,
+    "nombre": "MASILLA LISTA ANCLAFLEX PLUS x 32 kgs",
+    "categoria": "Construcción en Seco",
+    "subcategoria": "PLACAS DE YESO Y ACCESORIOS",
+    "codigo": null,
+    "medida": "32 kg"
+  },
+  {
+    "id": 15,
+    "nombre": "CINTA DE PAPEL 150mts",
+    "categoria": "Construcción en Seco",
+    "subcategoria": "PLACAS DE YESO Y ACCESORIOS",
+    "codigo": null,
+    "medida": "150m"
+  },
+  {
+    "id": 16,
+    "nombre": "CINTA DE PAPEL 75mts",
+    "categoria": "Construcción en Seco",
+    "subcategoria": "PLACAS DE YESO Y ACCESORIOS",
+    "codigo": null,
+    "medida": "75m"
+  },
+  {
+    "id": 17,
+    "nombre": "CINTA TRAMADA AUTOADHESIVA x 90 mts",
+    "categoria": "Construcción en Seco",
+    "subcategoria": "PLACAS DE YESO Y ACCESORIOS",
+    "codigo": null,
+    "medida": "90m"
+  },
+  {
+    "id": 18,
+    "nombre": "CHAPA ACANALADA GALVANIZADA",
+    "categoria": "Chapas",
+    "subcategoria": "CHAPAS",
+    "codigo": null,
+    "medida": "Cal. 25 x 1.086m ancho x 1m largo"
+  },
+  {
+    "id": 19,
+    "nombre": "CHAPA ACANALADA GALVANIZADA",
+    "categoria": "Chapas",
+    "subcategoria": "CHAPAS",
+    "codigo": null,
+    "medida": "Cal. 27 x 1.086m ancho x 1m largo"
+  },
+  {
+    "id": 20,
+    "nombre": "CHAPA ACANALADA CINCALUM",
+    "categoria": "Chapas",
+    "subcategoria": "CHAPAS",
+    "codigo": null,
+    "medida": "Cal. 25 x 1.086m ancho x 1m largo"
+  },
+  {
+    "id": 21,
+    "nombre": "CHAPA ACANALADA CINCALUM",
+    "categoria": "Chapas",
+    "subcategoria": "CHAPAS",
+    "codigo": null,
+    "medida": "Cal. 27 x 1.086m ancho x 1m largo"
+  },
+  {
+    "id": 22,
+    "nombre": "CHAPA TRAPEZOIDAL T.101 CINCALUM",
+    "categoria": "Chapas",
+    "subcategoria": "CHAPAS",
+    "codigo": null,
+    "medida": "Cal. 25 x 1.01m ancho x 1m largo"
+  },
+  {
+    "id": 23,
+    "nombre": "CHAPA TRAPEZOIDAL T.101 CINCALUM",
+    "categoria": "Chapas",
+    "subcategoria": "CHAPAS",
+    "codigo": null,
+    "medida": "Cal. 27 x 1.01m ancho x 1m largo"
+  },
+  {
+    "id": 24,
+    "nombre": "CHAPA ACANALADA PREPINTADA NEGRA",
+    "categoria": "Chapas",
+    "subcategoria": "CHAPAS",
+    "codigo": null,
+    "medida": "Cal. 25 x 1.086m ancho x 1m largo"
+  },
+  {
+    "id": 25,
+    "nombre": "CHAPA TRAPEZOIDAL T.101 PREPINTADA NEGRA",
+    "categoria": "Chapas",
+    "subcategoria": "CHAPAS",
+    "codigo": null,
+    "medida": "Cal. 25 x 1.01m ancho x 1m largo"
+  },
+  {
+    "id": 26,
+    "nombre": "CHAPA LISA GALVANIZADA",
+    "categoria": "Chapas",
+    "subcategoria": "CHAPAS",
+    "codigo": null,
+    "medida": "Cal. 14 x 1m ancho x 2m largo"
+  },
+  {
+    "id": 27,
+    "nombre": "CHAPA LISA GALVANIZADA",
+    "categoria": "Chapas",
+    "subcategoria": "CHAPAS",
+    "codigo": null,
+    "medida": "Cal. 14 x 1.22m ancho x 2.44m largo"
+  },
+  {
+    "id": 28,
+    "nombre": "CHAPA LISA GALVANIZADA",
+    "categoria": "Chapas",
+    "subcategoria": "CHAPAS",
+    "codigo": null,
+    "medida": "Cal. 16 x 1m ancho x 2m largo"
+  },
+  {
+    "id": 29,
+    "nombre": "CHAPA LISA GALVANIZADA",
+    "categoria": "Chapas",
+    "subcategoria": "CHAPAS",
+    "codigo": null,
+    "medida": "Cal. 16 x 1.22m ancho x 2.44m largo"
+  },
+  {
+    "id": 30,
+    "nombre": "CHAPA LISA GALVANIZADA",
+    "categoria": "Chapas",
+    "subcategoria": "CHAPAS",
+    "codigo": null,
+    "medida": "Cal. 18 x 1m ancho x 2m largo"
+  },
+  {
+    "id": 31,
+    "nombre": "CHAPA LISA GALVANIZADA",
+    "categoria": "Chapas",
+    "subcategoria": "CHAPAS",
+    "codigo": null,
+    "medida": "Cal. 18 x 1.22m ancho x 2.44m largo"
+  },
+  {
+    "id": 32,
+    "nombre": "CHAPA LISA GALVANIZADA",
+    "categoria": "Chapas",
+    "subcategoria": "CHAPAS",
+    "codigo": null,
+    "medida": "Cal. 20 x 1m ancho x 2m largo"
+  },
+  {
+    "id": 33,
+    "nombre": "CHAPA LISA GALVANIZADA",
+    "categoria": "Chapas",
+    "subcategoria": "CHAPAS",
+    "codigo": null,
+    "medida": "Cal. 20 x 1.22m ancho x 2.44m largo"
+  },
+  {
+    "id": 34,
+    "nombre": "CHAPA LISA GALVANIZADA",
+    "categoria": "Chapas",
+    "subcategoria": "CHAPAS",
+    "codigo": null,
+    "medida": "Cal. 22 x 1m ancho x 2m largo"
+  },
+  {
+    "id": 35,
+    "nombre": "CHAPA LISA GALVANIZADA",
+    "categoria": "Chapas",
+    "subcategoria": "CHAPAS",
+    "codigo": null,
+    "medida": "Cal. 22 x 1.22m ancho x 2m largo"
+  },
+  {
+    "id": 36,
+    "nombre": "CHAPA LISA GALVANIZADA",
+    "categoria": "Chapas",
+    "subcategoria": "CHAPAS",
+    "codigo": null,
+    "medida": "Cal. 22 x 1.22m ancho x 2.44m largo"
+  },
+  {
+    "id": 37,
+    "nombre": "CHAPA LISA GALVANIZADA",
+    "categoria": "Chapas",
+    "subcategoria": "CHAPAS",
+    "codigo": null,
+    "medida": "Cal. 25 x 1.22m ancho x 2m largo"
+  },
+  {
+    "id": 38,
+    "nombre": "CHAPA LISA GALVANIZADA",
+    "categoria": "Chapas",
+    "subcategoria": "CHAPAS",
+    "codigo": null,
+    "medida": "Cal. 25 x 1.22m ancho x 2.44m largo"
+  },
+  {
+    "id": 39,
+    "nombre": "CHAPA LISA GALVANIZADA",
+    "categoria": "Chapas",
+    "subcategoria": "CHAPAS",
+    "codigo": null,
+    "medida": "Cal. 27 x 1.22m ancho x 2m largo"
+  },
+  {
+    "id": 40,
+    "nombre": "CHAPA LISA GALVANIZADA",
+    "categoria": "Chapas",
+    "subcategoria": "CHAPAS",
+    "codigo": null,
+    "medida": "Cal. 27 x 1.22m ancho x 2.44m largo"
+  },
+  {
+    "id": 41,
+    "nombre": "CHAPA LISA GALVANIZADA",
+    "categoria": "Chapas",
+    "subcategoria": "CHAPAS",
+    "codigo": null,
+    "medida": "Cal. 28 x 1m ancho x 2m largo"
+  },
+  {
+    "id": 42,
+    "nombre": "CHAPA LISA GALVANIZADA",
+    "categoria": "Chapas",
+    "subcategoria": "CHAPAS",
+    "codigo": null,
+    "medida": "Cal. 30 x 1m ancho x 2m largo"
+  },
+  {
+    "id": 43,
+    "nombre": "CHAPA LISA PREPINTADA NEGRA",
+    "categoria": "Chapas",
+    "subcategoria": "CHAPAS",
+    "codigo": null,
+    "medida": "Cal. 25 x 1.22m ancho x 2.44m largo"
+  },
+  {
+    "id": 44,
+    "nombre": "CHAPA PLASTICA ACANALADA 1300GR/MT",
+    "categoria": "Chapas",
+    "subcategoria": "CHAPAS",
+    "codigo": null,
+    "medida": "Cal. 01 x 1.086m ancho x 1m largo"
+  },
+  {
+    "id": 45,
+    "nombre": "CHAPA PLASTICA TRAPEZOIDAL T.101 1300gr/MT",
+    "categoria": "Chapas",
+    "subcategoria": "CHAPAS",
+    "codigo": null,
+    "medida": "Cal. 00 x 1.01m ancho x 1m largo"
+  },
+  {
+    "id": 46,
+    "nombre": "POLICARBONATO ACANALADO CRISTAL",
+    "categoria": "Chapas",
+    "subcategoria": "CHAPAS",
+    "codigo": null,
+    "medida": null
+  },
+  {
+    "id": 47,
+    "nombre": "POLICARBONATO ACANALADO OPALINO",
+    "categoria": "Chapas",
+    "subcategoria": "CHAPAS",
+    "codigo": null,
+    "medida": null
+  },
+  {
+    "id": 48,
+    "nombre": "PERFIL C GALVANIZADO 200x80x30x2,50mm",
+    "categoria": "Perfiles Estructurales",
+    "subcategoria": "PERFILES C ESTRUCTURALES",
+    "codigo": null,
+    "medida": "Cal. 12 x 200mm x 12m"
+  },
+  {
+    "id": 49,
+    "nombre": "PERFIL C GALVANIZADO 220x80x20x2,50mm",
+    "categoria": "Perfiles Estructurales",
+    "subcategoria": "PERFILES C ESTRUCTURALES",
+    "codigo": null,
+    "medida": "Cal. 12 x 220mm x 12m"
+  },
+  {
+    "id": 50,
+    "nombre": "PERFIL C GALVANIZADO 80x40x15x2,00mm",
+    "categoria": "Perfiles Estructurales",
+    "subcategoria": "PERFILES C ESTRUCTURALES",
+    "codigo": null,
+    "medida": "Cal. 14 x 80mm x 12m"
+  },
+  {
+    "id": 51,
+    "nombre": "PERFIL C GALVANIZADO 100x40x15x2,00mm",
+    "categoria": "Perfiles Estructurales",
+    "subcategoria": "PERFILES C ESTRUCTURALES",
+    "codigo": null,
+    "medida": "Cal. 14 x 100mm x 12m"
+  },
+  {
+    "id": 52,
+    "nombre": "PERFIL C GALVANIZADO 120x50x15x2,00mm",
+    "categoria": "Perfiles Estructurales",
+    "subcategoria": "PERFILES C ESTRUCTURALES",
+    "codigo": null,
+    "medida": "Cal. 14 x 120mm x 12m"
+  },
+  {
+    "id": 53,
+    "nombre": "PERFIL C GALVANIZADO 140x60x20x2,00mm",
+    "categoria": "Perfiles Estructurales",
+    "subcategoria": "PERFILES C ESTRUCTURALES",
+    "codigo": null,
+    "medida": "Cal. 14 x 140mm x 12m"
+  },
+  {
+    "id": 54,
+    "nombre": "PERFIL C GALVANIZADO 180x70x20x2,00mm",
+    "categoria": "Perfiles Estructurales",
+    "subcategoria": "PERFILES C ESTRUCTURALES",
+    "codigo": null,
+    "medida": "Cal. 14 x 180mm x 12m"
+  },
+  {
+    "id": 55,
+    "nombre": "PERFIL C GALVANIZADO 200x80x20x2,00mm",
+    "categoria": "Perfiles Estructurales",
+    "subcategoria": "PERFILES C ESTRUCTURALES",
+    "codigo": null,
+    "medida": "Cal. 14 x 200mm x 12m"
+  },
+  {
+    "id": 56,
+    "nombre": "PERFIL C GALVANIZADO 80x40x15x1,60mm",
+    "categoria": "Perfiles Estructurales",
+    "subcategoria": "PERFILES C ESTRUCTURALES",
+    "codigo": null,
+    "medida": "Cal. 16 x 80mm x 12m"
+  },
+  {
+    "id": 57,
+    "nombre": "PERFIL C GALVANIZADO 100x40x15x1,60mm",
+    "categoria": "Perfiles Estructurales",
+    "subcategoria": "PERFILES C ESTRUCTURALES",
+    "codigo": null,
+    "medida": "Cal. 16 x 100mm x 12m"
+  },
+  {
+    "id": 58,
+    "nombre": "PERFIL C GALVANIZADO 120x50x15x1,60mm",
+    "categoria": "Perfiles Estructurales",
+    "subcategoria": "PERFILES C ESTRUCTURALES",
+    "codigo": null,
+    "medida": "Cal. 16 x 120mm x 12m"
+  },
+  {
+    "id": 59,
+    "nombre": "PERFIL C LAC-NEGRO 100x40x15x2,00mm",
+    "categoria": "Perfiles Estructurales",
+    "subcategoria": "PERFILES C ESTRUCTURALES",
+    "codigo": null,
+    "medida": "Cal. 14 x 100mm x 12m"
+  },
+  {
+    "id": 60,
+    "nombre": "PERFIL C LAC-NEGRO 120x50x15x2,00mm",
+    "categoria": "Perfiles Estructurales",
+    "subcategoria": "PERFILES C ESTRUCTURALES",
+    "codigo": null,
+    "medida": "Cal. 14 x 120mm x 12m"
+  },
+  {
+    "id": 61,
+    "nombre": "PERFIL C LAC-NEGRO 140x60x20x2,00mm",
+    "categoria": "Perfiles Estructurales",
+    "subcategoria": "PERFILES C ESTRUCTURALES",
+    "codigo": null,
+    "medida": "Cal. 14 x 140mm x 12m"
+  },
+  {
+    "id": 62,
+    "nombre": "PERFIL C LAC-NEGRO 160x60x20x2,00mm",
+    "categoria": "Perfiles Estructurales",
+    "subcategoria": "PERFILES C ESTRUCTURALES",
+    "codigo": null,
+    "medida": "Cal. 14 x 160mm x 12m"
+  },
+  {
+    "id": 63,
+    "nombre": "PERFIL C LAC-NEGRO 180x70x20x2,00mm",
+    "categoria": "Perfiles Estructurales",
+    "subcategoria": "PERFILES C ESTRUCTURALES",
+    "codigo": null,
+    "medida": "Cal. 14 x 180mm x 12m"
+  },
+  {
+    "id": 64,
+    "nombre": "PERFIL C LAC-NEGRO 80x40x15x1,60mm",
+    "categoria": "Perfiles Estructurales",
+    "subcategoria": "PERFILES C ESTRUCTURALES",
+    "codigo": null,
+    "medida": "Cal. 16 x 80mm x 12m"
+  },
+  {
+    "id": 65,
+    "nombre": "PERFIL C LAC-NEGRO 100x40x15x1,60mm",
+    "categoria": "Perfiles Estructurales",
+    "subcategoria": "PERFILES C ESTRUCTURALES",
+    "codigo": null,
+    "medida": "Cal. 16 x 100mm x 12m"
+  },
+  {
+    "id": 66,
+    "nombre": "PERFIL C LAC-NEGRO 120x50x15x1,60mm",
+    "categoria": "Perfiles Estructurales",
+    "subcategoria": "PERFILES C ESTRUCTURALES",
+    "codigo": null,
+    "medida": "Cal. 16 x 120mm x 12m"
+  },
+  {
+    "id": 67,
+    "nombre": "TOR HEXAGONAL P/CHAPA PTA MECHA 14X1 C/ARAND.VULC",
+    "categoria": "Autoperforantes",
+    "subcategoria": "AUTOPERFORANTES MERVAL - HEXAGONAL PUNTA MECHA (Con Arandela)",
+    "codigo": "HM-141M",
+    "medida": "14x1"
+  },
+  {
+    "id": 68,
+    "nombre": "TOR HEXAGONAL P/CHAPA PTA MECHA 14X1 1/2 C/ARAND.VULC",
+    "categoria": "Autoperforantes",
+    "subcategoria": "AUTOPERFORANTES MERVAL - HEXAGONAL PUNTA MECHA (Con Arandela)",
+    "codigo": "HM-14112M",
+    "medida": "14x1 1/2"
+  },
+  {
+    "id": 69,
+    "nombre": "TOR HEXAGONAL P/CHAPA PTA MECHA 14X2 C/ARAND.VULC",
+    "categoria": "Autoperforantes",
+    "subcategoria": "AUTOPERFORANTES MERVAL - HEXAGONAL PUNTA MECHA (Con Arandela)",
+    "codigo": "HM-142M",
+    "medida": "14x2"
+  },
+  {
+    "id": 70,
+    "nombre": "TOR HEXAGONAL P/CHAPA PTA MECHA 14X2 1/2 C/ARAND.VULC",
+    "categoria": "Autoperforantes",
+    "subcategoria": "AUTOPERFORANTES MERVAL - HEXAGONAL PUNTA MECHA (Con Arandela)",
+    "codigo": "HM-14212M",
+    "medida": "14x2 1/2"
+  },
+  {
+    "id": 71,
+    "nombre": "TOR HEXAGONAL P/CHAPA PTA MECHA 14X3 C/ARAND.VULC",
+    "categoria": "Autoperforantes",
+    "subcategoria": "AUTOPERFORANTES MERVAL - HEXAGONAL PUNTA MECHA (Con Arandela)",
+    "codigo": "HM-143M",
+    "medida": "14x3"
+  },
+  {
+    "id": 72,
+    "nombre": "TOR HEXAGONAL P/MADERA N°17 PTA AGUJA 14X1 C/ARAND.VULC",
+    "categoria": "Autoperforantes",
+    "subcategoria": "HEXAGONAL PUNTA AGUJA (Con Arandela)",
+    "codigo": "HM-141A",
+    "medida": "14x1"
+  },
+  {
+    "id": 73,
+    "nombre": "TOR HEXAGONAL P/MADERA N°17 PTA AGUJA 14X1 1/2 C/ARAND.VULC",
+    "categoria": "Autoperforantes",
+    "subcategoria": "HEXAGONAL PUNTA AGUJA (Con Arandela)",
+    "codigo": "HM-14112A",
+    "medida": "14x1 1/2"
+  },
+  {
+    "id": 74,
+    "nombre": "TOR HEXAGONAL P/MADERA N°17 PTA AGUJA 14X2 C/ARAND.VULC",
+    "categoria": "Autoperforantes",
+    "subcategoria": "HEXAGONAL PUNTA AGUJA (Con Arandela)",
+    "codigo": "HM-142A",
+    "medida": "14x2"
+  },
+  {
+    "id": 75,
+    "nombre": "TOR HEXAGONAL P/MADERA N°17 PTA AGUJA 14X2 1/2 C/ARAND.VULC",
+    "categoria": "Autoperforantes",
+    "subcategoria": "HEXAGONAL PUNTA AGUJA (Con Arandela)",
+    "codigo": "HM-14212A",
+    "medida": "14x2 1/2"
+  },
+  {
+    "id": 76,
+    "nombre": "TOR HEXAGONAL P/MADERA N°17 PTA AGUJA 14X3 C/ARAND.VULC",
+    "categoria": "Autoperforantes",
+    "subcategoria": "HEXAGONAL PUNTA AGUJA (Con Arandela)",
+    "codigo": "HM-143A",
+    "medida": "14x3"
+  },
+  {
+    "id": 77,
+    "nombre": "ARANDELA DE CHAPA Y GOMA VULCANIZADA Ø16MM",
+    "categoria": "Autoperforantes",
+    "subcategoria": "ARANDELA VULCANIZADA",
+    "codigo": "MAV-16",
+    "medida": "Ø16mm"
+  },
+  {
+    "id": 78,
+    "nombre": "TOR DRYWALL P/METAL PTA MECHA 6X1 (T2)",
+    "categoria": "Autoperforantes",
+    "subcategoria": "DRYWALL P/METAL PUNTA MECHA",
+    "codigo": "DM-61M",
+    "medida": "6x1"
+  },
+  {
+    "id": 79,
+    "nombre": "TOR DRYWALL P/METAL PTA MECHA 6X1 1/2 (T3)",
+    "categoria": "Autoperforantes",
+    "subcategoria": "DRYWALL P/METAL PUNTA MECHA",
+    "codigo": "DM-6112M",
+    "medida": "6x1 1/2"
+  },
+  {
+    "id": 80,
+    "nombre": "TOR DRYWALL P/METAL PTA MECHA 6X1 5/8",
+    "categoria": "Autoperforantes",
+    "subcategoria": "DRYWALL P/METAL PUNTA MECHA",
+    "codigo": "DM-6158M",
+    "medida": "6x1 5/8"
+  },
+  {
+    "id": 81,
+    "nombre": "TOR DRYWALL P/METAL PTA MECHA 6X2 (T4)",
+    "categoria": "Autoperforantes",
+    "subcategoria": "DRYWALL P/METAL PUNTA MECHA",
+    "codigo": "DM-62M",
+    "medida": "6x2"
+  },
+  {
+    "id": 82,
+    "nombre": "TOR DRYWALL P/METAL PTA AGUJA 6X1 FOSFAT NEGRO (T2)",
+    "categoria": "Autoperforantes",
+    "subcategoria": "DRYWALL P/METAL PUNTA AGUJA",
+    "codigo": "DM-61A",
+    "medida": "6x1"
+  },
+  {
+    "id": 83,
+    "nombre": "TOR DRYWALL P/METAL PTA AGUJA 6X1 1/4 FOSFAT NEGRO",
+    "categoria": "Autoperforantes",
+    "subcategoria": "DRYWALL P/METAL PUNTA AGUJA",
+    "codigo": "DM-6114A",
+    "medida": "6x1 1/4"
+  },
+  {
+    "id": 84,
+    "nombre": "TOR DRYWALL P/METAL PTA AGUJA 6X1 1/2 FOSFAT NEGRO (T3)",
+    "categoria": "Autoperforantes",
+    "subcategoria": "DRYWALL P/METAL PUNTA AGUJA",
+    "codigo": "DM-6112A",
+    "medida": "6x1 1/2"
+  },
+  {
+    "id": 85,
+    "nombre": "TOR DRYWALL P/METAL PTA AGUJA 6X1 5/8 FOSFAT NEGRO",
+    "categoria": "Autoperforantes",
+    "subcategoria": "DRYWALL P/METAL PUNTA AGUJA",
+    "codigo": "DM-6158A",
+    "medida": "6x1 5/8"
+  },
+  {
+    "id": 86,
+    "nombre": "TOR DRYWALL P/METAL PTA AGUJA 6X2 FOSFAT NEGRO (T4)",
+    "categoria": "Autoperforantes",
+    "subcategoria": "DRYWALL P/METAL PUNTA AGUJA",
+    "codigo": "DM-62A",
+    "medida": "6x2"
+  },
+  {
+    "id": 87,
+    "nombre": "TOR DRYWALL P/MADERA PTA AGUJA 6X1 FOSFAT NEGRO",
+    "categoria": "Autoperforantes",
+    "subcategoria": "DRYWALL P/MADERA PUNTA AGUJA (Paso Grueso)",
+    "codigo": "PGM-61",
+    "medida": "6x1"
+  },
+  {
+    "id": 88,
+    "nombre": "TOR DRYWALL P/MADERA PTA AGUJA 6X1 1/4 FOSFAT NEGRO",
+    "categoria": "Autoperforantes",
+    "subcategoria": "DRYWALL P/MADERA PUNTA AGUJA (Paso Grueso)",
+    "codigo": "PGM-6114",
+    "medida": "6x1 1/4"
+  },
+  {
+    "id": 89,
+    "nombre": "TOR DRYWALL P/MADERA PTA AGUJA 6X1 1/2 FOSFAT NEGRO",
+    "categoria": "Autoperforantes",
+    "subcategoria": "DRYWALL P/MADERA PUNTA AGUJA (Paso Grueso)",
+    "codigo": "PGM-6112",
+    "medida": "6x1 1/2"
+  },
+  {
+    "id": 90,
+    "nombre": "TOR DRYWALL P/MADERA PTA AGUJA 6X2 FOSFAT NEGRO",
+    "categoria": "Autoperforantes",
+    "subcategoria": "DRYWALL P/MADERA PUNTA AGUJA (Paso Grueso)",
+    "codigo": "PGM-62",
+    "medida": "6x2"
+  },
+  {
+    "id": 91,
+    "nombre": "TOR DRYWALL P/MADERA PTA AGUJA 6X2 1/2 FOSFAT NEGRO",
+    "categoria": "Autoperforantes",
+    "subcategoria": "DRYWALL P/MADERA PUNTA AGUJA (Paso Grueso)",
+    "codigo": "PGM-6212",
+    "medida": "6x2 1/2"
+  },
+  {
+    "id": 92,
+    "nombre": "TOR DRYWALL P/MADERA PTA AGUJA 8X2 FOSFAT NEGRO",
+    "categoria": "Autoperforantes",
+    "subcategoria": "DRYWALL P/MADERA PUNTA AGUJA (Paso Grueso)",
+    "codigo": "PGM-82",
+    "medida": "8x2"
+  },
+  {
+    "id": 93,
+    "nombre": "TOR DRYWALL P/MADERA PTA AGUJA 8X3 FOSFAT NEGRO",
+    "categoria": "Autoperforantes",
+    "subcategoria": "DRYWALL P/MADERA PUNTA AGUJA (Paso Grueso)",
+    "codigo": "PGM-83",
+    "medida": "8x3"
+  },
+  {
+    "id": 94,
+    "nombre": "TORNILLO TANQUE PTA MECHA 8X1/2 FLANGEADA ZINCADO (T1)",
+    "categoria": "Autoperforantes",
+    "subcategoria": "TANQUE PUNTA MECHA Y AGUJA (T1)",
+    "codigo": "TM-812M",
+    "medida": "8x1/2"
+  },
+  {
+    "id": 95,
+    "nombre": "TORNILLO TANQUE PTA MECHA 8X3/4 FLANGEADA ZINCADO",
+    "categoria": "Autoperforantes",
+    "subcategoria": "TANQUE PUNTA MECHA Y AGUJA (T1)",
+    "codigo": "TM-834M",
+    "medida": "8x3/4"
+  },
+  {
+    "id": 96,
+    "nombre": "TORNILLO TANQUE PTA MECHA 8X1 FLANGEADA ZINCADO",
+    "categoria": "Autoperforantes",
+    "subcategoria": "TANQUE PUNTA MECHA Y AGUJA (T1)",
+    "codigo": "TM-81M",
+    "medida": "8x1"
+  },
+  {
+    "id": 97,
+    "nombre": "TORNILLO TANQUE PTA AGUJA 8X1/2 FLANGEADA ZINCADO (T1)",
+    "categoria": "Autoperforantes",
+    "subcategoria": "TANQUE PUNTA MECHA Y AGUJA (T1)",
+    "codigo": "TM-812A",
+    "medida": "8x1/2"
+  },
+  {
+    "id": 98,
+    "nombre": "TOR ALETADO PTA MECHA 8X1 1/4",
+    "categoria": "Autoperforantes",
+    "subcategoria": "ALETADO PUNTA MECHA",
+    "codigo": "ALM-8114",
+    "medida": "8x1 1/4"
+  },
+  {
+    "id": 99,
+    "nombre": "TOR ALETADO PTA MECHA 8X1 1/2",
+    "categoria": "Autoperforantes",
+    "subcategoria": "ALETADO PUNTA MECHA",
+    "codigo": "ALM-8112",
+    "medida": "8x1 1/2"
+  },
+  {
+    "id": 100,
+    "nombre": "TOR ALETADO PTA MECHA 10X1 1/4",
+    "categoria": "Autoperforantes",
+    "subcategoria": "ALETADO PUNTA MECHA",
+    "codigo": "ALM-10114",
+    "medida": "10x1 1/4"
+  },
+  {
+    "id": 101,
+    "nombre": "TOR ALETADO PTA MECHA 10X1 1/2",
+    "categoria": "Autoperforantes",
+    "subcategoria": "ALETADO PUNTA MECHA",
+    "codigo": "ALM-10112",
+    "medida": "10x1 1/2"
+  },
+  {
+    "id": 102,
+    "nombre": "TOR ALETADO PTA MECHA 10X1 5/8",
+    "categoria": "Autoperforantes",
+    "subcategoria": "ALETADO PUNTA MECHA",
+    "codigo": "ALM-10158",
+    "medida": "10x1 5/8"
+  },
+  {
+    "id": 103,
+    "nombre": "TOR ALETADO PTA MECHA 10X2",
+    "categoria": "Autoperforantes",
+    "subcategoria": "ALETADO PUNTA MECHA",
+    "codigo": "ALM-102",
+    "medida": "10x2"
+  },
+  {
+    "id": 104,
+    "nombre": "TARUGO N°6 Sin Tope",
+    "categoria": "Tarugos y Cintas",
+    "subcategoria": "TARUGOS MERVAL",
+    "codigo": "TGM-6S",
+    "medida": "N°6"
+  },
+  {
+    "id": 105,
+    "nombre": "TARUGO N°8 Sin Tope",
+    "categoria": "Tarugos y Cintas",
+    "subcategoria": "TARUGOS MERVAL",
+    "codigo": "TGM-8S",
+    "medida": "N°8"
+  },
+  {
+    "id": 106,
+    "nombre": "TARUGO N°10 Sin Tope",
+    "categoria": "Tarugos y Cintas",
+    "subcategoria": "TARUGOS MERVAL",
+    "codigo": "TGM-10S",
+    "medida": "N°10"
+  },
+  {
+    "id": 107,
+    "nombre": "TARUGO N°12 Sin Tope",
+    "categoria": "Tarugos y Cintas",
+    "subcategoria": "TARUGOS MERVAL",
+    "codigo": "TGM-12S",
+    "medida": "N°12"
+  },
+  {
+    "id": 108,
+    "nombre": "TARUGO N°6 Con Tope",
+    "categoria": "Tarugos y Cintas",
+    "subcategoria": "TARUGOS MERVAL",
+    "codigo": "TGM-6T",
+    "medida": "N°6"
+  },
+  {
+    "id": 109,
+    "nombre": "TARUGO N°8 Con Tope",
+    "categoria": "Tarugos y Cintas",
+    "subcategoria": "TARUGOS MERVAL",
+    "codigo": "TGM-8T",
+    "medida": "N°8"
+  },
+  {
+    "id": 110,
+    "nombre": "TARUGO N°10 Con Tope",
+    "categoria": "Tarugos y Cintas",
+    "subcategoria": "TARUGOS MERVAL",
+    "codigo": "TGM-10T",
+    "medida": "N°10"
+  },
+  {
+    "id": 111,
+    "nombre": "TARUGO L/Hueco N°6",
+    "categoria": "Tarugos y Cintas",
+    "subcategoria": "TARUGOS MERVAL",
+    "codigo": "TGM-6H",
+    "medida": "N°6"
+  },
+  {
+    "id": 112,
+    "nombre": "TARUGO L/Hueco N°8",
+    "categoria": "Tarugos y Cintas",
+    "subcategoria": "TARUGOS MERVAL",
+    "codigo": "TGM-8H",
+    "medida": "N°8"
+  },
+  {
+    "id": 113,
+    "nombre": "TARUGO L/Hueco N°10",
+    "categoria": "Tarugos y Cintas",
+    "subcategoria": "TARUGOS MERVAL",
+    "codigo": "TGM-10H",
+    "medida": "N°10"
+  },
+  {
+    "id": 114,
+    "nombre": "TARUGO N°6 Espiga",
+    "categoria": "Tarugos y Cintas",
+    "subcategoria": "TARUGOS MERVAL",
+    "codigo": "TGM-6E",
+    "medida": "N°6"
+  },
+  {
+    "id": 115,
+    "nombre": "TARUGO N°8 Espiga",
+    "categoria": "Tarugos y Cintas",
+    "subcategoria": "TARUGOS MERVAL",
+    "codigo": "TGM-8E",
+    "medida": "N°8"
+  },
+  {
+    "id": 116,
+    "nombre": "TARUGO N°10 Espiga",
+    "categoria": "Tarugos y Cintas",
+    "subcategoria": "TARUGOS MERVAL",
+    "codigo": "TGM-10E",
+    "medida": "N°10"
+  },
+  {
+    "id": 117,
+    "nombre": "TARUGO MARIPOSA",
+    "categoria": "Tarugos y Cintas",
+    "subcategoria": "TARUGOS MERVAL",
+    "codigo": "MTDH",
+    "medida": null
+  },
+  {
+    "id": 118,
+    "nombre": "CINTA PAPEL MICROPERFORADA 50MM X 23MTS",
+    "categoria": "Tarugos y Cintas",
+    "subcategoria": "CINTAS MERVAL",
+    "codigo": "CPM-23",
+    "medida": "50mm x 23m"
+  },
+  {
+    "id": 119,
+    "nombre": "CINTA PAPEL MICROPERFORADA 50MM X 75MTS",
+    "categoria": "Tarugos y Cintas",
+    "subcategoria": "CINTAS MERVAL",
+    "codigo": "CPM-75",
+    "medida": "50mm x 75m"
+  },
+  {
+    "id": 120,
+    "nombre": "CINTA PAPEL MICROPERFORADA 50MM X 150MTS",
+    "categoria": "Tarugos y Cintas",
+    "subcategoria": "CINTAS MERVAL",
+    "codigo": "CPM-150",
+    "medida": "50mm x 150m"
+  },
+  {
+    "id": 121,
+    "nombre": "CINTA TRAMADA AUTOADHESIVA 50MM X 20MTS",
+    "categoria": "Tarugos y Cintas",
+    "subcategoria": "CINTAS MERVAL",
+    "codigo": "CTM-20",
+    "medida": "50mm x 20m"
+  },
+  {
+    "id": 122,
+    "nombre": "CINTA TRAMADA AUTOADHESIVA 50MM X 45MTS",
+    "categoria": "Tarugos y Cintas",
+    "subcategoria": "CINTAS MERVAL",
+    "codigo": "CTM-45",
+    "medida": "50mm x 45m"
+  },
+  {
+    "id": 123,
+    "nombre": "CINTA TRAMADA AUTOADHESIVA 50MM X 90MTS",
+    "categoria": "Tarugos y Cintas",
+    "subcategoria": "CINTAS MERVAL",
+    "codigo": "CTM-90",
+    "medida": "50mm x 90m"
+  },
+  {
+    "id": 124,
+    "nombre": "BULON CAB/RED CUELLO CUADRADO C/TUERCA 1/4X1 1/4\"",
+    "categoria": "Bulones",
+    "subcategoria": "BULONES CABEZA REDONDA MERVAL",
+    "codigo": "BRM-14114",
+    "medida": "1/4x1 1/4"
+  },
+  {
+    "id": 125,
+    "nombre": "BULON CAB/RED CUELLO CUADRADO C/TUERCA 1/4X1 1/2\"",
+    "categoria": "Bulones",
+    "subcategoria": "BULONES CABEZA REDONDA MERVAL",
+    "codigo": "BRM-14112",
+    "medida": "1/4x1 1/2"
+  },
+  {
+    "id": 126,
+    "nombre": "BULON CAB/RED CUELLO CUADRADO C/TUERCA 1/4X2\"",
+    "categoria": "Bulones",
+    "subcategoria": "BULONES CABEZA REDONDA MERVAL",
+    "codigo": "BRM-142",
+    "medida": "1/4x2"
+  },
+  {
+    "id": 127,
+    "nombre": "BULON CAB/RED CUELLO CUADRADO C/TUERCA 1/4X2 1/4\"",
+    "categoria": "Bulones",
+    "subcategoria": "BULONES CABEZA REDONDA MERVAL",
+    "codigo": "BRM-14214",
+    "medida": "1/4x2 1/4"
+  },
+  {
+    "id": 128,
+    "nombre": "BULON CAB/RED CUELLO CUADRADO C/TUERCA 1/4X2 1/2\"",
+    "categoria": "Bulones",
+    "subcategoria": "BULONES CABEZA REDONDA MERVAL",
+    "codigo": "BRM-14212",
+    "medida": "1/4x2 1/2"
+  },
+  {
+    "id": 129,
+    "nombre": "BULON CAB/RED CUELLO CUADRADO C/TUERCA 1/4X3\"",
+    "categoria": "Bulones",
+    "subcategoria": "BULONES CABEZA REDONDA MERVAL",
+    "codigo": "BRM-143",
+    "medida": "1/4x3"
+  },
+  {
+    "id": 130,
+    "nombre": "BULON CAB/RED CUELLO CUADRADO C/TUERCA 1/4X3 1/2\"",
+    "categoria": "Bulones",
+    "subcategoria": "BULONES CABEZA REDONDA MERVAL",
+    "codigo": "BRM-14312",
+    "medida": "1/4x3 1/2"
+  },
+  {
+    "id": 131,
+    "nombre": "BULON CAB/RED CUELLO CUADRADO C/TUERCA 1/4X4\"",
+    "categoria": "Bulones",
+    "subcategoria": "BULONES CABEZA REDONDA MERVAL",
+    "codigo": "BRM-144",
+    "medida": "1/4x4"
+  },
+  {
+    "id": 132,
+    "nombre": "BULON CAB/RED CUELLO CUADRADO C/TUERCA 1/4X4 1/2\"",
+    "categoria": "Bulones",
+    "subcategoria": "BULONES CABEZA REDONDA MERVAL",
+    "codigo": "BRM-14412",
+    "medida": "1/4x4 1/2"
+  },
+  {
+    "id": 133,
+    "nombre": "BULON CAB/RED CUELLO CUADRADO C/TUERCA 1/4X5\"",
+    "categoria": "Bulones",
+    "subcategoria": "BULONES CABEZA REDONDA MERVAL",
+    "codigo": "BRM-145",
+    "medida": "1/4x5"
+  },
+  {
+    "id": 134,
+    "nombre": "BULON CAB/RED CUELLO CUADRADO C/TUERCA 1/4X5 1/2\"",
+    "categoria": "Bulones",
+    "subcategoria": "BULONES CABEZA REDONDA MERVAL",
+    "codigo": "BRM-14512",
+    "medida": "1/4x5 1/2"
+  },
+  {
+    "id": 135,
+    "nombre": "BULON CAB/RED CUELLO CUADRADO C/TUERCA 1/4X6\"",
+    "categoria": "Bulones",
+    "subcategoria": "BULONES CABEZA REDONDA MERVAL",
+    "codigo": "BRM-146",
+    "medida": "1/4x6"
+  },
+  {
+    "id": 136,
+    "nombre": "BULON CAB/RED CUELLO CUADRADO C/TUERCA 5/16X1 1/2",
+    "categoria": "Bulones",
+    "subcategoria": "BULONES CABEZA REDONDA MERVAL",
+    "codigo": "BRM-516112",
+    "medida": "5/16x1 1/2"
+  },
+  {
+    "id": 137,
+    "nombre": "BULON CAB/RED CUELLO CUADRADO C/TUERCA 5/16X2",
+    "categoria": "Bulones",
+    "subcategoria": "BULONES CABEZA REDONDA MERVAL",
+    "codigo": "BRM-5162",
+    "medida": "5/16x2"
+  },
+  {
+    "id": 138,
+    "nombre": "BULON CAB/RED CUELLO CUADRADO C/TUERCA 5/16X2 1/4",
+    "categoria": "Bulones",
+    "subcategoria": "BULONES CABEZA REDONDA MERVAL",
+    "codigo": "BRM-516214",
+    "medida": "5/16x2 1/4"
+  },
+  {
+    "id": 139,
+    "nombre": "BULON CAB/RED CUELLO CUADRADO C/TUERCA 5/16X2 1/2",
+    "categoria": "Bulones",
+    "subcategoria": "BULONES CABEZA REDONDA MERVAL",
+    "codigo": "BRM-516212",
+    "medida": "5/16x2 1/2"
+  },
+  {
+    "id": 140,
+    "nombre": "BULON CAB/RED CUELLO CUADRADO C/TUERCA 5/16X3",
+    "categoria": "Bulones",
+    "subcategoria": "BULONES CABEZA REDONDA MERVAL",
+    "codigo": "BRM-5163",
+    "medida": "5/16x3"
+  },
+  {
+    "id": 141,
+    "nombre": "BULON CAB/RED CUELLO CUADRADO C/TUERCA 5/16X3 1/2",
+    "categoria": "Bulones",
+    "subcategoria": "BULONES CABEZA REDONDA MERVAL",
+    "codigo": "BRM-516312",
+    "medida": "5/16x3 1/2"
+  },
+  {
+    "id": 142,
+    "nombre": "BULON CAB/RED CUELLO CUADRADO C/TUERCA 5/16X4",
+    "categoria": "Bulones",
+    "subcategoria": "BULONES CABEZA REDONDA MERVAL",
+    "codigo": "BRM-5164",
+    "medida": "5/16x4"
+  },
+  {
+    "id": 143,
+    "nombre": "BULON CAB/RED CUELLO CUADRADO C/TUERCA 5/16X4 1/2",
+    "categoria": "Bulones",
+    "subcategoria": "BULONES CABEZA REDONDA MERVAL",
+    "codigo": "BRM-516412",
+    "medida": "5/16x4 1/2"
+  },
+  {
+    "id": 144,
+    "nombre": "BULON CAB/RED CUELLO CUADRADO C/TUERCA 5/16X5",
+    "categoria": "Bulones",
+    "subcategoria": "BULONES CABEZA REDONDA MERVAL",
+    "codigo": "BRM-5165",
+    "medida": "5/16x5"
+  },
+  {
+    "id": 145,
+    "nombre": "BULON CAB/RED CUELLO CUADRADO C/TUERCA 5/16X5 1/2",
+    "categoria": "Bulones",
+    "subcategoria": "BULONES CABEZA REDONDA MERVAL",
+    "codigo": "BRM-516512",
+    "medida": "5/16x5 1/2"
+  },
+  {
+    "id": 146,
+    "nombre": "BULON CAB/RED CUELLO CUADRADO C/TUERCA 5/16X6",
+    "categoria": "Bulones",
+    "subcategoria": "BULONES CABEZA REDONDA MERVAL",
+    "codigo": "BRM-5166",
+    "medida": "5/16x6"
+  },
+  {
+    "id": 147,
+    "nombre": "BULON CAB/RED CUELLO CUADRADO C/TUERCA 3/8X1 1/2",
+    "categoria": "Bulones",
+    "subcategoria": "BULONES CABEZA REDONDA MERVAL",
+    "codigo": "BRM-38112",
+    "medida": "3/8x1 1/2"
+  },
+  {
+    "id": 148,
+    "nombre": "BULON CAB/RED CUELLO CUADRADO C/TUERCA 3/8X2",
+    "categoria": "Bulones",
+    "subcategoria": "BULONES CABEZA REDONDA MERVAL",
+    "codigo": "BRM-382",
+    "medida": "3/8x2"
+  },
+  {
+    "id": 149,
+    "nombre": "BULON CAB/RED CUELLO CUADRADO C/TUERCA 3/8X2 1/2",
+    "categoria": "Bulones",
+    "subcategoria": "BULONES CABEZA REDONDA MERVAL",
+    "codigo": "BRM-38212",
+    "medida": "3/8x2 1/2"
+  },
+  {
+    "id": 150,
+    "nombre": "BULON CAB/RED CUELLO CUADRADO C/TUERCA 3/8X3",
+    "categoria": "Bulones",
+    "subcategoria": "BULONES CABEZA REDONDA MERVAL",
+    "codigo": "BRM-383",
+    "medida": "3/8x3"
+  },
+  {
+    "id": 151,
+    "nombre": "BULON CAB/RED CUELLO CUADRADO C/TUERCA 3/8X3 1/2",
+    "categoria": "Bulones",
+    "subcategoria": "BULONES CABEZA REDONDA MERVAL",
+    "codigo": "BRM-38312",
+    "medida": "3/8x3 1/2"
+  },
+  {
+    "id": 152,
+    "nombre": "BULON CAB/RED CUELLO CUADRADO C/TUERCA 3/8X4",
+    "categoria": "Bulones",
+    "subcategoria": "BULONES CABEZA REDONDA MERVAL",
+    "codigo": "BRM-384",
+    "medida": "3/8x4"
+  },
+  {
+    "id": 153,
+    "nombre": "BULON CAB/RED CUELLO CUADRADO C/TUERCA 3/8X4 1/2",
+    "categoria": "Bulones",
+    "subcategoria": "BULONES CABEZA REDONDA MERVAL",
+    "codigo": "BRM-38412",
+    "medida": "3/8x4 1/2"
+  },
+  {
+    "id": 154,
+    "nombre": "BULON CAB/RED CUELLO CUADRADO C/TUERCA 3/8X5",
+    "categoria": "Bulones",
+    "subcategoria": "BULONES CABEZA REDONDA MERVAL",
+    "codigo": "BRM-385",
+    "medida": "3/8x5"
+  },
+  {
+    "id": 155,
+    "nombre": "BULON CAB/RED CUELLO CUADRADO C/TUERCA 3/8X5 1/2",
+    "categoria": "Bulones",
+    "subcategoria": "BULONES CABEZA REDONDA MERVAL",
+    "codigo": "BRM-38512",
+    "medida": "3/8x5 1/2"
+  },
+  {
+    "id": 156,
+    "nombre": "BULON CAB/RED CUELLO CUADRADO C/TUERCA 3/8X6",
+    "categoria": "Bulones",
+    "subcategoria": "BULONES CABEZA REDONDA MERVAL",
+    "codigo": "BRM-386",
+    "medida": "3/8x6"
+  },
+  {
+    "id": 157,
+    "nombre": "BULON CAB/RED CUELLO CUADRADO C/TUERCA 3/8X8",
+    "categoria": "Bulones",
+    "subcategoria": "BULONES CABEZA REDONDA MERVAL",
+    "codigo": "BRM-388",
+    "medida": "3/8x8"
+  },
+  {
+    "id": 158,
+    "nombre": "ARANDELA PLANA ZINCADA 1/4",
+    "categoria": "Bulones",
+    "subcategoria": "ACCESORIOS BULONES",
+    "codigo": "BRM-14A",
+    "medida": "1/4"
+  },
+  {
+    "id": 159,
+    "nombre": "ARANDELA PLANA ZINCADA 5/16",
+    "categoria": "Bulones",
+    "subcategoria": "ACCESORIOS BULONES",
+    "codigo": "BRM-516A",
+    "medida": "5/16"
+  },
+  {
+    "id": 160,
+    "nombre": "ARANDELA PLANA ZINCADA 3/8",
+    "categoria": "Bulones",
+    "subcategoria": "ACCESORIOS BULONES",
+    "codigo": "BRM-38A",
+    "medida": "3/8"
+  },
+  {
+    "id": 161,
+    "nombre": "TUERCA HEXAGONAL ZINCADA 1/4",
+    "categoria": "Bulones",
+    "subcategoria": "ACCESORIOS BULONES",
+    "codigo": "BRM-14T",
+    "medida": "1/4"
+  },
+  {
+    "id": 162,
+    "nombre": "TUERCA HEXAGONAL ZINCADA 5/16",
+    "categoria": "Bulones",
+    "subcategoria": "ACCESORIOS BULONES",
+    "codigo": "BRM-516T",
+    "medida": "5/16"
+  },
+  {
+    "id": 163,
+    "nombre": "TUERCA HEXAGONAL ZINCADA 3/8",
+    "categoria": "Bulones",
+    "subcategoria": "ACCESORIOS BULONES",
+    "codigo": "BRM-38T",
+    "medida": "3/8"
+  },
+  {
+    "id": 164,
+    "nombre": "TIRAFONDO ZINC CAB HEXAGONAL 3/16 X 30 (1 1/4\")",
+    "categoria": "Tirafondos",
+    "subcategoria": "TIRAFONDOS CABEZA HEXAGONAL MERVAL",
+    "codigo": "TFM-31630",
+    "medida": "3/16x30mm"
+  },
+  {
+    "id": 165,
+    "nombre": "TIRAFONDO ZINC CAB HEXAGONAL 3/16 X 40 (1 1/2\")",
+    "categoria": "Tirafondos",
+    "subcategoria": "TIRAFONDOS CABEZA HEXAGONAL MERVAL",
+    "codigo": "TFM-31640",
+    "medida": "3/16x40mm"
+  },
+  {
+    "id": 166,
+    "nombre": "TIRAFONDO ZINC CAB HEXAGONAL 3/16 X 50 (2\")",
+    "categoria": "Tirafondos",
+    "subcategoria": "TIRAFONDOS CABEZA HEXAGONAL MERVAL",
+    "codigo": "TFM-31650",
+    "medida": "3/16x50mm"
+  },
+  {
+    "id": 167,
+    "nombre": "TIRAFONDO ZINC CAB HEXAGONAL 3/16 X 65 (2 1/2\")",
+    "categoria": "Tirafondos",
+    "subcategoria": "TIRAFONDOS CABEZA HEXAGONAL MERVAL",
+    "codigo": "TFM-31665",
+    "medida": "3/16x65mm"
+  },
+  {
+    "id": 168,
+    "nombre": "TIRAFONDO ZINC CAB HEXAGONAL 3/16 X 75 (3\")",
+    "categoria": "Tirafondos",
+    "subcategoria": "TIRAFONDOS CABEZA HEXAGONAL MERVAL",
+    "codigo": "TFM-31675",
+    "medida": "3/16x75mm"
+  },
+  {
+    "id": 169,
+    "nombre": "TIRAFONDO ZINC CAB HEXAGONAL 1/4 X 30 (1 1/4\")",
+    "categoria": "Tirafondos",
+    "subcategoria": "TIRAFONDOS CABEZA HEXAGONAL MERVAL",
+    "codigo": "TFM-1430",
+    "medida": "1/4x30mm"
+  },
+  {
+    "id": 170,
+    "nombre": "TIRAFONDO ZINC CAB HEXAGONAL 1/4 X 40 (1 1/2\")",
+    "categoria": "Tirafondos",
+    "subcategoria": "TIRAFONDOS CABEZA HEXAGONAL MERVAL",
+    "codigo": "TFM-1440",
+    "medida": "1/4x40mm"
+  },
+  {
+    "id": 171,
+    "nombre": "TIRAFONDO ZINC CAB HEXAGONAL 1/4 X 50 (2\")",
+    "categoria": "Tirafondos",
+    "subcategoria": "TIRAFONDOS CABEZA HEXAGONAL MERVAL",
+    "codigo": "TFM-1450",
+    "medida": "1/4x50mm"
+  },
+  {
+    "id": 172,
+    "nombre": "TIRAFONDO ZINC CAB HEXAGONAL 1/4 X 55 (2 1/4\")",
+    "categoria": "Tirafondos",
+    "subcategoria": "TIRAFONDOS CABEZA HEXAGONAL MERVAL",
+    "codigo": "TFM-1455",
+    "medida": "1/4x55mm"
+  },
+  {
+    "id": 173,
+    "nombre": "TIRAFONDO ZINC CAB HEXAGONAL 1/4 X 65 (2 1/2\")",
+    "categoria": "Tirafondos",
+    "subcategoria": "TIRAFONDOS CABEZA HEXAGONAL MERVAL",
+    "codigo": "TFM-1465",
+    "medida": "1/4x65mm"
+  },
+  {
+    "id": 174,
+    "nombre": "TIRAFONDO ZINC CAB HEXAGONAL 1/4 X 75 (3\")",
+    "categoria": "Tirafondos",
+    "subcategoria": "TIRAFONDOS CABEZA HEXAGONAL MERVAL",
+    "codigo": "TFM-TF1475",
+    "medida": "1/4x75mm"
+  },
+  {
+    "id": 175,
+    "nombre": "TIRAFONDO ZINC CAB HEXAGONAL 1/4 X 90 (3 1/2\")",
+    "categoria": "Tirafondos",
+    "subcategoria": "TIRAFONDOS CABEZA HEXAGONAL MERVAL",
+    "codigo": "TFM-1490",
+    "medida": "1/4x90mm"
+  },
+  {
+    "id": 176,
+    "nombre": "TIRAFONDO ZINC CAB HEXAGONAL 1/4 X 100",
+    "categoria": "Tirafondos",
+    "subcategoria": "TIRAFONDOS CABEZA HEXAGONAL MERVAL",
+    "codigo": "TFM-14100",
+    "medida": "1/4x100mm"
+  },
+  {
+    "id": 177,
+    "nombre": "TIRAFONDO ZINC CAB HEXAGONAL 5/16 X 40 (1 1/2\")",
+    "categoria": "Tirafondos",
+    "subcategoria": "TIRAFONDOS CABEZA HEXAGONAL MERVAL",
+    "codigo": "TFM-51640",
+    "medida": "5/16x40mm"
+  },
+  {
+    "id": 178,
+    "nombre": "TIRAFONDO ZINC CAB HEXAGONAL 5/16 X 50 (2\")",
+    "categoria": "Tirafondos",
+    "subcategoria": "TIRAFONDOS CABEZA HEXAGONAL MERVAL",
+    "codigo": "TFM-51650",
+    "medida": "5/16x50mm"
+  },
+  {
+    "id": 179,
+    "nombre": "TIRAFONDO ZINC CAB HEXAGONAL 5/16 X 65 (2 1/2\")",
+    "categoria": "Tirafondos",
+    "subcategoria": "TIRAFONDOS CABEZA HEXAGONAL MERVAL",
+    "codigo": "TFM-51665",
+    "medida": "5/16x65mm"
+  },
+  {
+    "id": 180,
+    "nombre": "TIRAFONDO ZINC CAB HEXAGONAL 5/16 X 75 (3\")",
+    "categoria": "Tirafondos",
+    "subcategoria": "TIRAFONDOS CABEZA HEXAGONAL MERVAL",
+    "codigo": "TFM-51675",
+    "medida": "5/16x75mm"
+  },
+  {
+    "id": 181,
+    "nombre": "TIRAFONDO ZINC CAB HEXAGONAL 5/16 X 100 (4\")",
+    "categoria": "Tirafondos",
+    "subcategoria": "TIRAFONDOS CABEZA HEXAGONAL MERVAL",
+    "codigo": "TFM-516100",
+    "medida": "5/16x100mm"
+  },
+  {
+    "id": 182,
+    "nombre": "TIRAFONDO ZINC CAB HEXAGONAL 3/8 X 50 (2\")",
+    "categoria": "Tirafondos",
+    "subcategoria": "TIRAFONDOS CABEZA HEXAGONAL MERVAL",
+    "codigo": "TFM-3850",
+    "medida": "3/8x50mm"
+  },
+  {
+    "id": 183,
+    "nombre": "TIRAFONDO ZINC CAB HEXAGONAL 3/8 X 65 (2 1/2\")",
+    "categoria": "Tirafondos",
+    "subcategoria": "TIRAFONDOS CABEZA HEXAGONAL MERVAL",
+    "codigo": "TFM-3865",
+    "medida": "3/8x65mm"
+  },
+  {
+    "id": 184,
+    "nombre": "TIRAFONDO ZINC CAB HEXAGONAL 3/8 X 70 (2 3/4\")",
+    "categoria": "Tirafondos",
+    "subcategoria": "TIRAFONDOS CABEZA HEXAGONAL MERVAL",
+    "codigo": "TFM-3870",
+    "medida": "3/8x70mm"
+  },
+  {
+    "id": 185,
+    "nombre": "TIRAFONDO ZINC CAB HEXAGONAL 3/8 X 75 (3\")",
+    "categoria": "Tirafondos",
+    "subcategoria": "TIRAFONDOS CABEZA HEXAGONAL MERVAL",
+    "codigo": "TFM-3875",
+    "medida": "3/8x75mm"
+  },
+  {
+    "id": 186,
+    "nombre": "TIRAFONDO ZINC CAB HEXAGONAL 3/8 X 100 (4\")",
+    "categoria": "Tirafondos",
+    "subcategoria": "TIRAFONDOS CABEZA HEXAGONAL MERVAL",
+    "codigo": "TFM-38100",
+    "medida": "3/8x100mm"
+  },
+  {
+    "id": 187,
+    "nombre": "TOR.FIX C/F.PHILLIPS.(18)3,0X10",
+    "categoria": "Tornillos Fix",
+    "subcategoria": "TORNILLOS FIX (CHIPBOARD) MERVAL",
+    "codigo": "FXM-3010",
+    "medida": "3.0x10mm"
+  },
+  {
+    "id": 188,
+    "nombre": "TOR.FIX C/F.PHILLIPS.(18)3,0X16",
+    "categoria": "Tornillos Fix",
+    "subcategoria": "TORNILLOS FIX (CHIPBOARD) MERVAL",
+    "codigo": "FXM-3016",
+    "medida": "3.0x16mm"
+  },
+  {
+    "id": 189,
+    "nombre": "TOR.FIX C/F.PHILLIPS.(18)3,0X20",
+    "categoria": "Tornillos Fix",
+    "subcategoria": "TORNILLOS FIX (CHIPBOARD) MERVAL",
+    "codigo": "FXM-3020",
+    "medida": "3.0x20mm"
+  },
+  {
+    "id": 190,
+    "nombre": "TOR.FIX C/F.PHILLIPS.(18)3,0X25",
+    "categoria": "Tornillos Fix",
+    "subcategoria": "TORNILLOS FIX (CHIPBOARD) MERVAL",
+    "codigo": "FXM-3025",
+    "medida": "3.0x25mm"
+  },
+  {
+    "id": 191,
+    "nombre": "TOR.FIX C/F.PHILLIPS.(18)3,0X30",
+    "categoria": "Tornillos Fix",
+    "subcategoria": "TORNILLOS FIX (CHIPBOARD) MERVAL",
+    "codigo": "FXM-3030",
+    "medida": "3.0x30mm"
+  },
+  {
+    "id": 192,
+    "nombre": "TOR.FIX C/F.PHILLIPS.(18)3,0X35",
+    "categoria": "Tornillos Fix",
+    "subcategoria": "TORNILLOS FIX (CHIPBOARD) MERVAL",
+    "codigo": "FXM-3035",
+    "medida": "3.0x35mm"
+  },
+  {
+    "id": 193,
+    "nombre": "TOR.FIX C/F.PHILLIPS.(18)3.0X40",
+    "categoria": "Tornillos Fix",
+    "subcategoria": "TORNILLOS FIX (CHIPBOARD) MERVAL",
+    "codigo": "FXM-3040",
+    "medida": "3.0x40mm"
+  },
+  {
+    "id": 194,
+    "nombre": "TOR.FIX C/F.PHILLIPS.(19)3.5X13",
+    "categoria": "Tornillos Fix",
+    "subcategoria": "TORNILLOS FIX (CHIPBOARD) MERVAL",
+    "codigo": "FXM-3513",
+    "medida": "3.5x13mm"
+  },
+  {
+    "id": 195,
+    "nombre": "TOR.FIX C/F.PHILLIPS.(19)3.5X16",
+    "categoria": "Tornillos Fix",
+    "subcategoria": "TORNILLOS FIX (CHIPBOARD) MERVAL",
+    "codigo": "FXM-3516",
+    "medida": "3.5x16mm"
+  },
+  {
+    "id": 196,
+    "nombre": "TOR.FIX C/F.PHILLIPS.(19)3.5X20",
+    "categoria": "Tornillos Fix",
+    "subcategoria": "TORNILLOS FIX (CHIPBOARD) MERVAL",
+    "codigo": "FXM-3520",
+    "medida": "3.5x20mm"
+  },
+  {
+    "id": 197,
+    "nombre": "TOR.FIX C/F.PHILLIPS.(19)3.5X25",
+    "categoria": "Tornillos Fix",
+    "subcategoria": "TORNILLOS FIX (CHIPBOARD) MERVAL",
+    "codigo": "FXM-3525",
+    "medida": "3.5x25mm"
+  },
+  {
+    "id": 198,
+    "nombre": "TOR.FIX C/F.PHILLIPS.(19)3.5X30",
+    "categoria": "Tornillos Fix",
+    "subcategoria": "TORNILLOS FIX (CHIPBOARD) MERVAL",
+    "codigo": "FXM-F3530",
+    "medida": "3.5x30mm"
+  },
+  {
+    "id": 199,
+    "nombre": "TOR.FIX C/F.PHILLIPS.(19)3.5X35",
+    "categoria": "Tornillos Fix",
+    "subcategoria": "TORNILLOS FIX (CHIPBOARD) MERVAL",
+    "codigo": "FXM-3535",
+    "medida": "3.5x35mm"
+  },
+  {
+    "id": 200,
+    "nombre": "TOR.FIX C/F.PHILLIPS.(19)3.5X40",
+    "categoria": "Tornillos Fix",
+    "subcategoria": "TORNILLOS FIX (CHIPBOARD) MERVAL",
+    "codigo": "FXM-3540",
+    "medida": "3.5x40mm"
+  },
+  {
+    "id": 201,
+    "nombre": "TOR.FIX C/F.PHILLIPS.(19)3.5X45",
+    "categoria": "Tornillos Fix",
+    "subcategoria": "TORNILLOS FIX (CHIPBOARD) MERVAL",
+    "codigo": "FXM-F3545",
+    "medida": "3.5x45mm"
+  },
+  {
+    "id": 202,
+    "nombre": "TOR.FIX C/F.PHILLIPS.(19)3,5X50",
+    "categoria": "Tornillos Fix",
+    "subcategoria": "TORNILLOS FIX (CHIPBOARD) MERVAL",
+    "codigo": "FXM-3550",
+    "medida": "3.5x50mm"
+  },
+  {
+    "id": 203,
+    "nombre": "TOR.FIX C/F.PHILLIPS.(20)4.0X13",
+    "categoria": "Tornillos Fix",
+    "subcategoria": "TORNILLOS FIX (CHIPBOARD) MERVAL",
+    "codigo": "FXM-4013",
+    "medida": "4.0x13mm"
+  },
+  {
+    "id": 204,
+    "nombre": "TOR.FIX C/F.PHILLIPS.(20)4.0X16",
+    "categoria": "Tornillos Fix",
+    "subcategoria": "TORNILLOS FIX (CHIPBOARD) MERVAL",
+    "codigo": "FXM-4016",
+    "medida": "4.0x16mm"
+  },
+  {
+    "id": 205,
+    "nombre": "TOR.FIX C/F.PHILLIPS.(20)4.0X20",
+    "categoria": "Tornillos Fix",
+    "subcategoria": "TORNILLOS FIX (CHIPBOARD) MERVAL",
+    "codigo": "FXM-4020",
+    "medida": "4.0x20mm"
+  },
+  {
+    "id": 206,
+    "nombre": "TOR.FIX C/F.PHILLIPS.(20)4.0X25",
+    "categoria": "Tornillos Fix",
+    "subcategoria": "TORNILLOS FIX (CHIPBOARD) MERVAL",
+    "codigo": "FXM-4025",
+    "medida": "4.0x25mm"
+  },
+  {
+    "id": 207,
+    "nombre": "TOR.FIX C/F.PHILLIPS.(20)4.0X30",
+    "categoria": "Tornillos Fix",
+    "subcategoria": "TORNILLOS FIX (CHIPBOARD) MERVAL",
+    "codigo": "FXM-4030",
+    "medida": "4.0x30mm"
+  },
+  {
+    "id": 208,
+    "nombre": "TOR.FIX C/F.PHILLIPS.(20)4.0X35",
+    "categoria": "Tornillos Fix",
+    "subcategoria": "TORNILLOS FIX (CHIPBOARD) MERVAL",
+    "codigo": "FXM-4035",
+    "medida": "4.0x35mm"
+  },
+  {
+    "id": 209,
+    "nombre": "TOR.FIX C/F.PHILLIPS.(20)4.0X40",
+    "categoria": "Tornillos Fix",
+    "subcategoria": "TORNILLOS FIX (CHIPBOARD) MERVAL",
+    "codigo": "FXM-4040",
+    "medida": "4.0x40mm"
+  },
+  {
+    "id": 210,
+    "nombre": "TOR.FIX C/F.PHILLIPS.(20)4.0X45",
+    "categoria": "Tornillos Fix",
+    "subcategoria": "TORNILLOS FIX (CHIPBOARD) MERVAL",
+    "codigo": "FXM-4045",
+    "medida": "4.0x45mm"
+  },
+  {
+    "id": 211,
+    "nombre": "TOR.FIX C/F.PHILLIPS.(20)4.0X50",
+    "categoria": "Tornillos Fix",
+    "subcategoria": "TORNILLOS FIX (CHIPBOARD) MERVAL",
+    "codigo": "FXM-4050",
+    "medida": "4.0x50mm"
+  },
+  {
+    "id": 212,
+    "nombre": "TOR.FIX C/F.PHILLIPS.(20)4.0X55",
+    "categoria": "Tornillos Fix",
+    "subcategoria": "TORNILLOS FIX (CHIPBOARD) MERVAL",
+    "codigo": "FXM-4055",
+    "medida": "4.0x55mm"
+  },
+  {
+    "id": 213,
+    "nombre": "TOR.FIX C/F.PHILLIPS.(20)4.0X60",
+    "categoria": "Tornillos Fix",
+    "subcategoria": "TORNILLOS FIX (CHIPBOARD) MERVAL",
+    "codigo": "FXM-4060",
+    "medida": "4.0x60mm"
+  },
+  {
+    "id": 214,
+    "nombre": "TOR.FIX C/F.PHILLIPS.(20)4.0X70",
+    "categoria": "Tornillos Fix",
+    "subcategoria": "TORNILLOS FIX (CHIPBOARD) MERVAL",
+    "codigo": "FXM-4070",
+    "medida": "4.0x70mm"
+  },
+  {
+    "id": 215,
+    "nombre": "TOR.FIX C/F.PHILLIPS.(20)4.0X80",
+    "categoria": "Tornillos Fix",
+    "subcategoria": "TORNILLOS FIX (CHIPBOARD) MERVAL",
+    "codigo": "FXM-4080",
+    "medida": "4.0x80mm"
+  },
+  {
+    "id": 216,
+    "nombre": "TOR.FIX C/F.PHILLIPS.(21)4,5X16",
+    "categoria": "Tornillos Fix",
+    "subcategoria": "TORNILLOS FIX (CHIPBOARD) MERVAL",
+    "codigo": "FXM-4516",
+    "medida": "4.5x16mm"
+  },
+  {
+    "id": 217,
+    "nombre": "TOR.FIX C/F.PHILLIPS.(21)4,5X20",
+    "categoria": "Tornillos Fix",
+    "subcategoria": "TORNILLOS FIX (CHIPBOARD) MERVAL",
+    "codigo": "FXM-4520",
+    "medida": "4.5x20mm"
+  },
+  {
+    "id": 218,
+    "nombre": "TOR.FIX C/F.PHILLIPS.(21)4,5X25",
+    "categoria": "Tornillos Fix",
+    "subcategoria": "TORNILLOS FIX (CHIPBOARD) MERVAL",
+    "codigo": "FXM-4525",
+    "medida": "4.5x25mm"
+  },
+  {
+    "id": 219,
+    "nombre": "TOR.FIX C/F.PHILLIPS.(21)4.5X30",
+    "categoria": "Tornillos Fix",
+    "subcategoria": "TORNILLOS FIX (CHIPBOARD) MERVAL",
+    "codigo": "FXM-4530",
+    "medida": "4.5x30mm"
+  },
+  {
+    "id": 220,
+    "nombre": "TOR.FIX C/F.PHILLIPS.(21)4.5X35",
+    "categoria": "Tornillos Fix",
+    "subcategoria": "TORNILLOS FIX (CHIPBOARD) MERVAL",
+    "codigo": "FXM-4535",
+    "medida": "4.5x35mm"
+  },
+  {
+    "id": 221,
+    "nombre": "TOR.FIX C/F.PHILLIPS.(21)4.5X40",
+    "categoria": "Tornillos Fix",
+    "subcategoria": "TORNILLOS FIX (CHIPBOARD) MERVAL",
+    "codigo": "FXM-4540",
+    "medida": "4.5x40mm"
+  },
+  {
+    "id": 222,
+    "nombre": "TOR.FIX C/F.PHILLIPS.(21)4.5X45",
+    "categoria": "Tornillos Fix",
+    "subcategoria": "TORNILLOS FIX (CHIPBOARD) MERVAL",
+    "codigo": "FXM-4545",
+    "medida": "4.5x45mm"
+  },
+  {
+    "id": 223,
+    "nombre": "TOR.FIX C/F.PHILLIPS.(21)4.5X50",
+    "categoria": "Tornillos Fix",
+    "subcategoria": "TORNILLOS FIX (CHIPBOARD) MERVAL",
+    "codigo": "FXM-4550",
+    "medida": "4.5x50mm"
+  },
+  {
+    "id": 224,
+    "nombre": "TOR.FIX C/F.PHILLIPS.(21)4.5X55",
+    "categoria": "Tornillos Fix",
+    "subcategoria": "TORNILLOS FIX (CHIPBOARD) MERVAL",
+    "codigo": "FXM-4555",
+    "medida": "4.5x55mm"
+  },
+  {
+    "id": 225,
+    "nombre": "TOR.FIX C/F.PHILLIPS.(21)4.5X60",
+    "categoria": "Tornillos Fix",
+    "subcategoria": "TORNILLOS FIX (CHIPBOARD) MERVAL",
+    "codigo": "FXM-4560",
+    "medida": "4.5x60mm"
+  },
+  {
+    "id": 226,
+    "nombre": "TOR.FIX C/F.PHILLIPS.(21)4.5X70",
+    "categoria": "Tornillos Fix",
+    "subcategoria": "TORNILLOS FIX (CHIPBOARD) MERVAL",
+    "codigo": "FXM-4570",
+    "medida": "4.5x70mm"
+  },
+  {
+    "id": 227,
+    "nombre": "TOR.FIX C/F.PHILLIPS.(21)4.5X80",
+    "categoria": "Tornillos Fix",
+    "subcategoria": "TORNILLOS FIX (CHIPBOARD) MERVAL",
+    "codigo": "FXM-4580",
+    "medida": "4.5x80mm"
+  },
+  {
+    "id": 228,
+    "nombre": "TOR.FIX C/F.PHILLIPS.(21)4.5X90",
+    "categoria": "Tornillos Fix",
+    "subcategoria": "TORNILLOS FIX (CHIPBOARD) MERVAL",
+    "codigo": "FXM-4590",
+    "medida": "4.5x90mm"
+  },
+  {
+    "id": 229,
+    "nombre": "TOR.FIX C/F.PHILLIPS.(21)4.5X100",
+    "categoria": "Tornillos Fix",
+    "subcategoria": "TORNILLOS FIX (CHIPBOARD) MERVAL",
+    "codigo": "FXM-45100",
+    "medida": "4.5x100mm"
+  },
+  {
+    "id": 230,
+    "nombre": "TOR.FIX C/F.PHILLIPS.(22)5,0X20",
+    "categoria": "Tornillos Fix",
+    "subcategoria": "TORNILLOS FIX (CHIPBOARD) MERVAL",
+    "codigo": "FXM-5020",
+    "medida": "5.0x20mm"
+  },
+  {
+    "id": 231,
+    "nombre": "TOR.FIX C/F.PHILLIPS.(22)5,0X25",
+    "categoria": "Tornillos Fix",
+    "subcategoria": "TORNILLOS FIX (CHIPBOARD) MERVAL",
+    "codigo": "FXM-5025",
+    "medida": "5.0x25mm"
+  },
+  {
+    "id": 232,
+    "nombre": "TOR.FIX C/F.PHILLIPS.(22)5,0X30",
+    "categoria": "Tornillos Fix",
+    "subcategoria": "TORNILLOS FIX (CHIPBOARD) MERVAL",
+    "codigo": "FXM-5030",
+    "medida": "5.0x30mm"
+  },
+  {
+    "id": 233,
+    "nombre": "TOR.FIX C/F.PHILLIPS.(22)5,0X35",
+    "categoria": "Tornillos Fix",
+    "subcategoria": "TORNILLOS FIX (CHIPBOARD) MERVAL",
+    "codigo": "FXM-5035",
+    "medida": "5.0x35mm"
+  },
+  {
+    "id": 234,
+    "nombre": "TOR.FIX C/F.PHILLIPS.(22)5.0X40",
+    "categoria": "Tornillos Fix",
+    "subcategoria": "TORNILLOS FIX (CHIPBOARD) MERVAL",
+    "codigo": "FXM-5040",
+    "medida": "5.0x40mm"
+  },
+  {
+    "id": 235,
+    "nombre": "TOR.FIX C/F.PHILLIPS.(22)5.0X45",
+    "categoria": "Tornillos Fix",
+    "subcategoria": "TORNILLOS FIX (CHIPBOARD) MERVAL",
+    "codigo": "FXM-5045",
+    "medida": "5.0x45mm"
+  },
+  {
+    "id": 236,
+    "nombre": "TOR.FIX C/F.PHILLIPS.(22)5.0X50",
+    "categoria": "Tornillos Fix",
+    "subcategoria": "TORNILLOS FIX (CHIPBOARD) MERVAL",
+    "codigo": "FXM-5050",
+    "medida": "5.0x50mm"
+  },
+  {
+    "id": 237,
+    "nombre": "TOR.FIX C/F.PHILLIPS.(22)5.0X55",
+    "categoria": "Tornillos Fix",
+    "subcategoria": "TORNILLOS FIX (CHIPBOARD) MERVAL",
+    "codigo": "FXM-5055",
+    "medida": "5.0x55mm"
+  },
+  {
+    "id": 238,
+    "nombre": "TOR.FIX C/F.PHILLIPS.(22)5.0X60",
+    "categoria": "Tornillos Fix",
+    "subcategoria": "TORNILLOS FIX (CHIPBOARD) MERVAL",
+    "codigo": "FXM-5060",
+    "medida": "5.0x60mm"
+  },
+  {
+    "id": 239,
+    "nombre": "TOR.FIX C/F.PHILLIPS.(22)5.0X70",
+    "categoria": "Tornillos Fix",
+    "subcategoria": "TORNILLOS FIX (CHIPBOARD) MERVAL",
+    "codigo": "FXM-F5070",
+    "medida": "5.0x70mm"
+  },
+  {
+    "id": 240,
+    "nombre": "TOR.FIX C/F.PHILLIPS.(22)5.0X80",
+    "categoria": "Tornillos Fix",
+    "subcategoria": "TORNILLOS FIX (CHIPBOARD) MERVAL",
+    "codigo": "FXM-5080",
+    "medida": "5.0x80mm"
+  },
+  {
+    "id": 241,
+    "nombre": "TOR.FIX C/F.PHILLIPS.(22)5.0X90",
+    "categoria": "Tornillos Fix",
+    "subcategoria": "TORNILLOS FIX (CHIPBOARD) MERVAL",
+    "codigo": "FXM-5090",
+    "medida": "5.0x90mm"
+  },
+  {
+    "id": 242,
+    "nombre": "TOR.FIX C/F.PHILLIPS.(22)5,0X100",
+    "categoria": "Tornillos Fix",
+    "subcategoria": "TORNILLOS FIX (CHIPBOARD) MERVAL",
+    "codigo": "FXM-50100",
+    "medida": "5.0x100mm"
+  },
+  {
+    "id": 243,
+    "nombre": "TOR.FIX C/F.PHILLIPS.(23)6,0X30",
+    "categoria": "Tornillos Fix",
+    "subcategoria": "TORNILLOS FIX (CHIPBOARD) MERVAL",
+    "codigo": "FXM-6030",
+    "medida": "6.0x30mm"
+  },
+  {
+    "id": 244,
+    "nombre": "TOR.FIX C/F.PHILLIPS.(23)6,0X35",
+    "categoria": "Tornillos Fix",
+    "subcategoria": "TORNILLOS FIX (CHIPBOARD) MERVAL",
+    "codigo": "FXM-6035",
+    "medida": "6.0x35mm"
+  },
+  {
+    "id": 245,
+    "nombre": "TOR.FIX C/F.PHILLIPS.(23)6,0X40",
+    "categoria": "Tornillos Fix",
+    "subcategoria": "TORNILLOS FIX (CHIPBOARD) MERVAL",
+    "codigo": "FXM-6040",
+    "medida": "6.0x40mm"
+  },
+  {
+    "id": 246,
+    "nombre": "TOR.FIX C/F.PHILLIPS.(23)6,0X45",
+    "categoria": "Tornillos Fix",
+    "subcategoria": "TORNILLOS FIX (CHIPBOARD) MERVAL",
+    "codigo": "FXM-6045",
+    "medida": "6.0x45mm"
+  },
+  {
+    "id": 247,
+    "nombre": "TOR.FIX C/F.PHILLIPS.(23)6,0X50",
+    "categoria": "Tornillos Fix",
+    "subcategoria": "TORNILLOS FIX (CHIPBOARD) MERVAL",
+    "codigo": "FXM-6050",
+    "medida": "6.0x50mm"
+  },
+  {
+    "id": 248,
+    "nombre": "TOR.FIX C/F.PHILLIPS.(23)6,0X55",
+    "categoria": "Tornillos Fix",
+    "subcategoria": "TORNILLOS FIX (CHIPBOARD) MERVAL",
+    "codigo": "FXM-6055",
+    "medida": "6.0x55mm"
+  },
+  {
+    "id": 249,
+    "nombre": "TOR.FIX C/F.PHILLIPS.(23)6,0X60",
+    "categoria": "Tornillos Fix",
+    "subcategoria": "TORNILLOS FIX (CHIPBOARD) MERVAL",
+    "codigo": "FXM-6060",
+    "medida": "6.0x60mm"
+  },
+  {
+    "id": 250,
+    "nombre": "TOR.FIX C/F.PHILLIPS.(23)6,0X70",
+    "categoria": "Tornillos Fix",
+    "subcategoria": "TORNILLOS FIX (CHIPBOARD) MERVAL",
+    "codigo": "FXM-6070",
+    "medida": "6.0x70mm"
+  },
+  {
+    "id": 251,
+    "nombre": "TOR.FIX C/F.PHILLIPS.(23)6,0X80",
+    "categoria": "Tornillos Fix",
+    "subcategoria": "TORNILLOS FIX (CHIPBOARD) MERVAL",
+    "codigo": "FXM-6080",
+    "medida": "6.0x80mm"
+  },
+  {
+    "id": 252,
+    "nombre": "TOR.FIX C/F.PHILLIPS.(23)6,0X90",
+    "categoria": "Tornillos Fix",
+    "subcategoria": "TORNILLOS FIX (CHIPBOARD) MERVAL",
+    "codigo": "FXM-6090",
+    "medida": "6.0x90mm"
+  },
+  {
+    "id": 253,
+    "nombre": "TOR.FIX C/F.PHILLIPS.(23)6,0X100",
+    "categoria": "Tornillos Fix",
+    "subcategoria": "TORNILLOS FIX (CHIPBOARD) MERVAL",
+    "codigo": "FXM-60100",
+    "medida": "6.0x100mm"
+  },
+  {
+    "id": 254,
+    "nombre": "PACK X 100 FIJACIONES N6 SIN TOPE",
+    "categoria": "Tornillos Fix",
+    "subcategoria": "PACK FIJACIONES - Precio por Pack",
+    "codigo": "FM-6S",
+    "medida": "100 Tarugo N6 s/Tope + 100 Fix 4.0x30"
+  },
+  {
+    "id": 255,
+    "nombre": "PACK X 100 FIJACIONES N8 SIN TOPE",
+    "categoria": "Tornillos Fix",
+    "subcategoria": "PACK FIJACIONES - Precio por Pack",
+    "codigo": "FM-8S",
+    "medida": "100 Tarugo N8 S/Tope + 100 Fix 5.0x45"
+  },
+  {
+    "id": 256,
+    "nombre": "PACK X 100 FIJACIONES N6 CON TOPE",
+    "categoria": "Tornillos Fix",
+    "subcategoria": "PACK FIJACIONES - Precio por Pack",
+    "codigo": "FM-6C",
+    "medida": "100 Tarugo N6 c/Tope + 100 Fix 4.0x30"
+  },
+  {
+    "id": 257,
+    "nombre": "PACK X 100 FIJACIONES N8 CON TOPE",
+    "categoria": "Tornillos Fix",
+    "subcategoria": "PACK FIJACIONES - Precio por Pack",
+    "codigo": "FM-8C",
+    "medida": "100 Tarugo N8 c/Tope + 100 Fix 5.0x45"
+  },
+  {
+    "id": 258,
+    "nombre": "PACK X 100 FIJACIONES N6 ESPYGA",
+    "categoria": "Tornillos Fix",
+    "subcategoria": "PACK FIJACIONES - Precio por Pack",
+    "codigo": "FM-6E",
+    "medida": "100 Tarugo N6 Espyga + 100 Fix 4.0x30"
+  },
+  {
+    "id": 259,
+    "nombre": "PACK X 100 FIJACIONES N8 ESPYGA",
+    "categoria": "Tornillos Fix",
+    "subcategoria": "PACK FIJACIONES - Precio por Pack",
+    "codigo": "FM-8E",
+    "medida": "100 Tarugo N8 Espyga + 100 Fix 5.0x45"
+  },
+  {
+    "id": 260,
+    "nombre": "SPC SIMIL MADERA Roble Americano 4mm+1mm Manta",
+    "categoria": "Pisos y Revestimientos",
+    "subcategoria": "PISOS VINÍLICOS SPC HOLZBODEN (Noviembre 2025)",
+    "codigo": "SPC.4+1.AMERICANO",
+    "medida": "18x124cm"
+  },
+  {
+    "id": 261,
+    "nombre": "SPC SIMIL MADERA Roble Eslavonia 4mm+1mm Manta",
+    "categoria": "Pisos y Revestimientos",
+    "subcategoria": "PISOS VINÍLICOS SPC HOLZBODEN (Noviembre 2025)",
+    "codigo": "SPC.4+1.ESLAVONIA",
+    "medida": "18x124cm"
+  },
+  {
+    "id": 262,
+    "nombre": "SPC SIMIL MADERA Fresno Gris 4mm+1mm Manta",
+    "categoria": "Pisos y Revestimientos",
+    "subcategoria": "PISOS VINÍLICOS SPC HOLZBODEN (Noviembre 2025)",
+    "codigo": "SPC.4+1.FRESNO",
+    "medida": "18x124cm"
+  },
+  {
+    "id": 263,
+    "nombre": "SPC SIMIL MADERA Millenium 4mm+1mm Manta",
+    "categoria": "Pisos y Revestimientos",
+    "subcategoria": "PISOS VINÍLICOS SPC HOLZBODEN (Noviembre 2025)",
+    "codigo": "SPC.4+1.MILLENIUM",
+    "medida": "18x124cm"
+  },
+  {
+    "id": 264,
+    "nombre": "Simil Marquina 4mm 0.50mm Capa Alto Tránsito",
+    "categoria": "Pisos y Revestimientos",
+    "subcategoria": "PISOS VINÍLICOS SPC HOLZBODEN (Noviembre 2025)",
+    "codigo": "SPC.MARQUINA",
+    "medida": "30.5x61cm"
+  },
+  {
+    "id": 265,
+    "nombre": "Simil Calacatta 4mm 0.50mm Capa Alto Tránsito",
+    "categoria": "Pisos y Revestimientos",
+    "subcategoria": "PISOS VINÍLICOS SPC HOLZBODEN (Noviembre 2025)",
+    "codigo": "SPC.CALACATTA",
+    "medida": "30.5x61cm"
+  },
+  {
+    "id": 266,
+    "nombre": "Manta Goma Eva 1mm BAJO PISO SPC (Precio/M2)",
+    "categoria": "Pisos y Revestimientos",
+    "subcategoria": "PISOS VINÍLICOS SPC HOLZBODEN (Noviembre 2025)",
+    "codigo": "MANTA.EVA.1MM",
+    "medida": "1mx20m2"
+  },
+  {
+    "id": 267,
+    "nombre": "PLACA PVC SIMIL MARMOL CALACATTA",
+    "categoria": "Pisos y Revestimientos",
+    "subcategoria": "PLACAS DE PVC REVESTIMIENTO PARED/TECHO (Precio por Placa)",
+    "codigo": "PVC.CALACATTA.2",
+    "medida": "1.22x2.44m"
+  },
+  {
+    "id": 268,
+    "nombre": "PLACA PVC SIMIL MARMOL MARQUINA",
+    "categoria": "Pisos y Revestimientos",
+    "subcategoria": "PLACAS DE PVC REVESTIMIENTO PARED/TECHO (Precio por Placa)",
+    "codigo": "PVC.MARQUINA",
+    "medida": "1.22x2.44m"
+  },
+  {
+    "id": 269,
+    "nombre": "PLACA PVC SIMIL MARMOL GREY",
+    "categoria": "Pisos y Revestimientos",
+    "subcategoria": "PLACAS DE PVC REVESTIMIENTO PARED/TECHO (Precio por Placa)",
+    "codigo": "PVC.GREY",
+    "medida": "1.22x2.44m"
+  },
+  {
+    "id": 270,
+    "nombre": "PLACA PVC SIMIL MARMOL TRAVERTINO",
+    "categoria": "Pisos y Revestimientos",
+    "subcategoria": "PLACAS DE PVC REVESTIMIENTO PARED/TECHO (Precio por Placa)",
+    "codigo": "PVC.TRAVERTINO",
+    "medida": "1.22x2.44m"
+  },
+  {
+    "id": 271,
+    "nombre": "PLACA PVC SIMIL ACERO METALIZADO 5MM",
+    "categoria": "Pisos y Revestimientos",
+    "subcategoria": "PLACAS DE PVC REVESTIMIENTO PARED/TECHO (Precio por Placa)",
+    "codigo": "PVC.METAL.5MM",
+    "medida": "1.22x2.44m"
+  },
+  {
+    "id": 272,
+    "nombre": "PLACA PVC SIMIL MADERA OAK 5MM",
+    "categoria": "Pisos y Revestimientos",
+    "subcategoria": "PLACAS DE PVC REVESTIMIENTO PARED/TECHO (Precio por Placa)",
+    "codigo": "PVC.OAK.5MM",
+    "medida": "1.22x2.44m"
+  },
+  {
+    "id": 273,
+    "nombre": "PLACA PVC SIMIL CEMENTO TEXTURA MATE",
+    "categoria": "Pisos y Revestimientos",
+    "subcategoria": "PLACAS DE PVC REVESTIMIENTO PARED/TECHO (Precio por Placa)",
+    "codigo": "PVC.CEMENT.MATT",
+    "medida": "1.22x2.44m"
+  },
+  {
+    "id": 274,
+    "nombre": "WALL PANEL EPS SIMIL MADERA TEKA",
+    "categoria": "Pisos y Revestimientos",
+    "subcategoria": "WALL PANELS EPS INTERIORES (Precio por Varilla)",
+    "codigo": "WP.EPS.TEKA.2",
+    "medida": "12cmx11mmx2.5m"
+  },
+  {
+    "id": 275,
+    "nombre": "WALL PANEL EPS SIMIL MADERA OAK",
+    "categoria": "Pisos y Revestimientos",
+    "subcategoria": "WALL PANELS EPS INTERIORES (Precio por Varilla)",
+    "codigo": "WP.EPS.OAK",
+    "medida": "12cmx11mmx2.5m"
+  },
+  {
+    "id": 276,
+    "nombre": "WALL PANEL EPS NEGRO",
+    "categoria": "Pisos y Revestimientos",
+    "subcategoria": "WALL PANELS EPS INTERIORES (Precio por Varilla)",
+    "codigo": "WP.EPS.BLACK",
+    "medida": "12cmx11mmx2.5m"
+  },
+  {
+    "id": 277,
+    "nombre": "WALL PANEL EPS BLANCO",
+    "categoria": "Pisos y Revestimientos",
+    "subcategoria": "WALL PANELS EPS INTERIORES (Precio por Varilla)",
+    "codigo": "WP.EPS.WHITE",
+    "medida": "12cmx11mmx2.5m"
+  },
+  {
+    "id": 278,
+    "nombre": "WALL PANEL WPC PETIRIBI",
+    "categoria": "Pisos y Revestimientos",
+    "subcategoria": "WALL PANELS EPS INTERIORES (Precio por Varilla)",
+    "codigo": "WP.WPC.PETIRIBI",
+    "medida": "15cmx18mmx2.5m"
+  },
+  {
+    "id": 279,
+    "nombre": "WALL PANEL WPC ROBLE",
+    "categoria": "Pisos y Revestimientos",
+    "subcategoria": "WALL PANELS EPS INTERIORES (Precio por Varilla)",
+    "codigo": "WP.WPC.ROBLE",
+    "medida": "15cmx18mmx2.5m"
+  },
+  {
+    "id": 280,
+    "nombre": "PERFIL ESQUINERO EPS TEKA",
+    "categoria": "Pisos y Revestimientos",
+    "subcategoria": "PERFILES TERMINACIÓN Y ACCESORIOS",
+    "codigo": "COVER.TEKA.2",
+    "medida": "2.4cmx4mmx2.5m"
+  },
+  {
+    "id": 281,
+    "nombre": "PERFIL ESQUINERO EPS OAK",
+    "categoria": "Pisos y Revestimientos",
+    "subcategoria": "PERFILES TERMINACIÓN Y ACCESORIOS",
+    "codigo": "COVER.OAK",
+    "medida": "2.4cmx4mmx2.5m"
+  },
+  {
+    "id": 282,
+    "nombre": "PERFIL ESQUINERO EPS NEGRO",
+    "categoria": "Pisos y Revestimientos",
+    "subcategoria": "PERFILES TERMINACIÓN Y ACCESORIOS",
+    "codigo": "COVER.BLACK",
+    "medida": "2.4cmx4mmx2.5m"
+  },
+  {
+    "id": 283,
+    "nombre": "PERFIL ESQUINERO EPS BLANCO",
+    "categoria": "Pisos y Revestimientos",
+    "subcategoria": "PERFILES TERMINACIÓN Y ACCESORIOS",
+    "codigo": "COVER.WHITE",
+    "medida": "2.4cmx4mmx2.5m"
+  },
+  {
+    "id": 284,
+    "nombre": "SILICONA MULTI PEGA BLANCA",
+    "categoria": "Pisos y Revestimientos",
+    "subcategoria": "PERFILES TERMINACIÓN Y ACCESORIOS",
+    "codigo": "MP.SILI.BLANCA",
+    "medida": "Pomo"
+  },
+  {
+    "id": 285,
+    "nombre": "DECK WPC TEAK (fibras madera+PVC)",
+    "categoria": "Pisos y Revestimientos",
+    "subcategoria": "DECK WPC Y WALL PANEL EXTERIOR",
+    "codigo": "DECK.TEAK",
+    "medida": "25x140x2450mm"
+  },
+  {
+    "id": 286,
+    "nombre": "WALL PANEL EXTERIOR WPC TEKA",
+    "categoria": "Pisos y Revestimientos",
+    "subcategoria": "DECK WPC Y WALL PANEL EXTERIOR",
+    "codigo": "EXTWP.TEKA",
+    "medida": "22x225x26mm"
+  },
+  {
+    "id": 287,
+    "nombre": "PISO INGENIERIA ROBLE ESLAVONIA 12mm(2mm Roble)",
+    "categoria": "Pisos y Revestimientos",
+    "subcategoria": "PISOS PREFINISHED MADERA",
+    "codigo": "PREF12MM.23114",
+    "medida": "127x1200x12mm"
+  },
+  {
+    "id": 288,
+    "nombre": "PISO INGENIERIA ROBLE ESLAVONIA 15mm(3mm Madera)",
+    "categoria": "Pisos y Revestimientos",
+    "subcategoria": "PISOS PREFINISHED MADERA",
+    "codigo": "PREF.4897",
+    "medida": "127x1200x15mm"
+  },
+  {
+    "id": 289,
+    "nombre": "MANTA STEICO 3MM fibras madera (Precio/Placa)",
+    "categoria": "Pisos y Revestimientos",
+    "subcategoria": "PISOS PREFINISHED MADERA",
+    "codigo": "STEICO3MM",
+    "medida": "790x570x3mm"
+  },
+  {
+    "id": 290,
+    "nombre": "PLACA TRAVERTINO FLEXIBLE PARED EXT/INT",
+    "categoria": "Pisos y Revestimientos",
+    "subcategoria": "REVESTIMIENTOS FLEXIBLES Y AUTOADHESIVOS",
+    "codigo": "TRAVE.3MM",
+    "medida": "60x120cm"
+  },
+  {
+    "id": 291,
+    "nombre": "PLACA SIMIL CONCRETO FLEXIBLE",
+    "categoria": "Pisos y Revestimientos",
+    "subcategoria": "REVESTIMIENTOS FLEXIBLES Y AUTOADHESIVOS",
+    "codigo": "CEMPVC.60X120",
+    "medida": "60x120cm"
+  },
+  {
+    "id": 292,
+    "nombre": "PLACA 3D AUTOADHESIVA BLANCO LISO",
+    "categoria": "Pisos y Revestimientos",
+    "subcategoria": "REVESTIMIENTOS FLEXIBLES Y AUTOADHESIVOS",
+    "codigo": "3DPLAIN.WHITE",
+    "medida": "70x77cm"
+  },
+  {
+    "id": 293,
+    "nombre": "PLACA 3D AUTOADHESIVA NEGRO RUSTICO",
+    "categoria": "Pisos y Revestimientos",
+    "subcategoria": "REVESTIMIENTOS FLEXIBLES Y AUTOADHESIVOS",
+    "codigo": "3DPLAIN.BLACK",
+    "medida": "70x77cm"
+  },
+  {
+    "id": 294,
+    "nombre": "PLACA 3D AUTOADHESIVA MADERA GRIS",
+    "categoria": "Pisos y Revestimientos",
+    "subcategoria": "REVESTIMIENTOS FLEXIBLES Y AUTOADHESIVOS",
+    "codigo": "3DWOOD.GREY",
+    "medida": "70x77cm"
+  },
+  {
+    "id": 295,
+    "nombre": "WALL PANEL AUTOADHESIVO ROBLE",
+    "categoria": "Pisos y Revestimientos",
+    "subcategoria": "REVESTIMIENTOS FLEXIBLES Y AUTOADHESIVOS",
+    "codigo": "WP.SELF.ROBLE",
+    "medida": "60cmx2.5m"
+  },
+  {
+    "id": 296,
+    "nombre": "WALL PANEL AUTOADHESIVO NOGAL",
+    "categoria": "Pisos y Revestimientos",
+    "subcategoria": "REVESTIMIENTOS FLEXIBLES Y AUTOADHESIVOS",
+    "codigo": "WP.SELF.NOGAL",
+    "medida": "60cmx2.5m"
+  },
+  {
+    "id": 297,
+    "nombre": "VINILO AUTOADHESIVO CALACATTA",
+    "categoria": "Pisos y Revestimientos",
+    "subcategoria": "REVESTIMIENTOS FLEXIBLES Y AUTOADHESIVOS",
+    "codigo": "WS30X60.CALA",
+    "medida": "30x60cm"
+  },
+  {
+    "id": 298,
+    "nombre": "VINILO AUTOADHESIVO MARQUINA",
+    "categoria": "Pisos y Revestimientos",
+    "subcategoria": "REVESTIMIENTOS FLEXIBLES Y AUTOADHESIVOS",
+    "codigo": "WS30X60.MARQ",
+    "medida": "30x60cm"
+  },
+  {
+    "id": 299,
+    "nombre": "VINILO ESMERILADO DE VIDRIO",
+    "categoria": "Pisos y Revestimientos",
+    "subcategoria": "REVESTIMIENTOS FLEXIBLES Y AUTOADHESIVOS",
+    "codigo": "ESME60X2",
+    "medida": "60cmx2m"
+  },
+  {
+    "id": 300,
+    "nombre": "VINILO ESMERILADO DE VIDRIO",
+    "categoria": "Pisos y Revestimientos",
+    "subcategoria": "REVESTIMIENTOS FLEXIBLES Y AUTOADHESIVOS",
+    "codigo": "ESME120X2",
+    "medida": "120cmx2m"
+  },
+  {
+    "id": 301,
+    "nombre": "ZOCALO EPS BLANCO LISO RECTO 5CM",
+    "categoria": "Pisos y Revestimientos",
+    "subcategoria": "ZÓCALOS Y ACCESORIOS PISOS",
+    "codigo": "ZEPS.5.RECT",
+    "medida": "2.5mx5cm"
+  },
+  {
+    "id": 302,
+    "nombre": "ZOCALO EPS BLANCO LISO RECTO 7CM",
+    "categoria": "Pisos y Revestimientos",
+    "subcategoria": "ZÓCALOS Y ACCESORIOS PISOS",
+    "codigo": "ZEPS.7.RECT",
+    "medida": "2.5mx7cm"
+  },
+  {
+    "id": 303,
+    "nombre": "ZOCALO EPS BLANCO LISO CURVADO 7CM",
+    "categoria": "Pisos y Revestimientos",
+    "subcategoria": "ZÓCALOS Y ACCESORIOS PISOS",
+    "codigo": "ZEPS.7.CURVO",
+    "medida": "2.5mx7cm"
+  },
+  {
+    "id": 304,
+    "nombre": "ZOCALO MDF PREPINTADO BLANCO",
+    "categoria": "Pisos y Revestimientos",
+    "subcategoria": "ZÓCALOS Y ACCESORIOS PISOS",
+    "codigo": "PZ-56L",
+    "medida": "2.75mx6cm"
+  },
+  {
+    "id": 305,
+    "nombre": "ZOCALO MDF CUARTA CAÑA FOIL BLANCO",
+    "categoria": "Pisos y Revestimientos",
+    "subcategoria": "ZÓCALOS Y ACCESORIOS PISOS",
+    "codigo": "CUARTACAÑA",
+    "medida": "2.6mx15mm"
+  },
+  {
+    "id": 306,
+    "nombre": "ZOCALO EPS SQUARE 50mm ATRIM",
+    "categoria": "Pisos y Revestimientos",
+    "subcategoria": "ZÓCALOS Y ACCESORIOS PISOS",
+    "codigo": "3002",
+    "medida": "2.5mx50mm"
+  },
+  {
+    "id": 307,
+    "nombre": "ZOCALO CUARTA CAÑA EPS ATRIM",
+    "categoria": "Pisos y Revestimientos",
+    "subcategoria": "ZÓCALOS Y ACCESORIOS PISOS",
+    "codigo": "730",
+    "medida": "2.5mx15mm"
+  },
+  {
+    "id": 308,
+    "nombre": "PORCELANATO BEIGE PLENO NANO PULIDO",
+    "categoria": "Pisos y Revestimientos",
+    "subcategoria": "PORCELANATOS Y CERÁMICOS HOLZBODEN",
+    "codigo": "IVORY60X60",
+    "medida": "60x60"
+  },
+  {
+    "id": 309,
+    "nombre": "PORCELANICO SIMIL CALACATTA SATINADO",
+    "categoria": "Pisos y Revestimientos",
+    "subcategoria": "PORCELANATOS Y CERÁMICOS HOLZBODEN",
+    "codigo": "BR.DOHA67X67",
+    "medida": "67x67"
+  },
+  {
+    "id": 310,
+    "nombre": "PORCELANICO SIMIL PIEDRA GRIS ANTIDESLIZ",
+    "categoria": "Pisos y Revestimientos",
+    "subcategoria": "PORCELANATOS Y CERÁMICOS HOLZBODEN",
+    "codigo": "BR.SLATE60X60",
+    "medida": "60x60"
+  },
+  {
+    "id": 311,
+    "nombre": "PORCELANICO SIMIL CONCRETO GRIS MATE",
+    "categoria": "Pisos y Revestimientos",
+    "subcategoria": "PORCELANATOS Y CERÁMICOS HOLZBODEN",
+    "codigo": "BR.CONCRET60X60",
+    "medida": "60x60"
+  },
+  {
+    "id": 312,
+    "nombre": "PORCELANICO SIMIL CEMENTO ALISADO",
+    "categoria": "Pisos y Revestimientos",
+    "subcategoria": "PORCELANATOS Y CERÁMICOS HOLZBODEN",
+    "codigo": "VISION58X118",
+    "medida": "58x118"
+  },
+  {
+    "id": 313,
+    "nombre": "PORCELANATO SIMIL CARRARA PULIDO",
+    "categoria": "Pisos y Revestimientos",
+    "subcategoria": "PORCELANATOS Y CERÁMICOS HOLZBODEN",
+    "codigo": "CARR60X60",
+    "medida": "60x60"
+  },
+  {
+    "id": 314,
+    "nombre": "PORCELANICO SIMIL CALACATTA SATINADO",
+    "categoria": "Pisos y Revestimientos",
+    "subcategoria": "PORCELANATOS Y CERÁMICOS HOLZBODEN",
+    "codigo": "CALA.46X100",
+    "medida": "46x100"
+  },
+  {
+    "id": 315,
+    "nombre": "PORCELANATO SIMIL CALACATTA PULIDO",
+    "categoria": "Pisos y Revestimientos",
+    "subcategoria": "PORCELANATOS Y CERÁMICOS HOLZBODEN",
+    "codigo": "CALA80X80",
+    "medida": "80x80"
+  },
+  {
+    "id": 316,
+    "nombre": "PORCELANATO SIMIL CARRARA PULIDO",
+    "categoria": "Pisos y Revestimientos",
+    "subcategoria": "PORCELANATOS Y CERÁMICOS HOLZBODEN",
+    "codigo": "CARR60X120",
+    "medida": "60x120"
+  },
+  {
+    "id": 317,
+    "nombre": "PORCELANATO NEGRO MARQUINA PULIDO",
+    "categoria": "Pisos y Revestimientos",
+    "subcategoria": "PORCELANATOS Y CERÁMICOS HOLZBODEN",
+    "codigo": "MARQ60X120",
+    "medida": "60x120"
+  },
+  {
+    "id": 318,
+    "nombre": "PORCELANATO ROBLE CLARO RECTIFICADO",
+    "categoria": "Pisos y Revestimientos",
+    "subcategoria": "PORCELANATOS SIMIL MADERA",
+    "codigo": "N1501",
+    "medida": "15x60"
+  },
+  {
+    "id": 319,
+    "nombre": "PORCELANATO ROBLE CLARO SEMI-RECT",
+    "categoria": "Pisos y Revestimientos",
+    "subcategoria": "PORCELANATOS SIMIL MADERA",
+    "codigo": "15X80CLA",
+    "medida": "15x80"
+  },
+  {
+    "id": 320,
+    "nombre": "PORCELANICO SIMIL MADERA GOETHE BLANCO",
+    "categoria": "Pisos y Revestimientos",
+    "subcategoria": "PORCELANATOS SIMIL MADERA",
+    "codigo": "GOETHE15X90",
+    "medida": "15x90"
+  },
+  {
+    "id": 321,
+    "nombre": "PORCELANICO SIMIL MADERA PAVIA GRIGIO",
+    "categoria": "Pisos y Revestimientos",
+    "subcategoria": "PORCELANATOS SIMIL MADERA",
+    "codigo": "PAVIA15X90",
+    "medida": "15x90"
+  },
+  {
+    "id": 322,
+    "nombre": "PORCELANICO SIMIL MADERA BOTANIC GRAY",
+    "categoria": "Pisos y Revestimientos",
+    "subcategoria": "PORCELANATOS SIMIL MADERA",
+    "codigo": "BOTANIC.GRIS",
+    "medida": "28x118"
+  },
+  {
+    "id": 323,
+    "nombre": "PORCELANICO SIMIL MADERA BOTANIC PALHA",
+    "categoria": "Pisos y Revestimientos",
+    "subcategoria": "PORCELANATOS SIMIL MADERA",
+    "codigo": "BOTANIC.BRA",
+    "medida": "28x118"
+  },
+  {
+    "id": 324,
+    "nombre": "PORCELANATO ROBLE OSCURO PREMIUM",
+    "categoria": "Pisos y Revestimientos",
+    "subcategoria": "PORCELANATOS SIMIL MADERA",
+    "codigo": "20x120.OSC",
+    "medida": "20x120"
+  },
+  {
+    "id": 325,
+    "nombre": "AZULEJO SUBWAY BLANCO BRILLANTE BISELADO",
+    "categoria": "Pisos y Revestimientos",
+    "subcategoria": "AZULEJOS SUBWAY TILES",
+    "codigo": "SUB.W.B",
+    "medida": "7.5x15"
+  },
+  {
+    "id": 326,
+    "nombre": "AZULEJO SUBWAY NEGRO BRILLANTE BISELADO",
+    "categoria": "Pisos y Revestimientos",
+    "subcategoria": "AZULEJOS SUBWAY TILES",
+    "codigo": "SUB.BLA.B",
+    "medida": "7.5x15"
+  },
+  {
+    "id": 327,
+    "nombre": "AZULEJO SUBWAY BLANCO BRILLANTE BISELADO",
+    "categoria": "Pisos y Revestimientos",
+    "subcategoria": "AZULEJOS SUBWAY TILES",
+    "codigo": "10X20.BLA.BIS",
+    "medida": "10x20"
+  },
+  {
+    "id": 328,
+    "nombre": "PORCELANICO SIMIL MADERA BLANCO RETRO",
+    "categoria": "Pisos y Revestimientos",
+    "subcategoria": "PORCELANATOS ALBERDI (Nacionales)",
+    "codigo": "ALB.RET.20X60",
+    "medida": "20x60"
+  },
+  {
+    "id": 329,
+    "nombre": "PORCELANATO SIMIL MADERA CASTAÑO RECT",
+    "categoria": "Pisos y Revestimientos",
+    "subcategoria": "PORCELANATOS ALBERDI (Nacionales)",
+    "codigo": "CAST.20X80",
+    "medida": "20x80"
+  },
+  {
+    "id": 330,
+    "nombre": "PORCELANATO METROPOLITAN GREY",
+    "categoria": "Pisos y Revestimientos",
+    "subcategoria": "PORCELANATOS ALBERDI (Nacionales)",
+    "codigo": "MET.GREY60X60",
+    "medida": "60x60"
+  },
+  {
+    "id": 331,
+    "nombre": "PORCELANATO GRIS CENTURY TITANIO RECT",
+    "categoria": "Pisos y Revestimientos",
+    "subcategoria": "PORCELANATOS ALBERDI (Nacionales)",
+    "codigo": "60X60TITANIO",
+    "medida": "60x60"
+  },
+  {
+    "id": 332,
+    "nombre": "AZULEJO BAIKAL BLANCO BRILLANTE",
+    "categoria": "Pisos y Revestimientos",
+    "subcategoria": "PORCELANATOS ALBERDI (Nacionales)",
+    "codigo": "BAIKAL28X45",
+    "medida": "28x45"
+  },
+  {
+    "id": 333,
+    "nombre": "AZULEJO VOLGA BLANCO SATINADO",
+    "categoria": "Pisos y Revestimientos",
+    "subcategoria": "PORCELANATOS ALBERDI (Nacionales)",
+    "codigo": "VOLGA28X45",
+    "medida": "28x45"
+  },
+  {
+    "id": 334,
+    "nombre": "CERAMICO CALIFORNIA GRIS CLARO",
+    "categoria": "Pisos y Revestimientos",
+    "subcategoria": "PORCELANATOS ALBERDI (Nacionales)",
+    "codigo": "AL.GRISCLA.36X36",
+    "medida": "36x36"
+  },
+  {
+    "id": 335,
+    "nombre": "GRIFERIA COCINA MONOCOMANDO ACERO C/ROCIADOR",
+    "categoria": "Pisos y Revestimientos",
+    "subcategoria": "GRIFERÍAS Y ACCESORIOS BAÑO HOLZBODEN",
+    "codigo": "GRIF.205CP",
+    "medida": "Cocina"
+  },
+  {
+    "id": 336,
+    "nombre": "GRIFERIA COCINA MONOCOMANDO NEGRA C/ROCIADOR",
+    "categoria": "Pisos y Revestimientos",
+    "subcategoria": "GRIFERÍAS Y ACCESORIOS BAÑO HOLZBODEN",
+    "codigo": "GRIF.205H",
+    "medida": "Cocina"
+  },
+  {
+    "id": 337,
+    "nombre": "GRIFERIA COCINA MONOCOMANDO NEGRA C/ROCIADOR FLEX",
+    "categoria": "Pisos y Revestimientos",
+    "subcategoria": "GRIFERÍAS Y ACCESORIOS BAÑO HOLZBODEN",
+    "codigo": "GRIF.615H",
+    "medida": "Cocina"
+  },
+  {
+    "id": 338,
+    "nombre": "GRIFERIA COCINA MONOCOMANDO PICO CISNE NEGRA",
+    "categoria": "Pisos y Revestimientos",
+    "subcategoria": "GRIFERÍAS Y ACCESORIOS BAÑO HOLZBODEN",
+    "codigo": "GRIF.09NY",
+    "medida": "Cocina"
+  },
+  {
+    "id": 339,
+    "nombre": "GRIFERIA COCINA MONOCOMANDO PICO CISNE CROMADA",
+    "categoria": "Pisos y Revestimientos",
+    "subcategoria": "GRIFERÍAS Y ACCESORIOS BAÑO HOLZBODEN",
+    "codigo": "GRIF.11NY",
+    "medida": "Cocina"
+  },
+  {
+    "id": 340,
+    "nombre": "GRIFERIA COCINA GOURMET PREMIUM ACERO FLEX 360°",
+    "categoria": "Pisos y Revestimientos",
+    "subcategoria": "GRIFERÍAS Y ACCESORIOS BAÑO HOLZBODEN",
+    "codigo": "GRIF.13NY",
+    "medida": "Cocina"
+  },
+  {
+    "id": 341,
+    "nombre": "KIT CUBO 4 ACCESORIOS DE BAÑO CROMADO",
+    "categoria": "Pisos y Revestimientos",
+    "subcategoria": "GRIFERÍAS Y ACCESORIOS BAÑO HOLZBODEN",
+    "codigo": "ABR.05C.CRO",
+    "medida": "Baño"
+  },
+  {
+    "id": 342,
+    "nombre": "KIT CUBO 4 ACCESORIOS DE BAÑO NEGRO",
+    "categoria": "Pisos y Revestimientos",
+    "subcategoria": "GRIFERÍAS Y ACCESORIOS BAÑO HOLZBODEN",
+    "codigo": "ABR.05H.BLA",
+    "medida": "Baño"
+  },
+  {
+    "id": 343,
+    "nombre": "KIT 2 CUELGA TOALLAS ACERO INOX AUTOADHESIVO",
+    "categoria": "Pisos y Revestimientos",
+    "subcategoria": "GRIFERÍAS Y ACCESORIOS BAÑO HOLZBODEN",
+    "codigo": "ABA.22B.CRO",
+    "medida": "Baño"
+  },
+  {
+    "id": 344,
+    "nombre": "PORTA PAPEL HIGIENICO ACERO INOX AUTOADHESIVO",
+    "categoria": "Pisos y Revestimientos",
+    "subcategoria": "GRIFERÍAS Y ACCESORIOS BAÑO HOLZBODEN",
+    "codigo": "ABA.338.CRO",
+    "medida": "Baño"
+  },
+  {
+    "id": 345,
+    "nombre": "PORTA TOALLA DE MANO ACERO INOX AUTOADHESIVO",
+    "categoria": "Pisos y Revestimientos",
+    "subcategoria": "GRIFERÍAS Y ACCESORIOS BAÑO HOLZBODEN",
+    "codigo": "ABA.66B.CRO",
+    "medida": "Baño"
+  },
+  {
+    "id": 346,
+    "nombre": "DUCHA ESCOCESA 5 MODALIDADES NEGRA",
+    "categoria": "Pisos y Revestimientos",
+    "subcategoria": "GRIFERÍAS Y ACCESORIOS BAÑO HOLZBODEN",
+    "codigo": "GRIF.420.BLA",
+    "medida": "Baño"
+  },
+  {
+    "id": 347,
+    "nombre": "DUCHA ESCOCESA 5 MODALIDADES ACERO",
+    "categoria": "Pisos y Revestimientos",
+    "subcategoria": "GRIFERÍAS Y ACCESORIOS BAÑO HOLZBODEN",
+    "codigo": "GRIF.420.ACERO",
+    "medida": "Baño"
+  },
+  {
+    "id": 348,
+    "nombre": "MURO VERDE ARTIFICIAL BAJA EXPOSICIÓN UV",
+    "categoria": "Pisos y Revestimientos",
+    "subcategoria": "LÍNEA JARDÍN - MURO VERDE Y PLANTAS",
+    "codigo": "GW.40X60.A",
+    "medida": "40x60cm"
+  },
+  {
+    "id": 349,
+    "nombre": "MURO VERDE ARTIFICIAL ALTA EXPOSICIÓN UV",
+    "categoria": "Pisos y Revestimientos",
+    "subcategoria": "LÍNEA JARDÍN - MURO VERDE Y PLANTAS",
+    "codigo": "GW.50X50.A",
+    "medida": "50x50cm"
+  },
+  {
+    "id": 350,
+    "nombre": "PLANTA ARTIFICIAL MODELO PARAÍSO C/MACETA",
+    "categoria": "Pisos y Revestimientos",
+    "subcategoria": "LÍNEA JARDÍN - MURO VERDE Y PLANTAS",
+    "codigo": "PA.80CM.A",
+    "medida": "80cm alto"
+  },
+  {
+    "id": 351,
+    "nombre": "CERCO VERTICAL HOJAS ARTIFICIALES VERDE",
+    "categoria": "Pisos y Revestimientos",
+    "subcategoria": "LÍNEA JARDÍN - MURO VERDE Y PLANTAS",
+    "codigo": "GW.1X3M.A",
+    "medida": "100x3000cm"
+  }
+]

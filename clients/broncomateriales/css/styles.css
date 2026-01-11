@@ -702,6 +702,18 @@ button {
     box-shadow: var(--shadow-lg);
 }
 
+.products__cta-button--secondary {
+    background-color: transparent;
+    border: 2px solid var(--color-primary);
+    color: var(--color-primary);
+    margin-bottom: var(--space-lg);
+}
+
+.products__cta-button--secondary:hover {
+    background-color: var(--color-primary);
+    color: var(--color-text-light);
+}
+
 /* ===================================
    Value Proposition Section
    =================================== */

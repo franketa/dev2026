@@ -1,0 +1,684 @@
+/* ===================================
+   CATÁLOGO DE PRODUCTOS - BRONCO MATERIALES
+   =================================== */
+
+/* Variables heredadas de styles.css */
+
+/* ===================================
+   LAYOUT PRINCIPAL
+   =================================== */
+
+.catalogo {
+    padding-top: 100px;
+    min-height: 100vh;
+    background: linear-gradient(180deg, #f8f9fa 0%, #ffffff 100%);
+}
+
+.catalogo__container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem 4rem;
+}
+
+/* ===================================
+   HEADER DEL CATÁLOGO
+   =================================== */
+
+.catalogo__header {
+    text-align: center;
+    margin-bottom: 2.5rem;
+}
+
+.catalogo__header-content {
+    max-width: 700px;
+    margin: 0 auto;
+}
+
+.catalogo__badge {
+    display: inline-block;
+    background: linear-gradient(135deg, #0A2472 0%, #1a3a8c 100%);
+    color: #fff;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    padding: 0.5rem 1.25rem;
+    border-radius: 50px;
+    margin-bottom: 1rem;
+}
+
+.catalogo__title {
+    font-size: clamp(2rem, 5vw, 3rem);
+    font-weight: 800;
+    color: #0A2472;
+    margin-bottom: 1rem;
+    line-height: 1.1;
+}
+
+.catalogo__subtitle {
+    font-size: 1.1rem;
+    color: #555;
+    line-height: 1.6;
+}
+
+/* ===================================
+   FILTROS Y BÚSQUEDA
+   =================================== */
+
+.catalogo__filters {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    background: #fff;
+    padding: 1.5rem;
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+.catalogo__search {
+    position: relative;
+    flex: 1;
+}
+
+.catalogo__search-icon {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 20px;
+    height: 20px;
+    color: #888;
+    pointer-events: none;
+}
+
+.catalogo__search-input {
+    width: 100%;
+    padding: 1rem 3rem 1rem 3rem;
+    font-size: 1rem;
+    font-family: 'Montserrat', sans-serif;
+    border: 2px solid #e0e0e0;
+    border-radius: 12px;
+    background: #f8f9fa;
+    transition: all 0.3s ease;
+}
+
+.catalogo__search-input:focus {
+    outline: none;
+    border-color: #0A2472;
+    background: #fff;
+    box-shadow: 0 0 0 4px rgba(10, 36, 114, 0.1);
+}
+
+.catalogo__search-input::placeholder {
+    color: #999;
+}
+
+.catalogo__search-clear {
+    position: absolute;
+    right: 0.75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 32px;
+    height: 32px;
+    border: none;
+    background: #e0e0e0;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.catalogo__search-clear:hover {
+    background: #d0d0d0;
+}
+
+.catalogo__search-clear svg {
+    width: 16px;
+    height: 16px;
+    color: #666;
+}
+
+.catalogo__filter-group {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.catalogo__filter-label {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #333;
+    white-space: nowrap;
+}
+
+.catalogo__filter-select {
+    flex: 1;
+    padding: 0.875rem 2.5rem 0.875rem 1rem;
+    font-size: 0.95rem;
+    font-family: 'Montserrat', sans-serif;
+    border: 2px solid #e0e0e0;
+    border-radius: 12px;
+    background: #f8f9fa url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E") no-repeat right 1rem center;
+    appearance: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.catalogo__filter-select:focus {
+    outline: none;
+    border-color: #0A2472;
+    background-color: #fff;
+    box-shadow: 0 0 0 4px rgba(10, 36, 114, 0.1);
+}
+
+/* ===================================
+   CONTADOR DE RESULTADOS
+   =================================== */
+
+.catalogo__results-info {
+    margin-bottom: 1.5rem;
+    padding: 0.75rem 1rem;
+    background: #e8f4fd;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    color: #0A2472;
+    font-weight: 500;
+}
+
+/* ===================================
+   GRILLA DE PRODUCTOS
+   =================================== */
+
+.catalogo__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+}
+
+/* ===================================
+   TARJETA DE PRODUCTO
+   =================================== */
+
+.producto-card {
+    display: flex;
+    flex-direction: column;
+    background: #fff;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+    transition: all 0.3s ease;
+    border: 1px solid #eee;
+}
+
+.producto-card:hover {
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+    transform: translateY(-4px);
+}
+
+.producto-card__image {
+    position: relative;
+    height: 140px;
+    background: linear-gradient(135deg, #f0f4f8 0%, #e8edf2 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.producto-card__image img {
+    max-width: 60%;
+    max-height: 80%;
+    object-fit: contain;
+    opacity: 0.7;
+    transition: all 0.3s ease;
+}
+
+.producto-card:hover .producto-card__image img {
+    opacity: 0.9;
+    transform: scale(1.05);
+}
+
+.producto-card__categoria {
+    position: absolute;
+    top: 0.75rem;
+    left: 0.75rem;
+    background: #0A2472;
+    color: #fff;
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 0.35rem 0.65rem;
+    border-radius: 6px;
+}
+
+.producto-card__content {
+    padding: 1.25rem;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.producto-card__nombre {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #222;
+    margin-bottom: 0.5rem;
+    line-height: 1.3;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.producto-card__codigo {
+    font-size: 0.8rem;
+    color: #0A2472;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    font-family: 'Courier New', monospace;
+}
+
+.producto-card__medida {
+    font-size: 0.85rem;
+    color: #666;
+    margin-bottom: 1rem;
+    flex: 1;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.producto-card__subcategoria {
+    font-size: 0.75rem;
+    color: #888;
+    margin-bottom: 1rem;
+    padding-top: 0.5rem;
+    border-top: 1px solid #eee;
+}
+
+.producto-card__cta {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1rem;
+    background: #25D366;
+    color: #fff;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-decoration: none;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+    margin-top: auto;
+}
+
+.producto-card__cta:hover {
+    background: #128C7E;
+    transform: scale(1.02);
+}
+
+.producto-card__cta svg {
+    width: 18px;
+    height: 18px;
+}
+
+/* ===================================
+   ESTADO VACÍO
+   =================================== */
+
+.catalogo__empty {
+    text-align: center;
+    padding: 4rem 2rem;
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+.catalogo__empty svg {
+    width: 80px;
+    height: 80px;
+    color: #ccc;
+    margin-bottom: 1.5rem;
+}
+
+.catalogo__empty h3 {
+    font-size: 1.5rem;
+    color: #333;
+    margin-bottom: 0.75rem;
+}
+
+.catalogo__empty p {
+    color: #666;
+    margin-bottom: 1.5rem;
+}
+
+.catalogo__reset-btn {
+    display: inline-block;
+    padding: 0.875rem 2rem;
+    background: #0A2472;
+    color: #fff;
+    font-size: 0.95rem;
+    font-weight: 600;
+    font-family: 'Montserrat', sans-serif;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.catalogo__reset-btn:hover {
+    background: #1a3a8c;
+    transform: scale(1.02);
+}
+
+/* ===================================
+   CTA FINAL
+   =================================== */
+
+.catalogo__cta {
+    text-align: center;
+    margin-top: 3rem;
+    padding: 2.5rem;
+    background: linear-gradient(135deg, #0A2472 0%, #1a3a8c 100%);
+    border-radius: 20px;
+}
+
+.catalogo__cta-text {
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 1.1rem;
+    margin-bottom: 1.25rem;
+}
+
+.catalogo__cta-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1rem 2rem;
+    background: #25D366;
+    color: #fff;
+    font-size: 1rem;
+    font-weight: 700;
+    text-decoration: none;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+}
+
+.catalogo__cta-button:hover {
+    background: #128C7E;
+    transform: scale(1.05);
+}
+
+.catalogo__cta-button svg {
+    width: 24px;
+    height: 24px;
+}
+
+/* ===================================
+   LOADING STATE
+   =================================== */
+
+.catalogo__loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 4rem 2rem;
+    gap: 1rem;
+}
+
+.catalogo__loading-spinner {
+    width: 48px;
+    height: 48px;
+    border: 4px solid #e0e0e0;
+    border-top-color: #0A2472;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+.catalogo__loading-text {
+    color: #666;
+    font-size: 1rem;
+}
+
+/* ===================================
+   HEADER NAV ACTIVE STATE
+   =================================== */
+
+.header__nav-link--active {
+    color: #0A2472 !important;
+    font-weight: 700;
+}
+
+/* ===================================
+   RESPONSIVE - TABLET (768px+)
+   =================================== */
+
+@media (min-width: 768px) {
+    .catalogo__container {
+        padding: 3rem 2rem 5rem;
+    }
+
+    .catalogo__header {
+        margin-bottom: 3rem;
+    }
+
+    .catalogo__filters {
+        flex-direction: row;
+        align-items: center;
+        padding: 1.5rem 2rem;
+    }
+
+    .catalogo__search {
+        flex: 2;
+    }
+
+    .catalogo__filter-group {
+        flex: 1;
+        max-width: 300px;
+    }
+
+    .catalogo__grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1.5rem;
+    }
+
+    .producto-card {
+        flex-direction: row;
+    }
+
+    .producto-card__image {
+        width: 180px;
+        height: auto;
+        min-height: 180px;
+        flex-shrink: 0;
+    }
+
+    .producto-card__content {
+        padding: 1.5rem;
+    }
+}
+
+/* ===================================
+   RESPONSIVE - DESKTOP (1024px+)
+   =================================== */
+
+@media (min-width: 1024px) {
+    .catalogo {
+        padding-top: 120px;
+    }
+
+    .catalogo__container {
+        padding: 3rem 3rem 6rem;
+    }
+
+    .catalogo__grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .producto-card {
+        flex-direction: column;
+    }
+
+    .producto-card__image {
+        width: 100%;
+        height: 160px;
+    }
+
+    .producto-card__nombre {
+        font-size: 1rem;
+    }
+}
+
+/* ===================================
+   RESPONSIVE - LARGE DESKTOP (1280px+)
+   =================================== */
+
+@media (min-width: 1280px) {
+    .catalogo__grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+/* ===================================
+   RESPONSIVE - MOBILE PEQUEÑO (< 480px)
+   =================================== */
+
+@media (max-width: 479px) {
+    .catalogo {
+        padding-top: 80px;
+    }
+
+    .catalogo__container {
+        padding: 1.5rem 1rem 3rem;
+    }
+
+    .catalogo__title {
+        font-size: 1.75rem;
+    }
+
+    .catalogo__subtitle {
+        font-size: 1rem;
+    }
+
+    .catalogo__filters {
+        padding: 1rem;
+    }
+
+    .catalogo__search-input {
+        padding: 0.875rem 2.5rem 0.875rem 2.5rem;
+        font-size: 0.95rem;
+    }
+
+    .catalogo__filter-group {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .catalogo__filter-label {
+        margin-bottom: 0.25rem;
+    }
+
+    .producto-card__image {
+        height: 120px;
+    }
+
+    .producto-card__content {
+        padding: 1rem;
+    }
+
+    .producto-card__nombre {
+        font-size: 0.9rem;
+    }
+
+    .catalogo__cta {
+        padding: 2rem 1.5rem;
+        margin-top: 2rem;
+    }
+
+    .catalogo__cta-button {
+        padding: 0.875rem 1.5rem;
+        font-size: 0.9rem;
+    }
+}
+
+/* ===================================
+   ANIMACIONES
+   =================================== */
+
+.producto-card {
+    animation: fadeInUp 0.4s ease forwards;
+    opacity: 0;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Staggered animation */
+.producto-card:nth-child(1) { animation-delay: 0.05s; }
+.producto-card:nth-child(2) { animation-delay: 0.1s; }
+.producto-card:nth-child(3) { animation-delay: 0.15s; }
+.producto-card:nth-child(4) { animation-delay: 0.2s; }
+.producto-card:nth-child(5) { animation-delay: 0.25s; }
+.producto-card:nth-child(6) { animation-delay: 0.3s; }
+.producto-card:nth-child(7) { animation-delay: 0.35s; }
+.producto-card:nth-child(8) { animation-delay: 0.4s; }
+.producto-card:nth-child(9) { animation-delay: 0.45s; }
+.producto-card:nth-child(10) { animation-delay: 0.5s; }
+.producto-card:nth-child(11) { animation-delay: 0.55s; }
+.producto-card:nth-child(12) { animation-delay: 0.6s; }
+
+/* ===================================
+   ACCESIBILIDAD
+   =================================== */
+
+@media (prefers-reduced-motion: reduce) {
+    .producto-card {
+        animation: none;
+        opacity: 1;
+    }
+
+    .catalogo__loading-spinner {
+        animation: none;
+    }
+}
+
+/* ===================================
+   PRINT STYLES
+   =================================== */
+
+@media print {
+    .catalogo {
+        padding-top: 0;
+    }
+
+    .catalogo__filters,
+    .catalogo__cta,
+    .producto-card__cta,
+    .whatsapp-float,
+    .header {
+        display: none !important;
+    }
+
+    .producto-card {
+        break-inside: avoid;
+        box-shadow: none;
+        border: 1px solid #ddd;
+    }
+}
