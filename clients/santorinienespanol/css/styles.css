@@ -231,6 +231,8 @@ body.normal-scroll .normal-content { display: block; }
     .normal-section:first-child { padding-top: 40px; }
     .experiences-grid { grid-template-columns: 1fr; }
     .about-grid, .contact-grid { grid-template-columns: 1fr; gap: 40px; }
+    .about-grid { display: flex; flex-direction: column; }
+    .about-grid .about-image { order: -1; }
     .form-row { grid-template-columns: 1fr; }
     .footer-content { grid-template-columns: 1fr; text-align: center; }
     .footer-bottom { flex-direction: column; gap: 15px; text-align: center; }
