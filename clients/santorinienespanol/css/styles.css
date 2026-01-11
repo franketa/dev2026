@@ -171,19 +171,8 @@ body.normal-scroll .normal-content { display: block; }
 .whatsapp-float:hover { transform: scale(1.1); }
 .whatsapp-float svg { width: 35px; height: 35px; fill: white; }
 
-/* RESPONSIVE */
+/* RESPONSIVE - Tablets (1024px and below) use mobile layout */
 @media (max-width: 1024px) {
-    .split-container { flex-direction: column; }
-    .split-left, .split-right { width: 100%; }
-    .split-left { height: 60vh; }
-    .split-right { height: 40vh; }
-    .split-left-panel { height: 60vh; padding: 40px 30px; }
-    .split-right-panel { height: 40vh; }
-    .about-grid, .contact-grid { grid-template-columns: 1fr; gap: 40px; }
-    .footer-content { grid-template-columns: 1fr 1fr; gap: 40px; }
-}
-
-@media (max-width: 768px) {
     html, body { overflow-x: hidden; }
     body { overflow-y: auto; }
     .split-container { display: none !important; }
@@ -241,12 +230,25 @@ body.normal-scroll .normal-content { display: block; }
     /* Sections */
     .normal-section:first-child { padding-top: 40px; }
     .experiences-grid { grid-template-columns: 1fr; }
+    .about-grid, .contact-grid { grid-template-columns: 1fr; gap: 40px; }
     .form-row { grid-template-columns: 1fr; }
     .footer-content { grid-template-columns: 1fr; text-align: center; }
     .footer-bottom { flex-direction: column; gap: 15px; text-align: center; }
+
+    /* Contact section mobile fixes */
+    #contacto { padding: 60px 15px; }
+    .contact-method { padding: 15px; gap: 12px; }
+    .contact-method-icon { width: 45px; height: 45px; min-width: 45px; border-radius: 10px; }
+    .contact-method-icon svg { width: 22px; height: 22px; }
+    .contact-method h4 { font-size: 0.75rem; margin-bottom: 3px; }
+    .contact-method p { font-size: 0.9rem; word-break: break-all; }
+    .contact-form-wrapper { padding: 25px 20px; border-radius: 15px; }
+    .contact-form { gap: 18px; }
+    .form-group input, .form-group textarea, .form-group select { padding: 12px 15px; font-size: 0.95rem; }
+    .btn-submit { padding: 14px 30px; font-size: 0.95rem; width: 100%; }
 }
 
-@media (min-width: 769px) {
+@media (min-width: 1025px) {
     .mobile-hero { display: none !important; }
 }
 
@@ -677,8 +679,8 @@ body.normal-scroll .normal-content { display: block; }
     height: 20px;
 }
 
-/* Tour Detail Responsive */
-@media (max-width: 768px) {
+/* Tour Detail Responsive - Tablets use mobile layout */
+@media (max-width: 1024px) {
     .tour-hero {
         height: 60vh;
         min-height: 400px;

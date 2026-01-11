@@ -14,7 +14,7 @@ var currentSection = 0;
 var totalSections = 4;
 var isScrolling = false;
 var isFullpageMode = true;
-var isMobile = window.innerWidth <= 768;
+var isMobile = window.innerWidth <= 1024;
 var exitDirection = 'down';
 
 // Set initial positions (no animation on load)
@@ -158,7 +158,7 @@ if (!isMobile) {
 }
 
 window.addEventListener('resize', function() {
-    isMobile = window.innerWidth <= 768;
+    isMobile = window.innerWidth <= 1024;
     if (isMobile) document.body.classList.add('normal-scroll');
 });
 
