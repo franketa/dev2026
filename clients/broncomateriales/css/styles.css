@@ -320,17 +320,21 @@ button {
     background-color: var(--color-text-light);
 }
 
-/* Styles when mobile menu is open */
-.header.menu-open {
-    background: transparent;
-    box-shadow: none;
+/* Styles when mobile menu is open - must override header--scrolled */
+.header.menu-open,
+.header.header--scrolled.menu-open {
+    background: transparent !important;
+    backdrop-filter: none !important;
+    box-shadow: none !important;
 }
 
-.header.menu-open .header__cta {
-    display: none;
+.header.menu-open .header__cta,
+.header.header--scrolled.menu-open .header__cta {
+    display: none !important;
 }
 
-.header.menu-open .header__logo-img {
+.header.menu-open .header__logo-img,
+.header.header--scrolled.menu-open .header__logo-img {
     filter: brightness(0) invert(1);
 }
 
