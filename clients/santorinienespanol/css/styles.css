@@ -121,6 +121,8 @@ body.normal-scroll .normal-content { display: block; }
 .experience-description { color: var(--color-text-muted); font-size: 0.95rem; line-height: 1.7; margin-bottom: 25px; text-align: justify; }
 .experience-cta { display: inline-flex; align-items: center; gap: 10px; color: var(--color-primary); font-weight: 600; transition: all 0.3s ease; }
 .experience-cta:hover { color: var(--color-accent); gap: 15px; }
+.experience-footer { display: flex; align-items: center; }
+.experience-price-mobile { display: none; }
 
 #nosotros { background: var(--color-bg-dark); color: var(--color-text-light); padding: 100px 20px; }
 #nosotros .section-header .section-title { color: var(--color-text-light); }
@@ -231,6 +233,9 @@ body.normal-scroll .normal-content { display: block; }
     .normal-section:first-child { padding-top: 40px; }
     .experiences-grid { grid-template-columns: 1fr; }
     .experience-image { aspect-ratio: 4/3; }
+    .experience-price { display: none; }
+    .experience-price-mobile { display: block; background: var(--color-accent); color: var(--color-text-dark); padding: 8px 16px; border-radius: 20px; font-weight: 700; font-size: 0.95rem; }
+    .experience-footer { justify-content: space-between; }
     .about-grid, .contact-grid { grid-template-columns: 1fr; gap: 40px; }
     .about-grid { display: flex; flex-direction: column; }
     .about-grid .about-image { order: -1; }
