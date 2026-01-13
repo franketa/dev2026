@@ -230,6 +230,7 @@ body.normal-scroll .normal-content { display: block; }
     /* Sections */
     .normal-section:first-child { padding-top: 40px; }
     .experiences-grid { grid-template-columns: 1fr; }
+    .experience-image { aspect-ratio: 4/3; }
     .about-grid, .contact-grid { grid-template-columns: 1fr; gap: 40px; }
     .about-grid { display: flex; flex-direction: column; }
     .about-grid .about-image { order: -1; }
