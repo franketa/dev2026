@@ -231,7 +231,6 @@ body.normal-scroll .normal-content { display: block; }
     .normal-section:first-child { padding-top: 40px; }
     .experiences-grid { grid-template-columns: 1fr; }
     .experience-image { aspect-ratio: 4/3; }
-    .experience-price { padding: 6px 14px; font-size: 0.85rem; bottom: 12px; right: 12px; }
     .about-grid, .contact-grid { grid-template-columns: 1fr; gap: 40px; }
     .about-grid { display: flex; flex-direction: column; }
     .about-grid .about-image { order: -1; }
