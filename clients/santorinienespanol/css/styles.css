@@ -233,9 +233,6 @@ body.normal-scroll .normal-content { display: block; }
     .normal-section:first-child { padding-top: 40px; }
     .experiences-grid { grid-template-columns: 1fr; }
     .experience-image { aspect-ratio: 4/3; }
-    .experience-price { display: none; }
-    .experience-price-mobile { display: block; background: var(--color-accent); color: var(--color-text-dark); padding: 8px 16px; border-radius: 20px; font-weight: 700; font-size: 0.95rem; }
-    .experience-footer { justify-content: space-between; }
     .about-grid, .contact-grid { grid-template-columns: 1fr; gap: 40px; }
     .about-grid { display: flex; flex-direction: column; }
     .about-grid .about-image { order: -1; }
@@ -781,4 +778,9 @@ body.normal-scroll .normal-content { display: block; }
         height: 24px;
         font-size: 0.8rem;
     }
+
+    /* Mobile price button */
+    .experience-price { display: none; }
+    .experience-price-mobile { display: block; background: var(--color-accent); color: var(--color-text-dark); padding: 8px 16px; border-radius: 20px; font-weight: 700; font-size: 0.95rem; }
+    .experience-footer { justify-content: space-between; }
 }
