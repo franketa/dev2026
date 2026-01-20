@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin - Inmobiliaria Gonzalez</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #1a365d;
+      --primary-light: #2c5282;
+      --secondary: #c9a227;
+      --gray-50: #f9fafb;
+      --gray-100: #f3f4f6;
+      --gray-200: #e5e7eb;
+      --gray-500: #6b7280;
+      --gray-700: #374151;
+      --gray-900: #111827;
+      --success: #10b981;
+      --error: #ef4444;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--gray-50);
+      color: var(--gray-900);
+      line-height: 1.6;
+    }
+
+    .header {
+      background: var(--primary);
+      color: white;
+      padding: 1rem;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .header__inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .header h1 {
+      font-size: 1.25rem;
+      font-weight: 600;
+    }
+
+    .header a {
+      color: white;
+      text-decoration: none;
+      padding: 0.5rem 1rem;
+      background: rgba(255,255,255,0.1);
+      border-radius: 6px;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem 1rem;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 2rem;
+      border-bottom: 2px solid var(--gray-200);
+      padding-bottom: 0.5rem;
+    }
+
+    .tab {
+      padding: 0.75rem 1.5rem;
+      border: none;
+      background: none;
+      cursor: pointer;
+      font-weight: 500;
+      color: var(--gray-500);
+      border-radius: 6px 6px 0 0;
+      transition: all 0.2s;
+    }
+
+    .tab:hover {
+      background: var(--gray-100);
+    }
+
+    .tab.active {
+      color: var(--primary);
+      background: var(--gray-100);
+    }
+
+    .panel {
+      display: none;
+    }
+
+    .panel.active {
+      display: block;
+    }
+
+    .card {
+      background: white;
+      border-radius: 12px;
+      padding: 1.5rem;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      margin-bottom: 1.5rem;
+    }
+
+    .card h2 {
+      font-size: 1.25rem;
+      margin-bottom: 1rem;
+      color: var(--gray-900);
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1rem;
+    }
+
+    .form-group {
+      margin-bottom: 1rem;
+    }
+
+    .form-group.full-width {
+      grid-column: 1 / -1;
+    }
+
+    label {
+      display: block;
+      font-size: 0.875rem;
+      font-weight: 500;
+      margin-bottom: 0.375rem;
+      color: var(--gray-700);
+    }
+
+    input, select, textarea {
+      width: 100%;
+      padding: 0.625rem 0.875rem;
+      border: 1px solid var(--gray-200);
+      border-radius: 6px;
+      font-size: 0.9375rem;
+      transition: border-color 0.2s;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(26, 54, 93, 0.1);
+    }
+
+    textarea {
+      min-height: 100px;
+      resize: vertical;
+    }
+
+    .checkbox-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+    }
+
+    .checkbox-label {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.875rem;
+      cursor: pointer;
+    }
+
+    .checkbox-label input {
+      width: auto;
+    }
+
+    .btn {
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: 6px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-light);
+    }
+
+    .btn-secondary {
+      background: var(--gray-100);
+      color: var(--gray-700);
+    }
+
+    .btn-success {
+      background: var(--success);
+      color: white;
+    }
+
+    .btn-group {
+      display: flex;
+      gap: 0.75rem;
+      margin-top: 1.5rem;
+    }
+
+    .output-area {
+      background: var(--gray-900);
+      color: #10b981;
+      padding: 1rem;
+      border-radius: 6px;
+      font-family: monospace;
+      font-size: 0.875rem;
+      max-height: 400px;
+      overflow: auto;
+      white-space: pre-wrap;
+      word-break: break-all;
+    }
+
+    .properties-list {
+      display: grid;
+      gap: 1rem;
+    }
+
+    .property-item {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 1rem;
+      background: var(--gray-50);
+      border-radius: 8px;
+      border: 1px solid var(--gray-200);
+    }
+
+    .property-item img {
+      width: 80px;
+      height: 60px;
+      object-fit: cover;
+      border-radius: 4px;
+      background: var(--gray-200);
+    }
+
+    .property-item__info {
+      flex: 1;
+    }
+
+    .property-item__title {
+      font-weight: 600;
+      margin-bottom: 0.25rem;
+    }
+
+    .property-item__meta {
+      font-size: 0.875rem;
+      color: var(--gray-500);
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 0.25rem 0.5rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      border-radius: 4px;
+      margin-right: 0.5rem;
+    }
+
+    .badge-venta {
+      background: var(--primary);
+      color: white;
+    }
+
+    .badge-alquiler {
+      background: var(--secondary);
+      color: white;
+    }
+
+    .alert {
+      padding: 1rem;
+      border-radius: 6px;
+      margin-bottom: 1rem;
+    }
+
+    .alert-info {
+      background: #dbeafe;
+      color: #1e40af;
+    }
+
+    .alert-success {
+      background: #d1fae5;
+      color: #065f46;
+    }
+
+    @media (max-width: 768px) {
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="header__inner">
+      <h1>Panel de Administración</h1>
+      <a href="index.html">Ver sitio</a>
+    </div>
+  </header>
+
+  <div class="container">
+    <div class="tabs">
+      <button class="tab active" data-tab="add">Agregar Propiedad</button>
+      <button class="tab" data-tab="list">Ver Propiedades</button>
+      <button class="tab" data-tab="export">Exportar JSON</button>
+    </div>
+
+    <!-- Add Property Panel -->
+    <div id="add" class="panel active">
+      <div class="card">
+        <h2>Nueva Propiedad</h2>
+        <div class="alert alert-info">
+          Complete el formulario y haga clic en "Generar JSON" para obtener el código que debe agregar al archivo properties.json
+        </div>
+
+        <form id="property-form">
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="title">Título *</label>
+              <input type="text" id="title" required placeholder="ej: Casa en Palermo">
+            </div>
+
+            <div class="form-group">
+              <label for="type">Tipo *</label>
+              <select id="type" required>
+                <option value="">Seleccionar...</option>
+                <option value="casa">Casa</option>
+                <option value="departamento">Departamento</option>
+                <option value="ph">PH</option>
+                <option value="local">Local Comercial</option>
+                <option value="oficina">Oficina</option>
+                <option value="terreno">Terreno</option>
+                <option value="cochera">Cochera</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="operation">Operación *</label>
+              <select id="operation" required>
+                <option value="">Seleccionar...</option>
+                <option value="venta">Venta</option>
+                <option value="alquiler">Alquiler</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="price">Precio *</label>
+              <input type="number" id="price" required placeholder="ej: 150000">
+            </div>
+
+            <div class="form-group">
+              <label for="currency">Moneda *</label>
+              <select id="currency" required>
+                <option value="USD">USD (Dólares)</option>
+                <option value="ARS">ARS (Pesos)</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="neighborhood">Barrio *</label>
+              <input type="text" id="neighborhood" required placeholder="ej: Palermo">
+            </div>
+
+            <div class="form-group">
+              <label for="city">Ciudad *</label>
+              <input type="text" id="city" required value="Buenos Aires">
+            </div>
+
+            <div class="form-group">
+              <label for="address">Dirección</label>
+              <input type="text" id="address" placeholder="ej: Av. Santa Fe 2500">
+            </div>
+
+            <div class="form-group">
+              <label for="bedrooms">Ambientes</label>
+              <input type="number" id="bedrooms" value="0" min="0">
+            </div>
+
+            <div class="form-group">
+              <label for="bathrooms">Baños</label>
+              <input type="number" id="bathrooms" value="0" min="0">
+            </div>
+
+            <div class="form-group">
+              <label for="garage">Cocheras</label>
+              <input type="number" id="garage" value="0" min="0">
+            </div>
+
+            <div class="form-group">
+              <label for="area">Superficie total (m²)</label>
+              <input type="number" id="area" value="0" min="0">
+            </div>
+
+            <div class="form-group">
+              <label for="coveredArea">Superficie cubierta (m²)</label>
+              <input type="number" id="coveredArea" value="0" min="0">
+            </div>
+
+            <div class="form-group">
+              <label for="featured">Destacada</label>
+              <select id="featured">
+                <option value="false">No</option>
+                <option value="true">Sí</option>
+              </select>
+            </div>
+
+            <div class="form-group full-width">
+              <label for="description">Descripción *</label>
+              <textarea id="description" required placeholder="Descripción detallada de la propiedad..."></textarea>
+            </div>
+
+            <div class="form-group full-width">
+              <label>Amenities</label>
+              <div class="checkbox-group">
+                <label class="checkbox-label">
+                  <input type="checkbox" name="amenities" value="pileta"> Pileta
+                </label>
+                <label class="checkbox-label">
+                  <input type="checkbox" name="amenities" value="jardín"> Jardín
+                </label>
+                <label class="checkbox-label">
+                  <input type="checkbox" name="amenities" value="parrilla"> Parrilla
+                </label>
+                <label class="checkbox-label">
+                  <input type="checkbox" name="amenities" value="quincho"> Quincho
+                </label>
+                <label class="checkbox-label">
+                  <input type="checkbox" name="amenities" value="gimnasio"> Gimnasio
+                </label>
+                <label class="checkbox-label">
+                  <input type="checkbox" name="amenities" value="sum"> SUM
+                </label>
+                <label class="checkbox-label">
+                  <input type="checkbox" name="amenities" value="laundry"> Laundry
+                </label>
+                <label class="checkbox-label">
+                  <input type="checkbox" name="amenities" value="seguridad 24hs"> Seguridad 24hs
+                </label>
+                <label class="checkbox-label">
+                  <input type="checkbox" name="amenities" value="ascensor"> Ascensor
+                </label>
+                <label class="checkbox-label">
+                  <input type="checkbox" name="amenities" value="balcón"> Balcón
+                </label>
+                <label class="checkbox-label">
+                  <input type="checkbox" name="amenities" value="terraza"> Terraza
+                </label>
+                <label class="checkbox-label">
+                  <input type="checkbox" name="amenities" value="alarma"> Alarma
+                </label>
+              </div>
+            </div>
+
+            <div class="form-group full-width">
+              <label for="images">Nombres de imágenes (separados por coma)</label>
+              <input type="text" id="images" placeholder="ej: casa1-1.jpg, casa1-2.jpg, casa1-3.jpg">
+              <small style="color: var(--gray-500);">Las imágenes deben estar en assets/images/properties/</small>
+            </div>
+          </div>
+
+          <div class="btn-group">
+            <button type="button" class="btn btn-primary" onclick="generateJSON()">Generar JSON</button>
+            <button type="reset" class="btn btn-secondary">Limpiar formulario</button>
+          </div>
+        </form>
+      </div>
+
+      <div class="card" id="output-card" style="display: none;">
+        <h2>JSON Generado</h2>
+        <p style="margin-bottom: 1rem; color: var(--gray-500);">
+          Copie este código y agréguelo al array "properties" en el archivo <code>data/properties.json</code>
+        </p>
+        <div class="output-area" id="json-output"></div>
+        <div class="btn-group">
+          <button class="btn btn-success" onclick="copyJSON()">Copiar al portapapeles</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- List Properties Panel -->
+    <div id="list" class="panel">
+      <div class="card">
+        <h2>Propiedades Actuales</h2>
+        <div class="properties-list" id="properties-list">
+          Cargando propiedades...
+        </div>
+      </div>
+    </div>
+
+    <!-- Export Panel -->
+    <div id="export" class="panel">
+      <div class="card">
+        <h2>Exportar datos</h2>
+        <p style="margin-bottom: 1rem; color: var(--gray-500);">
+          Aquí puede ver y descargar el archivo JSON completo con todas las propiedades.
+        </p>
+        <div class="output-area" id="full-json" style="max-height: 600px;"></div>
+        <div class="btn-group">
+          <button class="btn btn-primary" onclick="downloadJSON()">Descargar JSON</button>
+          <button class="btn btn-secondary" onclick="copyFullJSON()">Copiar todo</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="assets/js/properties-data.js"></script>
+  <script>
+    let propertiesData = null;
+    let nextId = 26;
+
+    // Tab switching
+    document.querySelectorAll('.tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+        tab.classList.add('active');
+        document.getElementById(tab.dataset.tab).classList.add('active');
+      });
+    });
+
+    // Load properties
+    async function loadProperties() {
+      try {
+        // Use embedded data if available (works without server)
+        if (window.PROPERTIES_DATA) {
+          propertiesData = window.PROPERTIES_DATA;
+        } else {
+          const response = await fetch('data/properties.json');
+          propertiesData = await response.json();
+        }
+        nextId = Math.max(...propertiesData.properties.map(p => p.id)) + 1;
+        renderPropertiesList();
+        renderFullJSON();
+      } catch (error) {
+        console.error('Error loading properties:', error);
+      }
+    }
+
+    function renderPropertiesList() {
+      const list = document.getElementById('properties-list');
+      list.innerHTML = propertiesData.properties.map(p => `
+        <div class="property-item">
+          <img src="assets/images/properties/prop-${((p.id - 1) % 25) + 1}.jpg" alt="${p.title}">
+          <div class="property-item__info">
+            <div class="property-item__title">${p.title}</div>
+            <div class="property-item__meta">
+              <span class="badge badge-${p.operation}">${p.operation}</span>
+              ${p.currency === 'USD' ? 'USD' : '$'} ${p.price.toLocaleString('es-AR')} · ${p.location.neighborhood}
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function renderFullJSON() {
+      const output = document.getElementById('full-json');
+      output.textContent = JSON.stringify(propertiesData, null, 2);
+    }
+
+    function generateJSON() {
+      const form = document.getElementById('property-form');
+
+      // Get amenities
+      const amenities = [];
+      document.querySelectorAll('input[name="amenities"]:checked').forEach(cb => {
+        amenities.push(cb.value);
+      });
+
+      // Get images
+      const imagesInput = document.getElementById('images').value;
+      const images = imagesInput ? imagesInput.split(',').map(img => img.trim()) : [`property${nextId}-1.jpg`];
+
+      const property = {
+        id: nextId,
+        title: document.getElementById('title').value,
+        type: document.getElementById('type').value,
+        operation: document.getElementById('operation').value,
+        price: parseInt(document.getElementById('price').value),
+        currency: document.getElementById('currency').value,
+        location: {
+          neighborhood: document.getElementById('neighborhood').value,
+          city: document.getElementById('city').value,
+          address: document.getElementById('address').value || ''
+        },
+        features: {
+          bedrooms: parseInt(document.getElementById('bedrooms').value) || 0,
+          bathrooms: parseInt(document.getElementById('bathrooms').value) || 0,
+          garage: parseInt(document.getElementById('garage').value) || 0,
+          area: parseInt(document.getElementById('area').value) || 0,
+          coveredArea: parseInt(document.getElementById('coveredArea').value) || 0
+        },
+        description: document.getElementById('description').value,
+        amenities: amenities,
+        images: images,
+        featured: document.getElementById('featured').value === 'true',
+        status: 'disponible',
+        createdAt: new Date().toISOString().split('T')[0]
+      };
+
+      const jsonOutput = JSON.stringify(property, null, 2);
+      document.getElementById('json-output').textContent = jsonOutput;
+      document.getElementById('output-card').style.display = 'block';
+
+      nextId++;
+    }
+
+    function copyJSON() {
+      const json = document.getElementById('json-output').textContent;
+      navigator.clipboard.writeText(json).then(() => {
+        alert('JSON copiado al portapapeles');
+      });
+    }
+
+    function copyFullJSON() {
+      const json = document.getElementById('full-json').textContent;
+      navigator.clipboard.writeText(json).then(() => {
+        alert('JSON completo copiado al portapapeles');
+      });
+    }
+
+    function downloadJSON() {
+      const json = document.getElementById('full-json').textContent;
+      const blob = new Blob([json], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'properties.json';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+
+    // Initialize
+    loadProperties();
+  </script>
+</body>
+</html>

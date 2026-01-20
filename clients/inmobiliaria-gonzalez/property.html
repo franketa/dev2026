@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="description" content="Inmobiliaria Gonzalez - Detalle de propiedad">
+  <meta name="theme-color" content="#1a365d">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect fill='%231a365d' width='100' height='100' rx='20'/><text y='.9em' font-size='80' x='50%' text-anchor='middle' fill='white' font-weight='bold'>G</text></svg>">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="assets/css/styles.css">
+  <style>
+    /* Property Detail Page Specific Styles */
+    .property-page {
+      padding-top: 72px;
+      min-height: 100vh;
+    }
+
+    .property-page__back {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 1rem;
+      color: var(--gray-600);
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+
+    .property-page__back:hover {
+      color: var(--primary-color);
+    }
+
+    .property-gallery {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16 / 10;
+      background: var(--gray-100);
+      overflow: hidden;
+    }
+
+    .property-gallery__main {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .property-gallery__badge {
+      position: absolute;
+      top: 1rem;
+      left: 1rem;
+      padding: 0.5rem 1rem;
+      font-size: 0.875rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      border-radius: 0.5rem;
+      color: white;
+    }
+
+    .property-gallery__badge--venta {
+      background: var(--primary-color);
+    }
+
+    .property-gallery__badge--alquiler {
+      background: var(--secondary-color);
+    }
+
+    .property-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem 1rem;
+    }
+
+    .property-header {
+      margin-bottom: 2rem;
+    }
+
+    .property-header__type {
+      display: inline-block;
+      padding: 0.25rem 0.75rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      background: var(--gray-100);
+      color: var(--gray-600);
+      border-radius: 0.25rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .property-header__title {
+      font-family: var(--font-display);
+      font-size: clamp(1.5rem, 4vw, 2rem);
+      font-weight: 700;
+      color: var(--gray-900);
+      margin-bottom: 0.5rem;
+    }
+
+    .property-header__location {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 1rem;
+      color: var(--gray-500);
+    }
+
+    .property-header__location svg {
+      flex-shrink: 0;
+    }
+
+    .property-price {
+      font-family: var(--font-display);
+      font-size: clamp(1.75rem, 5vw, 2.5rem);
+      font-weight: 700;
+      color: var(--primary-color);
+      margin-bottom: 2rem;
+    }
+
+    .property-features {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+      padding: 1.5rem;
+      background: var(--gray-50);
+      border-radius: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .property-feature {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .property-feature__icon {
+      width: 48px;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: white;
+      border-radius: 0.75rem;
+      color: var(--primary-color);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .property-feature__text {
+      font-size: 0.875rem;
+      color: var(--gray-500);
+    }
+
+    .property-feature__value {
+      display: block;
+      font-size: 1.125rem;
+      font-weight: 600;
+      color: var(--gray-900);
+    }
+
+    .property-section {
+      margin-bottom: 2rem;
+    }
+
+    .property-section__title {
+      font-family: var(--font-display);
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--gray-900);
+      margin-bottom: 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 2px solid var(--gray-100);
+    }
+
+    .property-description {
+      font-size: 1rem;
+      line-height: 1.8;
+      color: var(--gray-600);
+    }
+
+    .property-amenities {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+    }
+
+    .property-amenity {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1rem;
+      font-size: 0.875rem;
+      color: var(--gray-700);
+      background: var(--gray-100);
+      border-radius: 2rem;
+    }
+
+    .property-amenity svg {
+      color: var(--success);
+    }
+
+    .property-cta {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 1rem;
+      background: white;
+      box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.1);
+      display: flex;
+      gap: 0.75rem;
+      z-index: 100;
+    }
+
+    .property-cta .btn {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      padding: 1rem;
+      font-weight: 600;
+      border-radius: 0.75rem;
+      text-decoration: none;
+    }
+
+    .btn--whatsapp {
+      background: #25D366;
+      color: white;
+    }
+
+    .btn--whatsapp:hover {
+      background: #20bd5a;
+    }
+
+    .btn--phone {
+      background: var(--primary-color);
+      color: white;
+    }
+
+    .btn--phone:hover {
+      background: var(--primary-light);
+    }
+
+    /* Desktop Layout */
+    @media (min-width: 1024px) {
+      .property-page__inner {
+        display: grid;
+        grid-template-columns: 1fr 400px;
+        gap: 2rem;
+        max-width: 1400px;
+        margin: 0 auto;
+      }
+
+      .property-gallery {
+        aspect-ratio: 4 / 3;
+        border-radius: 1rem;
+        margin: 1rem;
+      }
+
+      .property-content {
+        padding: 2rem;
+        padding-bottom: 2rem;
+      }
+
+      .property-sidebar {
+        padding: 2rem;
+        padding-left: 0;
+      }
+
+      .property-cta {
+        position: static;
+        flex-direction: column;
+        box-shadow: var(--shadow-lg);
+        border-radius: 1rem;
+        padding: 1.5rem;
+        background: white;
+      }
+
+      .property-contact-card {
+        background: var(--gray-50);
+        border-radius: 1rem;
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+      }
+
+      .property-contact-card h3 {
+        font-family: var(--font-display);
+        font-size: 1.125rem;
+        font-weight: 600;
+        margin-bottom: 1rem;
+      }
+
+      .property-contact-card p {
+        font-size: 0.9375rem;
+        color: var(--gray-600);
+        margin-bottom: 0.5rem;
+      }
+
+      .property-features {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (min-width: 1280px) {
+      .property-features {
+        grid-template-columns: repeat(4, 1fr);
+      }
+    }
+
+    /* Error/Loading States */
+    .property-loading,
+    .property-error {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 50vh;
+      text-align: center;
+      padding: 2rem;
+    }
+
+    .property-error__icon {
+      width: 64px;
+      height: 64px;
+      margin-bottom: 1rem;
+      color: var(--gray-300);
+    }
+
+    .property-error__title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--gray-900);
+      margin-bottom: 0.5rem;
+    }
+
+    .property-error__text {
+      color: var(--gray-500);
+      margin-bottom: 1.5rem;
+    }
+
+    .spinner {
+      width: 40px;
+      height: 40px;
+      border: 3px solid var(--gray-200);
+      border-top-color: var(--primary-color);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+  </style>
+
+  <title>Propiedad | Inmobiliaria Gonzalez</title>
+</head>
+<body>
+  <!-- Header -->
+  <header class="header" role="banner">
+    <div class="header__inner container">
+      <a href="index.html" class="header__logo" aria-label="Inmobiliaria Gonzalez - Inicio">
+        <div class="header__logo-icon">G</div>
+        <div class="header__logo-text">
+          Gonzalez
+          <span>Inmobiliaria</span>
+        </div>
+      </a>
+
+      <button class="header__menu-btn" aria-label="Abrir menú" aria-expanded="false">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+
+      <nav class="nav" role="navigation" aria-label="Navegación principal">
+        <ul class="nav__list">
+          <li><a href="index.html" class="nav__link">Inicio</a></li>
+          <li><a href="index.html#propiedades" class="nav__link">Propiedades</a></li>
+          <li><a href="index.html#servicios" class="nav__link">Servicios</a></li>
+          <li><a href="index.html#contacto" class="nav__link">Contacto</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main class="property-page" id="property-page">
+    <!-- Content will be loaded by JavaScript -->
+    <div class="property-loading">
+      <div class="spinner"></div>
+      <p style="margin-top: 1rem; color: var(--gray-500);">Cargando propiedad...</p>
+    </div>
+  </main>
+
+  <!-- Scripts -->
+  <script src="assets/js/properties-data.js"></script>
+  <script>
+    // Get property ID from URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const propertyId = parseInt(urlParams.get('id'));
+
+    // Format price
+    function formatPrice(price, currency) {
+      if (currency === 'USD') {
+        return `USD ${price.toLocaleString('es-AR')}`;
+      }
+      return `$ ${price.toLocaleString('es-AR')}`;
+    }
+
+    // Get property image
+    function getPropertyImage(index) {
+      const imageNumber = (index % 25) + 1;
+      return `assets/images/properties/prop-${imageNumber}.jpg`;
+    }
+
+    // Get property type label
+    function getTypeLabel(type) {
+      const types = {
+        casa: 'Casa',
+        departamento: 'Departamento',
+        ph: 'PH',
+        local: 'Local Comercial',
+        oficina: 'Oficina',
+        terreno: 'Terreno',
+        cochera: 'Cochera'
+      };
+      return types[type] || type;
+    }
+
+    // Render property page
+    function renderProperty(property) {
+      const page = document.getElementById('property-page');
+      const whatsappMessage = encodeURIComponent(`Hola, me interesa la propiedad: ${property.title} (ID: ${property.id})`);
+
+      // Update page title
+      document.title = `${property.title} | Inmobiliaria Gonzalez`;
+
+      page.innerHTML = `
+        <a href="index.html#propiedades" class="property-page__back">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M19 12H5M12 19l-7-7 7-7"/>
+          </svg>
+          Volver a propiedades
+        </a>
+
+        <div class="property-page__inner">
+          <div class="property-main">
+            <div class="property-gallery">
+              <img src="${getPropertyImage(property.id - 1)}" alt="${property.title}" class="property-gallery__main">
+              <span class="property-gallery__badge property-gallery__badge--${property.operation}">
+                ${property.operation === 'venta' ? 'En Venta' : 'En Alquiler'}
+              </span>
+            </div>
+
+            <div class="property-content">
+              <header class="property-header">
+                <span class="property-header__type">${getTypeLabel(property.type)}</span>
+                <h1 class="property-header__title">${property.title}</h1>
+                <p class="property-header__location">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                    <circle cx="12" cy="10" r="3"></circle>
+                  </svg>
+                  ${property.location.address ? property.location.address + ', ' : ''}${property.location.neighborhood}, ${property.location.city}
+                </p>
+              </header>
+
+              <p class="property-price">${formatPrice(property.price, property.currency)}</p>
+
+              <div class="property-features">
+                ${property.features.bedrooms > 0 ? `
+                  <div class="property-feature">
+                    <div class="property-feature__icon">
+                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M3 7v11a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V7"></path>
+                        <path d="M21 7H3l2-4h14l2 4z"></path>
+                      </svg>
+                    </div>
+                    <div class="property-feature__text">
+                      <span class="property-feature__value">${property.features.bedrooms}</span>
+                      Ambientes
+                    </div>
+                  </div>
+                ` : ''}
+                ${property.features.bathrooms > 0 ? `
+                  <div class="property-feature">
+                    <div class="property-feature__icon">
+                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M9 6 6.5 3.5a1.5 1.5 0 0 0-1-.5C4.683 3 4 3.683 4 4.5V17a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-5"></path>
+                        <line x1="2" y1="12" x2="22" y2="12"></line>
+                      </svg>
+                    </div>
+                    <div class="property-feature__text">
+                      <span class="property-feature__value">${property.features.bathrooms}</span>
+                      ${property.features.bathrooms === 1 ? 'Baño' : 'Baños'}
+                    </div>
+                  </div>
+                ` : ''}
+                <div class="property-feature">
+                  <div class="property-feature__icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                    </svg>
+                  </div>
+                  <div class="property-feature__text">
+                    <span class="property-feature__value">${property.features.area} m²</span>
+                    Superficie total
+                  </div>
+                </div>
+                ${property.features.coveredArea > 0 ? `
+                  <div class="property-feature">
+                    <div class="property-feature__icon">
+                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                      </svg>
+                    </div>
+                    <div class="property-feature__text">
+                      <span class="property-feature__value">${property.features.coveredArea} m²</span>
+                      Cubiertos
+                    </div>
+                  </div>
+                ` : ''}
+                ${property.features.garage > 0 ? `
+                  <div class="property-feature">
+                    <div class="property-feature__icon">
+                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M19 17h2V7a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v10h2"></path>
+                        <circle cx="6.5" cy="17.5" r="2.5"></circle>
+                        <circle cx="17.5" cy="17.5" r="2.5"></circle>
+                      </svg>
+                    </div>
+                    <div class="property-feature__text">
+                      <span class="property-feature__value">${property.features.garage}</span>
+                      ${property.features.garage === 1 ? 'Cochera' : 'Cocheras'}
+                    </div>
+                  </div>
+                ` : ''}
+              </div>
+
+              <section class="property-section">
+                <h2 class="property-section__title">Descripción</h2>
+                <p class="property-description">${property.description}</p>
+              </section>
+
+              ${property.amenities && property.amenities.length > 0 ? `
+                <section class="property-section">
+                  <h2 class="property-section__title">Amenities y características</h2>
+                  <div class="property-amenities">
+                    ${property.amenities.map(amenity => `
+                      <span class="property-amenity">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                          <polyline points="20 6 9 17 4 12"></polyline>
+                        </svg>
+                        ${amenity}
+                      </span>
+                    `).join('')}
+                  </div>
+                </section>
+              ` : ''}
+            </div>
+          </div>
+
+          <aside class="property-sidebar">
+            <div class="property-contact-card">
+              <h3>Inmobiliaria Gonzalez</h3>
+              <p><strong>Dirección:</strong> Av. Corrientes 1234, CABA</p>
+              <p><strong>Horarios:</strong> Lun-Vie 9-18hs, Sáb 9-13hs</p>
+            </div>
+
+            <div class="property-cta">
+              <a href="https://wa.me/5491112345678?text=${whatsappMessage}" target="_blank" class="btn btn--whatsapp">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+                </svg>
+                WhatsApp
+              </a>
+              <a href="tel:+5491112345678" class="btn btn--phone">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+                </svg>
+                Llamar
+              </a>
+            </div>
+          </aside>
+        </div>
+      `;
+
+      // Initialize mobile menu
+      initMobileMenu();
+    }
+
+    // Show error state
+    function showError() {
+      const page = document.getElementById('property-page');
+      page.innerHTML = `
+        <div class="property-error">
+          <svg class="property-error__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="8" x2="12" y2="12"></line>
+            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+          </svg>
+          <h2 class="property-error__title">Propiedad no encontrada</h2>
+          <p class="property-error__text">La propiedad que buscás no existe o fue removida.</p>
+          <a href="index.html#propiedades" class="btn btn--primary">Ver todas las propiedades</a>
+        </div>
+      `;
+    }
+
+    // Mobile menu
+    function initMobileMenu() {
+      const menuBtn = document.querySelector('.header__menu-btn');
+      const nav = document.querySelector('.nav');
+
+      menuBtn?.addEventListener('click', () => {
+        menuBtn.classList.toggle('active');
+        nav?.classList.toggle('active');
+        document.body.style.overflow = nav?.classList.contains('active') ? 'hidden' : '';
+      });
+    }
+
+    // Initialize
+    function init() {
+      if (!propertyId || !window.PROPERTIES_DATA) {
+        showError();
+        return;
+      }
+
+      const property = window.PROPERTIES_DATA.properties.find(p => p.id === propertyId);
+
+      if (!property) {
+        showError();
+        return;
+      }
+
+      renderProperty(property);
+    }
+
+    // Start
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', init);
+    } else {
+      init();
+    }
+  </script>
+</body>
+</html>
