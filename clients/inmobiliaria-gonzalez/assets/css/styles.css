@@ -4,12 +4,15 @@
 
 /* CSS Variables */
 :root {
-  /* Brand Colors */
-  --primary-color: #1a365d;
-  --primary-light: #2c5282;
-  --primary-dark: #0f2442;
-  --secondary-color: #c9a227;
-  --secondary-light: #d4b84a;
+  /* Brand Colors - Gonzalez Inmobiliaria */
+  --primary-color: #003E52;
+  --primary-light: #005570;
+  --primary-dark: #002A38;
+  --accent-color: #E94F2D;
+  --accent-light: #F06A4D;
+  --accent-dark: #D13E1D;
+  --secondary-color: #E94F2D;
+  --secondary-light: #F06A4D;
 
   /* Neutral Colors */
   --white: #ffffff;
@@ -29,9 +32,9 @@
   --warning: #f59e0b;
   --error: #ef4444;
 
-  /* Typography */
-  --font-primary: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  --font-display: 'Poppins', var(--font-primary);
+  /* Typography - Asap (brand font) */
+  --font-primary: 'Asap', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-display: 'Asap', var(--font-primary);
 
   /* Spacing */
   --space-xs: 0.25rem;
@@ -174,11 +177,16 @@ ul, ol {
   gap: var(--space-sm);
 }
 
+.header__logo-img {
+  height: 48px;
+  width: auto;
+}
+
 .header__logo-icon {
   width: 40px;
   height: 40px;
-  background: var(--primary-color);
-  border-radius: var(--radius-md);
+  background: var(--accent-color);
+  border-radius: var(--radius-full);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -189,17 +197,23 @@ ul, ol {
 
 .header__logo-text {
   font-family: var(--font-display);
-  font-weight: 600;
+  font-weight: 700;
   font-size: 1.125rem;
   color: var(--primary-color);
   line-height: 1.2;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
 }
 
 .header__logo-text span {
   display: block;
-  font-size: 0.75rem;
+  font-size: 0.7rem;
   font-weight: 400;
-  color: var(--gray-500);
+  color: var(--primary-color);
+  letter-spacing: 0.15em;
+  padding-top: 2px;
+  border-top: 2px solid var(--accent-color);
+  margin-top: 2px;
 }
 
 /* Mobile Menu Button */
@@ -301,7 +315,7 @@ ul, ol {
   display: flex;
   align-items: center;
   padding: calc(64px + var(--space-xl)) var(--space-md) var(--space-xl);
-  background: linear-gradient(135deg, rgba(26, 54, 93, 0.85) 0%, rgba(15, 36, 66, 0.9) 100%),
+  background: linear-gradient(135deg, rgba(0, 62, 82, 0.9) 0%, rgba(0, 42, 56, 0.95) 100%),
               url('../images/hero/hero-bg.jpg') center/cover no-repeat;
   overflow: hidden;
 }
@@ -405,8 +419,8 @@ ul, ol {
 .search-box__input:focus,
 .search-box__select:focus {
   outline: none;
-  border-color: var(--primary-color);
-  box-shadow: 0 0 0 3px rgba(26, 54, 93, 0.1);
+  border-color: var(--accent-color);
+  box-shadow: 0 0 0 3px rgba(233, 79, 45, 0.15);
 }
 
 .search-box__btn {
@@ -707,9 +721,9 @@ ul, ol {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(26, 54, 93, 0.1);
+  background: rgba(233, 79, 45, 0.1);
   border-radius: var(--radius-lg);
-  color: var(--primary-color);
+  color: var(--accent-color);
 }
 
 .service-card__icon svg {
@@ -775,9 +789,9 @@ ul, ol {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(26, 54, 93, 0.1);
+  background: rgba(233, 79, 45, 0.1);
   border-radius: var(--radius-md);
-  color: var(--primary-color);
+  color: var(--accent-color);
   flex-shrink: 0;
 }
 
@@ -828,8 +842,8 @@ ul, ol {
 .form__textarea:focus,
 .form__select:focus {
   outline: none;
-  border-color: var(--primary-color);
-  box-shadow: 0 0 0 3px rgba(26, 54, 93, 0.1);
+  border-color: var(--accent-color);
+  box-shadow: 0 0 0 3px rgba(233, 79, 45, 0.15);
 }
 
 .form__textarea {
@@ -963,33 +977,45 @@ ul, ol {
   margin-bottom: var(--space-md);
 }
 
+.footer__logo-img {
+  height: 56px;
+  width: auto;
+  filter: brightness(0) invert(1);
+}
+
 .footer__logo-icon {
   width: 48px;
   height: 48px;
-  background: var(--white);
-  border-radius: var(--radius-md);
+  background: var(--accent-color);
+  border-radius: var(--radius-full);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--primary-color);
+  color: var(--white);
   font-weight: 700;
   font-size: 1.5rem;
 }
 
 .footer__logo-text {
   font-family: var(--font-display);
-  font-weight: 600;
+  font-weight: 700;
   font-size: 1.25rem;
   color: var(--white);
   text-align: left;
   line-height: 1.2;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
 }
 
 .footer__logo-text span {
   display: block;
-  font-size: 0.75rem;
+  font-size: 0.7rem;
   font-weight: 400;
   color: var(--gray-400);
+  letter-spacing: 0.15em;
+  padding-top: 2px;
+  border-top: 2px solid var(--accent-color);
+  margin-top: 2px;
 }
 
 .footer__desc {
