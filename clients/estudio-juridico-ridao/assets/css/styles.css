@@ -1363,3 +1363,268 @@ select {
         display: none;
     }
 }
+
+/* Móvil muy pequeño - 320px */
+@media screen and (max-width: 320px) {
+    :root {
+        --fs-h1: 1.75rem;
+        --fs-h2: 1.35rem;
+        --fs-h3: 1rem;
+        --fs-body: 0.875rem;
+        --fs-small: 0.8125rem;
+        --container-padding: 0.75rem;
+    }
+
+    .nav__logo-img {
+        height: 35px;
+    }
+
+    .hero__subtitle {
+        font-size: 0.7rem;
+        letter-spacing: 0.1em;
+    }
+
+    .hero__description {
+        font-size: 0.875rem;
+    }
+
+    .hero__stat-number {
+        font-size: 1.75rem;
+    }
+
+    .hero__stat-suffix {
+        font-size: 1.25rem;
+    }
+
+    .hero__stat-text {
+        font-size: 0.75rem;
+    }
+
+    .btn {
+        padding: 0.625rem 1rem;
+        font-size: 0.8125rem;
+    }
+
+    .btn--lg {
+        padding: 0.75rem 1.25rem;
+        font-size: 0.875rem;
+    }
+
+    .btn--sm {
+        padding: 0.5rem 0.875rem;
+        font-size: 0.75rem;
+    }
+
+    .section__subtitle {
+        font-size: 0.7rem;
+    }
+
+    .section__header {
+        margin-bottom: 2rem;
+    }
+
+    .about__image-placeholder i {
+        font-size: 4rem;
+    }
+
+    .about__experience {
+        padding: 0.75rem 1rem;
+        bottom: -1rem;
+        right: 0;
+    }
+
+    .about__experience-number {
+        font-size: 1.5rem;
+    }
+
+    .about__experience-text {
+        font-size: 0.7rem;
+    }
+
+    .about__feature-icon {
+        width: 40px;
+        height: 40px;
+        min-width: 40px;
+    }
+
+    .about__feature-icon i {
+        font-size: 1rem;
+    }
+
+    .about__feature-content h3 {
+        font-size: 0.875rem;
+    }
+
+    .about__feature-content p {
+        font-size: 0.75rem;
+    }
+
+    .service__card {
+        padding: 1.25rem;
+    }
+
+    .service__icon {
+        width: 50px;
+        height: 50px;
+        margin-bottom: 1rem;
+    }
+
+    .service__icon i {
+        font-size: 1.25rem;
+    }
+
+    .service__title {
+        font-size: 1rem;
+    }
+
+    .service__description {
+        font-size: 0.8125rem;
+    }
+
+    .service__link {
+        font-size: 0.8125rem;
+    }
+
+    .city__card {
+        padding: 1.25rem;
+    }
+
+    .city__icon {
+        width: 45px;
+        height: 45px;
+    }
+
+    .city__icon i {
+        font-size: 1.25rem;
+    }
+
+    .city__name {
+        font-size: 1rem;
+    }
+
+    .city__address {
+        font-size: 0.75rem;
+    }
+
+    .cities__cta {
+        padding: 1.25rem;
+    }
+
+    .cities__cta p {
+        font-size: 0.8125rem;
+    }
+
+    .cta__title {
+        font-size: 1.25rem;
+    }
+
+    .cta__description {
+        font-size: 0.875rem;
+    }
+
+    .contact__info-icon {
+        width: 40px;
+        height: 40px;
+        min-width: 40px;
+    }
+
+    .contact__info-icon i {
+        font-size: 1rem;
+    }
+
+    .contact__info-content h3 {
+        font-size: 0.875rem;
+    }
+
+    .contact__info-content a,
+    .contact__info-content p {
+        font-size: 0.8125rem;
+        word-break: break-word;
+    }
+
+    .contact__social-links a {
+        width: 36px;
+        height: 36px;
+        font-size: 1rem;
+    }
+
+    .contact__form-wrapper {
+        padding: 1rem;
+    }
+
+    .contact__form-title {
+        font-size: 1rem;
+        margin-bottom: 1.25rem;
+    }
+
+    .form__input {
+        padding: 0.75rem;
+        font-size: 0.875rem;
+    }
+
+    .form__label {
+        font-size: 0.875rem;
+    }
+
+    .form__textarea {
+        min-height: 80px;
+    }
+
+    .form__note {
+        font-size: 0.7rem;
+    }
+
+    .footer {
+        padding: 2rem 0 1rem;
+    }
+
+    .footer__logo img {
+        height: 45px;
+    }
+
+    .footer__description {
+        font-size: 0.8125rem;
+    }
+
+    .footer__title {
+        font-size: 0.875rem;
+        margin-bottom: 1rem;
+    }
+
+    .footer__list a,
+    .footer__list span {
+        font-size: 0.8125rem;
+    }
+
+    .footer__social a {
+        width: 34px;
+        height: 34px;
+    }
+
+    .footer__bottom {
+        padding-top: 1rem;
+    }
+
+    .footer__bottom p {
+        font-size: 0.7rem;
+    }
+
+    .whatsapp-float {
+        width: 48px;
+        height: 48px;
+        font-size: 1.5rem;
+        bottom: 1rem;
+        right: 1rem;
+    }
+}
+
+/* Fix para evitar overflow horizontal en móviles */
+@media screen and (max-width: 480px) {
+    html, body {
+        overflow-x: hidden;
+    }
+
+    .container {
+        max-width: 100%;
+    }
+}
