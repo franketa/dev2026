@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1a365d"/>
+      <stop offset="100%" style="stop-color:#0f2744"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Fondo -->
+  <rect width="64" height="64" rx="12" fill="url(#bgGrad)"/>
+
+  <!-- Balanza de justicia simplificada -->
+  <g transform="translate(12, 10)">
+    <!-- Columna central -->
+    <rect x="18" y="18" width="4" height="24" fill="#ffffff"/>
+
+    <!-- Base -->
+    <path d="M10 42 L30 42 L28 38 L12 38 Z" fill="#ffffff"/>
+
+    <!-- Barra superior -->
+    <rect x="5" y="14" width="30" height="4" rx="2" fill="#ffffff"/>
+
+    <!-- Platillo izquierdo -->
+    <path d="M7 16 L7 20 L2 32 L18 32 L13 20 L13 16" fill="none" stroke="#c9a227" stroke-width="2"/>
+    <ellipse cx="10" cy="32" rx="8" ry="3" fill="#c9a227"/>
+
+    <!-- Platillo derecho -->
+    <path d="M27 16 L27 20 L22 32 L38 32 L33 20 L33 16" fill="none" stroke="#c9a227" stroke-width="2"/>
+    <ellipse cx="30" cy="32" rx="8" ry="3" fill="#c9a227"/>
+
+    <!-- Círculo superior -->
+    <circle cx="20" cy="10" r="5" fill="none" stroke="#ffffff" stroke-width="2"/>
+    <circle cx="20" cy="10" r="2" fill="#c9a227"/>
+  </g>
+</svg>
