@@ -1180,8 +1180,6 @@ select {
 }
 
 /*=============== RESPONSIVE ===============*/
-
-/* Tablet grande */
 @media screen and (max-width: 1024px) {
     .services__grid {
         grid-template-columns: repeat(2, 1fr);
@@ -1196,7 +1194,6 @@ select {
     }
 }
 
-/* Tablet */
 @media screen and (max-width: 900px) {
     .about__container {
         grid-template-columns: 1fr;
@@ -1204,13 +1201,8 @@ select {
     }
 
     .about__image {
-        max-width: 400px;
+        max-width: 500px;
         margin: 0 auto;
-    }
-
-    .about__experience {
-        right: 0;
-        bottom: -1.5rem;
     }
 
     .about__data .section__subtitle,
@@ -1249,31 +1241,23 @@ select {
     }
 }
 
-/* Tablet pequeña / Móvil grande */
 @media screen and (max-width: 768px) {
     :root {
-        --header-height: 3.5rem;
-        --section-padding: 4rem 0;
-        --container-padding: 1rem;
-    }
-
-    .section__header {
-        margin-bottom: 2.5rem;
+        --header-height: 4rem;
     }
 
     .nav__menu {
         position: fixed;
         top: 0;
         right: -100%;
-        width: 80%;
-        max-width: 300px;
+        width: 75%;
+        max-width: 350px;
         height: 100vh;
         background-color: var(--white);
         box-shadow: -10px 0 30px rgba(0, 0, 0, 0.1);
         flex-direction: column;
-        padding: 4rem 1.5rem 2rem;
+        padding: 5rem 2rem 2rem;
         transition: right var(--transition-base);
-        z-index: var(--z-modal);
     }
 
     .nav__menu.show-menu {
@@ -1287,7 +1271,7 @@ select {
 
     .nav__link {
         color: var(--text-color);
-        font-size: 1rem;
+        font-size: 1.125rem;
     }
 
     .nav__link:hover,
@@ -1298,8 +1282,8 @@ select {
     .nav__close {
         display: block;
         position: absolute;
-        top: 1rem;
-        right: 1rem;
+        top: 1.5rem;
+        right: 1.5rem;
         color: var(--text-color);
     }
 
@@ -1311,169 +1295,33 @@ select {
         display: none;
     }
 
-    .nav__logo-img {
-        height: 40px;
-    }
-
-    /* Hero */
-    .hero {
-        min-height: auto;
-        padding: calc(var(--header-height) + 2rem) 0 4rem;
-    }
-
-    .hero__content {
-        padding-top: 0;
-    }
-
-    .hero__subtitle {
-        font-size: var(--fs-small);
-        letter-spacing: 0.1em;
-    }
-
-    .hero__description {
-        font-size: 1rem;
-    }
-
     .hero__buttons {
         flex-direction: column;
-        gap: 0.75rem;
-    }
-
-    .hero__buttons .btn {
-        width: 100%;
-        justify-content: center;
     }
 
     .hero__stats {
-        gap: 1.5rem;
-        margin-top: 2.5rem;
-        padding-top: 2rem;
+        gap: 2rem;
     }
 
     .hero__stat-number {
-        font-size: 2rem;
+        font-size: 2.5rem;
     }
 
-    .hero__stat-suffix {
-        font-size: 1.5rem;
+    .services__grid {
+        grid-template-columns: 1fr;
     }
 
-    .hero__scroll {
-        display: none;
-    }
-
-    /* About */
-    .about__image-placeholder i {
-        font-size: 5rem;
-    }
-
-    .about__experience {
-        padding: 1rem 1.5rem;
-        right: 0;
-        bottom: -1rem;
-    }
-
-    .about__experience-number {
-        font-size: 2rem;
+    .cities__grid {
+        grid-template-columns: 1fr;
     }
 
     .about__features {
         grid-template-columns: 1fr;
-        gap: 1rem;
-    }
-
-    .about__feature-icon {
-        width: 45px;
-        height: 45px;
-    }
-
-    /* Services */
-    .services__grid {
-        grid-template-columns: 1fr;
-        gap: 1rem;
-    }
-
-    .service__card {
-        padding: 1.5rem;
-    }
-
-    .service__icon {
-        width: 60px;
-        height: 60px;
-        margin-bottom: 1rem;
-    }
-
-    .service__icon i {
-        font-size: 1.5rem;
-    }
-
-    /* Cities */
-    .cities__grid {
-        grid-template-columns: 1fr;
-        gap: 1rem;
-        margin-bottom: 2rem;
-    }
-
-    .city__card {
-        padding: 1.5rem;
-    }
-
-    .city__icon {
-        width: 50px;
-        height: 50px;
-    }
-
-    .cities__cta {
-        padding: 1.5rem;
-    }
-
-    /* CTA */
-    .cta__buttons {
-        flex-direction: column;
-        gap: 0.75rem;
-    }
-
-    .cta__buttons .btn {
-        width: 100%;
-    }
-
-    /* Contact */
-    .contact__info-icon {
-        width: 45px;
-        height: 45px;
-    }
-
-    .contact__info-icon i {
-        font-size: 1.1rem;
-    }
-
-    .contact__social-links a {
-        width: 40px;
-        height: 40px;
-    }
-
-    .contact__form-wrapper {
-        padding: 1.5rem;
-    }
-
-    .form__group {
-        margin-bottom: 1rem;
-    }
-
-    /* Footer */
-    .footer {
-        padding: 3rem 0 1.5rem;
     }
 
     .footer__container {
         grid-template-columns: 1fr;
-        gap: 2rem;
         text-align: center;
-    }
-
-    .footer__logo img {
-        height: 50px;
-        margin: 0 auto;
     }
 
     .footer__social {
@@ -1484,17 +1332,31 @@ select {
         align-items: center;
     }
 
-    .footer__list li {
-        justify-content: center;
+    .cta__buttons {
+        flex-direction: column;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .hero__title {
+        font-size: 2.5rem;
     }
 
-    /* WhatsApp Float */
+    .hero__stats {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .contact__form-wrapper {
+        padding: 1.5rem;
+    }
+
     .whatsapp-float {
-        width: 50px;
-        height: 50px;
-        font-size: 1.5rem;
-        bottom: 1rem;
-        right: 1rem;
+        width: 55px;
+        height: 55px;
+        font-size: 1.75rem;
+        bottom: 1.5rem;
+        right: 1.5rem;
     }
 
     .whatsapp-tooltip {
@@ -1502,77 +1364,13 @@ select {
     }
 }
 
-/* Móvil pequeño - 480px */
-@media screen and (max-width: 480px) {
-    :root {
-        --fs-h1: 2rem;
-        --fs-h2: 1.5rem;
-        --fs-h3: 1.1rem;
-        --container-padding: 0.875rem;
-    }
-
-    .hero__stats {
-        flex-direction: column;
-        gap: 1rem;
-        align-items: flex-start;
-    }
-
-    .hero__stat {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-    }
-
-    .hero__stat-text {
-        margin-top: 0;
-        margin-left: 0.25rem;
-    }
-
-    .about__image {
-        max-width: 100%;
-    }
-
-    .about__image-placeholder {
-        aspect-ratio: 1/1;
-    }
-
-    .about__image-placeholder i {
-        font-size: 4rem;
-    }
-
-    .about__experience {
-        position: relative;
-        bottom: 0;
-        right: 0;
-        margin-top: 1rem;
-        display: inline-block;
-    }
-
-    .about__image {
-        text-align: center;
-    }
-
-    .btn--lg {
-        padding: 0.875rem 1.5rem;
-        font-size: 0.9375rem;
-    }
-
-    .service__description {
-        font-size: var(--fs-small);
-    }
-
-    .cta__description {
-        font-size: 1rem;
-    }
-}
-
-/* Móvil muy pequeño - 320px (mínimo) */
-@media screen and (max-width: 360px) {
+/* Móvil muy pequeño - 320px */
+@media screen and (max-width: 320px) {
     :root {
         --fs-h1: 1.75rem;
         --fs-h2: 1.35rem;
         --fs-h3: 1rem;
-        --fs-body: 0.9375rem;
+        --fs-body: 0.875rem;
         --fs-small: 0.8125rem;
         --container-padding: 0.75rem;
     }
@@ -1582,7 +1380,12 @@ select {
     }
 
     .hero__subtitle {
-        font-size: 0.75rem;
+        font-size: 0.7rem;
+        letter-spacing: 0.1em;
+    }
+
+    .hero__description {
+        font-size: 0.875rem;
     }
 
     .hero__stat-number {
@@ -1598,8 +1401,8 @@ select {
     }
 
     .btn {
-        padding: 0.75rem 1rem;
-        font-size: 0.875rem;
+        padding: 0.625rem 1rem;
+        font-size: 0.8125rem;
     }
 
     .btn--lg {
@@ -1608,16 +1411,34 @@ select {
     }
 
     .btn--sm {
-        padding: 0.5rem 1rem;
-        font-size: 0.8125rem;
-    }
-
-    .section__subtitle {
+        padding: 0.5rem 0.875rem;
         font-size: 0.75rem;
     }
 
-    .about__feature {
-        gap: 0.75rem;
+    .section__subtitle {
+        font-size: 0.7rem;
+    }
+
+    .section__header {
+        margin-bottom: 2rem;
+    }
+
+    .about__image-placeholder i {
+        font-size: 4rem;
+    }
+
+    .about__experience {
+        padding: 0.75rem 1rem;
+        bottom: -1rem;
+        right: 0;
+    }
+
+    .about__experience-number {
+        font-size: 1.5rem;
+    }
+
+    .about__experience-text {
+        font-size: 0.7rem;
     }
 
     .about__feature-icon {
@@ -1631,22 +1452,10 @@ select {
     }
 
     .about__feature-content h3 {
-        font-size: 0.9375rem;
+        font-size: 0.875rem;
     }
 
     .about__feature-content p {
-        font-size: 0.8125rem;
-    }
-
-    .about__experience {
-        padding: 0.75rem 1rem;
-    }
-
-    .about__experience-number {
-        font-size: 1.75rem;
-    }
-
-    .about__experience-text {
         font-size: 0.75rem;
     }
 
@@ -1657,6 +1466,7 @@ select {
     .service__icon {
         width: 50px;
         height: 50px;
+        margin-bottom: 1rem;
     }
 
     .service__icon i {
@@ -1669,11 +1479,10 @@ select {
 
     .service__description {
         font-size: 0.8125rem;
-        margin-bottom: 1rem;
     }
 
     .service__link {
-        font-size: 0.875rem;
+        font-size: 0.8125rem;
     }
 
     .city__card {
@@ -1693,16 +1502,24 @@ select {
         font-size: 1rem;
     }
 
+    .city__address {
+        font-size: 0.75rem;
+    }
+
     .cities__cta {
         padding: 1.25rem;
     }
 
     .cities__cta p {
-        font-size: 0.875rem;
+        font-size: 0.8125rem;
     }
 
-    .contact__info-item {
-        gap: 0.75rem;
+    .cta__title {
+        font-size: 1.25rem;
+    }
+
+    .cta__description {
+        font-size: 0.875rem;
     }
 
     .contact__info-icon {
@@ -1716,40 +1533,45 @@ select {
     }
 
     .contact__info-content h3 {
-        font-size: 0.9375rem;
+        font-size: 0.875rem;
     }
 
     .contact__info-content a,
     .contact__info-content p {
-        font-size: 0.875rem;
+        font-size: 0.8125rem;
         word-break: break-word;
     }
 
     .contact__social-links a {
-        width: 38px;
-        height: 38px;
+        width: 36px;
+        height: 36px;
         font-size: 1rem;
     }
 
     .contact__form-wrapper {
-        padding: 1.25rem;
+        padding: 1rem;
     }
 
     .contact__form-title {
         font-size: 1rem;
+        margin-bottom: 1.25rem;
     }
 
     .form__input {
-        padding: 0.875rem;
-        font-size: 0.9375rem;
+        padding: 0.75rem;
+        font-size: 0.875rem;
+    }
+
+    .form__label {
+        font-size: 0.875rem;
     }
 
     .form__textarea {
-        min-height: 100px;
+        min-height: 80px;
     }
 
     .form__note {
-        font-size: 0.75rem;
+        font-size: 0.7rem;
     }
 
     .footer {
@@ -1761,45 +1583,48 @@ select {
     }
 
     .footer__description {
-        font-size: 0.875rem;
+        font-size: 0.8125rem;
     }
 
     .footer__title {
-        font-size: 0.9375rem;
+        font-size: 0.875rem;
         margin-bottom: 1rem;
     }
 
     .footer__list a,
     .footer__list span {
-        font-size: 0.875rem;
+        font-size: 0.8125rem;
     }
 
     .footer__social a {
-        width: 36px;
-        height: 36px;
+        width: 34px;
+        height: 34px;
+    }
+
+    .footer__bottom {
+        padding-top: 1rem;
     }
 
     .footer__bottom p {
-        font-size: 0.75rem;
+        font-size: 0.7rem;
     }
 
     .whatsapp-float {
         width: 48px;
         height: 48px;
-        font-size: 1.4rem;
+        font-size: 1.5rem;
+        bottom: 1rem;
+        right: 1rem;
     }
 }
 
-/* Fix para evitar overflow horizontal */
-html, body {
-    overflow-x: hidden;
-}
+/* Fix para evitar overflow horizontal en móviles */
+@media screen and (max-width: 480px) {
+    html, body {
+        overflow-x: hidden;
+    }
 
-.container {
-    width: 100%;
-    max-width: 100%;
-}
-
-img, video, iframe {
-    max-width: 100%;
+    .container {
+        max-width: 100%;
+    }
 }
