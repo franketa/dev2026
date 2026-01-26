@@ -566,6 +566,21 @@ ul, ol {
   color: var(--white);
 }
 
+.property-card__badge--vendido {
+  background: var(--success);
+  color: var(--white);
+}
+
+.property-card__badge--alquilado {
+  background: #8b5cf6;
+  color: var(--white);
+}
+
+.property-card__badge--reservado {
+  background: var(--warning);
+  color: var(--white);
+}
+
 .property-card__favorite {
   position: absolute;
   top: var(--space-sm);

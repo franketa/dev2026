@@ -1,9 +1,52 @@
 /**
  * INMOBILIARIA GONZALEZ - Properties Data
  * Este archivo contiene los datos de las propiedades para que funcionen sin servidor
+ * Lee de localStorage si hay datos guardados, sino usa los datos por defecto
  */
 
-window.PROPERTIES_DATA = {
+// Check if we have stored properties in localStorage
+(function() {
+  const STORAGE_KEY = 'gonzalez_properties';
+  const storedData = localStorage.getItem(STORAGE_KEY);
+
+  if (storedData) {
+    try {
+      const properties = JSON.parse(storedData);
+      window.PROPERTIES_DATA = {
+        properties: properties,
+        propertyTypes: [
+          {"id": "casa", "label": "Casa"},
+          {"id": "departamento", "label": "Departamento"},
+          {"id": "ph", "label": "PH"},
+          {"id": "local", "label": "Local Comercial"},
+          {"id": "oficina", "label": "Oficina"},
+          {"id": "terreno", "label": "Terreno"},
+          {"id": "lote", "label": "Lote"},
+          {"id": "cochera", "label": "Cochera"}
+        ],
+        operations: [
+          {"id": "venta", "label": "Venta"},
+          {"id": "alquiler", "label": "Alquiler"},
+          {"id": "vendido", "label": "Vendido"},
+          {"id": "alquilado", "label": "Alquilado"},
+          {"id": "reservado", "label": "Reservado"}
+        ],
+        neighborhoods: [
+          "Barrio Norte", "Palermo", "Villa Crespo", "Recoleta", "Belgrano",
+          "Caballito", "Microcentro", "Puerto Madero", "Retiro", "Pilar",
+          "Nuñez", "San Telmo", "Nordelta", "Palermo Soho", "Almagro",
+          "Vicente López", "Las Cañitas", "Flores", "Olivos", "Monserrat",
+          "Colegiales", "Escobar", "Barracas"
+        ]
+      };
+      return;
+    } catch(e) {
+      console.error('Error loading stored properties:', e);
+    }
+  }
+
+  // Default data if no localStorage data exists
+  window.PROPERTIES_DATA = {
   "properties": [
     {
       "id": 1,
@@ -663,11 +706,15 @@ window.PROPERTIES_DATA = {
     {"id": "local", "label": "Local Comercial"},
     {"id": "oficina", "label": "Oficina"},
     {"id": "terreno", "label": "Terreno"},
+    {"id": "lote", "label": "Lote"},
     {"id": "cochera", "label": "Cochera"}
   ],
   "operations": [
     {"id": "venta", "label": "Venta"},
-    {"id": "alquiler", "label": "Alquiler"}
+    {"id": "alquiler", "label": "Alquiler"},
+    {"id": "vendido", "label": "Vendido"},
+    {"id": "alquilado", "label": "Alquilado"},
+    {"id": "reservado", "label": "Reservado"}
   ],
   "neighborhoods": [
     "Barrio Norte", "Palermo", "Villa Crespo", "Recoleta", "Belgrano",
@@ -677,3 +724,4 @@ window.PROPERTIES_DATA = {
     "Colegiales", "Escobar", "Barracas"
   ]
 };
+})();
