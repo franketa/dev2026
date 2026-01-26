@@ -71,6 +71,18 @@
       background: var(--secondary-color);
     }
 
+    .property-gallery__badge--vendido {
+      background: var(--success);
+    }
+
+    .property-gallery__badge--alquilado {
+      background: #8b5cf6;
+    }
+
+    .property-gallery__badge--reservado {
+      background: var(--warning);
+    }
+
     .property-content {
       max-width: 1200px;
       margin: 0 auto;
@@ -411,8 +423,16 @@
     }
 
     // Get property image
-    function getPropertyImage(index) {
-      const imageNumber = (index % 25) + 1;
+    function getPropertyImage(property) {
+      // Check if property has base64 images (from admin panel)
+      if (property && property.images && property.images.length > 0) {
+        const img = property.images[0];
+        if (img.startsWith('data:')) {
+          return img;
+        }
+      }
+      // Fallback to local images
+      const imageNumber = ((property.id - 1) % 25) + 1;
       return `assets/images/properties/prop-${imageNumber}.jpg`;
     }
 
@@ -425,9 +445,22 @@
         local: 'Local Comercial',
         oficina: 'Oficina',
         terreno: 'Terreno',
+        lote: 'Lote',
         cochera: 'Cochera'
       };
       return types[type] || type;
+    }
+
+    // Get operation label
+    function getOperationLabel(operation) {
+      const operations = {
+        venta: 'En Venta',
+        alquiler: 'En Alquiler',
+        vendido: 'Vendido',
+        alquilado: 'Alquilado',
+        reservado: 'Reservado'
+      };
+      return operations[operation] || operation;
     }
 
     // Render property page
@@ -449,9 +482,9 @@
         <div class="property-page__inner">
           <div class="property-main">
             <div class="property-gallery">
-              <img src="${getPropertyImage(property.id - 1)}" alt="${property.title}" class="property-gallery__main">
+              <img src="${getPropertyImage(property)}" alt="${property.title}" class="property-gallery__main" onerror="this.src='https://placehold.co/800x600/e5e7eb/9ca3af?text=Sin+imagen'">
               <span class="property-gallery__badge property-gallery__badge--${property.operation}">
-                ${property.operation === 'venta' ? 'En Venta' : 'En Alquiler'}
+                ${getOperationLabel(property.operation)}
               </span>
             </div>
 

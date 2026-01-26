@@ -61,10 +61,28 @@ function debounce(func, wait) {
   };
 }
 
-function getPropertyImage(index) {
-  // Use local images (prop-1.jpg through prop-25.jpg)
+function getPropertyImage(property, index) {
+  // Check if property has base64 images (from admin panel)
+  if (property && property.images && property.images.length > 0) {
+    const img = property.images[0];
+    if (img.startsWith('data:')) {
+      return img;
+    }
+  }
+  // Fallback to local images (prop-1.jpg through prop-25.jpg)
   const imageNumber = (index % 25) + 1;
   return `assets/images/properties/prop-${imageNumber}.jpg`;
+}
+
+function getOperationLabel(operation) {
+  const labels = {
+    venta: 'Venta',
+    alquiler: 'Alquiler',
+    vendido: 'Vendido',
+    alquilado: 'Alquilado',
+    reservado: 'Reservado'
+  };
+  return labels[operation] || operation;
 }
 
 // ==========================================================================
@@ -127,7 +145,7 @@ function renderProperties() {
 
   DOM.propertiesGrid.innerHTML = propertiesToShow.map((property, index) => {
     const isFavorite = state.favorites.includes(property.id);
-    const imageUrl = getPropertyImage(property.id - 1);
+    const imageUrl = getPropertyImage(property, property.id - 1);
 
     return `
       <article class="property-card reveal" data-id="${property.id}" style="animation-delay: ${index * 50}ms">
@@ -138,9 +156,10 @@ function renderProperties() {
             class="property-card__img"
             loading="lazy"
             decoding="async"
+            onerror="this.src='https://placehold.co/400x250/e5e7eb/9ca3af?text=Sin+imagen'"
           >
           <span class="property-card__badge property-card__badge--${property.operation}">
-            ${property.operation === 'venta' ? 'Venta' : 'Alquiler'}
+            ${getOperationLabel(property.operation)}
           </span>
           <button
             class="property-card__favorite ${isFavorite ? 'active' : ''}"
