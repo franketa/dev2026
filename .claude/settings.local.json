@@ -7,7 +7,14 @@
       "Bash(dir:*)",
       "Bash(tree:*)",
       "Bash(:*/ralph-wiggum/:*)",
-      "Bash(**/ralph-wiggum/**)"
+      "Bash(**/ralph-wiggum/**)",
+      "WebFetch(domain:www.vinelli.com.ar)",
+      "WebFetch(domain:geektattoo.com.ar)",
+      "WebFetch(domain:www.instagram.com)",
+      "WebFetch(domain:imginn.com)",
+      "Skill(superpowers:brainstorming)",
+      "WebFetch(domain:www.onfit.com.ar)",
+      "WebSearch"
     ]
   }
 }

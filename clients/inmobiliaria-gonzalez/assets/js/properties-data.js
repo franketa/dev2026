@@ -1,0 +1,679 @@
+/**
+ * INMOBILIARIA GONZALEZ - Properties Data
+ * Este archivo contiene los datos de las propiedades para que funcionen sin servidor
+ */
+
+window.PROPERTIES_DATA = {
+  "properties": [
+    {
+      "id": 1,
+      "title": "Casa en Barrio Norte",
+      "type": "casa",
+      "operation": "venta",
+      "price": 185000,
+      "currency": "USD",
+      "location": {
+        "neighborhood": "Barrio Norte",
+        "city": "Buenos Aires",
+        "address": "Av. Santa Fe 2500"
+      },
+      "features": {
+        "bedrooms": 4,
+        "bathrooms": 3,
+        "garage": 2,
+        "area": 280,
+        "coveredArea": 220
+      },
+      "description": "Hermosa casa de 4 ambientes con jardín y pileta. Living comedor amplio, cocina equipada, 4 dormitorios con placards. Excelente ubicación cerca de transporte y comercios.",
+      "amenities": ["pileta", "jardín", "parrilla", "seguridad 24hs"],
+      "images": ["casa1-1.jpg", "casa1-2.jpg", "casa1-3.jpg"],
+      "featured": true,
+      "status": "disponible",
+      "createdAt": "2024-01-15"
+    },
+    {
+      "id": 2,
+      "title": "Departamento en Palermo",
+      "type": "departamento",
+      "operation": "venta",
+      "price": 125000,
+      "currency": "USD",
+      "location": {
+        "neighborhood": "Palermo",
+        "city": "Buenos Aires",
+        "address": "Honduras 4800"
+      },
+      "features": {
+        "bedrooms": 2,
+        "bathrooms": 1,
+        "garage": 1,
+        "area": 75,
+        "coveredArea": 70
+      },
+      "description": "Moderno departamento de 2 ambientes en Palermo Hollywood. Luminoso, balcón con vista, amenities completos.",
+      "amenities": ["gimnasio", "sum", "laundry", "seguridad 24hs"],
+      "images": ["depto2-1.jpg", "depto2-2.jpg", "depto2-3.jpg"],
+      "featured": true,
+      "status": "disponible",
+      "createdAt": "2024-01-10"
+    },
+    {
+      "id": 3,
+      "title": "PH en Villa Crespo",
+      "type": "ph",
+      "operation": "venta",
+      "price": 98000,
+      "currency": "USD",
+      "location": {
+        "neighborhood": "Villa Crespo",
+        "city": "Buenos Aires",
+        "address": "Corrientes 5200"
+      },
+      "features": {
+        "bedrooms": 3,
+        "bathrooms": 2,
+        "garage": 0,
+        "area": 120,
+        "coveredArea": 100
+      },
+      "description": "PH luminoso de 3 ambientes con terraza propia. Sin expensas. Ideal para familia o inversión.",
+      "amenities": ["terraza", "parrilla"],
+      "images": ["ph3-1.jpg", "ph3-2.jpg"],
+      "featured": false,
+      "status": "disponible",
+      "createdAt": "2024-01-08"
+    },
+    {
+      "id": 4,
+      "title": "Departamento en Recoleta",
+      "type": "departamento",
+      "operation": "alquiler",
+      "price": 450000,
+      "currency": "ARS",
+      "location": {
+        "neighborhood": "Recoleta",
+        "city": "Buenos Aires",
+        "address": "Av. Callao 1200"
+      },
+      "features": {
+        "bedrooms": 3,
+        "bathrooms": 2,
+        "garage": 1,
+        "area": 95,
+        "coveredArea": 90
+      },
+      "description": "Elegante departamento en edificio clásico de Recoleta. 3 dormitorios, living comedor, cocina separada. Balcón francés.",
+      "amenities": ["portero", "ascensor"],
+      "images": ["depto4-1.jpg", "depto4-2.jpg", "depto4-3.jpg"],
+      "featured": true,
+      "status": "disponible",
+      "createdAt": "2024-01-12"
+    },
+    {
+      "id": 5,
+      "title": "Casa en Belgrano",
+      "type": "casa",
+      "operation": "venta",
+      "price": 320000,
+      "currency": "USD",
+      "location": {
+        "neighborhood": "Belgrano",
+        "city": "Buenos Aires",
+        "address": "Juramento 2800"
+      },
+      "features": {
+        "bedrooms": 5,
+        "bathrooms": 4,
+        "garage": 2,
+        "area": 350,
+        "coveredArea": 280
+      },
+      "description": "Espectacular casa de 5 ambientes en Belgrano R. Jardín amplio, pileta climatizada, quincho. Construcción premium.",
+      "amenities": ["pileta climatizada", "quincho", "jardín", "seguridad 24hs", "alarma"],
+      "images": ["casa5-1.jpg", "casa5-2.jpg", "casa5-3.jpg", "casa5-4.jpg"],
+      "featured": true,
+      "status": "disponible",
+      "createdAt": "2024-01-14"
+    },
+    {
+      "id": 6,
+      "title": "Monoambiente en Caballito",
+      "type": "departamento",
+      "operation": "alquiler",
+      "price": 180000,
+      "currency": "ARS",
+      "location": {
+        "neighborhood": "Caballito",
+        "city": "Buenos Aires",
+        "address": "Av. Rivadavia 5400"
+      },
+      "features": {
+        "bedrooms": 1,
+        "bathrooms": 1,
+        "garage": 0,
+        "area": 35,
+        "coveredArea": 35
+      },
+      "description": "Monoambiente divisible, ideal para estudiantes o profesionales. A metros del subte. Luminoso y funcional.",
+      "amenities": ["ascensor", "laundry"],
+      "images": ["mono6-1.jpg", "mono6-2.jpg"],
+      "featured": false,
+      "status": "disponible",
+      "createdAt": "2024-01-05"
+    },
+    {
+      "id": 7,
+      "title": "Local Comercial en Microcentro",
+      "type": "local",
+      "operation": "alquiler",
+      "price": 850000,
+      "currency": "ARS",
+      "location": {
+        "neighborhood": "Microcentro",
+        "city": "Buenos Aires",
+        "address": "Florida 500"
+      },
+      "features": {
+        "bedrooms": 0,
+        "bathrooms": 1,
+        "garage": 0,
+        "area": 60,
+        "coveredArea": 60
+      },
+      "description": "Local comercial sobre peatonal Florida. Alto tránsito peatonal. Vidriera amplia. Ideal retail o gastronomía.",
+      "amenities": ["aire acondicionado", "alarma"],
+      "images": ["local7-1.jpg", "local7-2.jpg"],
+      "featured": false,
+      "status": "disponible",
+      "createdAt": "2024-01-03"
+    },
+    {
+      "id": 8,
+      "title": "Departamento en Puerto Madero",
+      "type": "departamento",
+      "operation": "venta",
+      "price": 380000,
+      "currency": "USD",
+      "location": {
+        "neighborhood": "Puerto Madero",
+        "city": "Buenos Aires",
+        "address": "Olga Cossettini 1500"
+      },
+      "features": {
+        "bedrooms": 3,
+        "bathrooms": 2,
+        "garage": 2,
+        "area": 140,
+        "coveredArea": 130
+      },
+      "description": "Lujoso departamento con vista al río. 3 suites, living comedor amplio, cocina integrada. Amenities premium.",
+      "amenities": ["pileta", "gimnasio", "spa", "seguridad 24hs", "concierge"],
+      "images": ["depto8-1.jpg", "depto8-2.jpg", "depto8-3.jpg", "depto8-4.jpg"],
+      "featured": true,
+      "status": "disponible",
+      "createdAt": "2024-01-13"
+    },
+    {
+      "id": 9,
+      "title": "Oficina en Catalinas",
+      "type": "oficina",
+      "operation": "alquiler",
+      "price": 2500,
+      "currency": "USD",
+      "location": {
+        "neighborhood": "Retiro",
+        "city": "Buenos Aires",
+        "address": "Av. L. N. Alem 1000"
+      },
+      "features": {
+        "bedrooms": 0,
+        "bathrooms": 2,
+        "garage": 4,
+        "area": 200,
+        "coveredArea": 200
+      },
+      "description": "Oficina AAA en torre corporativa de Catalinas. Open space, sala de reuniones, 4 cocheras. Vista panorámica.",
+      "amenities": ["aire central", "seguridad 24hs", "recepción"],
+      "images": ["ofi9-1.jpg", "ofi9-2.jpg"],
+      "featured": false,
+      "status": "disponible",
+      "createdAt": "2024-01-07"
+    },
+    {
+      "id": 10,
+      "title": "Terreno en Pilar",
+      "type": "terreno",
+      "operation": "venta",
+      "price": 75000,
+      "currency": "USD",
+      "location": {
+        "neighborhood": "Pilar",
+        "city": "GBA Norte",
+        "address": "Barrio cerrado Los Álamos"
+      },
+      "features": {
+        "bedrooms": 0,
+        "bathrooms": 0,
+        "garage": 0,
+        "area": 800,
+        "coveredArea": 0
+      },
+      "description": "Terreno de 800m2 en barrio cerrado premium. Lote en esquina, arbolado. Ideal para construcción a medida.",
+      "amenities": ["seguridad 24hs", "club house", "canchas"],
+      "images": ["terreno10-1.jpg", "terreno10-2.jpg"],
+      "featured": false,
+      "status": "disponible",
+      "createdAt": "2024-01-02"
+    },
+    {
+      "id": 11,
+      "title": "Dúplex en Nuñez",
+      "type": "departamento",
+      "operation": "venta",
+      "price": 165000,
+      "currency": "USD",
+      "location": {
+        "neighborhood": "Nuñez",
+        "city": "Buenos Aires",
+        "address": "Av. del Libertador 7800"
+      },
+      "features": {
+        "bedrooms": 3,
+        "bathrooms": 2,
+        "garage": 1,
+        "area": 130,
+        "coveredArea": 120
+      },
+      "description": "Hermoso dúplex en planta baja con jardín propio. 3 dormitorios, 2 baños, cocina integrada. A estrenar.",
+      "amenities": ["jardín", "parrilla", "seguridad 24hs"],
+      "images": ["duplex11-1.jpg", "duplex11-2.jpg", "duplex11-3.jpg"],
+      "featured": true,
+      "status": "disponible",
+      "createdAt": "2024-01-11"
+    },
+    {
+      "id": 12,
+      "title": "Departamento en San Telmo",
+      "type": "departamento",
+      "operation": "alquiler",
+      "price": 320000,
+      "currency": "ARS",
+      "location": {
+        "neighborhood": "San Telmo",
+        "city": "Buenos Aires",
+        "address": "Defensa 800"
+      },
+      "features": {
+        "bedrooms": 2,
+        "bathrooms": 1,
+        "garage": 0,
+        "area": 65,
+        "coveredArea": 65
+      },
+      "description": "Departamento con encanto en edificio histórico reciclado. Techos altos, pisos originales. Cerca de Plaza Dorrego.",
+      "amenities": ["ascensor"],
+      "images": ["depto12-1.jpg", "depto12-2.jpg"],
+      "featured": false,
+      "status": "disponible",
+      "createdAt": "2024-01-06"
+    },
+    {
+      "id": 13,
+      "title": "Casa en Nordelta",
+      "type": "casa",
+      "operation": "venta",
+      "price": 420000,
+      "currency": "USD",
+      "location": {
+        "neighborhood": "Nordelta",
+        "city": "Tigre",
+        "address": "Barrio La Isla"
+      },
+      "features": {
+        "bedrooms": 4,
+        "bathrooms": 3,
+        "garage": 2,
+        "area": 450,
+        "coveredArea": 300
+      },
+      "description": "Casa de categoría en La Isla. 4 dormitorios en suite, living doble altura, muelle propio. Vista al lago.",
+      "amenities": ["pileta", "muelle", "jardín", "seguridad 24hs", "gimnasio"],
+      "images": ["casa13-1.jpg", "casa13-2.jpg", "casa13-3.jpg", "casa13-4.jpg"],
+      "featured": true,
+      "status": "disponible",
+      "createdAt": "2024-01-09"
+    },
+    {
+      "id": 14,
+      "title": "Loft en Palermo Soho",
+      "type": "departamento",
+      "operation": "alquiler",
+      "price": 550000,
+      "currency": "ARS",
+      "location": {
+        "neighborhood": "Palermo Soho",
+        "city": "Buenos Aires",
+        "address": "Armenia 1600"
+      },
+      "features": {
+        "bedrooms": 1,
+        "bathrooms": 1,
+        "garage": 0,
+        "area": 55,
+        "coveredArea": 55
+      },
+      "description": "Loft moderno con diseño de autor. Doble altura, entrepiso. Ubicación premium en el corazón de Palermo Soho.",
+      "amenities": ["terraza común"],
+      "images": ["loft14-1.jpg", "loft14-2.jpg"],
+      "featured": false,
+      "status": "disponible",
+      "createdAt": "2024-01-04"
+    },
+    {
+      "id": 15,
+      "title": "Departamento en Almagro",
+      "type": "departamento",
+      "operation": "venta",
+      "price": 89000,
+      "currency": "USD",
+      "location": {
+        "neighborhood": "Almagro",
+        "city": "Buenos Aires",
+        "address": "Av. Corrientes 4200"
+      },
+      "features": {
+        "bedrooms": 2,
+        "bathrooms": 1,
+        "garage": 0,
+        "area": 55,
+        "coveredArea": 55
+      },
+      "description": "Departamento de 2 ambientes al frente con balcón. Muy luminoso. A metros del subte B. Excelente precio.",
+      "amenities": ["ascensor", "balcón"],
+      "images": ["depto15-1.jpg", "depto15-2.jpg"],
+      "featured": false,
+      "status": "disponible",
+      "createdAt": "2024-01-01"
+    },
+    {
+      "id": 16,
+      "title": "Casa en Vicente López",
+      "type": "casa",
+      "operation": "alquiler",
+      "price": 1800,
+      "currency": "USD",
+      "location": {
+        "neighborhood": "Vicente López",
+        "city": "GBA Norte",
+        "address": "Av. Maipú 1500"
+      },
+      "features": {
+        "bedrooms": 4,
+        "bathrooms": 3,
+        "garage": 2,
+        "area": 300,
+        "coveredArea": 250
+      },
+      "description": "Amplia casa familiar en Vicente López. 4 dormitorios, jardín con pileta, quincho. Cerca del tren.",
+      "amenities": ["pileta", "quincho", "jardín", "alarma"],
+      "images": ["casa16-1.jpg", "casa16-2.jpg", "casa16-3.jpg"],
+      "featured": false,
+      "status": "disponible",
+      "createdAt": "2024-01-08"
+    },
+    {
+      "id": 17,
+      "title": "Cochera en Microcentro",
+      "type": "cochera",
+      "operation": "venta",
+      "price": 28000,
+      "currency": "USD",
+      "location": {
+        "neighborhood": "Microcentro",
+        "city": "Buenos Aires",
+        "address": "Lavalle 600"
+      },
+      "features": {
+        "bedrooms": 0,
+        "bathrooms": 0,
+        "garage": 1,
+        "area": 15,
+        "coveredArea": 15
+      },
+      "description": "Cochera fija cubierta en pleno microcentro. Edificio con seguridad 24hs. Excelente inversión.",
+      "amenities": ["seguridad 24hs"],
+      "images": ["cochera17-1.jpg"],
+      "featured": false,
+      "status": "disponible",
+      "createdAt": "2024-01-02"
+    },
+    {
+      "id": 18,
+      "title": "Penthouse en Las Cañitas",
+      "type": "departamento",
+      "operation": "venta",
+      "price": 290000,
+      "currency": "USD",
+      "location": {
+        "neighborhood": "Las Cañitas",
+        "city": "Buenos Aires",
+        "address": "Báez 300"
+      },
+      "features": {
+        "bedrooms": 3,
+        "bathrooms": 2,
+        "garage": 2,
+        "area": 180,
+        "coveredArea": 150
+      },
+      "description": "Espectacular penthouse con terraza de 30m2. Vista 360°. 3 dormitorios en suite. Edificio premium.",
+      "amenities": ["terraza", "parrilla", "gimnasio", "pileta", "seguridad 24hs"],
+      "images": ["pent18-1.jpg", "pent18-2.jpg", "pent18-3.jpg", "pent18-4.jpg"],
+      "featured": true,
+      "status": "disponible",
+      "createdAt": "2024-01-14"
+    },
+    {
+      "id": 19,
+      "title": "Departamento en Flores",
+      "type": "departamento",
+      "operation": "venta",
+      "price": 72000,
+      "currency": "USD",
+      "location": {
+        "neighborhood": "Flores",
+        "city": "Buenos Aires",
+        "address": "Av. Rivadavia 7200"
+      },
+      "features": {
+        "bedrooms": 2,
+        "bathrooms": 1,
+        "garage": 0,
+        "area": 50,
+        "coveredArea": 50
+      },
+      "description": "Departamento de 2 ambientes en excelente estado. Ubicación estratégica sobre avenida. Ideal primera vivienda.",
+      "amenities": ["ascensor"],
+      "images": ["depto19-1.jpg", "depto19-2.jpg"],
+      "featured": false,
+      "status": "disponible",
+      "createdAt": "2024-01-03"
+    },
+    {
+      "id": 20,
+      "title": "Casa en Olivos",
+      "type": "casa",
+      "operation": "venta",
+      "price": 245000,
+      "currency": "USD",
+      "location": {
+        "neighborhood": "Olivos",
+        "city": "GBA Norte",
+        "address": "Av. Maipú 2800"
+      },
+      "features": {
+        "bedrooms": 4,
+        "bathrooms": 2,
+        "garage": 1,
+        "area": 220,
+        "coveredArea": 180
+      },
+      "description": "Clásica casa de Olivos. 4 dormitorios, living comedor, jardín con parrilla. Zona residencial tranquila.",
+      "amenities": ["jardín", "parrilla", "alarma"],
+      "images": ["casa20-1.jpg", "casa20-2.jpg", "casa20-3.jpg"],
+      "featured": false,
+      "status": "disponible",
+      "createdAt": "2024-01-10"
+    },
+    {
+      "id": 21,
+      "title": "Estudio en Monserrat",
+      "type": "departamento",
+      "operation": "alquiler",
+      "price": 150000,
+      "currency": "ARS",
+      "location": {
+        "neighborhood": "Monserrat",
+        "city": "Buenos Aires",
+        "address": "Av. de Mayo 800"
+      },
+      "features": {
+        "bedrooms": 1,
+        "bathrooms": 1,
+        "garage": 0,
+        "area": 28,
+        "coveredArea": 28
+      },
+      "description": "Estudio profesional sobre Av. de Mayo. Edificio histórico. Ideal consultorio u oficina pequeña.",
+      "amenities": ["ascensor"],
+      "images": ["estudio21-1.jpg"],
+      "featured": false,
+      "status": "disponible",
+      "createdAt": "2024-01-01"
+    },
+    {
+      "id": 22,
+      "title": "Departamento en Colegiales",
+      "type": "departamento",
+      "operation": "venta",
+      "price": 115000,
+      "currency": "USD",
+      "location": {
+        "neighborhood": "Colegiales",
+        "city": "Buenos Aires",
+        "address": "Av. Federico Lacroze 3200"
+      },
+      "features": {
+        "bedrooms": 2,
+        "bathrooms": 1,
+        "garage": 1,
+        "area": 68,
+        "coveredArea": 65
+      },
+      "description": "Departamento 2 ambientes con cochera incluida. A estrenar. Excelente terminaciones. Cerca de todo.",
+      "amenities": ["sum", "laundry", "bicicletero"],
+      "images": ["depto22-1.jpg", "depto22-2.jpg", "depto22-3.jpg"],
+      "featured": false,
+      "status": "disponible",
+      "createdAt": "2024-01-11"
+    },
+    {
+      "id": 23,
+      "title": "Local en Belgrano",
+      "type": "local",
+      "operation": "venta",
+      "price": 180000,
+      "currency": "USD",
+      "location": {
+        "neighborhood": "Belgrano",
+        "city": "Buenos Aires",
+        "address": "Av. Cabildo 2000"
+      },
+      "features": {
+        "bedrooms": 0,
+        "bathrooms": 1,
+        "garage": 0,
+        "area": 85,
+        "coveredArea": 85
+      },
+      "description": "Local comercial sobre Cabildo. Gran vidriera, excelente visibilidad. Actualmente alquilado con renta.",
+      "amenities": ["aire acondicionado", "alarma"],
+      "images": ["local23-1.jpg", "local23-2.jpg"],
+      "featured": false,
+      "status": "disponible",
+      "createdAt": "2024-01-05"
+    },
+    {
+      "id": 24,
+      "title": "Casa Quinta en Escobar",
+      "type": "casa",
+      "operation": "venta",
+      "price": 195000,
+      "currency": "USD",
+      "location": {
+        "neighborhood": "Escobar",
+        "city": "GBA Norte",
+        "address": "Country El Cazador"
+      },
+      "features": {
+        "bedrooms": 3,
+        "bathrooms": 2,
+        "garage": 2,
+        "area": 2500,
+        "coveredArea": 200
+      },
+      "description": "Casa quinta con amplio parque de 2500m2. Pileta, quincho, cancha de tenis. Ideal para descanso familiar.",
+      "amenities": ["pileta", "quincho", "cancha de tenis", "parque", "seguridad 24hs"],
+      "images": ["quinta24-1.jpg", "quinta24-2.jpg", "quinta24-3.jpg", "quinta24-4.jpg"],
+      "featured": false,
+      "status": "disponible",
+      "createdAt": "2024-01-07"
+    },
+    {
+      "id": 25,
+      "title": "Departamento en Barracas",
+      "type": "departamento",
+      "operation": "venta",
+      "price": 95000,
+      "currency": "USD",
+      "location": {
+        "neighborhood": "Barracas",
+        "city": "Buenos Aires",
+        "address": "Av. Montes de Oca 1500"
+      },
+      "features": {
+        "bedrooms": 3,
+        "bathrooms": 1,
+        "garage": 0,
+        "area": 80,
+        "coveredArea": 80
+      },
+      "description": "Amplio 3 ambientes en Barracas. Zona en desarrollo con excelente potencial de valorización. Muy luminoso.",
+      "amenities": ["ascensor", "balcón"],
+      "images": ["depto25-1.jpg", "depto25-2.jpg"],
+      "featured": false,
+      "status": "disponible",
+      "createdAt": "2024-01-04"
+    }
+  ],
+  "propertyTypes": [
+    {"id": "casa", "label": "Casa"},
+    {"id": "departamento", "label": "Departamento"},
+    {"id": "ph", "label": "PH"},
+    {"id": "local", "label": "Local Comercial"},
+    {"id": "oficina", "label": "Oficina"},
+    {"id": "terreno", "label": "Terreno"},
+    {"id": "cochera", "label": "Cochera"}
+  ],
+  "operations": [
+    {"id": "venta", "label": "Venta"},
+    {"id": "alquiler", "label": "Alquiler"}
+  ],
+  "neighborhoods": [
+    "Barrio Norte", "Palermo", "Villa Crespo", "Recoleta", "Belgrano",
+    "Caballito", "Microcentro", "Puerto Madero", "Retiro", "Pilar",
+    "Nuñez", "San Telmo", "Nordelta", "Palermo Soho", "Almagro",
+    "Vicente López", "Las Cañitas", "Flores", "Olivos", "Monserrat",
+    "Colegiales", "Escobar", "Barracas"
+  ]
+};
