@@ -956,7 +956,7 @@
               </div>
 
               <div class="form-group full-width">
-                <label>Imagenes (maximo 5)</label>
+                <label>Imagenes (maximo 20)</label>
                 <div class="image-upload" id="imageUpload">
                   <svg class="image-upload__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
@@ -1018,6 +1018,10 @@
     let editingId = null;
     let deleteId = null;
 
+    // Expose uploadedImages for testing/debugging
+    window.getUploadedImages = () => uploadedImages;
+    window.setUploadedImages = (images) => { uploadedImages = images; };
+
     // Initialize
     document.addEventListener('DOMContentLoaded', () => {
       checkAuth();
@@ -1058,23 +1062,45 @@
 
     // Properties Management
     function loadProperties() {
-      const stored = localStorage.getItem(STORAGE_KEY);
-      if (stored) {
-        properties = JSON.parse(stored);
-      } else {
-        // Load default properties from PROPERTIES_DATA if available
-        if (window.PROPERTIES_DATA && window.PROPERTIES_DATA.properties) {
-          properties = window.PROPERTIES_DATA.properties;
-          saveProperties();
+      try {
+        const stored = localStorage.getItem(STORAGE_KEY);
+        if (stored) {
+          properties = JSON.parse(stored);
+          console.log('Loaded properties from localStorage:', properties.length);
+        } else {
+          // Load default properties from PROPERTIES_DATA if available
+          if (window.PROPERTIES_DATA && window.PROPERTIES_DATA.properties) {
+            properties = [...window.PROPERTIES_DATA.properties];
+            saveProperties();
+            console.log('Loaded default properties:', properties.length);
+          } else {
+            properties = [];
+            console.log('No properties found, starting with empty array');
+          }
         }
+      } catch (error) {
+        console.error('Error loading properties:', error);
+        properties = [];
       }
     }
 
     function saveProperties() {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(properties));
-      // Also update the global for the main site
-      if (window.PROPERTIES_DATA) {
-        window.PROPERTIES_DATA.properties = properties;
+      try {
+        const dataToSave = JSON.stringify(properties);
+        localStorage.setItem(STORAGE_KEY, dataToSave);
+        console.log('Properties saved to localStorage, count:', properties.length);
+        // Also update the global for the main site
+        if (window.PROPERTIES_DATA) {
+          window.PROPERTIES_DATA.properties = properties;
+        }
+        return true;
+      } catch (error) {
+        console.error('Error saving to localStorage:', error);
+        // If localStorage is full, try to alert the user
+        if (error.name === 'QuotaExceededError' || error.message.includes('quota')) {
+          showToast('Error: No hay espacio suficiente para guardar. Intenta con menos imagenes.', 'error');
+        }
+        return false;
       }
     }
 
@@ -1089,16 +1115,29 @@
         ...data,
         createdAt: new Date().toISOString().split('T')[0]
       };
+      console.log('Adding property with id:', property.id);
       properties.unshift(property);
-      saveProperties();
+      const saved = saveProperties();
+      if (!saved) {
+        // Rollback if save failed
+        properties.shift();
+        return null;
+      }
       return property;
     }
 
     function updateProperty(id, data) {
       const index = properties.findIndex(p => p.id === id);
       if (index !== -1) {
+        const backup = { ...properties[index] };
         properties[index] = { ...properties[index], ...data };
-        saveProperties();
+        const saved = saveProperties();
+        if (!saved) {
+          // Rollback if save failed
+          properties[index] = backup;
+          return null;
+        }
+        console.log('Property updated:', properties[index]);
         return properties[index];
       }
       return null;
@@ -1224,50 +1263,72 @@
     function handleSubmit(e) {
       e.preventDefault();
 
-      const data = {
-        title: document.getElementById('title').value,
-        type: document.getElementById('type').value,
-        operation: document.getElementById('operation').value,
-        price: parseInt(document.getElementById('price').value),
-        currency: document.getElementById('currency').value,
-        location: {
-          neighborhood: document.getElementById('neighborhood').value,
-          city: document.getElementById('city').value,
-          address: document.getElementById('address').value || ''
-        },
-        features: {
-          bedrooms: parseInt(document.getElementById('bedrooms').value) || 0,
-          bathrooms: parseInt(document.getElementById('bathrooms').value) || 0,
-          garage: parseInt(document.getElementById('garage').value) || 0,
-          area: parseInt(document.getElementById('area').value) || 0,
-          coveredArea: parseInt(document.getElementById('coveredArea').value) || 0
-        },
-        description: document.getElementById('description').value,
-        amenities: Array.from(document.querySelectorAll('input[name="amenities"]:checked')).map(cb => cb.value),
-        images: uploadedImages.length > 0 ? uploadedImages : ['placeholder.jpg'],
-        featured: document.getElementById('featured').value === 'true',
-        status: 'disponible'
-      };
+      try {
+        const data = {
+          title: document.getElementById('title').value.trim(),
+          type: document.getElementById('type').value,
+          operation: document.getElementById('operation').value,
+          price: parseInt(document.getElementById('price').value) || 0,
+          currency: document.getElementById('currency').value,
+          location: {
+            neighborhood: document.getElementById('neighborhood').value.trim(),
+            city: document.getElementById('city').value.trim(),
+            address: document.getElementById('address').value.trim() || ''
+          },
+          features: {
+            bedrooms: parseInt(document.getElementById('bedrooms').value) || 0,
+            bathrooms: parseInt(document.getElementById('bathrooms').value) || 0,
+            garage: parseInt(document.getElementById('garage').value) || 0,
+            area: parseInt(document.getElementById('area').value) || 0,
+            coveredArea: parseInt(document.getElementById('coveredArea').value) || 0
+          },
+          description: document.getElementById('description').value.trim(),
+          amenities: Array.from(document.querySelectorAll('input[name="amenities"]:checked')).map(cb => cb.value),
+          images: uploadedImages.length > 0 ? [...uploadedImages] : [],
+          featured: document.getElementById('featured').value === 'true',
+          status: 'disponible'
+        };
 
-      if (editingId) {
-        updateProperty(editingId, data);
-        showToast('Propiedad actualizada correctamente', 'success');
-      } else {
-        addProperty(data);
-        showToast('Propiedad agregada correctamente', 'success');
+        // Validate required fields
+        if (!data.title || !data.type || !data.operation || !data.price || !data.location.neighborhood || !data.location.city || !data.description) {
+          showToast('Por favor completa todos los campos requeridos', 'error');
+          return;
+        }
+
+        console.log('Saving property:', data);
+        console.log('Current properties count:', properties.length);
+
+        if (editingId) {
+          const updated = updateProperty(editingId, data);
+          if (updated) {
+            showToast('Propiedad actualizada correctamente', 'success');
+          } else {
+            showToast('Error al actualizar la propiedad', 'error');
+            return;
+          }
+        } else {
+          const added = addProperty(data);
+          console.log('Property added:', added);
+          showToast('Propiedad agregada correctamente', 'success');
+        }
+
+        console.log('Properties after save:', properties.length);
+
+        resetForm();
+        renderProperties();
+        updateStats();
+
+        // Switch to list tab
+        document.querySelector('[data-tab="list"]').click();
+      } catch (error) {
+        console.error('Error saving property:', error);
+        showToast('Error al guardar: ' + error.message, 'error');
       }
-
-      resetForm();
-      renderProperties();
-      updateStats();
-
-      // Switch to list tab
-      document.querySelector('[data-tab="list"]').click();
     }
 
     function handleImageUpload(e) {
       const files = Array.from(e.target.files);
-      const maxFiles = 5;
+      const maxFiles = 20;
       const maxSize = 10 * 1024 * 1024; // 10MB
 
       if (uploadedImages.length + files.length > maxFiles) {
@@ -1296,12 +1357,20 @@
 
     function renderImagePreviews() {
       const container = document.getElementById('imagePreview');
-      container.innerHTML = uploadedImages.map((img, index) => `
-        <div class="image-preview__item">
-          <img src="${img}" alt="Preview ${index + 1}">
-          <button type="button" class="image-preview__remove" onclick="removeImage(${index})">&times;</button>
-        </div>
-      `).join('');
+      container.innerHTML = uploadedImages.map((img, index) => {
+        // Handle both base64 and file path images
+        let imgSrc = img;
+        if (!img.startsWith('data:') && !img.startsWith('http')) {
+          // It's a local file path
+          imgSrc = `assets/images/properties/${img}`;
+        }
+        return `
+          <div class="image-preview__item">
+            <img src="${imgSrc}" alt="Preview ${index + 1}" onerror="this.src='https://placehold.co/120x120/e5e7eb/9ca3af?text=${index + 1}'">
+            <button type="button" class="image-preview__remove" onclick="removeImage(${index})">&times;</button>
+          </div>
+        `;
+      }).join('');
     }
 
     function removeImage(index) {
@@ -1338,8 +1407,8 @@
         cb.checked = property.amenities.includes(cb.value);
       });
 
-      // Images
-      uploadedImages = property.images.filter(img => img.startsWith('data:'));
+      // Images - load all images (both base64 and placeholders)
+      uploadedImages = property.images ? [...property.images] : [];
       renderImagePreviews();
 
       // Update UI
