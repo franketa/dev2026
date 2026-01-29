@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Estudio de Arquitectura y Diseño de Interiores - Transformamos espacios en experiencias únicas">
+    <meta name="keywords" content="arquitectura, diseño de interiores, estudio, proyectos arquitectónicos">
+    <title>Estudio Cata | Arquitectura & Diseño de Interiores</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header" id="header">
+        <div class="container">
+            <nav class="nav">
+                <a href="#" class="logo">
+                    <span class="logo-text">ESTUDIO</span>
+                    <span class="logo-accent">CATA</span>
+                </a>
+
+                <button class="nav-toggle" id="navToggle" aria-label="Menú">
+                    <span class="hamburger"></span>
+                </button>
+
+                <ul class="nav-menu" id="navMenu">
+                    <li><a href="#inicio" class="nav-link active">Inicio</a></li>
+                    <li><a href="#servicios" class="nav-link">Servicios</a></li>
+                    <li><a href="#portfolio" class="nav-link">Portfolio</a></li>
+                    <li><a href="#nosotros" class="nav-link">Nosotros</a></li>
+                    <li><a href="#contacto" class="nav-link nav-link-cta">Contacto</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero" id="inicio">
+        <div class="hero-background">
+            <div class="hero-overlay"></div>
+            <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1920&q=80" alt="Arquitectura moderna" class="hero-image">
+        </div>
+        <div class="container">
+            <div class="hero-content">
+                <span class="hero-subtitle">Arquitectura & Diseño de Interiores</span>
+                <h1 class="hero-title">Transformamos espacios en experiencias únicas</h1>
+                <p class="hero-description">Creamos ambientes que reflejan tu esencia, combinando funcionalidad, estética y confort en cada proyecto.</p>
+                <div class="hero-buttons">
+                    <a href="#servicios" class="btn btn-primary">Ver Servicios</a>
+                    <a href="#portfolio" class="btn btn-secondary">Explorar Portfolio</a>
+                </div>
+            </div>
+        </div>
+        <a href="#servicios" class="scroll-indicator">
+            <span class="scroll-text">Scroll</span>
+            <span class="scroll-line"></span>
+        </a>
+    </section>
+
+    <!-- Servicios / Paquetes Section -->
+    <section class="services" id="servicios">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-subtitle">Nuestros Servicios</span>
+                <h2 class="section-title">Paquetes de Diseño</h2>
+                <p class="section-description">Ofrecemos soluciones integrales adaptadas a tus necesidades y presupuesto</p>
+            </div>
+
+            <div class="services-grid">
+                <!-- Paquete 1 -->
+                <article class="service-card">
+                    <div class="service-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                            <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                        </svg>
+                    </div>
+                    <span class="service-tag">Básico</span>
+                    <h3 class="service-title">Consultoría Express</h3>
+                    <p class="service-description">Asesoramiento inicial para definir el estilo y las posibilidades de tu espacio. Incluye visita técnica y propuesta conceptual.</p>
+                    <ul class="service-features">
+                        <li>Visita técnica al espacio</li>
+                        <li>Análisis de necesidades</li>
+                        <li>Propuesta conceptual</li>
+                        <li>Moodboard de inspiración</li>
+                    </ul>
+                    <a href="#contacto" class="btn btn-outline" data-package="Consultoría Express">Solicitar</a>
+                </article>
+
+                <!-- Paquete 2 -->
+                <article class="service-card featured">
+                    <div class="service-badge">Más Popular</div>
+                    <div class="service-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                            <line x1="3" y1="9" x2="21" y2="9"></line>
+                            <line x1="9" y1="21" x2="9" y2="9"></line>
+                        </svg>
+                    </div>
+                    <span class="service-tag">Recomendado</span>
+                    <h3 class="service-title">Diseño Integral</h3>
+                    <p class="service-description">Proyecto completo de diseño de interiores con planos, renders 3D y especificaciones técnicas detalladas.</p>
+                    <ul class="service-features">
+                        <li>Todo lo del plan Básico</li>
+                        <li>Planos técnicos detallados</li>
+                        <li>Renders 3D fotorrealistas</li>
+                        <li>Selección de materiales</li>
+                        <li>Presupuesto de obra</li>
+                    </ul>
+                    <a href="#contacto" class="btn btn-primary" data-package="Diseño Integral">Solicitar</a>
+                </article>
+
+                <!-- Paquete 3 -->
+                <article class="service-card">
+                    <div class="service-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+                            <polyline points="2 17 12 22 22 17"></polyline>
+                            <polyline points="2 12 12 17 22 12"></polyline>
+                        </svg>
+                    </div>
+                    <span class="service-tag">Profesional</span>
+                    <h3 class="service-title">Proyecto Ejecutivo</h3>
+                    <p class="service-description">Desarrollo completo del proyecto con documentación técnica para la ejecución de obra y seguimiento.</p>
+                    <ul class="service-features">
+                        <li>Todo lo del plan Integral</li>
+                        <li>Documentación ejecutiva</li>
+                        <li>Coordinación con proveedores</li>
+                        <li>Visitas de seguimiento</li>
+                    </ul>
+                    <a href="#contacto" class="btn btn-outline" data-package="Proyecto Ejecutivo">Solicitar</a>
+                </article>
+
+                <!-- Paquete 4 -->
+                <article class="service-card">
+                    <div class="service-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+                            <line x1="2" y1="12" x2="22" y2="12"></line>
+                        </svg>
+                    </div>
+                    <span class="service-tag">Premium</span>
+                    <h3 class="service-title">Llave en Mano</h3>
+                    <p class="service-description">Servicio integral desde el diseño hasta la entrega final. Nos encargamos de todo para que solo disfrutes el resultado.</p>
+                    <ul class="service-features">
+                        <li>Todo lo del plan Ejecutivo</li>
+                        <li>Dirección de obra completa</li>
+                        <li>Gestión de contratistas</li>
+                        <li>Decoración y ambientación</li>
+                        <li>Entrega llave en mano</li>
+                    </ul>
+                    <a href="#contacto" class="btn btn-outline" data-package="Llave en Mano">Solicitar</a>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <!-- Portfolio Section -->
+    <section class="portfolio" id="portfolio">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-subtitle">Nuestro Trabajo</span>
+                <h2 class="section-title">Portfolio de Proyectos</h2>
+                <p class="section-description">Cada proyecto cuenta una historia única de transformación y diseño</p>
+            </div>
+
+            <div class="portfolio-grid">
+                <article class="portfolio-item portfolio-item-large">
+                    <div class="portfolio-image">
+                        <img src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&q=80" alt="Residencia Moderna" loading="lazy">
+                    </div>
+                    <div class="portfolio-overlay">
+                        <span class="portfolio-category">Residencial</span>
+                        <h3 class="portfolio-title">Residencia Moderna</h3>
+                        <p class="portfolio-description">Diseño contemporáneo con amplios espacios abiertos</p>
+                    </div>
+                </article>
+
+                <article class="portfolio-item">
+                    <div class="portfolio-image">
+                        <img src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=600&q=80" alt="Loft Urbano" loading="lazy">
+                    </div>
+                    <div class="portfolio-overlay">
+                        <span class="portfolio-category">Interiores</span>
+                        <h3 class="portfolio-title">Loft Urbano</h3>
+                        <p class="portfolio-description">Espacio industrial renovado</p>
+                    </div>
+                </article>
+
+                <article class="portfolio-item">
+                    <div class="portfolio-image">
+                        <img src="https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=600&q=80" alt="Casa de Campo" loading="lazy">
+                    </div>
+                    <div class="portfolio-overlay">
+                        <span class="portfolio-category">Residencial</span>
+                        <h3 class="portfolio-title">Casa de Campo</h3>
+                        <p class="portfolio-description">Integración con la naturaleza</p>
+                    </div>
+                </article>
+
+                <article class="portfolio-item">
+                    <div class="portfolio-image">
+                        <img src="https://images.unsplash.com/photo-1600585154526-990dced4db0d?w=600&q=80" alt="Oficina Corporativa" loading="lazy">
+                    </div>
+                    <div class="portfolio-overlay">
+                        <span class="portfolio-category">Comercial</span>
+                        <h3 class="portfolio-title">Oficina Corporativa</h3>
+                        <p class="portfolio-description">Espacios de trabajo modernos</p>
+                    </div>
+                </article>
+
+                <article class="portfolio-item portfolio-item-wide">
+                    <div class="portfolio-image">
+                        <img src="https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=1000&q=80" alt="Villa Contemporánea" loading="lazy">
+                    </div>
+                    <div class="portfolio-overlay">
+                        <span class="portfolio-category">Residencial</span>
+                        <h3 class="portfolio-title">Villa Contemporánea</h3>
+                        <p class="portfolio-description">Lujo y confort en armonía con el entorno</p>
+                    </div>
+                </article>
+
+                <article class="portfolio-item">
+                    <div class="portfolio-image">
+                        <img src="https://images.unsplash.com/photo-1600573472592-401b489a3cdc?w=600&q=80" alt="Cocina Gourmet" loading="lazy">
+                    </div>
+                    <div class="portfolio-overlay">
+                        <span class="portfolio-category">Interiores</span>
+                        <h3 class="portfolio-title">Cocina Gourmet</h3>
+                        <p class="portfolio-description">Funcionalidad y elegancia</p>
+                    </div>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <!-- Nosotros Section -->
+    <section class="about" id="nosotros">
+        <div class="container">
+            <div class="about-grid">
+                <div class="about-images">
+                    <div class="about-image-main">
+                        <img src="https://images.unsplash.com/photo-1600566753086-00f18fb6b3ea?w=600&q=80" alt="Nuestro estudio" loading="lazy">
+                    </div>
+                    <div class="about-image-secondary">
+                        <img src="https://images.unsplash.com/photo-1600585154363-67eb9e2e2099?w=400&q=80" alt="Proceso de diseño" loading="lazy">
+                    </div>
+                </div>
+
+                <div class="about-content">
+                    <span class="section-subtitle">Sobre Nosotros</span>
+                    <h2 class="section-title">Diseñamos espacios que inspiran</h2>
+                    <p class="about-text">Somos un estudio de arquitectura y diseño de interiores apasionado por crear espacios que transforman la vida de las personas. Cada proyecto es una oportunidad única de materializar sueños y superar expectativas.</p>
+                    <p class="about-text">Nuestro enfoque combina creatividad, funcionalidad y atención al detalle, asegurando que cada espacio refleje la personalidad y necesidades de nuestros clientes.</p>
+
+                    <div class="about-stats">
+                        <div class="stat">
+                            <span class="stat-number">150+</span>
+                            <span class="stat-label">Proyectos Realizados</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-number">10</span>
+                            <span class="stat-label">Años de Experiencia</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-number">100%</span>
+                            <span class="stat-label">Clientes Satisfechos</span>
+                        </div>
+                    </div>
+
+                    <a href="#contacto" class="btn btn-primary">Trabajemos Juntos</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contacto Section -->
+    <section class="contact" id="contacto">
+        <div class="container">
+            <div class="contact-grid">
+                <div class="contact-info">
+                    <span class="section-subtitle">Contacto</span>
+                    <h2 class="section-title">Hablemos de tu proyecto</h2>
+                    <p class="contact-description">Estamos listos para escuchar tus ideas y convertirlas en realidad. Contáctanos para una consulta inicial sin compromiso.</p>
+
+                    <div class="contact-methods">
+                        <div class="contact-method">
+                            <div class="contact-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                    <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+                                </svg>
+                            </div>
+                            <div class="contact-method-info">
+                                <span class="contact-method-label">Teléfono</span>
+                                <a href="tel:+5491112345678" class="contact-method-value">+54 9 11 1234-5678</a>
+                            </div>
+                        </div>
+
+                        <div class="contact-method">
+                            <div class="contact-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                                    <polyline points="22,6 12,13 2,6"></polyline>
+                                </svg>
+                            </div>
+                            <div class="contact-method-info">
+                                <span class="contact-method-label">Email</span>
+                                <a href="mailto:hola@estudiocata.com" class="contact-method-value">hola@estudiocata.com</a>
+                            </div>
+                        </div>
+
+                        <div class="contact-method">
+                            <div class="contact-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                                    <circle cx="12" cy="10" r="3"></circle>
+                                </svg>
+                            </div>
+                            <div class="contact-method-info">
+                                <span class="contact-method-label">Ubicación</span>
+                                <span class="contact-method-value">Buenos Aires, Argentina</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="social-links">
+                        <a href="#" class="social-link" aria-label="Instagram">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+                                <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+                                <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+                            </svg>
+                        </a>
+                        <a href="#" class="social-link" aria-label="Pinterest">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <path d="M8 12c0-2.2 1.8-4 4-4s4 1.8 4 4-1.8 4-4 4"></path>
+                                <path d="M12 12l-2 6"></path>
+                            </svg>
+                        </a>
+                        <a href="#" class="social-link" aria-label="LinkedIn">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path>
+                                <rect x="2" y="9" width="4" height="12"></rect>
+                                <circle cx="4" cy="4" r="2"></circle>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+
+                <form class="contact-form" id="contactForm">
+                    <div class="form-group">
+                        <label for="name" class="form-label">Nombre completo</label>
+                        <input type="text" id="name" name="name" class="form-input" placeholder="Tu nombre" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email" class="form-label">Correo electrónico</label>
+                        <input type="email" id="email" name="email" class="form-input" placeholder="tu@email.com" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="phone" class="form-label">Teléfono</label>
+                        <input type="tel" id="phone" name="phone" class="form-input" placeholder="+54 9 11 1234-5678">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="package" class="form-label">Paquete de interés</label>
+                        <select id="package" name="package" class="form-input form-select">
+                            <option value="">Selecciona un paquete</option>
+                            <option value="consultoria">Consultoría Express</option>
+                            <option value="integral">Diseño Integral</option>
+                            <option value="ejecutivo">Proyecto Ejecutivo</option>
+                            <option value="llave-en-mano">Llave en Mano</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="message" class="form-label">Mensaje</label>
+                        <textarea id="message" name="message" class="form-input form-textarea" placeholder="Cuéntanos sobre tu proyecto..." rows="4" required></textarea>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-full">Enviar Mensaje</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <a href="#" class="logo">
+                        <span class="logo-text">ESTUDIO</span>
+                        <span class="logo-accent">CATA</span>
+                    </a>
+                    <p class="footer-tagline">Arquitectura & Diseño de Interiores</p>
+                </div>
+
+                <nav class="footer-nav">
+                    <a href="#inicio">Inicio</a>
+                    <a href="#servicios">Servicios</a>
+                    <a href="#portfolio">Portfolio</a>
+                    <a href="#nosotros">Nosotros</a>
+                    <a href="#contacto">Contacto</a>
+                </nav>
+
+                <div class="footer-copyright">
+                    <p>&copy; 2026 Estudio Cata. Todos los derechos reservados.</p>
+                    <p>Desarrollado por <a href="https://venturebyte.xyz" target="_blank" rel="noopener">VentureByte</a></p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- WhatsApp Floating Button -->
+    <a href="https://wa.me/5491112345678?text=Hola!%20Me%20interesa%20conocer%20más%20sobre%20sus%20servicios%20de%20arquitectura" class="whatsapp-float" id="whatsappBtn" target="_blank" rel="noopener" aria-label="Contactar por WhatsApp">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+        </svg>
+        <span class="whatsapp-tooltip">¿Necesitas ayuda?</span>
+    </a>
+
+    <!-- Scripts -->
+    <script src="js/main.js"></script>
+</body>
+</html>
