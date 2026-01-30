@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="es-AR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="María Laura Rizzo - Productora de Seguros. Protegé tu futuro con asesoramiento personalizado. Seguros de vida, hogar, auto y más.">
+    <meta name="keywords" content="seguros, productora de seguros, seguros de vida, seguros de hogar, seguros de auto, asesor de seguros, Argentina">
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="María Laura Rizzo | Productora de Seguros">
+    <meta property="og:description" content="Protegé tu futuro con asesoramiento personalizado en seguros.">
+    <meta property="og:type" content="website">
+    <meta property="og:locale" content="es_AR">
+
+    <title>María Laura Rizzo | Productora de Seguros</title>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header" id="header">
+        <div class="header__container">
+            <a href="#" class="header__logo">
+                <svg class="header__logo-icon" viewBox="0 0 100 100" aria-hidden="true">
+                    <circle cx="50" cy="50" r="48" fill="none" stroke="currentColor" stroke-width="2" class="logo-circle"/>
+                    <path class="logo-tree" d="M50 85 C50 85 50 55 50 45 C50 35 40 30 35 25 C40 30 45 28 50 20 C55 28 60 30 65 25 C60 30 50 35 50 45 C50 55 50 85 50 85" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+                    <path class="logo-leaves" d="M50 45 C45 40 38 42 30 35 M50 45 C55 40 62 42 70 35 M50 35 C47 32 42 33 35 28 M50 35 C53 32 58 33 65 28 M50 28 C48 26 45 27 40 23 M50 28 C52 26 55 27 60 23" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+                <div class="header__logo-text">
+                    <span class="header__logo-name">María Laura Rizzo</span>
+                    <span class="header__logo-tagline">Productora de Seguros</span>
+                </div>
+            </a>
+
+            <button type="button" class="header__menu-toggle" id="menuToggle" aria-label="Abrir menú" aria-expanded="false">
+                <span class="header__menu-bar"></span>
+                <span class="header__menu-bar"></span>
+                <span class="header__menu-bar"></span>
+            </button>
+
+            <nav class="header__nav" id="mainNav" aria-label="Navegación principal">
+                <ul class="header__nav-list">
+                    <li><a href="#inicio" class="header__nav-link">Inicio</a></li>
+                    <li><a href="#servicios" class="header__nav-link">Servicios</a></li>
+                    <li><a href="#sobre-mi" class="header__nav-link">Sobre Mí</a></li>
+                    <li><a href="#testimonios" class="header__nav-link">Testimonios</a></li>
+                    <li><a href="#contacto" class="header__nav-link header__nav-link--cta">Contactar</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <!-- Hero Section -->
+        <section class="hero" id="inicio">
+            <div class="hero__background">
+                <div class="hero__pattern"></div>
+                <div class="hero__gradient"></div>
+            </div>
+            <div class="hero__container">
+                <div class="hero__content">
+                    <span class="hero__badge">Asesoramiento Personalizado</span>
+                    <h1 class="hero__title">
+                        Protegé tu futuro,<br>
+                        <span class="hero__title-accent">asegurá tu tranquilidad</span>
+                    </h1>
+                    <p class="hero__subtitle">
+                        Te acompaño en cada etapa para encontrar la cobertura perfecta que se adapte a tus necesidades y las de tu familia.
+                    </p>
+                    <div class="hero__actions">
+                        <a href="#contacto" class="btn btn--primary">
+                            <span>Solicitar Asesoramiento</span>
+                            <svg class="btn__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M5 12h14M12 5l7 7-7 7"/>
+                            </svg>
+                        </a>
+                        <a href="#servicios" class="btn btn--secondary">Conocer Servicios</a>
+                    </div>
+                </div>
+                <div class="hero__visual">
+                    <div class="hero__tree-container">
+                        <svg class="hero__tree" viewBox="0 0 200 200" aria-hidden="true">
+                            <defs>
+                                <linearGradient id="treeGradient" x1="0%" y1="100%" x2="0%" y2="0%">
+                                    <stop offset="0%" style="stop-color:var(--color-primary)"/>
+                                    <stop offset="100%" style="stop-color:var(--color-gold)"/>
+                                </linearGradient>
+                            </defs>
+                            <circle cx="100" cy="100" r="95" fill="none" stroke="url(#treeGradient)" stroke-width="3" class="tree-circle"/>
+                            <g class="tree-branches" stroke="url(#treeGradient)" stroke-width="4" stroke-linecap="round" fill="none">
+                                <path d="M100 170 C100 170 100 110 100 90"/>
+                                <path d="M100 90 C100 70 80 55 65 45" class="branch branch--1"/>
+                                <path d="M100 90 C100 70 120 55 135 45" class="branch branch--2"/>
+                                <path d="M100 75 C100 60 85 50 72 42" class="branch branch--3"/>
+                                <path d="M100 75 C100 60 115 50 128 42" class="branch branch--4"/>
+                                <path d="M100 60 C100 50 90 45 80 38" class="branch branch--5"/>
+                                <path d="M100 60 C100 50 110 45 120 38" class="branch branch--6"/>
+                                <path d="M100 50 C100 42 95 38 88 32" class="branch branch--7"/>
+                                <path d="M100 50 C100 42 105 38 112 32" class="branch branch--8"/>
+                            </g>
+                        </svg>
+                        <div class="hero__tree-glow"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="hero__scroll-indicator">
+                <span>Descubrí más</span>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 5v14M5 12l7 7 7-7"/>
+                </svg>
+            </div>
+        </section>
+
+        <!-- Stats Section -->
+        <section class="stats">
+            <div class="stats__container">
+                <div class="stats__item" data-animate="fade-up" data-delay="0">
+                    <span class="stats__number" data-count="15">0</span>
+                    <span class="stats__label">Años de Experiencia</span>
+                </div>
+                <div class="stats__divider"></div>
+                <div class="stats__item" data-animate="fade-up" data-delay="100">
+                    <span class="stats__number" data-count="500">0</span>
+                    <span class="stats__suffix">+</span>
+                    <span class="stats__label">Familias Protegidas</span>
+                </div>
+                <div class="stats__divider"></div>
+                <div class="stats__item" data-animate="fade-up" data-delay="200">
+                    <span class="stats__number" data-count="98">0</span>
+                    <span class="stats__suffix">%</span>
+                    <span class="stats__label">Clientes Satisfechos</span>
+                </div>
+                <div class="stats__divider"></div>
+                <div class="stats__item" data-animate="fade-up" data-delay="300">
+                    <span class="stats__number" data-count="24">0</span>
+                    <span class="stats__suffix">hs</span>
+                    <span class="stats__label">Disponibilidad</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Services Section -->
+        <section class="services" id="servicios">
+            <div class="services__container">
+                <header class="section-header">
+                    <span class="section-header__badge">Servicios</span>
+                    <h2 class="section-header__title">Coberturas a tu medida</h2>
+                    <p class="section-header__subtitle">
+                        Ofrezco una amplia gama de seguros para proteger lo que más valorás
+                    </p>
+                </header>
+
+                <div class="services__grid">
+                    <article class="service-card" data-animate="fade-up" data-delay="0">
+                        <div class="service-card__icon">
+                            <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M24 4L6 12v12c0 11 8 18 18 20 10-2 18-9 18-20V12L24 4z"/>
+                                <path d="M16 24l6 6 10-12"/>
+                            </svg>
+                        </div>
+                        <h3 class="service-card__title">Seguro de Vida</h3>
+                        <p class="service-card__description">
+                            Protección integral para vos y tu familia. Asegurá el bienestar económico de tus seres queridos ante cualquier imprevisto.
+                        </p>
+                        <a href="#contacto" class="service-card__link">
+                            Consultar
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M5 12h14M12 5l7 7-7 7"/>
+                            </svg>
+                        </a>
+                    </article>
+
+                    <article class="service-card" data-animate="fade-up" data-delay="100">
+                        <div class="service-card__icon">
+                            <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M8 44V20L24 8l16 12v24H8z"/>
+                                <path d="M18 44V30h12v14"/>
+                                <path d="M18 20h12"/>
+                            </svg>
+                        </div>
+                        <h3 class="service-card__title">Seguro de Hogar</h3>
+                        <p class="service-card__description">
+                            Tu casa es tu refugio. Protegela contra robos, incendios, daños climáticos y responsabilidad civil.
+                        </p>
+                        <a href="#contacto" class="service-card__link">
+                            Consultar
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M5 12h14M12 5l7 7-7 7"/>
+                            </svg>
+                        </a>
+                    </article>
+
+                    <article class="service-card" data-animate="fade-up" data-delay="200">
+                        <div class="service-card__icon">
+                            <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="6" y="14" width="36" height="22" rx="4"/>
+                                <circle cx="24" cy="25" r="6"/>
+                                <path d="M6 20h4M38 20h4"/>
+                                <path d="M14 38v4M34 38v4"/>
+                            </svg>
+                        </div>
+                        <h3 class="service-card__title">Seguro Automotor</h3>
+                        <p class="service-card__description">
+                            Cobertura completa para tu vehículo. Desde responsabilidad civil hasta todo riesgo con las mejores aseguradoras.
+                        </p>
+                        <a href="#contacto" class="service-card__link">
+                            Consultar
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M5 12h14M12 5l7 7-7 7"/>
+                            </svg>
+                        </a>
+                    </article>
+
+                    <article class="service-card" data-animate="fade-up" data-delay="300">
+                        <div class="service-card__icon">
+                            <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M24 4c-8 0-16 6-16 16 0 12 16 24 16 24s16-12 16-24c0-10-8-16-16-16z"/>
+                                <circle cx="24" cy="20" r="6"/>
+                            </svg>
+                        </div>
+                        <h3 class="service-card__title">Seguro de Viaje</h3>
+                        <p class="service-card__description">
+                            Viajá tranquilo por el mundo. Asistencia médica, equipaje, cancelaciones y mucho más para tus aventuras.
+                        </p>
+                        <a href="#contacto" class="service-card__link">
+                            Consultar
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M5 12h14M12 5l7 7-7 7"/>
+                            </svg>
+                        </a>
+                    </article>
+
+                    <article class="service-card" data-animate="fade-up" data-delay="400">
+                        <div class="service-card__icon">
+                            <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="6" y="8" width="36" height="32" rx="4"/>
+                                <path d="M6 18h36"/>
+                                <path d="M14 26h8M14 32h12"/>
+                            </svg>
+                        </div>
+                        <h3 class="service-card__title">ART / Riesgos del Trabajo</h3>
+                        <p class="service-card__description">
+                            Cumplí con la normativa laboral y protegé a tus empleados con coberturas de accidentes y enfermedades profesionales.
+                        </p>
+                        <a href="#contacto" class="service-card__link">
+                            Consultar
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M5 12h14M12 5l7 7-7 7"/>
+                            </svg>
+                        </a>
+                    </article>
+
+                    <article class="service-card" data-animate="fade-up" data-delay="500">
+                        <div class="service-card__icon">
+                            <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M24 4L4 14v4l20 10 20-10v-4L24 4z"/>
+                                <path d="M4 24v4l20 10 20-10v-4"/>
+                                <path d="M4 34v4l20 10 20-10v-4"/>
+                            </svg>
+                        </div>
+                        <h3 class="service-card__title">Seguros Integrales</h3>
+                        <p class="service-card__description">
+                            Soluciones personalizadas para comercios, PyMEs y empresas. Protegé tu negocio con coberturas a medida.
+                        </p>
+                        <a href="#contacto" class="service-card__link">
+                            Consultar
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M5 12h14M12 5l7 7-7 7"/>
+                            </svg>
+                        </a>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <!-- About Section -->
+        <section class="about" id="sobre-mi">
+            <div class="about__background">
+                <div class="about__pattern"></div>
+            </div>
+            <div class="about__container">
+                <div class="about__image-wrapper" data-animate="fade-right">
+                    <div class="about__image">
+                        <div class="about__image-placeholder">
+                            <svg viewBox="0 0 120 120" fill="none">
+                                <circle cx="60" cy="45" r="25" stroke="currentColor" stroke-width="2"/>
+                                <path d="M20 110c0-22 18-40 40-40s40 18 40 40" stroke="currentColor" stroke-width="2"/>
+                            </svg>
+                            <span>Foto Profesional</span>
+                        </div>
+                    </div>
+                    <div class="about__image-decoration"></div>
+                </div>
+                <div class="about__content" data-animate="fade-left">
+                    <span class="section-header__badge">Sobre Mí</span>
+                    <h2 class="about__title">Tu tranquilidad es mi compromiso</h2>
+                    <p class="about__text">
+                        Soy María Laura Rizzo, productora de seguros con más de 15 años de experiencia en el rubro.
+                        Mi vocación es acompañarte en cada etapa de tu vida, brindándote el asesoramiento que necesitás
+                        para tomar las mejores decisiones en materia de protección.
+                    </p>
+                    <p class="about__text">
+                        Trabajo con las principales compañías aseguradoras del país, lo que me permite ofrecerte
+                        las mejores opciones del mercado adaptadas a tu presupuesto y necesidades específicas.
+                    </p>
+                    <ul class="about__features">
+                        <li class="about__feature">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                                <path d="M5 12l5 5L20 7"/>
+                            </svg>
+                            <span>Atención personalizada y cercana</span>
+                        </li>
+                        <li class="about__feature">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                                <path d="M5 12l5 5L20 7"/>
+                            </svg>
+                            <span>Asesoramiento sin compromiso</span>
+                        </li>
+                        <li class="about__feature">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                                <path d="M5 12l5 5L20 7"/>
+                            </svg>
+                            <span>Disponibilidad las 24 horas para siniestros</span>
+                        </li>
+                        <li class="about__feature">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                                <path d="M5 12l5 5L20 7"/>
+                            </svg>
+                            <span>Gestión integral de pólizas</span>
+                        </li>
+                    </ul>
+                    <a href="#contacto" class="btn btn--primary">
+                        <span>Hablemos</span>
+                        <svg class="btn__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M5 12h14M12 5l7 7-7 7"/>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Process Section -->
+        <section class="process">
+            <div class="process__container">
+                <header class="section-header">
+                    <span class="section-header__badge">Proceso</span>
+                    <h2 class="section-header__title">¿Cómo trabajo?</h2>
+                    <p class="section-header__subtitle">
+                        Un proceso simple y transparente para encontrar tu seguro ideal
+                    </p>
+                </header>
+
+                <div class="process__steps">
+                    <div class="process__step" data-animate="fade-up" data-delay="0">
+                        <div class="process__step-number">01</div>
+                        <div class="process__step-content">
+                            <h3 class="process__step-title">Conversamos</h3>
+                            <p class="process__step-description">
+                                Nos ponemos en contacto para conocer tu situación, necesidades y objetivos de protección.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="process__connector"></div>
+
+                    <div class="process__step" data-animate="fade-up" data-delay="150">
+                        <div class="process__step-number">02</div>
+                        <div class="process__step-content">
+                            <h3 class="process__step-title">Analizo Opciones</h3>
+                            <p class="process__step-description">
+                                Evalúo las mejores alternativas del mercado para encontrar la cobertura perfecta para vos.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="process__connector"></div>
+
+                    <div class="process__step" data-animate="fade-up" data-delay="300">
+                        <div class="process__step-number">03</div>
+                        <div class="process__step-content">
+                            <h3 class="process__step-title">Te Presento Propuestas</h3>
+                            <p class="process__step-description">
+                                Te muestro las opciones con todos los detalles para que puedas tomar una decisión informada.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="process__connector"></div>
+
+                    <div class="process__step" data-animate="fade-up" data-delay="450">
+                        <div class="process__step-number">04</div>
+                        <div class="process__step-content">
+                            <h3 class="process__step-title">Te Acompaño Siempre</h3>
+                            <p class="process__step-description">
+                                Una vez contratado, estoy disponible para gestiones, siniestros y cualquier consulta que tengas.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Testimonials Section -->
+        <section class="testimonials" id="testimonios">
+            <div class="testimonials__background">
+                <div class="testimonials__pattern"></div>
+            </div>
+            <div class="testimonials__container">
+                <header class="section-header section-header--light">
+                    <span class="section-header__badge section-header__badge--light">Testimonios</span>
+                    <h2 class="section-header__title">Lo que dicen mis clientes</h2>
+                    <p class="section-header__subtitle">
+                        La confianza de quienes me eligieron es mi mayor orgullo
+                    </p>
+                </header>
+
+                <div class="testimonials__carousel" id="testimonialsCarousel">
+                    <div class="testimonials__track">
+                        <article class="testimonial-card">
+                            <div class="testimonial-card__quote">
+                                <svg viewBox="0 0 32 32" fill="currentColor">
+                                    <path d="M10 8c-3.3 0-6 2.7-6 6v10h10V14H8c0-1.1.9-2 2-2V8zm14 0c-3.3 0-6 2.7-6 6v10h10V14h-6c0-1.1.9-2 2-2V8z"/>
+                                </svg>
+                            </div>
+                            <p class="testimonial-card__text">
+                                "María Laura me ayudó a encontrar el seguro perfecto para mi familia. Su atención personalizada y su disponibilidad para resolver cualquier duda fueron excepcionales. La recomiendo 100%."
+                            </p>
+                            <footer class="testimonial-card__author">
+                                <div class="testimonial-card__avatar">
+                                    <span>CG</span>
+                                </div>
+                                <div class="testimonial-card__info">
+                                    <strong class="testimonial-card__name">Carolina González</strong>
+                                    <span class="testimonial-card__role">Cliente desde 2019</span>
+                                </div>
+                            </footer>
+                        </article>
+
+                        <article class="testimonial-card">
+                            <div class="testimonial-card__quote">
+                                <svg viewBox="0 0 32 32" fill="currentColor">
+                                    <path d="M10 8c-3.3 0-6 2.7-6 6v10h10V14H8c0-1.1.9-2 2-2V8zm14 0c-3.3 0-6 2.7-6 6v10h10V14h-6c0-1.1.9-2 2-2V8z"/>
+                                </svg>
+                            </div>
+                            <p class="testimonial-card__text">
+                                "Cuando tuve un siniestro con mi auto, María Laura se ocupó de todo. Su gestión fue impecable y me mantuvo informado en cada paso. Un servicio de primera."
+                            </p>
+                            <footer class="testimonial-card__author">
+                                <div class="testimonial-card__avatar">
+                                    <span>MR</span>
+                                </div>
+                                <div class="testimonial-card__info">
+                                    <strong class="testimonial-card__name">Martín Rodríguez</strong>
+                                    <span class="testimonial-card__role">Cliente desde 2017</span>
+                                </div>
+                            </footer>
+                        </article>
+
+                        <article class="testimonial-card">
+                            <div class="testimonial-card__quote">
+                                <svg viewBox="0 0 32 32" fill="currentColor">
+                                    <path d="M10 8c-3.3 0-6 2.7-6 6v10h10V14H8c0-1.1.9-2 2-2V8zm14 0c-3.3 0-6 2.7-6 6v10h10V14h-6c0-1.1.9-2 2-2V8z"/>
+                                </svg>
+                            </div>
+                            <p class="testimonial-card__text">
+                                "Contraté el seguro de mi PyME con María Laura y quedé muy conforme. Entendió perfectamente las necesidades de mi negocio y me ofreció una solución integral."
+                            </p>
+                            <footer class="testimonial-card__author">
+                                <div class="testimonial-card__avatar">
+                                    <span>LF</span>
+                                </div>
+                                <div class="testimonial-card__info">
+                                    <strong class="testimonial-card__name">Laura Fernández</strong>
+                                    <span class="testimonial-card__role">Cliente desde 2020</span>
+                                </div>
+                            </footer>
+                        </article>
+                    </div>
+
+                    <div class="testimonials__controls">
+                        <button type="button" class="testimonials__arrow testimonials__arrow--prev" aria-label="Testimonio anterior">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M19 12H5M12 19l-7-7 7-7"/>
+                            </svg>
+                        </button>
+                        <div class="testimonials__dots" id="testimonialsDots"></div>
+                        <button type="button" class="testimonials__arrow testimonials__arrow--next" aria-label="Testimonio siguiente">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M5 12h14M12 5l7 7-7 7"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact Section -->
+        <section class="contact" id="contacto">
+            <div class="contact__container">
+                <div class="contact__info" data-animate="fade-right">
+                    <span class="section-header__badge">Contacto</span>
+                    <h2 class="contact__title">¿Listo para proteger tu futuro?</h2>
+                    <p class="contact__subtitle">
+                        Escribime o llamame y te respondo a la brevedad. Sin compromiso, sin letra chica.
+                    </p>
+
+                    <div class="contact__methods">
+                        <a href="https://wa.me/5491123456789" class="contact__method contact__method--whatsapp" target="_blank" rel="noopener">
+                            <div class="contact__method-icon">
+                                <svg viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+                                </svg>
+                            </div>
+                            <div class="contact__method-content">
+                                <span class="contact__method-label">WhatsApp</span>
+                                <span class="contact__method-value">+54&nbsp;9&nbsp;11&nbsp;2345&#8209;6789</span>
+                            </div>
+                        </a>
+
+                        <a href="tel:+5491123456789" class="contact__method">
+                            <div class="contact__method-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"/>
+                                </svg>
+                            </div>
+                            <div class="contact__method-content">
+                                <span class="contact__method-label">Teléfono</span>
+                                <span class="contact__method-value">+54&nbsp;9&nbsp;11&nbsp;2345&#8209;6789</span>
+                            </div>
+                        </a>
+
+                        <a href="mailto:marialaura@segurosrizzo.com" class="contact__method">
+                            <div class="contact__method-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                                    <polyline points="22,6 12,13 2,6"/>
+                                </svg>
+                            </div>
+                            <div class="contact__method-content">
+                                <span class="contact__method-label">Email</span>
+                                <span class="contact__method-value">marialaura@segurosrizzo.com</span>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+
+                <form class="contact__form" id="contactForm" data-animate="fade-left">
+                    <h3 class="contact__form-title">Enviame tu consulta</h3>
+
+                    <div class="form-group">
+                        <label for="name" class="form-label">Nombre completo</label>
+                        <input type="text" id="name" name="name" class="form-input" placeholder="Tu nombre" required>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="email" class="form-label">Email</label>
+                            <input type="email" id="email" name="email" class="form-input" placeholder="tu@email.com" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="phone" class="form-label">Teléfono</label>
+                            <input type="tel" id="phone" name="phone" class="form-input" placeholder="+54 9 11 ...">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="service" class="form-label">¿Qué tipo de seguro te interesa?</label>
+                        <select id="service" name="service" class="form-select" required>
+                            <option value="" disabled selected>Seleccioná una opción</option>
+                            <option value="vida">Seguro de Vida</option>
+                            <option value="hogar">Seguro de Hogar</option>
+                            <option value="auto">Seguro Automotor</option>
+                            <option value="viaje">Seguro de Viaje</option>
+                            <option value="art">ART / Riesgos del Trabajo</option>
+                            <option value="integral">Seguros Integrales / Empresas</option>
+                            <option value="otro">Otro</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="message" class="form-label">Tu mensaje</label>
+                        <textarea id="message" name="message" class="form-textarea" rows="4" placeholder="Contame brevemente qué necesitás..." required></textarea>
+                    </div>
+
+                    <button type="submit" class="btn btn--primary btn--full">
+                        <span>Enviar Consulta</span>
+                        <svg class="btn__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/>
+                        </svg>
+                    </button>
+
+                    <p class="contact__form-note">
+                        Al enviar este formulario, aceptás ser contactada/o por María Laura Rizzo para recibir asesoramiento.
+                    </p>
+                </form>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer__container">
+            <div class="footer__brand">
+                <a href="#" class="footer__logo">
+                    <svg class="footer__logo-icon" viewBox="0 0 100 100" aria-hidden="true">
+                        <circle cx="50" cy="50" r="48" fill="none" stroke="currentColor" stroke-width="2"/>
+                        <path d="M50 85 C50 85 50 55 50 45 C50 35 40 30 35 25 C40 30 45 28 50 20 C55 28 60 30 65 25 C60 30 50 35 50 45 C50 55 50 85 50 85" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+                        <path d="M50 45 C45 40 38 42 30 35 M50 45 C55 40 62 42 70 35 M50 35 C47 32 42 33 35 28 M50 35 C53 32 58 33 65 28 M50 28 C48 26 45 27 40 23 M50 28 C52 26 55 27 60 23" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                    <span>María Laura Rizzo</span>
+                </a>
+                <p class="footer__tagline">Productora de Seguros</p>
+            </div>
+
+            <nav class="footer__nav" aria-label="Enlaces del pie de página">
+                <a href="#inicio">Inicio</a>
+                <a href="#servicios">Servicios</a>
+                <a href="#sobre-mi">Sobre Mí</a>
+                <a href="#testimonios">Testimonios</a>
+                <a href="#contacto">Contacto</a>
+            </nav>
+
+            <div class="footer__bottom">
+                <p class="footer__copyright">
+                    &copy; 2024 María Laura Rizzo. Todos los derechos reservados.
+                </p>
+                <p class="footer__legal">
+                    Matrícula SSN N° XXXX
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- WhatsApp Float Button -->
+    <a href="https://wa.me/5491123456789?text=Hola%20María%20Laura,%20me%20gustaría%20consultar%20sobre%20seguros"
+       class="whatsapp-float"
+       target="_blank"
+       rel="noopener"
+       aria-label="Contactar por WhatsApp">
+        <svg viewBox="0 0 24 24" fill="currentColor">
+            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+        </svg>
+        <span class="whatsapp-float__pulse"></span>
+    </a>
+
+    <!-- Scripts -->
+    <script src="assets/js/main.js"></script>
+</body>
+</html>
