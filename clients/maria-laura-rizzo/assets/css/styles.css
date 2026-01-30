@@ -287,19 +287,7 @@ h1, h2, h3, h4, h5, h6 {
 .header__logo-icon {
     width: 48px;
     height: 48px;
-    color: var(--color-primary);
-}
-
-.header__logo-icon .logo-circle {
-    stroke: var(--color-primary);
-}
-
-.header__logo-icon .logo-tree {
-    stroke: var(--color-gold);
-}
-
-.header__logo-icon .logo-leaves {
-    stroke: var(--color-primary);
+    object-fit: contain;
 }
 
 .header__logo-text {
@@ -537,27 +525,11 @@ h1, h2, h3, h4, h5, h6 {
 .hero__tree {
     width: 100%;
     height: 100%;
+    object-fit: contain;
+    animation: scaleIn 0.8s ease 0.5s forwards;
+    opacity: 0;
+    transform: scale(0.8);
 }
-
-.hero__tree .tree-circle {
-    stroke-dasharray: 600;
-    stroke-dashoffset: 600;
-    animation: drawCircle 1.5s ease 0.5s forwards;
-}
-
-.hero__tree .tree-branches path {
-    stroke-dasharray: 200;
-    stroke-dashoffset: 200;
-}
-
-.hero__tree .branch--1 { animation: drawBranch 0.8s ease 1s forwards; }
-.hero__tree .branch--2 { animation: drawBranch 0.8s ease 1.1s forwards; }
-.hero__tree .branch--3 { animation: drawBranch 0.8s ease 1.2s forwards; }
-.hero__tree .branch--4 { animation: drawBranch 0.8s ease 1.3s forwards; }
-.hero__tree .branch--5 { animation: drawBranch 0.8s ease 1.4s forwards; }
-.hero__tree .branch--6 { animation: drawBranch 0.8s ease 1.5s forwards; }
-.hero__tree .branch--7 { animation: drawBranch 0.8s ease 1.6s forwards; }
-.hero__tree .branch--8 { animation: drawBranch 0.8s ease 1.7s forwards; }
 
 .hero__tree-glow {
     position: absolute;
@@ -1495,15 +1467,14 @@ h1, h2, h3, h4, h5, h6 {
     }
 }
 
-@keyframes drawCircle {
-    to {
-        stroke-dashoffset: 0;
+@keyframes scaleIn {
+    from {
+        opacity: 0;
+        transform: scale(0.8);
     }
-}
-
-@keyframes drawBranch {
     to {
-        stroke-dashoffset: 0;
+        opacity: 1;
+        transform: scale(1);
     }
 }
 
