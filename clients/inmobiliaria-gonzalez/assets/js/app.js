@@ -172,7 +172,7 @@ function renderProperties() {
           </button>
         </div>
         <div class="property-card__content">
-          <p class="property-card__price">${formatPrice(property.price, property.currency)}</p>
+          <p class="property-card__price">${property.showPrice !== false ? formatPrice(property.price, property.currency) : 'Consultar'}</p>
           <h3 class="property-card__title">${property.title}</h3>
           <p class="property-card__location">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">

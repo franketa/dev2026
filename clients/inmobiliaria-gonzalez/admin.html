@@ -874,6 +874,9 @@
               <div class="form-group">
                 <label for="price">Precio *</label>
                 <input type="number" id="price" required placeholder="ej: 150000" min="0">
+                <label class="checkbox-label" style="margin-top: 0.5rem;">
+                  <input type="checkbox" id="showPrice" checked> Mostrar precio en el sitio
+                </label>
               </div>
 
               <div class="form-group">
@@ -1185,7 +1188,7 @@
 
       container.innerHTML = filtered.map(p => {
         const imageUrl = getPropertyImage(p);
-        const priceFormatted = formatPrice(p.price, p.currency);
+        const priceFormatted = p.showPrice !== false ? formatPrice(p.price, p.currency) : 'Consultar';
         const typeLabel = getTypeLabel(p.type);
 
         return `
@@ -1269,6 +1272,7 @@
           type: document.getElementById('type').value,
           operation: document.getElementById('operation').value,
           price: parseInt(document.getElementById('price').value) || 0,
+          showPrice: document.getElementById('showPrice').checked,
           currency: document.getElementById('currency').value,
           location: {
             neighborhood: document.getElementById('neighborhood').value.trim(),
@@ -1443,6 +1447,7 @@
       document.getElementById('type').value = property.type;
       document.getElementById('operation').value = property.operation;
       document.getElementById('price').value = property.price;
+      document.getElementById('showPrice').checked = property.showPrice !== false;
       document.getElementById('currency').value = property.currency;
       document.getElementById('neighborhood').value = property.location.neighborhood;
       document.getElementById('city').value = property.location.city;
