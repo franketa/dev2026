@@ -62,12 +62,15 @@ function debounce(func, wait) {
 }
 
 function getPropertyImage(property, index) {
-  // Check if property has base64 images (from admin panel)
+  // Use cover image first
+  if (property && property.coverImage) {
+    if (property.coverImage.startsWith('data:')) return property.coverImage;
+    return `assets/images/properties/${property.coverImage}`;
+  }
+  // Fallback to first gallery image
   if (property && property.images && property.images.length > 0) {
     const img = property.images[0];
-    if (img.startsWith('data:')) {
-      return img;
-    }
+    if (img.startsWith('data:')) return img;
   }
   // Fallback to local images (prop-1.jpg through prop-25.jpg)
   const imageNumber = (index % 25) + 1;
