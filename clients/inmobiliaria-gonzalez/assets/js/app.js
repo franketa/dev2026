@@ -62,12 +62,15 @@ function debounce(func, wait) {
 }
 
 function getPropertyImage(property, index) {
-  // Check if property has base64 images (from admin panel)
+  // Use cover image first
+  if (property && property.coverImage) {
+    if (property.coverImage.startsWith('data:')) return property.coverImage;
+    return `assets/images/properties/${property.coverImage}`;
+  }
+  // Fallback to first gallery image
   if (property && property.images && property.images.length > 0) {
     const img = property.images[0];
-    if (img.startsWith('data:')) {
-      return img;
-    }
+    if (img.startsWith('data:')) return img;
   }
   // Fallback to local images (prop-1.jpg through prop-25.jpg)
   const imageNumber = (index % 25) + 1;
@@ -172,7 +175,7 @@ function renderProperties() {
           </button>
         </div>
         <div class="property-card__content">
-          <p class="property-card__price">${formatPrice(property.price, property.currency)}</p>
+          <p class="property-card__price">${property.showPrice !== false ? formatPrice(property.price, property.currency) : 'Consultar'}</p>
           <h3 class="property-card__title">${property.title}</h3>
           <p class="property-card__location">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
