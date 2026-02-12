@@ -1179,6 +1179,469 @@ select {
     color: rgba(255, 255, 255, 0.6);
 }
 
+/*=============== HERO HOME (PARAGUAS) ===============*/
+.hero--home {
+    text-align: center;
+}
+
+.hero--home .hero__content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: calc(100vh - var(--header-height));
+    justify-content: center;
+    padding-bottom: 4rem;
+}
+
+.hero__data--center {
+    text-align: center;
+    max-width: 100%;
+}
+
+.hero__description--center {
+    max-width: 600px;
+    margin: 0 auto 3rem;
+}
+
+/*=============== LAWYER CARDS ===============*/
+.hero__lawyers {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.lawyer-card {
+    position: relative;
+    display: block;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    box-shadow: var(--shadow-xl);
+    transition: all var(--transition-base);
+}
+
+.lawyer-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4);
+}
+
+.lawyer-card__image {
+    position: relative;
+    aspect-ratio: 3/4;
+    background-color: var(--primary-color-light);
+}
+
+.lawyer-card__placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%);
+}
+
+.lawyer-card__placeholder i {
+    font-size: 5rem;
+    color: rgba(255, 255, 255, 0.3);
+}
+
+.lawyer-card__overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.8) 0%, transparent 60%);
+}
+
+.lawyer-card__content {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 2rem;
+    color: var(--white);
+    text-align: left;
+}
+
+.lawyer-card__name {
+    font-family: var(--font-heading);
+    font-size: 1.5rem;
+    font-weight: var(--fw-bold);
+    margin-bottom: 0.25rem;
+    color: var(--white);
+}
+
+.lawyer-card__role {
+    font-size: var(--fs-small);
+    color: rgba(255, 255, 255, 0.8);
+    margin-bottom: 1rem;
+}
+
+.lawyer-card__cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: var(--fs-small);
+    font-weight: var(--fw-semibold);
+    color: var(--secondary-color);
+    transition: gap var(--transition-fast);
+}
+
+.lawyer-card:hover .lawyer-card__cta {
+    gap: 0.75rem;
+}
+
+/*=============== TEAM SECTION ===============*/
+.team__grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+}
+
+.team__card {
+    background-color: var(--white);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    box-shadow: var(--shadow-md);
+    transition: all var(--transition-base);
+}
+
+.team__card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-xl);
+}
+
+.team__card-image {
+    aspect-ratio: 1/1;
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-color-light) 100%);
+}
+
+.team__card-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.team__card-placeholder i {
+    font-size: 4rem;
+    color: rgba(255, 255, 255, 0.3);
+}
+
+.team__card-content {
+    padding: 1.5rem;
+    text-align: center;
+}
+
+.team__card-name {
+    font-family: var(--font-body);
+    font-size: 1.125rem;
+    font-weight: var(--fw-semibold);
+    margin-bottom: 0.25rem;
+}
+
+.team__card-role {
+    font-size: var(--fs-small);
+    color: var(--text-color-light);
+    margin-bottom: 1rem;
+}
+
+.team__card-contact {
+    margin-bottom: 1rem;
+}
+
+.team__card-contact a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #25D366;
+    font-weight: var(--fw-medium);
+    transition: color var(--transition-fast);
+}
+
+.team__card-contact a:hover {
+    color: var(--primary-color);
+}
+
+.team__card--adjunta {
+    opacity: 0.9;
+}
+
+.team__card--adjunta .team__card-image {
+    background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%);
+}
+
+/*=============== CITIES GRID 3 ===============*/
+.cities__grid--3 {
+    grid-template-columns: repeat(3, 1fr);
+}
+
+.city__cp {
+    font-size: var(--fs-small);
+    color: var(--text-color-light);
+    margin-bottom: 1rem;
+}
+
+/*=============== HEADER SOLID ===============*/
+.header--solid {
+    background-color: var(--white);
+    box-shadow: var(--shadow-md);
+}
+
+.header--solid .nav__link {
+    color: var(--text-color);
+}
+
+.header--solid .nav__link:hover,
+.header--solid .nav__link.active {
+    color: var(--primary-color);
+}
+
+.header--solid .nav__logo-img {
+    filter: none;
+}
+
+.header--solid .nav__toggle {
+    color: var(--text-color);
+}
+
+/*=============== PROFILE HERO ===============*/
+.profile-hero {
+    padding: calc(var(--header-height) + 3rem) 0 3rem;
+    background-color: var(--bg-color-alt);
+}
+
+.profile-hero__container {
+    display: grid;
+    grid-template-columns: 300px 1fr;
+    gap: 3rem;
+    align-items: center;
+}
+
+.profile-hero__image {
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    box-shadow: var(--shadow-xl);
+}
+
+.profile-hero__placeholder {
+    aspect-ratio: 1/1;
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-color-light) 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.profile-hero__placeholder i {
+    font-size: 6rem;
+    color: rgba(255, 255, 255, 0.3);
+}
+
+.profile-hero__back {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: var(--fs-small);
+    color: var(--text-color-light);
+    margin-bottom: 1rem;
+    transition: color var(--transition-fast);
+}
+
+.profile-hero__back:hover {
+    color: var(--primary-color);
+}
+
+.profile-hero__name {
+    font-size: var(--fs-h1);
+    margin-bottom: 0.5rem;
+}
+
+.profile-hero__role {
+    font-size: 1.25rem;
+    color: var(--secondary-color);
+    font-weight: var(--fw-medium);
+    margin-bottom: 1.5rem;
+}
+
+.profile-hero__contact {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.profile-hero__contact-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--text-color);
+    transition: color var(--transition-fast);
+}
+
+.profile-hero__contact-item i {
+    font-size: 1.25rem;
+    color: var(--primary-color);
+}
+
+.profile-hero__contact-item:hover {
+    color: var(--primary-color);
+}
+
+/*=============== PROFILE INFO ===============*/
+.profile-info__grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem;
+}
+
+.profile-info__card {
+    background-color: var(--white);
+    padding: 2rem;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+}
+
+.profile-info__card--highlight {
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-color-dark) 100%);
+    color: var(--white);
+}
+
+.profile-info__card--highlight .profile-info__title {
+    color: var(--white);
+}
+
+.profile-info__card--featured {
+    grid-column: span 2;
+    background: linear-gradient(135deg, var(--secondary-color) 0%, var(--secondary-color-dark) 100%);
+    color: var(--white);
+}
+
+.profile-info__card--featured .profile-info__title {
+    color: var(--white);
+}
+
+.profile-info__title {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-family: var(--font-body);
+    font-size: 1.125rem;
+    font-weight: var(--fw-semibold);
+    margin-bottom: 1.5rem;
+    color: var(--text-color-dark);
+}
+
+.profile-info__title i {
+    font-size: 1.25rem;
+}
+
+.profile-info__locations {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+.profile-info__location h3 {
+    font-family: var(--font-body);
+    font-size: var(--fs-body);
+    font-weight: var(--fw-semibold);
+    margin-bottom: 0.25rem;
+}
+
+.profile-info__location p {
+    font-size: var(--fs-small);
+    color: var(--text-color-light);
+}
+
+.profile-info__tag {
+    display: inline-block;
+    margin-top: 0.5rem;
+    padding: 0.25rem 0.75rem;
+    background-color: var(--secondary-color);
+    color: var(--white);
+    font-size: var(--fs-tiny);
+    font-weight: var(--fw-semibold);
+    border-radius: var(--radius-full);
+}
+
+.profile-info__list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.profile-info__list li {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: var(--fs-body);
+}
+
+.profile-info__list li i {
+    color: var(--secondary-color);
+    font-size: 0.875rem;
+}
+
+.profile-info__contact-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.profile-info__contact-link {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: var(--radius-md);
+    color: var(--white);
+    transition: background-color var(--transition-fast);
+}
+
+.profile-info__contact-link:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+.profile-info__contact-link i {
+    font-size: 1.5rem;
+}
+
+.profile-info__contact-link strong {
+    display: block;
+    font-size: var(--fs-small);
+    margin-bottom: 0.125rem;
+}
+
+.profile-info__contact-link span {
+    font-size: var(--fs-small);
+    opacity: 0.9;
+}
+
+.profile-info__specialty {
+    display: flex;
+    gap: 1.5rem;
+    align-items: flex-start;
+}
+
+.profile-info__specialty > i {
+    font-size: 3rem;
+    opacity: 0.8;
+}
+
+.profile-info__specialty h3 {
+    font-family: var(--font-body);
+    font-size: 1.25rem;
+    font-weight: var(--fw-semibold);
+    margin-bottom: 0.5rem;
+    color: var(--white);
+}
+
+.profile-info__specialty p {
+    font-size: var(--fs-body);
+    opacity: 0.9;
+}
+
 /*=============== RESPONSIVE ===============*/
 @media screen and (max-width: 1024px) {
     .services__grid {
@@ -1189,8 +1652,26 @@ select {
         grid-template-columns: repeat(2, 1fr);
     }
 
+    .cities__grid--3 {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
     .footer__container {
         grid-template-columns: repeat(2, 1fr);
+    }
+
+    .team__grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .team__card--adjunta {
+        grid-column: span 2;
+        max-width: 400px;
+        margin: 0 auto;
+    }
+
+    .profile-info__card--featured {
+        grid-column: span 2;
     }
 }
 
@@ -1238,6 +1719,34 @@ select {
 
     .contact__social-links {
         justify-content: center;
+    }
+
+    .profile-hero__container {
+        grid-template-columns: 1fr;
+        text-align: center;
+        gap: 2rem;
+    }
+
+    .profile-hero__image {
+        max-width: 250px;
+        margin: 0 auto;
+    }
+
+    .profile-hero__contact {
+        justify-content: center;
+    }
+
+    .profile-hero__cta {
+        display: flex;
+        justify-content: center;
+    }
+
+    .profile-info__grid {
+        grid-template-columns: 1fr;
+    }
+
+    .profile-info__card--featured {
+        grid-column: span 1;
     }
 }
 
@@ -1295,6 +1804,28 @@ select {
         display: none;
     }
 
+    /* Lawyer cards */
+    .hero__lawyers {
+        grid-template-columns: 1fr;
+        max-width: 350px;
+    }
+
+    .lawyer-card__name {
+        font-size: 1.25rem;
+    }
+
+    /* Team */
+    .team__grid {
+        grid-template-columns: 1fr;
+        max-width: 400px;
+        margin: 0 auto;
+    }
+
+    .team__card--adjunta {
+        grid-column: span 1;
+        max-width: 100%;
+    }
+
     .hero__buttons {
         flex-direction: column;
     }
@@ -1315,8 +1846,29 @@ select {
         grid-template-columns: 1fr;
     }
 
+    .cities__grid--3 {
+        grid-template-columns: 1fr;
+    }
+
     .about__features {
         grid-template-columns: 1fr;
+    }
+
+    .profile-hero {
+        padding: calc(var(--header-height) + 2rem) 0 2rem;
+    }
+
+    .profile-hero__name {
+        font-size: 1.75rem;
+    }
+
+    .profile-info__specialty {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .profile-info__specialty > i {
+        font-size: 2.5rem;
     }
 
     .footer__container {
@@ -1615,6 +2167,70 @@ select {
         font-size: 1.5rem;
         bottom: 1rem;
         right: 1rem;
+    }
+
+    /* Lawyer cards 320px */
+    .hero__lawyers {
+        gap: 1rem;
+    }
+
+    .lawyer-card__content {
+        padding: 1rem;
+    }
+
+    .lawyer-card__name {
+        font-size: 1rem;
+    }
+
+    .lawyer-card__role {
+        font-size: 0.75rem;
+    }
+
+    .lawyer-card__placeholder i {
+        font-size: 3rem;
+    }
+
+    /* Team 320px */
+    .team__card-name {
+        font-size: 1rem;
+    }
+
+    .team__card-placeholder i {
+        font-size: 2.5rem;
+    }
+
+    /* Profile 320px */
+    .profile-hero__name {
+        font-size: 1.5rem;
+    }
+
+    .profile-hero__role {
+        font-size: 1rem;
+    }
+
+    .profile-hero__contact {
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+
+    .profile-hero__placeholder i {
+        font-size: 4rem;
+    }
+
+    .profile-info__card {
+        padding: 1.25rem;
+    }
+
+    .profile-info__title {
+        font-size: 1rem;
+    }
+
+    .profile-info__contact-link {
+        padding: 0.75rem;
+    }
+
+    .profile-info__contact-link i {
+        font-size: 1.25rem;
     }
 }
 
