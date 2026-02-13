@@ -1023,11 +1023,13 @@
   <div class="toast-container" id="toastContainer"></div>
 
   <script>
+    // API Configuration - CHANGE THIS TO YOUR API URL
+    const API_URL = 'http://localhost:3001/api'; // Change to your Coolify API URL
+
     // Password for admin access
     const ADMIN_PASSWORD = 'gonzalez2026';
 
-    // Storage keys
-    const STORAGE_KEY = 'gonzalez_properties';
+    // Storage keys (for auth only now)
     const AUTH_KEY = 'gonzalez_admin_auth';
 
     // State
@@ -1075,97 +1077,77 @@
       updateStats();
     }
 
-    // Properties Management
-    function loadProperties() {
+    // Properties Management - API Based
+    async function loadProperties() {
       try {
-        const stored = localStorage.getItem(STORAGE_KEY);
-        if (stored) {
-          properties = JSON.parse(stored);
-          console.log('Loaded properties from localStorage:', properties.length);
-        } else {
-          // Load default properties from PROPERTIES_DATA if available
-          if (window.PROPERTIES_DATA && window.PROPERTIES_DATA.properties) {
-            properties = [...window.PROPERTIES_DATA.properties];
-            saveProperties();
-            console.log('Loaded default properties:', properties.length);
-          } else {
-            properties = [];
-            console.log('No properties found, starting with empty array');
-          }
-        }
+        showToast('Cargando propiedades...', 'info');
+        const response = await fetch(`${API_URL}/properties`);
+        if (!response.ok) throw new Error('Error loading properties');
+        properties = await response.json();
+        console.log('Loaded properties from API:', properties.length);
+        renderProperties();
+        updateStats();
+        showToast(`${properties.length} propiedades cargadas`, 'success');
       } catch (error) {
         console.error('Error loading properties:', error);
+        showToast('Error al cargar propiedades. Verifica la conexion con el servidor.', 'error');
         properties = [];
       }
     }
 
-    function saveProperties() {
+    async function addProperty(data) {
       try {
-        const dataToSave = JSON.stringify(properties);
-        localStorage.setItem(STORAGE_KEY, dataToSave);
-        console.log('Properties saved to localStorage, count:', properties.length);
-        // Also update the global for the main site
-        if (window.PROPERTIES_DATA) {
-          window.PROPERTIES_DATA.properties = properties;
-        }
-        return true;
+        const response = await fetch(`${API_URL}/properties`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        });
+        if (!response.ok) throw new Error('Error creating property');
+        const property = await response.json();
+        console.log('Property created:', property);
+        properties.unshift(property);
+        return property;
       } catch (error) {
-        console.error('Error saving to localStorage:', error);
-        // If localStorage is full, try to alert the user
-        if (error.name === 'QuotaExceededError' || error.message.includes('quota')) {
-          showToast('Error: No hay espacio suficiente para guardar. Intenta con menos imagenes.', 'error');
-        }
-        return false;
-      }
-    }
-
-    function getNextId() {
-      if (properties.length === 0) return 1;
-      return Math.max(...properties.map(p => p.id)) + 1;
-    }
-
-    function addProperty(data) {
-      const property = {
-        id: getNextId(),
-        ...data,
-        createdAt: new Date().toISOString().split('T')[0]
-      };
-      console.log('Adding property with id:', property.id);
-      properties.unshift(property);
-      const saved = saveProperties();
-      if (!saved) {
-        // Rollback if save failed
-        properties.shift();
+        console.error('Error adding property:', error);
+        showToast('Error al guardar la propiedad', 'error');
         return null;
       }
-      return property;
     }
 
-    function updateProperty(id, data) {
-      const index = properties.findIndex(p => p.id === id);
-      if (index !== -1) {
-        const backup = { ...properties[index] };
-        properties[index] = { ...properties[index], ...data };
-        const saved = saveProperties();
-        if (!saved) {
-          // Rollback if save failed
-          properties[index] = backup;
-          return null;
-        }
-        console.log('Property updated:', properties[index]);
-        return properties[index];
+    async function updateProperty(id, data) {
+      try {
+        const response = await fetch(`${API_URL}/properties/${id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        });
+        if (!response.ok) throw new Error('Error updating property');
+        const property = await response.json();
+        console.log('Property updated:', property);
+        const index = properties.findIndex(p => p.id === id);
+        if (index !== -1) properties[index] = property;
+        return property;
+      } catch (error) {
+        console.error('Error updating property:', error);
+        showToast('Error al actualizar la propiedad', 'error');
+        return null;
       }
-      return null;
     }
 
-    function deleteProperty(id) {
-      const index = properties.findIndex(p => p.id === id);
-      if (index !== -1) {
-        properties.splice(index, 1);
-        saveProperties();
+    async function deleteProperty(id) {
+      try {
+        const response = await fetch(`${API_URL}/properties/${id}`, {
+          method: 'DELETE'
+        });
+        if (!response.ok) throw new Error('Error deleting property');
+        const index = properties.findIndex(p => p.id === id);
+        if (index !== -1) properties.splice(index, 1);
         return true;
+      } catch (error) {
+        console.error('Error deleting property:', error);
+        showToast('Error al eliminar la propiedad', 'error');
+        return false;
       }
-      return false;
     }
 
     // Rendering
@@ -1280,7 +1262,7 @@
       imageInput.addEventListener('change', handleImageUpload);
     }
 
-    function handleSubmit(e) {
+    async function handleSubmit(e) {
       e.preventDefault();
 
       try {
@@ -1318,23 +1300,23 @@
         }
 
         console.log('Saving property:', data);
-        console.log('Current properties count:', properties.length);
+        showToast('Guardando propiedad...', 'info');
 
         if (editingId) {
-          const updated = updateProperty(editingId, data);
+          const updated = await updateProperty(editingId, data);
           if (updated) {
             showToast('Propiedad actualizada correctamente', 'success');
           } else {
-            showToast('Error al actualizar la propiedad', 'error');
             return;
           }
         } else {
-          const added = addProperty(data);
-          console.log('Property added:', added);
-          showToast('Propiedad agregada correctamente', 'success');
+          const added = await addProperty(data);
+          if (added) {
+            showToast('Propiedad agregada correctamente', 'success');
+          } else {
+            return;
+          }
         }
-
-        console.log('Properties after save:', properties.length);
 
         resetForm();
         renderProperties();
@@ -1451,7 +1433,8 @@
     function getImageSrc(img) {
       if (!img) return 'https://placehold.co/120x120/e5e7eb/9ca3af?text=?';
       if (img.startsWith('data:') || img.startsWith('http')) return img;
-      return `assets/images/properties/${img}`;
+      // Images stored on API server
+      return `${API_URL.replace('/api', '')}/uploads/${img}`;
     }
 
     function renderCoverPreview() {
@@ -1568,12 +1551,15 @@
       document.getElementById('deleteModal').classList.remove('active');
     }
 
-    function confirmDelete() {
+    async function confirmDelete() {
       if (deleteId) {
-        deleteProperty(deleteId);
-        showToast('Propiedad eliminada correctamente', 'success');
-        renderProperties();
-        updateStats();
+        showToast('Eliminando propiedad...', 'info');
+        const success = await deleteProperty(deleteId);
+        if (success) {
+          showToast('Propiedad eliminada correctamente', 'success');
+          renderProperties();
+          updateStats();
+        }
         closeDeleteModal();
       }
     }
@@ -1604,14 +1590,15 @@
       // Use cover image first
       if (property.coverImage) {
         if (property.coverImage.startsWith('data:')) return property.coverImage;
-        return `assets/images/properties/${property.coverImage}`;
+        // Image stored on API server
+        return `${API_URL.replace('/api', '')}/uploads/${property.coverImage}`;
       }
       // Fallback to first gallery image
       if (property.images && property.images.length > 0) {
         const img = property.images[0];
         if (img.startsWith('data:')) return img;
-        const index = (property.id - 1) % 25 + 1;
-        return `assets/images/properties/prop-${index}.jpg`;
+        // Image stored on API server
+        return `${API_URL.replace('/api', '')}/uploads/${img}`;
       }
       return 'https://placehold.co/400x250/e5e7eb/9ca3af?text=Sin+imagen';
     }

@@ -4,6 +4,11 @@
  */
 
 // ==========================================================================
+// API Configuration
+// ==========================================================================
+const API_URL = 'http://localhost:3001/api'; // Change to your Coolify API URL
+
+// ==========================================================================
 // State Management
 // ==========================================================================
 const state = {
@@ -64,17 +69,19 @@ function debounce(func, wait) {
 function getPropertyImage(property, index) {
   // Use cover image first
   if (property && property.coverImage) {
-    if (property.coverImage.startsWith('data:')) return property.coverImage;
-    return `assets/images/properties/${property.coverImage}`;
+    if (property.coverImage.startsWith('data:') || property.coverImage.startsWith('http')) return property.coverImage;
+    // Image stored on API server
+    return `${API_URL.replace('/api', '')}/uploads/${property.coverImage}`;
   }
   // Fallback to first gallery image
   if (property && property.images && property.images.length > 0) {
     const img = property.images[0];
-    if (img.startsWith('data:')) return img;
+    if (img.startsWith('data:') || img.startsWith('http')) return img;
+    // Image stored on API server
+    return `${API_URL.replace('/api', '')}/uploads/${img}`;
   }
-  // Fallback to local images (prop-1.jpg through prop-25.jpg)
-  const imageNumber = (index % 25) + 1;
-  return `assets/images/properties/prop-${imageNumber}.jpg`;
+  // Fallback to placeholder
+  return 'https://placehold.co/400x250/e5e7eb/9ca3af?text=Sin+imagen';
 }
 
 function getOperationLabel(operation) {
@@ -93,25 +100,59 @@ function getOperationLabel(operation) {
 // ==========================================================================
 async function loadProperties() {
   try {
-    let data;
+    let properties = [];
 
-    // Use embedded data if available (works without server)
-    if (window.PROPERTIES_DATA) {
-      data = window.PROPERTIES_DATA;
-    } else {
-      // Fallback to fetch (requires server)
-      const response = await fetch('data/properties.json');
-      data = await response.json();
+    // Try to fetch from API first
+    try {
+      const response = await fetch(`${API_URL}/properties`);
+      if (response.ok) {
+        properties = await response.json();
+        console.log('Loaded properties from API:', properties.length);
+      }
+    } catch (apiError) {
+      console.warn('API not available, using fallback data:', apiError.message);
     }
 
-    state.properties = data.properties;
+    // Fallback to embedded data or local JSON
+    if (properties.length === 0) {
+      if (window.PROPERTIES_DATA) {
+        properties = window.PROPERTIES_DATA.properties || [];
+      } else {
+        const response = await fetch('data/properties.json');
+        const data = await response.json();
+        properties = data.properties || [];
+      }
+    }
+
+    state.properties = properties;
     state.filteredProperties = [...state.properties];
     renderProperties();
-    populateFilterOptions(data);
+
+    // Extract unique neighborhoods and types for filters
+    const neighborhoods = [...new Set(properties.map(p => p.location?.neighborhood).filter(Boolean))];
+    const propertyTypes = [...new Set(properties.map(p => p.type).filter(Boolean))];
+    populateFilterOptions({
+      neighborhoods,
+      propertyTypes: propertyTypes.map(t => ({ id: t, label: getTypeLabel(t) }))
+    });
   } catch (error) {
     console.error('Error loading properties:', error);
     showNotification('Error al cargar las propiedades', 'error');
   }
+}
+
+function getTypeLabel(type) {
+  const types = {
+    casa: 'Casa',
+    departamento: 'Departamento',
+    ph: 'PH',
+    local: 'Local Comercial',
+    oficina: 'Oficina',
+    terreno: 'Terreno',
+    lote: 'Lote',
+    cochera: 'Cochera'
+  };
+  return types[type] || type;
 }
 
 function populateFilterOptions(data) {

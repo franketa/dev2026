@@ -410,6 +410,9 @@
   <!-- Scripts -->
   <script src="assets/js/properties-data.js"></script>
   <script>
+    // API Configuration
+    const API_URL = 'http://localhost:3001/api'; // Change to your Coolify API URL
+
     // Get property ID from URL
     const urlParams = new URLSearchParams(window.location.search);
     const propertyId = parseInt(urlParams.get('id'));
@@ -426,17 +429,19 @@
     function getPropertyImage(property) {
       // Use cover image first
       if (property && property.coverImage) {
-        if (property.coverImage.startsWith('data:')) return property.coverImage;
-        return `assets/images/properties/${property.coverImage}`;
+        if (property.coverImage.startsWith('data:') || property.coverImage.startsWith('http')) return property.coverImage;
+        // Image stored on API server
+        return `${API_URL.replace('/api', '')}/uploads/${property.coverImage}`;
       }
       // Fallback to first gallery image
       if (property && property.images && property.images.length > 0) {
         const img = property.images[0];
-        if (img.startsWith('data:')) return img;
+        if (img.startsWith('data:') || img.startsWith('http')) return img;
+        // Image stored on API server
+        return `${API_URL.replace('/api', '')}/uploads/${img}`;
       }
-      // Fallback to local images
-      const imageNumber = ((property.id - 1) % 25) + 1;
-      return `assets/images/properties/prop-${imageNumber}.jpg`;
+      // Fallback to placeholder
+      return 'https://placehold.co/800x600/e5e7eb/9ca3af?text=Sin+imagen';
     }
 
     // Get property type label
@@ -658,13 +663,29 @@
     }
 
     // Initialize
-    function init() {
-      if (!propertyId || !window.PROPERTIES_DATA) {
+    async function init() {
+      if (!propertyId) {
         showError();
         return;
       }
 
-      const property = window.PROPERTIES_DATA.properties.find(p => p.id === propertyId);
+      let property = null;
+
+      // Try to fetch from API first
+      try {
+        const response = await fetch(`${API_URL}/properties/${propertyId}`);
+        if (response.ok) {
+          property = await response.json();
+          console.log('Loaded property from API:', property.id);
+        }
+      } catch (apiError) {
+        console.warn('API not available, using fallback data:', apiError.message);
+      }
+
+      // Fallback to embedded data
+      if (!property && window.PROPERTIES_DATA) {
+        property = window.PROPERTIES_DATA.properties.find(p => p.id === propertyId);
+      }
 
       if (!property) {
         showError();
