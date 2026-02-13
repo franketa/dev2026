@@ -1812,11 +1812,25 @@ select {
     }
 
     .contact__info {
-        align-items: center;
+        align-items: stretch;
+    }
+
+    .contact__info-item {
+        flex-direction: column;
+        text-align: center;
+        gap: 0.75rem;
+    }
+
+    .contact__info-icon {
+        margin: 0 auto;
     }
 
     .contact__social {
         text-align: center;
+    }
+
+    .contact__form-wrapper {
+        margin-bottom: 5rem;
     }
 
     .contact__social-links {
@@ -2192,10 +2206,21 @@ select {
         font-size: 0.875rem;
     }
 
+    .contact__info {
+        align-items: stretch;
+    }
+
+    .contact__info-item {
+        flex-direction: column;
+        text-align: center;
+        gap: 0.75rem;
+    }
+
     .contact__info-icon {
         width: 40px;
         height: 40px;
         min-width: 40px;
+        margin: 0 auto;
     }
 
     .contact__info-icon i {
@@ -2220,6 +2245,7 @@ select {
 
     .contact__form-wrapper {
         padding: 1rem;
+        margin-bottom: 4rem;
     }
 
     .contact__form-title {
