@@ -1261,6 +1261,7 @@ select {
     position: relative;
     aspect-ratio: 3/4;
     background-color: var(--primary-color-light);
+    overflow: hidden;
 }
 
 .lawyer-card--large .lawyer-card__image {
@@ -1303,6 +1304,12 @@ select {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    object-position: center top;
+    transition: transform var(--transition-slow);
+}
+
+.lawyer-card:hover .lawyer-card__photo {
+    transform: scale(1.05);
 }
 
 .lawyer-card__overlay {
@@ -1412,6 +1419,7 @@ select {
 .team__card-image {
     aspect-ratio: 1/1;
     background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-color-light) 100%);
+    overflow: hidden;
 }
 
 .team__card-placeholder {
@@ -1431,6 +1439,12 @@ select {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    object-position: center top;
+    transition: transform var(--transition-slow);
+}
+
+.team__card:hover .team__card-photo {
+    transform: scale(1.05);
 }
 
 .team__card-content {
@@ -1546,6 +1560,7 @@ select {
     width: 100%;
     aspect-ratio: 1/1;
     object-fit: cover;
+    object-position: center top;
     display: block;
 }
 
@@ -1756,8 +1771,13 @@ select {
 
 /*=============== RESPONSIVE ===============*/
 @media screen and (max-width: 1024px) {
+    :root {
+        --section-padding: 5rem 0;
+    }
+
     .services__grid {
         grid-template-columns: repeat(2, 1fr);
+        gap: 1.5rem;
     }
 
     .cities__grid {
@@ -1765,19 +1785,42 @@ select {
     }
 
     .cities__grid--3 {
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1.5rem;
     }
 
     .footer__container {
         grid-template-columns: repeat(2, 1fr);
+        gap: 2rem;
     }
 
     .profile-info__card--featured {
         grid-column: span 2;
     }
+
+    .about__features {
+        gap: 1.25rem;
+    }
+
+    .section__header {
+        margin-bottom: 3rem;
+    }
+
+    .hero__top {
+        padding-top: calc(var(--header-height) + 2rem);
+        padding-bottom: 2rem;
+    }
+
+    .team__grid {
+        gap: 1.5rem;
+    }
 }
 
 @media screen and (max-width: 900px) {
+    :root {
+        --section-padding: 4rem 0;
+    }
+
     .about__container {
         grid-template-columns: 1fr;
         gap: 3rem;
@@ -1797,6 +1840,29 @@ select {
         text-align: center;
     }
 
+    .about__features {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+
+    .about__feature {
+        text-align: left;
+    }
+
+    .services__grid {
+        gap: 1.25rem;
+    }
+
+    .service__card {
+        padding: 2rem 1.5rem;
+    }
+
+    .cities__grid--3 {
+        grid-template-columns: 1fr;
+        max-width: 400px;
+        margin: 0 auto;
+    }
+
     .contact__container {
         grid-template-columns: 1fr;
         gap: 3rem;
@@ -1813,6 +1879,8 @@ select {
 
     .contact__info {
         align-items: stretch;
+        max-width: 400px;
+        margin: 0 auto;
     }
 
     .contact__info-item {
@@ -1850,6 +1918,7 @@ select {
 
     .profile-hero__contact {
         justify-content: center;
+        flex-wrap: wrap;
     }
 
     .profile-hero__cta {
@@ -1859,6 +1928,10 @@ select {
 
     .profile-info__grid {
         grid-template-columns: 1fr;
+    }
+
+    .hero__lawyers--fullwidth {
+        grid-template-columns: repeat(2, 1fr);
     }
 
     .profile-info__card--featured {
@@ -2006,6 +2079,7 @@ select {
     .footer__container {
         grid-template-columns: 1fr;
         text-align: center;
+        gap: 2rem;
     }
 
     .footer__social {
@@ -2018,12 +2092,59 @@ select {
 
     .cta__buttons {
         flex-direction: column;
+        align-items: center;
+    }
+
+    .cta__buttons .btn {
+        width: 100%;
+        max-width: 300px;
+    }
+
+    .section__description {
+        font-size: 0.9375rem;
+    }
+
+    .service__card {
+        padding: 1.75rem 1.25rem;
+    }
+
+    .service__description {
+        font-size: 0.9375rem;
+        margin-bottom: 1.25rem;
+    }
+
+    .city__card {
+        padding: 1.5rem;
+    }
+
+    .hero__top {
+        padding-top: calc(var(--header-height) + 1.5rem);
+        padding-bottom: 1.5rem;
+    }
+
+    .hero__description--center {
+        font-size: 0.9375rem;
     }
 }
 
 @media screen and (max-width: 480px) {
+    :root {
+        --section-padding: 3.5rem 0;
+        --container-padding: 1rem;
+    }
+
     .hero__title {
-        font-size: 2.5rem;
+        font-size: 2.25rem;
+    }
+
+    .hero__subtitle {
+        font-size: 0.75rem;
+        letter-spacing: 0.15em;
+    }
+
+    .hero__description--center {
+        font-size: 0.875rem;
+        line-height: 1.6;
     }
 
     .hero__stats {
@@ -2031,8 +2152,138 @@ select {
         align-items: flex-start;
     }
 
+    .hero__top {
+        padding-top: calc(var(--header-height) + 1rem);
+        padding-bottom: 1rem;
+    }
+
+    .hero__lawyers--fullwidth .lawyer-card--large .lawyer-card__image {
+        min-height: 200px;
+    }
+
+    .lawyer-card--large .lawyer-card__content {
+        padding: 1.5rem;
+    }
+
+    .lawyer-card--large .lawyer-card__name {
+        font-size: 1.25rem;
+    }
+
+    .lawyer-card--large .lawyer-card__role {
+        font-size: 0.875rem;
+        margin-bottom: 1rem;
+    }
+
+    .section__header {
+        margin-bottom: 2.5rem;
+    }
+
+    .section__title {
+        line-height: 1.3;
+    }
+
+    .section__description {
+        font-size: 0.875rem;
+        line-height: 1.6;
+    }
+
+    .about__feature {
+        gap: 0.875rem;
+    }
+
+    .about__feature-icon {
+        width: 45px;
+        height: 45px;
+        min-width: 45px;
+    }
+
+    .about__feature-content h3 {
+        font-size: 0.9375rem;
+    }
+
+    .about__feature-content p {
+        font-size: 0.8125rem;
+    }
+
+    .team__grid {
+        max-width: 100%;
+    }
+
+    .team__card-content {
+        padding: 1.25rem;
+    }
+
+    .team__card-name {
+        font-size: 1.125rem;
+    }
+
+    .team__card-role {
+        font-size: 0.8125rem;
+    }
+
+    .service__card {
+        padding: 1.5rem 1.25rem;
+    }
+
+    .service__icon {
+        width: 55px;
+        height: 55px;
+        margin-bottom: 1.25rem;
+    }
+
+    .service__icon i {
+        font-size: 1.375rem;
+    }
+
+    .service__title {
+        font-size: 1.0625rem;
+    }
+
+    .service__description {
+        font-size: 0.875rem;
+        line-height: 1.5;
+    }
+
+    .city__card {
+        padding: 1.25rem;
+    }
+
+    .city__name {
+        font-size: 1.125rem;
+    }
+
+    .city__address,
+    .city__cp {
+        font-size: 0.8125rem;
+    }
+
+    .cta {
+        padding: 3rem 0;
+    }
+
+    .cta__title {
+        font-size: 1.375rem;
+        line-height: 1.3;
+    }
+
+    .cta__description {
+        font-size: 0.875rem;
+    }
+
     .contact__form-wrapper {
         padding: 1.5rem;
+    }
+
+    .contact__form-title {
+        font-size: 1.125rem;
+    }
+
+    .footer {
+        padding: 3rem 0 1.5rem;
+    }
+
+    .footer__description {
+        font-size: 0.875rem;
     }
 
     .whatsapp-float {
@@ -2045,6 +2296,20 @@ select {
 
     .whatsapp-tooltip {
         display: none;
+    }
+
+    .btn {
+        padding: 0.75rem 1.25rem;
+        font-size: 0.875rem;
+    }
+
+    .btn--lg {
+        padding: 0.875rem 1.5rem;
+    }
+
+    .btn--sm {
+        padding: 0.5rem 1rem;
+        font-size: 0.8125rem;
     }
 }
 
