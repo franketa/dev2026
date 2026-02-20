@@ -1213,6 +1213,7 @@ select {
     height: auto;
     margin: 0 auto 1.5rem;
     display: block;
+    filter: brightness(0) invert(1);
 }
 
 .hero__data--center {
