@@ -59,6 +59,11 @@
   <main>
     <!-- Hero Section -->
     <section id="inicio" class="hero">
+      <!-- YouTube Video Background -->
+      <div class="hero__video-bg">
+        <div id="heroVideo"></div>
+      </div>
+
       <div class="hero__content">
         <h1 class="hero__title animate-fade-in-up">Tu hogar ideal te espera</h1>
         <p class="hero__subtitle animate-fade-in-up" style="animation-delay: 100ms">
@@ -444,5 +449,67 @@
   <!-- Scripts -->
   <script src="assets/js/properties-data.js"></script>
   <script src="assets/js/app.js"></script>
+
+  <!-- YouTube Player API for Hero Video -->
+  <script>
+    // Load YouTube IFrame API
+    var tag = document.createElement('script');
+    tag.src = "https://www.youtube.com/iframe_api";
+    var firstScriptTag = document.getElementsByTagName('script')[0];
+    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+    var heroPlayer;
+    var videoStartTime = 120; // 2:00
+    var videoEndTime = 300;   // 5:00
+    var loopCheckInterval;
+
+    function onYouTubeIframeAPIReady() {
+      heroPlayer = new YT.Player('heroVideo', {
+        videoId: 'Wio2J4fZpoM',
+        playerVars: {
+          autoplay: 1,
+          mute: 1,
+          controls: 0,
+          showinfo: 0,
+          rel: 0,
+          start: videoStartTime,
+          modestbranding: 1,
+          playsinline: 1,
+          loop: 0,
+          disablekb: 1,
+          fs: 0,
+          iv_load_policy: 3
+        },
+        events: {
+          onReady: onHeroPlayerReady,
+          onStateChange: onHeroPlayerStateChange
+        }
+      });
+    }
+
+    function onHeroPlayerReady(event) {
+      event.target.seekTo(videoStartTime);
+      event.target.playVideo();
+      // Check every 500ms if we need to loop
+      loopCheckInterval = setInterval(checkVideoLoop, 500);
+    }
+
+    function checkVideoLoop() {
+      if (heroPlayer && heroPlayer.getCurrentTime) {
+        var currentTime = heroPlayer.getCurrentTime();
+        if (currentTime >= videoEndTime || currentTime < videoStartTime) {
+          heroPlayer.seekTo(videoStartTime);
+        }
+      }
+    }
+
+    function onHeroPlayerStateChange(event) {
+      // If video ends or pauses unexpectedly, restart
+      if (event.data === YT.PlayerState.ENDED || event.data === YT.PlayerState.PAUSED) {
+        heroPlayer.seekTo(videoStartTime);
+        heroPlayer.playVideo();
+      }
+    }
+  </script>
 </body>
 </html>

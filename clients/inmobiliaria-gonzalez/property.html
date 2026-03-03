@@ -424,12 +424,15 @@
 
     // Get property image
     function getPropertyImage(property) {
-      // Check if property has base64 images (from admin panel)
+      // Use cover image first
+      if (property && property.coverImage) {
+        if (property.coverImage.startsWith('data:')) return property.coverImage;
+        return `assets/images/properties/${property.coverImage}`;
+      }
+      // Fallback to first gallery image
       if (property && property.images && property.images.length > 0) {
         const img = property.images[0];
-        if (img.startsWith('data:')) {
-          return img;
-        }
+        if (img.startsWith('data:')) return img;
       }
       // Fallback to local images
       const imageNumber = ((property.id - 1) % 25) + 1;
@@ -501,7 +504,7 @@
                 </p>
               </header>
 
-              <p class="property-price">${formatPrice(property.price, property.currency)}</p>
+              <p class="property-price">${property.showPrice !== false ? formatPrice(property.price, property.currency) : 'Consultar'}</p>
 
               <div class="property-features">
                 ${property.features.bedrooms > 0 ? `
