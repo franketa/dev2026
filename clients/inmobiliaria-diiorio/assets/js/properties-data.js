@@ -1,12 +1,21 @@
 /**
- * INMOBILIARIA GONZALEZ - Properties Data
+ * INMOBILIARIA DI IORIO - Properties Data
  * Este archivo contiene los datos de las propiedades para que funcionen sin servidor
  * Lee de localStorage si hay datos guardados, sino usa los datos por defecto
  */
 
 // Check if we have stored properties in localStorage
 (function() {
-  const STORAGE_KEY = 'gonzalez_properties';
+  const STORAGE_KEY = 'diiorio_properties';
+
+  // Migrate from old storage key if exists
+  const OLD_KEY = 'gonzalez_properties';
+  const oldData = localStorage.getItem(OLD_KEY);
+  if (oldData && !localStorage.getItem(STORAGE_KEY)) {
+    localStorage.setItem(STORAGE_KEY, oldData);
+    localStorage.removeItem(OLD_KEY);
+  }
+
   const storedData = localStorage.getItem(STORAGE_KEY);
 
   if (storedData) {
@@ -697,6 +706,32 @@
       "featured": false,
       "status": "disponible",
       "createdAt": "2024-01-04"
+    },
+    {
+      "id": 26,
+      "title": "test 1",
+      "type": "casa",
+      "operation": "venta",
+      "price": 100000,
+      "currency": "USD",
+      "location": {
+        "neighborhood": "Palermo",
+        "city": "Buenos Aires",
+        "address": "Test 123"
+      },
+      "features": {
+        "bedrooms": 3,
+        "bathrooms": 2,
+        "garage": 1,
+        "area": 150,
+        "coveredArea": 120
+      },
+      "description": "Propiedad de test con 15 imágenes para verificar el correcto funcionamiento del sitio.",
+      "amenities": ["pileta", "jardín", "parrilla"],
+      "images": ["prop-1.jpg", "prop-2.jpg", "prop-3.jpg", "prop-4.jpg", "prop-5.jpg", "prop-6.jpg", "prop-7.jpg", "prop-8.jpg", "prop-9.jpg", "prop-10.jpg", "prop-11.jpg", "prop-12.jpg", "prop-13.jpg", "prop-14.jpg", "prop-15.jpg"],
+      "featured": true,
+      "status": "disponible",
+      "createdAt": "2026-03-04"
     }
   ],
   "propertyTypes": [
