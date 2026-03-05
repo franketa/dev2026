@@ -1,11 +1,11 @@
-# Inmobiliaria Gonzalez - Sitio Web
+# Inmobiliaria Di Iorio - Sitio Web
 
-Sitio web para inmobiliaria con listado de propiedades, búsqueda avanzada y formularios de contacto.
+Sitio web para Rodolfo Alberto Di Iorio - Operador Inmobiliario. Listado de propiedades, búsqueda avanzada y formularios de contacto.
 
 ## Estructura del Proyecto
 
 ```
-inmobiliaria-gonzalez/
+inmobiliaria-diiorio/
 ├── index.html          # Página principal
 ├── admin.html          # Panel de administración
 ├── assets/
