@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin - Di Iorio Inmobiliaria</title>
+  <title>Di Iorio Inmobiliaria | Panel de Administracion</title>
   <link rel="icon" type="image/png" href="assets/images/Guia de marca/logo iorio.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -14,6 +14,8 @@
       --primary-light: #2d2d2d;
       --accent: #8B1A1A;
       --accent-light: #a52222;
+      --gold: #D4A844;
+      --gold-light: #e0be6a;
       --gray-50: #f9fafb;
       --gray-100: #f3f4f6;
       --gray-200: #e5e7eb;
@@ -45,24 +47,28 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+      background: var(--primary);
+      background-image:
+        radial-gradient(ellipse at 20% 50%, rgba(139, 26, 26, 0.15) 0%, transparent 60%),
+        radial-gradient(ellipse at 80% 50%, rgba(212, 168, 68, 0.08) 0%, transparent 60%);
       padding: 1rem;
     }
 
     .login-card {
-      background: white;
-      padding: 2.5rem;
+      background: var(--primary-light);
+      padding: 3rem 2.5rem;
       border-radius: 1rem;
-      box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+      box-shadow: 0 24px 48px rgba(0,0,0,0.4);
       width: 100%;
-      max-width: 400px;
+      max-width: 420px;
       text-align: center;
+      border: 1px solid rgba(255,255,255,0.06);
     }
 
     .login-logo {
-      width: 80px;
-      height: 80px;
-      margin: 0 auto 1.5rem;
+      width: 72px;
+      height: 72px;
+      margin: 0 auto 1.25rem;
     }
 
     .login-logo img {
@@ -71,45 +77,78 @@
       object-fit: contain;
     }
 
-    .login-title {
+    .login-brand-name {
       font-size: 1.5rem;
       font-weight: 700;
-      color: var(--primary);
+      color: white;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.25rem;
+    }
+
+    .login-brand-tagline {
+      font-size: 0.8125rem;
+      color: var(--gold);
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+    }
+
+    .login-divider {
+      width: 48px;
+      height: 2px;
+      background: var(--gold);
+      margin: 1.5rem auto;
+      border: none;
+    }
+
+    .login-title {
+      font-size: 1rem;
+      font-weight: 400;
+      color: var(--gray-300);
       margin-bottom: 0.5rem;
     }
 
     .login-subtitle {
       color: var(--gray-500);
-      margin-bottom: 2rem;
+      margin-bottom: 1.5rem;
+      font-size: 0.875rem;
     }
 
     .login-input {
       width: 100%;
-      padding: 1rem;
-      border: 2px solid var(--gray-200);
+      padding: 0.875rem 1rem;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.1);
       border-radius: 0.5rem;
       font-size: 1rem;
       margin-bottom: 1rem;
       text-align: center;
       letter-spacing: 0.1em;
+      color: white;
+    }
+
+    .login-input::placeholder {
+      color: var(--gray-500);
     }
 
     .login-input:focus {
       outline: none;
-      border-color: var(--accent);
+      border-color: var(--gold);
+      box-shadow: 0 0 0 3px rgba(212, 168, 68, 0.15);
+      background: rgba(255,255,255,0.08);
     }
 
     .login-btn {
       width: 100%;
-      padding: 1rem;
+      padding: 0.875rem;
       background: var(--accent);
       color: white;
       border: none;
       border-radius: 0.5rem;
-      font-size: 1rem;
+      font-size: 0.9375rem;
       font-weight: 600;
       cursor: pointer;
       transition: background 0.2s;
+      letter-spacing: 0.03em;
     }
 
     .login-btn:hover {
@@ -117,9 +156,10 @@
     }
 
     .login-error {
-      color: var(--error);
+      color: #f87171;
       margin-top: 1rem;
       display: none;
+      font-size: 0.875rem;
     }
 
     /* Admin Panel */
@@ -321,7 +361,7 @@
     input:focus, select:focus, textarea:focus {
       outline: none;
       border-color: var(--accent);
-      box-shadow: 0 0 0 3px rgba(233, 79, 45, 0.15);
+      box-shadow: 0 0 0 3px rgba(139, 26, 26, 0.15);
     }
 
     textarea {
@@ -426,7 +466,7 @@
     }
 
     .checkbox-label:has(input:checked) {
-      background: rgba(233, 79, 45, 0.1);
+      background: rgba(139, 26, 26, 0.1);
       border-color: var(--accent);
       color: var(--accent);
     }
@@ -736,9 +776,12 @@
   <div class="login-screen" id="loginScreen">
     <div class="login-card">
       <div class="login-logo">
-        <img src="assets/images/Guia de marca/sinfondo-iso-color.png" alt="Logo">
+        <img src="assets/images/Guia de marca/sinfondo-iso-color.png" alt="Di Iorio">
       </div>
-      <h1 class="login-title">Panel de Administracion</h1>
+      <h1 class="login-brand-name">Di Iorio</h1>
+      <p class="login-brand-tagline">Operador Inmobiliario</p>
+      <hr class="login-divider">
+      <p class="login-title">Panel de Administracion</p>
       <p class="login-subtitle">Ingresa la contrasena para continuar</p>
       <form id="loginForm">
         <input type="password" class="login-input" id="passwordInput" placeholder="Contrasena" autocomplete="off">
@@ -754,9 +797,9 @@
       <div class="header__inner">
         <div class="header__brand">
           <div class="header__logo">
-            <img src="assets/images/Guia de marca/sinfondo-iso-color.png" alt="Logo">
+            <img src="assets/images/Guia de marca/sinfondo-iso-color.png" alt="Di Iorio">
           </div>
-          <h1>Panel de Administracion</h1>
+          <h1>Di Iorio <span style="font-weight: 400; opacity: 0.6; font-size: 0.875rem; margin-left: 0.5rem;">Panel de Administracion</span></h1>
         </div>
         <div class="header__actions">
           <a href="index.html" target="_blank">Ver sitio</a>
@@ -1111,9 +1154,29 @@
         return true;
       } catch (error) {
         console.error('Error saving to localStorage:', error);
-        // If localStorage is full, try to alert the user
         if (error.name === 'QuotaExceededError' || error.message.includes('quota')) {
-          showToast('Error: No hay espacio suficiente para guardar. Intenta con menos imagenes.', 'error');
+          // Retry saving without data URI images to preserve property metadata
+          try {
+            const stripped = properties.map(p => {
+              const copy = { ...p };
+              if (copy.coverImage && copy.coverImage.startsWith('data:')) {
+                copy.coverImage = null;
+              }
+              if (copy.images) {
+                copy.images = copy.images.filter(img => !img.startsWith('data:'));
+              }
+              return copy;
+            });
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(stripped));
+            if (window.PROPERTIES_DATA) {
+              window.PROPERTIES_DATA.properties = properties;
+            }
+            showToast('Las propiedades se guardaron pero las imágenes subidas se perdieron por falta de espacio. Usá archivos en assets/images/properties/ en vez de subir imágenes.', 'warning');
+            return true;
+          } catch (retryError) {
+            console.error('Error saving even without images:', retryError);
+            showToast('Error: No hay espacio suficiente para guardar.', 'error');
+          }
         }
         return false;
       }
