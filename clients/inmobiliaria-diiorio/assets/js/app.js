@@ -64,13 +64,13 @@ function debounce(func, wait) {
 function getPropertyImage(property, index) {
   // Use cover image first
   if (property && property.coverImage) {
-    if (property.coverImage.startsWith('data:')) return property.coverImage;
+    if (property.coverImage.startsWith('data:') || property.coverImage.startsWith('/uploads/')) return property.coverImage;
     return `assets/images/properties/${property.coverImage}`;
   }
   // Fallback to first gallery image
   if (property && property.images && property.images.length > 0) {
     const img = property.images[0];
-    if (img.startsWith('data:')) return img;
+    if (img.startsWith('data:') || img.startsWith('/uploads/')) return img;
   }
   // Fallback to local images (prop-1.jpg through prop-25.jpg)
   const imageNumber = (index % 25) + 1;
@@ -93,21 +93,30 @@ function getOperationLabel(operation) {
 // ==========================================================================
 async function loadProperties() {
   try {
-    let data;
-
-    // Use embedded data if available (works without server)
+    // If data already loaded (by properties-data.js), use it
     if (window.PROPERTIES_DATA) {
-      data = window.PROPERTIES_DATA;
-    } else {
-      // Fallback to fetch (requires server)
-      const response = await fetch('data/properties.json');
-      data = await response.json();
+      const data = window.PROPERTIES_DATA;
+      state.properties = data.properties;
+      state.filteredProperties = [...state.properties];
+      renderProperties();
+      populateFilterOptions(data);
+      return;
     }
 
-    state.properties = data.properties;
-    state.filteredProperties = [...state.properties];
-    renderProperties();
-    populateFilterOptions(data);
+    // Wait for async properties-data.js to finish loading
+    await new Promise((resolve) => {
+      window.addEventListener('properties-loaded', resolve, { once: true });
+      // Timeout fallback
+      setTimeout(resolve, 5000);
+    });
+
+    if (window.PROPERTIES_DATA) {
+      const data = window.PROPERTIES_DATA;
+      state.properties = data.properties;
+      state.filteredProperties = [...state.properties];
+      renderProperties();
+      populateFilterOptions(data);
+    }
   } catch (error) {
     console.error('Error loading properties:', error);
     showNotification('Error al cargar las propiedades', 'error');
@@ -362,11 +371,16 @@ function initSearchBox() {
 function initFilterButtons() {
   DOM.filterBtns?.forEach(btn => {
     btn.addEventListener('click', () => {
-      DOM.filterBtns.forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-
       const filterType = btn.dataset.filter;
       const filterValue = btn.dataset.value;
+
+      // Only toggle active within the same filter group
+      DOM.filterBtns.forEach(b => {
+        if (b.dataset.filter === filterType) {
+          b.classList.remove('active');
+        }
+      });
+      btn.classList.add('active');
 
       if (filterType === 'operation') {
         state.currentFilter.operation = filterValue;
