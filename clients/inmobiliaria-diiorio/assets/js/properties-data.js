@@ -21,6 +21,11 @@
   if (storedData) {
     try {
       const properties = JSON.parse(storedData);
+      // If stored data is empty array, ignore it and fall through to defaults
+      if (!Array.isArray(properties) || properties.length === 0) {
+        localStorage.removeItem(STORAGE_KEY);
+        throw new Error('Empty or invalid stored data, falling back to defaults');
+      }
       window.PROPERTIES_DATA = {
         properties: properties,
         propertyTypes: [
