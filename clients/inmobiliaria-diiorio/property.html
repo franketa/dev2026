@@ -583,18 +583,20 @@
     function getAllImages(property) {
       const images = [];
       if (property.coverImage) {
-        const src = property.coverImage.startsWith('data:') ? property.coverImage : `assets/images/properties/${property.coverImage}`;
-        images.push(src);
+        if (property.coverImage.startsWith('data:')) {
+          images.push(property.coverImage);
+        }
       }
       if (property.images && property.images.length > 0) {
         property.images.forEach(img => {
-          const src = img.startsWith('data:') ? img : `assets/images/properties/${img}`;
-          images.push(src);
+          if (img.startsWith('data:')) {
+            images.push(img);
+          }
         });
       }
+      // If no real (data URI) images, use stock photo based on property ID
       if (images.length === 0) {
-        const imageNumber = ((property.id - 1) % 25) + 1;
-        images.push(`assets/images/properties/prop-${imageNumber}.jpg`);
+        images.push(getPropertyImage(property));
       }
       return images;
     }
