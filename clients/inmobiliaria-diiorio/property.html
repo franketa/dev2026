@@ -521,6 +521,7 @@
   </main>
 
   <!-- Scripts -->
+  <script src="assets/js/api.js"></script>
   <script src="assets/js/properties-data.js"></script>
   <script>
     // Get property ID from URL
@@ -539,13 +540,13 @@
     function getPropertyImage(property) {
       // Use cover image first
       if (property && property.coverImage) {
-        if (property.coverImage.startsWith('data:')) return property.coverImage;
+        if (property.coverImage.startsWith('data:') || property.coverImage.startsWith('/uploads/')) return property.coverImage;
         return `assets/images/properties/${property.coverImage}`;
       }
       // Fallback to first gallery image
       if (property && property.images && property.images.length > 0) {
         const img = property.images[0];
-        if (img.startsWith('data:')) return img;
+        if (img.startsWith('data:') || img.startsWith('/uploads/')) return img;
       }
       // Fallback to local images
       const imageNumber = ((property.id - 1) % 25) + 1;
@@ -583,18 +584,18 @@
     function getAllImages(property) {
       const images = [];
       if (property.coverImage) {
-        if (property.coverImage.startsWith('data:')) {
+        if (property.coverImage.startsWith('data:') || property.coverImage.startsWith('/uploads/')) {
           images.push(property.coverImage);
         }
       }
       if (property.images && property.images.length > 0) {
         property.images.forEach(img => {
-          if (img.startsWith('data:')) {
-            images.push(img);
+          if (img.startsWith('data:') || img.startsWith('/uploads/')) {
+            if (!images.includes(img)) images.push(img);
           }
         });
       }
-      // If no real (data URI) images, use stock photo based on property ID
+      // If no real images, use stock photo based on property ID
       if (images.length === 0) {
         images.push(getPropertyImage(property));
       }
@@ -859,20 +860,49 @@
     }
 
     // Initialize
-    function init() {
-      if (!propertyId || !window.PROPERTIES_DATA) {
+    async function init() {
+      if (!propertyId) {
         showError();
         return;
       }
 
-      const property = window.PROPERTIES_DATA.properties.find(p => p.id === propertyId);
-
-      if (!property) {
-        showError();
-        return;
+      // Try API first
+      try {
+        if (window.API) {
+          const property = await window.API.getProperty(propertyId);
+          if (property) {
+            renderProperty(property);
+            return;
+          }
+        }
+      } catch (e) {
+        console.warn('API fetch failed, trying local data');
       }
 
-      renderProperty(property);
+      // Fallback to PROPERTIES_DATA
+      if (window.PROPERTIES_DATA) {
+        const property = window.PROPERTIES_DATA.properties.find(p => p.id === propertyId);
+        if (property) {
+          renderProperty(property);
+          return;
+        }
+      }
+
+      // Wait for async load
+      await new Promise((resolve) => {
+        window.addEventListener('properties-loaded', resolve, { once: true });
+        setTimeout(resolve, 5000);
+      });
+
+      if (window.PROPERTIES_DATA) {
+        const property = window.PROPERTIES_DATA.properties.find(p => p.id === propertyId);
+        if (property) {
+          renderProperty(property);
+          return;
+        }
+      }
+
+      showError();
     }
 
     // Start
