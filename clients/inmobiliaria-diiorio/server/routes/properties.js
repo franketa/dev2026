@@ -83,6 +83,9 @@ router.post('/', authMiddleware, (req, res) => {
   const db = getDB();
   const p = req.body;
 
+  // Sanitize cover image - reject blob: URLs (browser-only, not persistent)
+  const safeCoverImage = (p.coverImage && !p.coverImage.startsWith('blob:')) ? p.coverImage : null;
+
   const result = db.prepare(`
     INSERT INTO properties (title, type, operation, price, currency, show_price, neighborhood, city, address,
       bedrooms, bathrooms, garage, area, covered_area, description, amenities, cover_image, images, featured, status)
@@ -104,8 +107,8 @@ router.post('/', authMiddleware, (req, res) => {
     p.features?.coveredArea || 0,
     p.description || '',
     JSON.stringify(p.amenities || []),
-    p.coverImage || null,
-    JSON.stringify(p.images || []),
+    safeCoverImage,
+    JSON.stringify((p.images || []).filter(img => !img.startsWith('blob:'))),
     p.featured ? 1 : 0,
     p.status || 'disponible'
   );
@@ -123,6 +126,14 @@ router.put('/:id', authMiddleware, (req, res) => {
   }
 
   const p = req.body;
+
+  // Sanitize cover image - reject blob: URLs (browser-only, not persistent)
+  let newCoverImage;
+  if (p.coverImage !== undefined) {
+    newCoverImage = (p.coverImage && !p.coverImage.startsWith('blob:')) ? p.coverImage : null;
+  } else {
+    newCoverImage = existing.cover_image;
+  }
 
   db.prepare(`
     UPDATE properties SET title=?, type=?, operation=?, price=?, currency=?, show_price=?,
@@ -146,7 +157,7 @@ router.put('/:id', authMiddleware, (req, res) => {
     p.features?.coveredArea ?? existing.covered_area,
     p.description ?? existing.description,
     p.amenities ? JSON.stringify(p.amenities) : existing.amenities,
-    p.coverImage !== undefined ? p.coverImage : existing.cover_image,
+    newCoverImage,
     p.images ? JSON.stringify(p.images) : existing.images,
     p.featured !== undefined ? (p.featured ? 1 : 0) : existing.featured,
     p.status ?? existing.status,
@@ -188,8 +199,9 @@ router.post('/:id/images', authMiddleware, upload.array('images', 20), (req, res
   const newPaths = req.files.map(f => `/uploads/properties/${req.params.id}/${f.filename}`);
   const allImages = [...currentImages, ...newPaths];
 
-  // If no cover image, set first upload as cover
-  const coverImage = existing.cover_image || newPaths[0] || null;
+  // If no cover image (or invalid blob: URL), set first upload as cover
+  const existingCover = existing.cover_image && !existing.cover_image.startsWith('blob:') ? existing.cover_image : null;
+  const coverImage = existingCover || newPaths[0] || null;
 
   db.prepare('UPDATE properties SET images = ?, cover_image = ? WHERE id = ?').run(
     JSON.stringify(allImages),

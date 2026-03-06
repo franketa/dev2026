@@ -1070,6 +1070,7 @@
     // State
     let properties = [];
     let coverImage = null;
+    let pendingCoverFile = null;  // File object for cover image upload
     let uploadedImages = [];  // Now holds File objects for new uploads, or URL strings for existing
     let pendingImageFiles = [];  // File objects to upload after save
     let editingId = null;
@@ -1134,9 +1135,10 @@
     async function addProperty(data) {
       try {
         const property = await window.API.createProperty(data);
-        // Upload pending images
-        if (pendingImageFiles.length > 0) {
-          const updated = await window.API.uploadImages(property.id, pendingImageFiles);
+        // Upload pending images (cover file first so it becomes cover_image on server)
+        const filesToUpload = [...(pendingCoverFile ? [pendingCoverFile] : []), ...pendingImageFiles];
+        if (filesToUpload.length > 0) {
+          const updated = await window.API.uploadImages(property.id, filesToUpload);
           properties.unshift(updated);
         } else {
           properties.unshift(property);
@@ -1152,9 +1154,10 @@
     async function updatePropertyData(id, data) {
       try {
         const updated = await window.API.updateProperty(id, data);
-        // Upload new images if any
-        if (pendingImageFiles.length > 0) {
-          const withImages = await window.API.uploadImages(id, pendingImageFiles);
+        // Upload new images if any (cover file first so it becomes cover_image on server)
+        const filesToUpload = [...(pendingCoverFile ? [pendingCoverFile] : []), ...pendingImageFiles];
+        if (filesToUpload.length > 0) {
+          const withImages = await window.API.uploadImages(id, filesToUpload);
           const index = properties.findIndex(p => p.id === id);
           if (index !== -1) properties[index] = withImages;
           return withImages;
@@ -1325,8 +1328,8 @@
           },
           description: document.getElementById('description').value.trim(),
           amenities: Array.from(document.querySelectorAll('input[name="amenities"]:checked')).map(cb => cb.value),
-          coverImage: coverImage || null,
-          images: uploadedImages.filter(img => typeof img === 'string'),
+          coverImage: (coverImage && !coverImage.startsWith('blob:')) ? coverImage : null,
+          images: uploadedImages.filter(img => typeof img === 'string' && !img.startsWith('blob:')),
           featured: document.getElementById('featured').value === 'true',
           status: 'disponible'
         };
@@ -1380,8 +1383,8 @@
         showToast(`${file.name} es muy grande (max 10MB)`, 'error');
         return;
       }
-      // Store file for upload, create preview URL
-      pendingImageFiles.push(file);
+      // Store file separately for upload, create preview URL
+      pendingCoverFile = file;
       coverImage = URL.createObjectURL(file);
       renderCoverPreview();
       showToast('Imagen de portada cargada', 'success');
@@ -1435,6 +1438,7 @@
 
     function removeCover() {
       coverImage = null;
+      pendingCoverFile = null;
       renderCoverPreview();
     }
 
@@ -1485,6 +1489,8 @@
 
       // Cover image
       coverImage = property.coverImage || null;
+      pendingCoverFile = null;
+      pendingImageFiles = [];
       renderCoverPreview();
 
       // Gallery images
@@ -1505,6 +1511,7 @@
       document.getElementById('city').value = 'Buenos Aires';
       editingId = null;
       coverImage = null;
+      pendingCoverFile = null;
       uploadedImages = [];
       pendingImageFiles = [];
       renderCoverPreview();
