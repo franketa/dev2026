@@ -40,8 +40,14 @@
     .property-gallery {
       position: relative;
       width: 100%;
-      aspect-ratio: 16 / 10;
       background: var(--gray-100);
+      overflow: hidden;
+    }
+
+    .property-gallery__main-wrapper {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16 / 10;
       overflow: hidden;
     }
 
@@ -49,6 +55,110 @@
       width: 100%;
       height: 100%;
       object-fit: cover;
+      user-select: none;
+      -webkit-user-drag: none;
+    }
+
+    .property-gallery__arrow {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0, 0, 0, 0.45);
+      color: white;
+      border: none;
+      border-radius: 50%;
+      cursor: pointer;
+      z-index: 2;
+      transition: background 0.2s;
+      padding: 0;
+    }
+
+    .property-gallery__arrow:hover {
+      background: rgba(0, 0, 0, 0.7);
+    }
+
+    .property-gallery__arrow--prev {
+      left: 0.75rem;
+    }
+
+    .property-gallery__arrow--next {
+      right: 0.75rem;
+    }
+
+    .property-gallery__counter {
+      position: absolute;
+      bottom: 0.75rem;
+      right: 0.75rem;
+      padding: 0.25rem 0.75rem;
+      font-size: 0.8125rem;
+      font-weight: 500;
+      color: white;
+      background: rgba(0, 0, 0, 0.5);
+      border-radius: 2rem;
+      z-index: 2;
+    }
+
+    .property-gallery__thumbs {
+      display: flex;
+      gap: 0.5rem;
+      padding: 0.75rem 1rem;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: thin;
+      background: var(--gray-100);
+    }
+
+    .property-gallery__thumbs::-webkit-scrollbar {
+      height: 4px;
+    }
+
+    .property-gallery__thumbs::-webkit-scrollbar-thumb {
+      background: var(--gray-300);
+      border-radius: 2px;
+    }
+
+    .property-gallery__thumb {
+      flex-shrink: 0;
+      width: 80px;
+      height: 56px;
+      object-fit: cover;
+      border-radius: 0.375rem;
+      cursor: pointer;
+      border: 2px solid transparent;
+      opacity: 0.6;
+      transition: opacity 0.2s, border-color 0.2s;
+    }
+
+    .property-gallery__thumb:hover {
+      opacity: 0.85;
+    }
+
+    .property-gallery__thumb--active {
+      opacity: 1;
+      border-color: var(--primary-color);
+    }
+
+    .property-gallery--single .property-gallery__arrow,
+    .property-gallery--single .property-gallery__counter,
+    .property-gallery--single .property-gallery__thumbs {
+      display: none;
+    }
+
+    @media (max-width: 767px) {
+      .property-gallery__arrow {
+        width: 34px;
+        height: 34px;
+      }
+
+      .property-gallery__thumb {
+        width: 64px;
+        height: 44px;
+      }
     }
 
     .property-gallery__badge {
@@ -268,9 +378,12 @@
       }
 
       .property-gallery {
-        aspect-ratio: 4 / 3;
         border-radius: 1rem;
         margin: 1rem;
+      }
+
+      .property-gallery__main-wrapper {
+        aspect-ratio: 4 / 3;
       }
 
       .property-content {
@@ -466,13 +579,39 @@
       return operations[operation] || operation;
     }
 
+    // Build all images array for a property
+    function getAllImages(property) {
+      const images = [];
+      if (property.coverImage) {
+        const src = property.coverImage.startsWith('data:') ? property.coverImage : `assets/images/properties/${property.coverImage}`;
+        images.push(src);
+      }
+      if (property.images && property.images.length > 0) {
+        property.images.forEach(img => {
+          const src = img.startsWith('data:') ? img : `assets/images/properties/${img}`;
+          images.push(src);
+        });
+      }
+      if (images.length === 0) {
+        const imageNumber = ((property.id - 1) % 25) + 1;
+        images.push(`assets/images/properties/prop-${imageNumber}.jpg`);
+      }
+      return images;
+    }
+
     // Render property page
     function renderProperty(property) {
       const page = document.getElementById('property-page');
       const whatsappMessage = encodeURIComponent(`Hola, me interesa la propiedad: ${property.title} (ID: ${property.id})`);
+      const allImages = getAllImages(property);
+      const isSingle = allImages.length <= 1;
 
       // Update page title
       document.title = `${property.title} | Di Iorio Inmobiliaria`;
+
+      const thumbsHTML = allImages.map((src, i) =>
+        `<img src="${src}" alt="Foto ${i + 1}" class="property-gallery__thumb${i === 0 ? ' property-gallery__thumb--active' : ''}" data-index="${i}" onerror="this.style.display='none'">`
+      ).join('');
 
       page.innerHTML = `
         <a href="index.html#propiedades" class="property-page__back">
@@ -484,11 +623,23 @@
 
         <div class="property-page__inner">
           <div class="property-main">
-            <div class="property-gallery">
-              <img src="${getPropertyImage(property)}" alt="${property.title}" class="property-gallery__main" onerror="this.src='https://placehold.co/800x600/e5e7eb/9ca3af?text=Sin+imagen'">
-              <span class="property-gallery__badge property-gallery__badge--${property.operation}">
-                ${getOperationLabel(property.operation)}
-              </span>
+            <div class="property-gallery${isSingle ? ' property-gallery--single' : ''}">
+              <div class="property-gallery__main-wrapper">
+                <img src="${allImages[0]}" alt="${property.title}" class="property-gallery__main" onerror="this.src='https://placehold.co/800x600/e5e7eb/9ca3af?text=Sin+imagen'">
+                <button class="property-gallery__arrow property-gallery__arrow--prev" aria-label="Imagen anterior">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                </button>
+                <button class="property-gallery__arrow property-gallery__arrow--next" aria-label="Imagen siguiente">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                </button>
+                <span class="property-gallery__counter">1 / ${allImages.length}</span>
+                <span class="property-gallery__badge property-gallery__badge--${property.operation}">
+                  ${getOperationLabel(property.operation)}
+                </span>
+              </div>
+              <div class="property-gallery__thumbs">
+                ${thumbsHTML}
+              </div>
             </div>
 
             <div class="property-content">
@@ -626,6 +777,54 @@
 
       // Initialize mobile menu
       initMobileMenu();
+
+      // Initialize carousel
+      if (allImages.length > 1) {
+        let currentIndex = 0;
+        const mainImg = document.querySelector('.property-gallery__main');
+        const counter = document.querySelector('.property-gallery__counter');
+        const thumbs = document.querySelectorAll('.property-gallery__thumb');
+        const thumbsContainer = document.querySelector('.property-gallery__thumbs');
+        const wrapper = document.querySelector('.property-gallery__main-wrapper');
+
+        function showSlide(index) {
+          currentIndex = ((index % allImages.length) + allImages.length) % allImages.length;
+          mainImg.src = allImages[currentIndex];
+          counter.textContent = `${currentIndex + 1} / ${allImages.length}`;
+          thumbs.forEach((t, i) => t.classList.toggle('property-gallery__thumb--active', i === currentIndex));
+          // Scroll active thumb into view
+          const activeThumb = thumbs[currentIndex];
+          if (activeThumb && thumbsContainer) {
+            const offset = activeThumb.offsetLeft - thumbsContainer.offsetWidth / 2 + activeThumb.offsetWidth / 2;
+            thumbsContainer.scrollTo({ left: offset, behavior: 'smooth' });
+          }
+        }
+
+        document.querySelector('.property-gallery__arrow--prev').addEventListener('click', () => showSlide(currentIndex - 1));
+        document.querySelector('.property-gallery__arrow--next').addEventListener('click', () => showSlide(currentIndex + 1));
+
+        thumbs.forEach(thumb => {
+          thumb.addEventListener('click', () => showSlide(parseInt(thumb.dataset.index)));
+        });
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+          if (e.key === 'ArrowLeft') showSlide(currentIndex - 1);
+          if (e.key === 'ArrowRight') showSlide(currentIndex + 1);
+        });
+
+        // Touch/swipe support
+        let touchStartX = 0;
+        let touchEndX = 0;
+        wrapper.addEventListener('touchstart', (e) => { touchStartX = e.changedTouches[0].screenX; }, { passive: true });
+        wrapper.addEventListener('touchend', (e) => {
+          touchEndX = e.changedTouches[0].screenX;
+          const diff = touchStartX - touchEndX;
+          if (Math.abs(diff) > 50) {
+            showSlide(currentIndex + (diff > 0 ? 1 : -1));
+          }
+        }, { passive: true });
+      }
     }
 
     // Show error state
