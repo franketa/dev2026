@@ -374,18 +374,29 @@ function initFilterButtons() {
       const filterType = btn.dataset.filter;
       const filterValue = btn.dataset.value;
 
-      // Only toggle active within the same filter group
-      DOM.filterBtns.forEach(b => {
-        if (b.dataset.filter === filterType) {
-          b.classList.remove('active');
-        }
-      });
-      btn.classList.add('active');
+      // "Todos" resets all filters; otherwise toggle within the same group
+      if (filterType === 'operation' && filterValue === 'todos') {
+        // Reset all filters
+        DOM.filterBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        state.currentFilter.operation = 'todos';
+        state.currentFilter.type = 'todos';
+      } else {
+        // Toggle active within the same filter group
+        DOM.filterBtns.forEach(b => {
+          if (b.dataset.filter === filterType) {
+            b.classList.remove('active');
+          }
+        });
+        btn.classList.add('active');
 
-      if (filterType === 'operation') {
-        state.currentFilter.operation = filterValue;
-      } else if (filterType === 'type') {
-        state.currentFilter.type = filterValue;
+        // When selecting a type filter, deactivate "Todos" and activate the matching operation or keep current
+        if (filterType === 'type') {
+          // If "Todos" is the only active operation btn, keep it but it now means "all operations"
+          state.currentFilter.type = filterValue;
+        } else if (filterType === 'operation') {
+          state.currentFilter.operation = filterValue;
+        }
       }
 
       filterProperties();
