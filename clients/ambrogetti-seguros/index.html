@@ -1,0 +1,1827 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ambrogetti Seguros SRL | +53 años protegiendo lo que importa | Chivilcoy</title>
+    <meta name="description" content="Broker de seguros con más de 53 años de trayectoria. Seguros de auto, vida, agro, comercio y más. Chivilcoy, Buenos Aires.">
+    <meta property="og:title" content="Ambrogetti Seguros SRL | +53 años protegiendo lo que importa">
+    <meta property="og:description" content="Broker de seguros con más de 53 años de trayectoria en Chivilcoy, Buenos Aires. Seguros de auto, vida, agro, comercio y más.">
+    <meta property="og:type" content="website">
+    <meta property="og:locale" content="es_AR">
+    <meta name="robots" content="index, follow">
+    <meta name="theme-color" content="#1B2A4A">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=DM+Serif+Display&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <style>
+        /* ========================================
+           RESET & VARIABLES
+           ======================================== */
+        *, *::before, *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --red: #D42027;
+            --red-dark: #B01B20;
+            --red-light: rgba(212, 32, 39, 0.08);
+            --navy: #1B2A4A;
+            --navy-light: #243556;
+            --navy-dark: #111d35;
+            --white: #FFFFFF;
+            --gray-bg: #F5F6F8;
+            --gray-border: #E2E5EA;
+            --text-dark: #333333;
+            --text-medium: #555555;
+            --text-light: #777777;
+            --font-serif: 'DM Serif Display', Georgia, serif;
+            --font-sans: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            --shadow-sm: 0 2px 8px rgba(27, 42, 74, 0.06);
+            --shadow-md: 0 4px 20px rgba(27, 42, 74, 0.1);
+            --shadow-lg: 0 8px 40px rgba(27, 42, 74, 0.14);
+            --radius: 10px;
+            --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        html {
+            scroll-behavior: smooth;
+            scroll-padding-top: 80px;
+        }
+
+        body {
+            font-family: var(--font-sans);
+            color: var(--text-dark);
+            line-height: 1.6;
+            overflow-x: hidden;
+            background: var(--white);
+            -webkit-font-smoothing: antialiased;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        ul { list-style: none; }
+
+        /* ========================================
+           UTILITY CLASSES
+           ======================================== */
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        .section-label {
+            font-family: var(--font-sans);
+            font-size: 0.8rem;
+            font-weight: 700;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--red);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-label::before {
+            content: '';
+            display: inline-block;
+            width: 30px;
+            height: 2px;
+            background: var(--red);
+        }
+
+        .section-title {
+            font-family: var(--font-serif);
+            font-size: clamp(1.8rem, 4vw, 2.6rem);
+            color: var(--navy);
+            line-height: 1.2;
+            margin-bottom: 20px;
+        }
+
+        .section-title--light {
+            color: var(--white);
+        }
+
+        .section-subtitle {
+            font-size: 1.05rem;
+            color: var(--text-medium);
+            max-width: 600px;
+            line-height: 1.7;
+        }
+
+        /* Animations */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.7s var(--transition), transform 0.7s var(--transition);
+        }
+
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .reveal-delay-1 { transition-delay: 0.1s; }
+        .reveal-delay-2 { transition-delay: 0.2s; }
+        .reveal-delay-3 { transition-delay: 0.3s; }
+        .reveal-delay-4 { transition-delay: 0.4s; }
+        .reveal-delay-5 { transition-delay: 0.5s; }
+
+        /* Diagonal line background pattern */
+        .bg-pattern-dark {
+            background-color: var(--navy);
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' xmlns='http://www.w3.org/2000/svg'%3E%3Cline x1='0' y1='60' x2='60' y2='0' stroke='rgba(255,255,255,0.035)' stroke-width='1'/%3E%3C/svg%3E");
+        }
+
+        .bg-pattern-light {
+            background-color: var(--gray-bg);
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' xmlns='http://www.w3.org/2000/svg'%3E%3Cline x1='0' y1='60' x2='60' y2='0' stroke='rgba(27,42,74,0.025)' stroke-width='1'/%3E%3C/svg%3E");
+        }
+
+        /* ========================================
+           NAVBAR
+           ======================================== */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            padding: 20px 0;
+            transition: background var(--transition), padding var(--transition), box-shadow var(--transition);
+        }
+
+        .navbar.scrolled {
+            background: var(--navy);
+            padding: 12px 0;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .navbar .container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .navbar__logo img {
+            height: 48px;
+            width: auto;
+            transition: height var(--transition);
+        }
+
+        .navbar.scrolled .navbar__logo img {
+            height: 40px;
+        }
+
+        .navbar__links {
+            display: flex;
+            align-items: center;
+            gap: 32px;
+        }
+
+        .navbar__links a {
+            font-size: 0.85rem;
+            font-weight: 600;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.85);
+            transition: color var(--transition);
+            position: relative;
+        }
+
+        .navbar__links a::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--red);
+            transition: width var(--transition);
+        }
+
+        .navbar__links a:hover {
+            color: var(--white);
+        }
+
+        .navbar__links a:hover::after {
+            width: 100%;
+        }
+
+        .navbar__cta {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--red);
+            color: var(--white) !important;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-size: 0.82rem !important;
+            font-weight: 700 !important;
+            letter-spacing: 0.03em;
+            transition: background var(--transition), transform var(--transition) !important;
+        }
+
+        .navbar__cta::after { display: none !important; }
+
+        .navbar__cta:hover {
+            background: var(--red-dark) !important;
+            transform: translateY(-1px);
+        }
+
+        .navbar__cta svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        /* Mobile hamburger */
+        .navbar__hamburger {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            cursor: pointer;
+            padding: 4px;
+            z-index: 1001;
+        }
+
+        .navbar__hamburger span {
+            display: block;
+            width: 24px;
+            height: 2px;
+            background: var(--white);
+            border-radius: 2px;
+            transition: transform var(--transition), opacity var(--transition);
+        }
+
+        .navbar__hamburger.active span:nth-child(1) {
+            transform: rotate(45deg) translate(5px, 5px);
+        }
+
+        .navbar__hamburger.active span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .navbar__hamburger.active span:nth-child(3) {
+            transform: rotate(-45deg) translate(5px, -5px);
+        }
+
+        /* Mobile menu overlay */
+        .mobile-menu {
+            display: none;
+            position: fixed;
+            top: 0;
+            right: -100%;
+            width: 100%;
+            max-width: 360px;
+            height: 100vh;
+            background: var(--navy);
+            z-index: 999;
+            padding: 100px 40px 40px;
+            transition: right 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow-y: auto;
+        }
+
+        .mobile-menu.open {
+            right: 0;
+        }
+
+        .mobile-menu a {
+            display: block;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.8);
+            padding: 16px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            transition: color var(--transition), padding-left var(--transition);
+        }
+
+        .mobile-menu a:hover {
+            color: var(--white);
+            padding-left: 8px;
+        }
+
+        .mobile-menu__cta {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 24px;
+            background: var(--red);
+            color: var(--white) !important;
+            padding: 14px 28px;
+            border-radius: 6px;
+            font-weight: 700;
+        }
+
+        .mobile-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 998;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .mobile-overlay.visible {
+            opacity: 1;
+        }
+
+        @media (max-width: 1023px) {
+            .navbar__links { display: none; }
+            .navbar__hamburger { display: flex; }
+            .mobile-menu { display: block; }
+        }
+
+        /* ========================================
+           HERO
+           ======================================== */
+        .hero {
+            position: relative;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .hero__bg {
+            position: absolute;
+            inset: 0;
+            background-color: var(--navy);
+            background-image:
+                url("data:image/svg+xml,%3Csvg width='60' height='60' xmlns='http://www.w3.org/2000/svg'%3E%3Cline x1='0' y1='60' x2='60' y2='0' stroke='rgba(255,255,255,0.03)' stroke-width='1'/%3E%3C/svg%3E"),
+                linear-gradient(160deg, var(--navy-dark) 0%, var(--navy) 50%, var(--navy-light) 100%);
+        }
+
+        /* Large decorative triangle echoing the logo */
+        .hero__triangle {
+            position: absolute;
+            right: -5%;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 600px;
+            height: 600px;
+            opacity: 0.04;
+        }
+
+        .hero__triangle::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            clip-path: polygon(50% 5%, 5% 95%, 95% 95%);
+            border: 3px solid var(--white);
+            background: transparent;
+        }
+
+        /* Multiple nested triangles like the logo */
+        .hero__triangle-lines {
+            position: absolute;
+            right: -2%;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .hero__triangle-line {
+            position: absolute;
+            clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+            border: none;
+        }
+
+        .hero__triangle-line:nth-child(1) {
+            width: 500px;
+            height: 440px;
+            top: -220px;
+            right: -80px;
+            background: linear-gradient(to bottom, transparent 0%, transparent 47%, rgba(255,255,255,0.03) 47%, rgba(255,255,255,0.03) 49%, transparent 49%);
+        }
+
+        .hero__triangle-line:nth-child(2) {
+            width: 420px;
+            height: 370px;
+            top: -185px;
+            right: -40px;
+            background: linear-gradient(to bottom, transparent 0%, transparent 47%, rgba(255,255,255,0.04) 47%, rgba(255,255,255,0.04) 49%, transparent 49%);
+        }
+
+        .hero__triangle-line:nth-child(3) {
+            width: 340px;
+            height: 300px;
+            top: -150px;
+            right: 0;
+            background: linear-gradient(to bottom, transparent 0%, transparent 47%, rgba(255,255,255,0.05) 47%, rgba(255,255,255,0.05) 49%, transparent 49%);
+        }
+
+        /* Horizontal accent lines (like logo top-right) */
+        .hero__accent-lines {
+            position: absolute;
+            top: 18%;
+            right: 6%;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            opacity: 0.06;
+        }
+
+        .hero__accent-lines span {
+            display: block;
+            height: 2px;
+            background: var(--white);
+            border-radius: 1px;
+        }
+
+        .hero__accent-lines span:nth-child(1) { width: 120px; }
+        .hero__accent-lines span:nth-child(2) { width: 100px; }
+        .hero__accent-lines span:nth-child(3) { width: 80px; }
+        .hero__accent-lines span:nth-child(4) { width: 60px; }
+
+        .hero__content {
+            position: relative;
+            z-index: 2;
+            padding: 120px 0 80px;
+            max-width: 680px;
+        }
+
+        .hero__badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(212, 32, 39, 0.12);
+            border: 1px solid rgba(212, 32, 39, 0.25);
+            color: rgba(255, 255, 255, 0.9);
+            padding: 8px 18px;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            letter-spacing: 0.03em;
+            margin-bottom: 28px;
+        }
+
+        .hero__badge-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--red);
+        }
+
+        .hero__title {
+            font-family: var(--font-serif);
+            font-size: clamp(2.2rem, 5.5vw, 3.6rem);
+            color: var(--white);
+            line-height: 1.15;
+            margin-bottom: 20px;
+        }
+
+        .hero__title span {
+            color: var(--red);
+        }
+
+        .hero__subtitle {
+            font-size: clamp(1rem, 2vw, 1.15rem);
+            color: rgba(255, 255, 255, 0.7);
+            line-height: 1.7;
+            margin-bottom: 36px;
+            max-width: 540px;
+        }
+
+        .hero__actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            align-items: center;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 14px 30px;
+            border-radius: 8px;
+            font-family: var(--font-sans);
+            font-size: 0.95rem;
+            font-weight: 700;
+            cursor: pointer;
+            border: none;
+            transition: all var(--transition);
+        }
+
+        .btn svg, .btn i {
+            width: 18px;
+            height: 18px;
+        }
+
+        .btn--primary {
+            background: var(--red);
+            color: var(--white);
+        }
+
+        .btn--primary:hover {
+            background: var(--red-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 24px rgba(212, 32, 39, 0.35);
+        }
+
+        .btn--outline {
+            background: transparent;
+            color: var(--white);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .btn--outline:hover {
+            border-color: var(--white);
+            background: rgba(255, 255, 255, 0.06);
+        }
+
+        .btn--white-outline {
+            background: transparent;
+            color: var(--white);
+            border: 2px solid rgba(255, 255, 255, 0.5);
+        }
+
+        .btn--white-outline:hover {
+            background: var(--white);
+            color: var(--navy);
+            border-color: var(--white);
+        }
+
+        .btn--white {
+            background: var(--white);
+            color: var(--red);
+        }
+
+        .btn--white:hover {
+            background: var(--gray-bg);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 24px rgba(0, 0, 0, 0.2);
+        }
+
+        /* ========================================
+           ABOUT SECTION
+           ======================================== */
+        .about {
+            padding: 100px 0;
+            background: var(--white);
+        }
+
+        .about__grid {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 60px;
+            align-items: start;
+        }
+
+        .about__counter-card {
+            background: var(--gray-bg);
+            border-radius: var(--radius);
+            padding: 40px 32px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .about__counter-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--red), var(--navy));
+        }
+
+        .about__counter-number {
+            font-family: var(--font-serif);
+            font-size: 5rem;
+            color: var(--red);
+            line-height: 1;
+            margin-bottom: 4px;
+        }
+
+        .about__counter-label {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--navy);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .about__counter-sub {
+            font-size: 0.82rem;
+            color: var(--text-light);
+            margin-top: 4px;
+        }
+
+        .about__text p {
+            color: var(--text-medium);
+            margin-bottom: 16px;
+            line-height: 1.8;
+        }
+
+        .about__text p strong {
+            color: var(--navy);
+        }
+
+        .about__highlights {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-top: 28px;
+        }
+
+        .about__highlight {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            background: var(--gray-bg);
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--navy);
+        }
+
+        .about__highlight svg {
+            width: 20px;
+            height: 20px;
+            color: var(--red);
+            flex-shrink: 0;
+        }
+
+        /* ========================================
+           SEGUROS (SERVICES) SECTION
+           ======================================== */
+        .seguros {
+            padding: 100px 0;
+        }
+
+        .seguros__header {
+            text-align: center;
+            margin-bottom: 56px;
+        }
+
+        .seguros__header .section-label {
+            justify-content: center;
+        }
+
+        .seguros__header .section-label::before { display: none; }
+
+        .seguros__header .section-subtitle {
+            margin: 0 auto;
+        }
+
+        .seguros__grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 20px;
+        }
+
+        .seguro-card {
+            background: var(--white);
+            border: 1px solid var(--gray-border);
+            border-radius: var(--radius);
+            padding: 32px 24px;
+            transition: all var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .seguro-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--navy);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform var(--transition);
+        }
+
+        .seguro-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+            border-color: transparent;
+        }
+
+        .seguro-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .seguro-card--featured {
+            border-color: rgba(212, 32, 39, 0.2);
+            background: linear-gradient(to bottom, rgba(212, 32, 39, 0.02), var(--white));
+        }
+
+        .seguro-card--featured::before {
+            background: var(--red);
+            transform: scaleX(1);
+        }
+
+        .seguro-card__badge {
+            position: absolute;
+            top: 14px;
+            right: 14px;
+            font-size: 0.65rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--red);
+            background: rgba(212, 32, 39, 0.08);
+            padding: 4px 10px;
+            border-radius: 50px;
+        }
+
+        .seguro-card__icon {
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--gray-bg);
+            border-radius: 10px;
+            margin-bottom: 18px;
+            color: var(--navy);
+            transition: all var(--transition);
+        }
+
+        .seguro-card--featured .seguro-card__icon {
+            background: var(--red-light);
+            color: var(--red);
+        }
+
+        .seguro-card:hover .seguro-card__icon {
+            background: var(--navy);
+            color: var(--white);
+        }
+
+        .seguro-card--featured:hover .seguro-card__icon {
+            background: var(--red);
+            color: var(--white);
+        }
+
+        .seguro-card__icon svg {
+            width: 24px;
+            height: 24px;
+        }
+
+        .seguro-card__title {
+            font-family: var(--font-serif);
+            font-size: 1.15rem;
+            color: var(--navy);
+            margin-bottom: 8px;
+        }
+
+        .seguro-card__desc {
+            font-size: 0.88rem;
+            color: var(--text-light);
+            line-height: 1.6;
+        }
+
+        /* ========================================
+           COMPANIES SECTION
+           ======================================== */
+        .companies {
+            padding: 80px 0;
+            background: var(--white);
+        }
+
+        .companies__header {
+            text-align: center;
+            margin-bottom: 48px;
+        }
+
+        .companies__header .section-label {
+            justify-content: center;
+        }
+
+        .companies__header .section-label::before { display: none; }
+
+        .companies__row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 48px;
+            flex-wrap: wrap;
+        }
+
+        .companies__logo {
+            flex-shrink: 0;
+            filter: none;
+            opacity: 1;
+            transition: all var(--transition);
+            height: 40px;
+            max-width: 160px;
+            width: auto;
+            object-fit: contain;
+        }
+
+        .companies__logo:hover {
+            filter: none;
+            opacity: 1;
+            transform: translateY(-2px);
+        }
+
+        .companies__more {
+            font-family: var(--font-serif);
+            font-size: 1.05rem;
+            color: var(--text-light);
+            font-style: italic;
+            padding: 0 12px;
+        }
+
+        .companies__note {
+            text-align: center;
+            margin-top: 32px;
+            font-size: 0.9rem;
+            color: var(--text-light);
+        }
+
+        /* ========================================
+           WHY CHOOSE US SECTION
+           ======================================== */
+        .why {
+            padding: 100px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Decorative triangle in background */
+        .why__deco-triangle {
+            position: absolute;
+            left: -120px;
+            bottom: -80px;
+            width: 400px;
+            height: 350px;
+            clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .why__header {
+            text-align: center;
+            margin-bottom: 56px;
+        }
+
+        .why__header .section-label {
+            justify-content: center;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .why__header .section-label::before {
+            background: rgba(255, 255, 255, 0.3);
+            display: none;
+        }
+
+        .why__grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 24px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .why-card {
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: var(--radius);
+            padding: 36px 24px;
+            text-align: center;
+            transition: all var(--transition);
+            backdrop-filter: blur(4px);
+        }
+
+        .why-card:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-4px);
+            border-color: rgba(255, 255, 255, 0.15);
+        }
+
+        .why-card__icon {
+            width: 56px;
+            height: 56px;
+            margin: 0 auto 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 14px;
+            background: rgba(212, 32, 39, 0.15);
+            color: var(--red);
+        }
+
+        .why-card__icon svg {
+            width: 26px;
+            height: 26px;
+        }
+
+        .why-card__title {
+            font-family: var(--font-serif);
+            font-size: 1.1rem;
+            color: var(--white);
+            margin-bottom: 10px;
+        }
+
+        .why-card__desc {
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.55);
+            line-height: 1.6;
+        }
+
+        /* ========================================
+           CONTACT SECTION
+           ======================================== */
+        .contact {
+            padding: 100px 0;
+            background: linear-gradient(135deg, var(--red) 0%, var(--red-dark) 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .contact__deco {
+            position: absolute;
+            right: -80px;
+            top: -80px;
+            width: 350px;
+            height: 300px;
+            clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .contact__grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 48px;
+            align-items: start;
+            position: relative;
+            z-index: 2;
+        }
+
+        .contact__info h2 {
+            font-family: var(--font-serif);
+            font-size: clamp(1.8rem, 4vw, 2.4rem);
+            color: var(--white);
+            line-height: 1.2;
+            margin-bottom: 20px;
+        }
+
+        .contact__info p {
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 28px;
+            line-height: 1.7;
+        }
+
+        .contact__details {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+
+        .contact__detail {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            color: var(--white);
+            font-size: 0.95rem;
+        }
+
+        .contact__detail-icon {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            flex-shrink: 0;
+        }
+
+        .contact__detail-icon svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        .contact__social {
+            display: flex;
+            gap: 12px;
+            margin-top: 8px;
+        }
+
+        .contact__social a {
+            width: 44px;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.12);
+            border-radius: 10px;
+            color: var(--white);
+            transition: all var(--transition);
+        }
+
+        .contact__social a:hover {
+            background: var(--white);
+            color: var(--red);
+            transform: translateY(-2px);
+        }
+
+        .contact__social a svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        .contact__map {
+            border-radius: var(--radius);
+            overflow: hidden;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+            height: 100%;
+            min-height: 320px;
+        }
+
+        .contact__map iframe {
+            width: 100%;
+            height: 100%;
+            min-height: 320px;
+            border: 0;
+        }
+
+        /* ========================================
+           FOOTER
+           ======================================== */
+        .footer {
+            background: var(--navy-dark);
+            padding: 48px 0 24px;
+        }
+
+        .footer__top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-bottom: 28px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .footer__logo img {
+            height: 40px;
+            width: auto;
+        }
+
+        .footer__nav {
+            display: flex;
+            gap: 24px;
+            flex-wrap: wrap;
+        }
+
+        .footer__nav a {
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.5);
+            transition: color var(--transition);
+        }
+
+        .footer__nav a:hover {
+            color: var(--white);
+        }
+
+        .footer__bottom {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .footer__copyright {
+            font-size: 0.82rem;
+            color: rgba(255, 255, 255, 0.35);
+        }
+
+        .footer__ssn {
+            font-size: 0.75rem;
+            color: rgba(255, 255, 255, 0.25);
+            max-width: 600px;
+            line-height: 1.5;
+            text-align: center;
+        }
+
+        .footer__credit {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.72rem;
+            color: rgba(255, 255, 255, 0.3);
+        }
+
+        .footer__credit img {
+            height: 16px;
+            width: auto;
+            opacity: 0.4;
+            transition: opacity var(--transition);
+        }
+
+        .footer__credit:hover img {
+            opacity: 0.7;
+        }
+
+        .footer__credit:hover {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        /* ========================================
+           WHATSAPP FLOAT
+           ======================================== */
+        .whatsapp-float {
+            position: fixed;
+            bottom: 28px;
+            right: 28px;
+            z-index: 900;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: #25D366;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+            box-shadow: 0 4px 16px rgba(37, 211, 102, 0.4);
+            transition: all var(--transition);
+            animation: pulse-wa 2.5s infinite;
+        }
+
+        .whatsapp-float:hover {
+            transform: scale(1.08);
+            box-shadow: 0 6px 24px rgba(37, 211, 102, 0.5);
+        }
+
+        .whatsapp-float svg {
+            width: 28px;
+            height: 28px;
+        }
+
+        @keyframes pulse-wa {
+            0%, 100% { box-shadow: 0 4px 16px rgba(37, 211, 102, 0.4); }
+            50% { box-shadow: 0 4px 28px rgba(37, 211, 102, 0.6), 0 0 0 12px rgba(37, 211, 102, 0.08); }
+        }
+
+        /* ========================================
+           RESPONSIVE BREAKPOINTS
+           ======================================== */
+
+        /* 320px - 479px: Small mobile */
+        @media (max-width: 479px) {
+            .container { padding: 0 20px; }
+
+            .hero__content { padding: 130px 24px 60px; }
+
+            .hero__title { font-size: 1.9rem; }
+
+            .hero__actions { flex-direction: column; align-items: stretch; }
+
+            .btn { justify-content: center; text-align: center; }
+
+            .about__grid {
+                grid-template-columns: 1fr;
+                gap: 32px;
+            }
+
+            .about__counter-card { padding: 28px 20px; }
+
+            .about__counter-number { font-size: 3.5rem; }
+
+            .about__highlights {
+                grid-template-columns: 1fr;
+            }
+
+            .seguros__grid {
+                grid-template-columns: 1fr;
+            }
+
+            .why__grid {
+                grid-template-columns: 1fr;
+                gap: 16px;
+            }
+
+            .contact__grid {
+                grid-template-columns: 1fr;
+                gap: 32px;
+            }
+
+            .companies__row { gap: 24px; }
+
+            .companies__logo { height: 32px; }
+
+            .footer__top {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .footer__bottom {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .whatsapp-float {
+                bottom: 16px;
+                right: 16px;
+                width: 50px;
+                height: 50px;
+            }
+
+            .whatsapp-float svg { width: 24px; height: 24px; }
+        }
+
+        /* 480px - 767px: Large mobile */
+        @media (min-width: 480px) and (max-width: 767px) {
+            .about__grid {
+                grid-template-columns: 1fr;
+                gap: 36px;
+            }
+
+            .about__counter-card {
+                max-width: 280px;
+                justify-self: center;
+            }
+
+            .seguros__grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .why__grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .contact__grid {
+                grid-template-columns: 1fr;
+                gap: 36px;
+            }
+
+            .footer__bottom {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+
+        /* 768px - 1023px: Tablet */
+        @media (min-width: 768px) and (max-width: 1023px) {
+            .about__grid {
+                grid-template-columns: 240px 1fr;
+                gap: 40px;
+            }
+
+            .seguros__grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .why__grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .contact__grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        /* 1024px+: Desktop */
+        @media (min-width: 1024px) {
+            .about__grid {
+                grid-template-columns: 280px 1fr;
+                gap: 60px;
+            }
+
+            .seguros__grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+
+            .why__grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+
+        /* 1280px+: Large desktop */
+        @media (min-width: 1280px) {
+            .seguros__grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+
+            .hero__content {
+                max-width: 700px;
+            }
+        }
+
+        /* 1920px+: Extra large */
+        @media (min-width: 1920px) {
+            .container { max-width: 1400px; }
+            .seguros__grid { grid-template-columns: repeat(5, 1fr); }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ==================== NAVBAR ==================== -->
+    <nav class="navbar" id="navbar" role="navigation" aria-label="Navegación principal">
+        <div class="container">
+            <a href="#" class="navbar__logo" aria-label="Ambrogetti Seguros - Inicio">
+                <img src="assets/logo/logo.png" alt="Ambrogetti Seguros SRL">
+            </a>
+            <div class="navbar__links">
+                <a href="#inicio">Inicio</a>
+                <a href="#nosotros">Nosotros</a>
+                <a href="#seguros">Seguros</a>
+                <a href="#companias">Compañías</a>
+                <a href="#contacto">Contacto</a>
+                <a href="https://wa.me/542346601478" target="_blank" rel="noopener" class="navbar__cta">
+                    <svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+                    Escribinos
+                </a>
+            </div>
+            <div class="navbar__hamburger" id="hamburger" aria-label="Menú" role="button" tabindex="0">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Mobile menu -->
+    <div class="mobile-overlay" id="mobileOverlay"></div>
+    <div class="mobile-menu" id="mobileMenu" role="navigation" aria-label="Menú móvil">
+        <a href="#inicio">Inicio</a>
+        <a href="#nosotros">Nosotros</a>
+        <a href="#seguros">Seguros</a>
+        <a href="#companias">Compañías</a>
+        <a href="#contacto">Contacto</a>
+        <a href="https://wa.me/542346601478" target="_blank" rel="noopener" class="mobile-menu__cta">
+            <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+            Consultá por WhatsApp
+        </a>
+    </div>
+
+    <!-- ==================== HERO ==================== -->
+    <section class="hero" id="inicio">
+        <div class="hero__bg"></div>
+
+        <!-- Decorative elements echoing the logo -->
+        <div class="hero__accent-lines" aria-hidden="true">
+            <span></span><span></span><span></span><span></span>
+        </div>
+
+        <div class="container hero__content">
+            <div class="hero__badge reveal">
+                <span class="hero__badge-dot"></span>
+                Desde 1972 en el mercado asegurador
+            </div>
+            <h1 class="hero__title reveal reveal-delay-1">
+                Más de <span>53 años</span> protegiendo lo que más importa
+            </h1>
+            <p class="hero__subtitle reveal reveal-delay-2">
+                Desde Chivilcoy, acompañamos a familias, comercios y productores agropecuarios de toda la región con el respaldo de las mejores compañías aseguradoras del país.
+            </p>
+            <div class="hero__actions reveal reveal-delay-3">
+                <a href="https://wa.me/542346601478" target="_blank" rel="noopener" class="btn btn--primary">
+                    <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+                    Consultá sin compromiso
+                </a>
+                <a href="#seguros" class="btn btn--outline">
+                    <i data-lucide="shield-check"></i>
+                    Conocé nuestros seguros
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== QUIÉNES SOMOS ==================== -->
+    <section class="about" id="nosotros">
+        <div class="container">
+            <div class="about__grid">
+                <div class="about__counter-card reveal">
+                    <div class="about__counter-number" data-target="53" data-suffix="+">0</div>
+                    <div class="about__counter-label">Años de trayectoria</div>
+                    <div class="about__counter-sub">En el mercado asegurador argentino</div>
+                </div>
+                <div class="about__text">
+                    <span class="section-label reveal">Quiénes somos</span>
+                    <h2 class="section-title reveal reveal-delay-1">Una historia de compromiso con nuestra comunidad</h2>
+                    <p class="reveal reveal-delay-2">
+                        <strong>Ambrogetti Seguros SRL</strong> nació hace más de cinco décadas en Chivilcoy, con la convicción de que un buen seguro es mucho más que una póliza: es la tranquilidad de saber que alguien de confianza cuida lo tuyo.
+                    </p>
+                    <p class="reveal reveal-delay-3">
+                        Hoy, con una <strong>red de productores en Buenos Aires, Santa Fe y La Pampa</strong>, combinamos la cercanía de un negocio familiar con la solidez que solo dan más de 53 años de experiencia. Trabajamos con las principales compañías del país para ofrecerte la cobertura que realmente necesitás.
+                    </p>
+                    <div class="about__highlights reveal reveal-delay-4">
+                        <div class="about__highlight">
+                            <i data-lucide="map-pin"></i>
+                            Presencia regional
+                        </div>
+                        <div class="about__highlight">
+                            <i data-lucide="users"></i>
+                            Equipo con décadas de experiencia
+                        </div>
+                        <div class="about__highlight">
+                            <i data-lucide="handshake"></i>
+                            Trato personalizado
+                        </div>
+                        <div class="about__highlight">
+                            <i data-lucide="building-2"></i>
+                            Compañías de primera línea
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== NUESTROS SEGUROS ==================== -->
+    <section class="seguros bg-pattern-light" id="seguros">
+        <div class="container">
+            <div class="seguros__header">
+                <span class="section-label reveal">Nuestros Seguros</span>
+                <h2 class="section-title reveal reveal-delay-1">La cobertura que tu vida necesita</h2>
+                <p class="section-subtitle reveal reveal-delay-2">Desde tu auto hasta tu campo, cubrimos cada aspecto de tu patrimonio con las mejores opciones del mercado.</p>
+            </div>
+            <div class="seguros__grid">
+
+                <article class="seguro-card reveal">
+                    <div class="seguro-card__icon"><i data-lucide="car"></i></div>
+                    <h3 class="seguro-card__title">Autos y Vehículos</h3>
+                    <p class="seguro-card__desc">Cobertura integral para autos, camionetas y motos. Terceros, todo riesgo y más.</p>
+                </article>
+
+                <article class="seguro-card seguro-card--featured reveal reveal-delay-1">
+                    <span class="seguro-card__badge">Destacado</span>
+                    <div class="seguro-card__icon"><i data-lucide="wheat"></i></div>
+                    <h3 class="seguro-card__title">Seguros Agrícolas</h3>
+                    <p class="seguro-card__desc">Protección para cultivos, maquinaria y producción agropecuaria. Granizo, heladas y más.</p>
+                </article>
+
+                <article class="seguro-card seguro-card--featured reveal reveal-delay-2">
+                    <span class="seguro-card__badge">Destacado</span>
+                    <div class="seguro-card__icon"><i data-lucide="trophy"></i></div>
+                    <h3 class="seguro-card__title">RC Eventos Deportivos</h3>
+                    <p class="seguro-card__desc">Responsabilidad civil para triatlones, ciclismo y eventos deportivos de todo tipo.</p>
+                </article>
+
+                <article class="seguro-card reveal reveal-delay-3">
+                    <div class="seguro-card__icon"><i data-lucide="heart-pulse"></i></div>
+                    <h3 class="seguro-card__title">Seguros de Vida</h3>
+                    <p class="seguro-card__desc">Protegé el futuro de tu familia con coberturas adaptadas a tus necesidades.</p>
+                </article>
+
+                <article class="seguro-card reveal">
+                    <div class="seguro-card__icon"><i data-lucide="piggy-bank"></i></div>
+                    <h3 class="seguro-card__title">Seguros de Retiro</h3>
+                    <p class="seguro-card__desc">Planificá tu futuro con opciones de ahorro e inversión a largo plazo.</p>
+                </article>
+
+                <article class="seguro-card reveal reveal-delay-1">
+                    <div class="seguro-card__icon"><i data-lucide="shield-alert"></i></div>
+                    <h3 class="seguro-card__title">Accidentes Personales</h3>
+                    <p class="seguro-card__desc">Cobertura ante imprevistos para vos y tu familia, las 24 horas del día.</p>
+                </article>
+
+                <article class="seguro-card reveal reveal-delay-2">
+                    <div class="seguro-card__icon"><i data-lucide="store"></i></div>
+                    <h3 class="seguro-card__title">Integrales de Comercio</h3>
+                    <p class="seguro-card__desc">Protección completa para tu negocio: incendio, robo, responsabilidad civil y más.</p>
+                </article>
+
+                <article class="seguro-card reveal reveal-delay-3">
+                    <div class="seguro-card__icon"><i data-lucide="home"></i></div>
+                    <h3 class="seguro-card__title">Combinados Familiares</h3>
+                    <p class="seguro-card__desc">Todo lo que tu hogar necesita en una sola póliza integral.</p>
+                </article>
+
+                <article class="seguro-card reveal">
+                    <div class="seguro-card__icon"><i data-lucide="house"></i></div>
+                    <h3 class="seguro-card__title">Seguros de Hogar</h3>
+                    <p class="seguro-card__desc">Protegé tu casa contra incendio, robo, daños por agua y fenómenos climáticos.</p>
+                </article>
+
+                <article class="seguro-card reveal reveal-delay-1">
+                    <div class="seguro-card__icon"><i data-lucide="factory"></i></div>
+                    <h3 class="seguro-card__title">Seguros para Empresas</h3>
+                    <p class="seguro-card__desc">Soluciones integrales para proteger los activos y la operación de tu empresa.</p>
+                </article>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== COMPAÑÍAS ==================== -->
+    <section class="companies" id="companias">
+        <div class="container">
+            <div class="companies__header">
+                <span class="section-label reveal">Nos respaldan</span>
+                <h2 class="section-title reveal reveal-delay-1">Compañías de primera línea</h2>
+            </div>
+            <div class="companies__row reveal reveal-delay-2">
+                <a href="https://www.swissmedicalseguros.com" target="_blank" rel="noopener" aria-label="Swiss Medical Seguros">
+                    <img src="assets/images/logos-empresas-amigas/swiss-medical-logo.svg" alt="Swiss Medical Seguros" class="companies__logo">
+                </a>
+                <a href="https://www.zurich.com.ar" target="_blank" rel="noopener" aria-label="Zurich Argentina">
+                    <img src="assets/images/logos-empresas-amigas/zurich-logo.png" alt="Zurich Argentina" class="companies__logo">
+                </a>
+                <a href="https://www.laholando.com" target="_blank" rel="noopener" aria-label="La Holando Sudamericana">
+                    <img src="assets/images/logos-empresas-amigas/LOGO_HOLANDO_105x75.png" alt="La Holando Sudamericana" class="companies__logo">
+                </a>
+                <span class="companies__more">entre otras</span>
+            </div>
+            <p class="companies__note reveal reveal-delay-3">Trabajamos con las principales aseguradoras del país para ofrecerte la mejor cobertura al mejor precio.</p>
+        </div>
+    </section>
+
+    <!-- ==================== ¿POR QUÉ ELEGIRNOS? ==================== -->
+    <section class="why bg-pattern-dark" id="porque">
+        <div class="why__deco-triangle" aria-hidden="true"></div>
+        <div class="container">
+            <div class="why__header">
+                <span class="section-label reveal">¿Por qué elegirnos?</span>
+                <h2 class="section-title section-title--light reveal reveal-delay-1">Razones que nos respaldan</h2>
+            </div>
+            <div class="why__grid">
+                <div class="why-card reveal">
+                    <div class="why-card__icon"><i data-lucide="award"></i></div>
+                    <h3 class="why-card__title">+53 años de trayectoria</h3>
+                    <p class="why-card__desc">Más de medio siglo protegiendo familias y patrimonios en toda la región.</p>
+                </div>
+                <div class="why-card reveal reveal-delay-1">
+                    <div class="why-card__icon"><i data-lucide="users"></i></div>
+                    <h3 class="why-card__title">Equipo experimentado</h3>
+                    <p class="why-card__desc">Profesionales capacitados con décadas de experiencia en el mercado asegurador.</p>
+                </div>
+                <div class="why-card reveal reveal-delay-2">
+                    <div class="why-card__icon"><i data-lucide="map-pin"></i></div>
+                    <h3 class="why-card__title">Cobertura en 3 provincias</h3>
+                    <p class="why-card__desc">Presencia en Buenos Aires, Santa Fe y La Pampa a través de nuestra red de productores.</p>
+                </div>
+                <div class="why-card reveal reveal-delay-3">
+                    <div class="why-card__icon"><i data-lucide="headphones"></i></div>
+                    <h3 class="why-card__title">Atención personalizada</h3>
+                    <p class="why-card__desc">Te conocemos por tu nombre. Cada cliente recibe la atención y el seguimiento que merece.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== CONTACTO ==================== -->
+    <section class="contact" id="contacto">
+        <div class="contact__deco" aria-hidden="true"></div>
+        <div class="container">
+            <div class="contact__grid">
+                <div class="contact__info reveal">
+                    <h2>¿Necesitás asesoramiento?<br>Hablemos.</h2>
+                    <p>Contanos qué necesitás y te armamos la mejor propuesta. Respuesta rápida, sin compromiso y con el trato cercano que nos caracteriza.</p>
+                    <div class="contact__details">
+                        <div class="contact__detail">
+                            <span class="contact__detail-icon"><i data-lucide="map-pin"></i></span>
+                            <span>Av. Mitre 499, Chivilcoy, Buenos Aires</span>
+                        </div>
+                        <a href="tel:+542346601478" class="contact__detail">
+                            <span class="contact__detail-icon"><i data-lucide="phone"></i></span>
+                            <span>(2346) 60-1478</span>
+                        </a>
+                        <a href="https://wa.me/542346601478" target="_blank" rel="noopener" class="contact__detail">
+                            <span class="contact__detail-icon">
+                                <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+                            </span>
+                            <span>WhatsApp: (2346) 60-1478</span>
+                        </a>
+                    </div>
+                    <div style="display:flex;gap:16px;flex-wrap:wrap;align-items:center;">
+                        <a href="https://wa.me/542346601478" target="_blank" rel="noopener" class="btn btn--white">
+                            <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+                            Escribinos por WhatsApp
+                        </a>
+                        <div class="contact__social">
+                            <a href="#" aria-label="Instagram" target="_blank" rel="noopener"><i data-lucide="instagram"></i></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="contact__map reveal reveal-delay-2">
+                    <iframe
+                        src="https://maps.google.com/maps?q=Av.+Mitre+499,+Chivilcoy,+Buenos+Aires,+Argentina&t=&z=15&ie=UTF8&iwloc=&output=embed"
+                        width="100%"
+                        height="100%"
+                        style="border:0;"
+                        allowfullscreen=""
+                        loading="lazy"
+                        referrerpolicy="no-referrer-when-downgrade"
+                        title="Ubicación de Ambrogetti Seguros en Google Maps"
+                    ></iframe>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== FOOTER ==================== -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer__top">
+                <a href="#" class="footer__logo" aria-label="Ambrogetti Seguros - Inicio">
+                    <img src="assets/logo/logo.png" alt="Ambrogetti Seguros SRL">
+                </a>
+                <nav class="footer__nav" aria-label="Navegación del pie de página">
+                    <a href="#inicio">Inicio</a>
+                    <a href="#nosotros">Nosotros</a>
+                    <a href="#seguros">Seguros</a>
+                    <a href="#companias">Compañías</a>
+                    <a href="#contacto">Contacto</a>
+                </nav>
+            </div>
+            <div class="footer__ssn">
+                N.° de inscripción en la SSN: [pendiente]. Atención al asegurado: <a href="https://www.argentina.gob.ar/ssn" target="_blank" rel="noopener" style="color:rgba(255,255,255,0.4);text-decoration:underline;">www.argentina.gob.ar/ssn</a> — 0800-666-8400. La superintendencia de Seguros de la Nación tiene a su disposición el Centro de Atención Telefónica gratuita 0800-666-8400, donde podrá realizar consultas y denuncias.
+            </div>
+            <div class="footer__bottom" style="margin-top:20px;">
+                <span class="footer__copyright">&copy; 2026 Ambrogetti Seguros SRL &mdash; Todos los derechos reservados</span>
+                <a href="#" class="footer__credit" aria-label="Creado por VentureByte">
+                    Creado por
+                    <img src="assets/images/venturebyte-white.png" alt="VentureByte">
+                </a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ==================== WHATSAPP FLOAT ==================== -->
+    <a href="https://wa.me/542346601478" target="_blank" rel="noopener" class="whatsapp-float" aria-label="Contactanos por WhatsApp">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+    </a>
+
+    <!-- ==================== JAVASCRIPT ==================== -->
+    <script>
+        // Initialize Lucide icons
+        document.addEventListener('DOMContentLoaded', function() {
+            if (typeof lucide !== 'undefined') {
+                lucide.createIcons();
+            }
+
+            // ---- Navbar scroll effect ----
+            const navbar = document.getElementById('navbar');
+            function handleNavScroll() {
+                if (window.scrollY > 60) {
+                    navbar.classList.add('scrolled');
+                } else {
+                    navbar.classList.remove('scrolled');
+                }
+            }
+            window.addEventListener('scroll', handleNavScroll, { passive: true });
+            handleNavScroll();
+
+            // ---- Mobile menu ----
+            const hamburger = document.getElementById('hamburger');
+            const mobileMenu = document.getElementById('mobileMenu');
+            const mobileOverlay = document.getElementById('mobileOverlay');
+
+            function openMenu() {
+                hamburger.classList.add('active');
+                mobileMenu.classList.add('open');
+                mobileOverlay.style.display = 'block';
+                requestAnimationFrame(function() {
+                    mobileOverlay.classList.add('visible');
+                });
+                document.body.style.overflow = 'hidden';
+            }
+
+            function closeMenu() {
+                hamburger.classList.remove('active');
+                mobileMenu.classList.remove('open');
+                mobileOverlay.classList.remove('visible');
+                document.body.style.overflow = '';
+                setTimeout(function() {
+                    mobileOverlay.style.display = 'none';
+                }, 300);
+            }
+
+            hamburger.addEventListener('click', function() {
+                if (mobileMenu.classList.contains('open')) {
+                    closeMenu();
+                } else {
+                    openMenu();
+                }
+            });
+
+            hamburger.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    hamburger.click();
+                }
+            });
+
+            mobileOverlay.addEventListener('click', closeMenu);
+
+            // Close menu on link click
+            mobileMenu.querySelectorAll('a[href^="#"]').forEach(function(link) {
+                link.addEventListener('click', closeMenu);
+            });
+
+            // ---- Smooth scroll for anchor links ----
+            document.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
+                anchor.addEventListener('click', function(e) {
+                    var targetId = this.getAttribute('href');
+                    if (targetId === '#') return;
+                    var target = document.querySelector(targetId);
+                    if (target) {
+                        e.preventDefault();
+                        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                });
+            });
+
+            // ---- Intersection Observer for reveal animations ----
+            var revealElements = document.querySelectorAll('.reveal');
+            var revealObserver = new IntersectionObserver(function(entries) {
+                entries.forEach(function(entry) {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                        revealObserver.unobserve(entry.target);
+                    }
+                });
+            }, {
+                threshold: 0.12,
+                rootMargin: '0px 0px -40px 0px'
+            });
+
+            revealElements.forEach(function(el) {
+                revealObserver.observe(el);
+            });
+
+            // ---- Counter animation ----
+            function animateCounter(el, target, suffix, duration) {
+                duration = duration || 2000;
+                suffix = suffix || '';
+                var startTime = null;
+
+                function update(currentTime) {
+                    if (!startTime) startTime = currentTime;
+                    var elapsed = currentTime - startTime;
+                    var progress = Math.min(elapsed / duration, 1);
+                    // Ease-out cubic
+                    var eased = 1 - Math.pow(1 - progress, 3);
+                    var current = Math.floor(eased * target);
+                    el.textContent = current + suffix;
+                    if (progress < 1) {
+                        requestAnimationFrame(update);
+                    } else {
+                        el.textContent = target + suffix;
+                    }
+                }
+
+                requestAnimationFrame(update);
+            }
+
+            // Observe counter elements
+            var counterElements = document.querySelectorAll('[data-target]');
+            var counterObserver = new IntersectionObserver(function(entries) {
+                entries.forEach(function(entry) {
+                    if (entry.isIntersecting) {
+                        var el = entry.target;
+                        var target = parseInt(el.getAttribute('data-target'), 10);
+                        var suffix = el.getAttribute('data-suffix') || '';
+                        animateCounter(el, target, suffix, 2200);
+                        counterObserver.unobserve(el);
+                    }
+                });
+            }, { threshold: 0.5 });
+
+            counterElements.forEach(function(el) {
+                counterObserver.observe(el);
+            });
+
+            // ---- Active nav link highlight on scroll ----
+            var sections = document.querySelectorAll('section[id]');
+            var navLinks = document.querySelectorAll('.navbar__links a[href^="#"]');
+
+            function updateActiveLink() {
+                var scrollPos = window.scrollY + 120;
+                sections.forEach(function(section) {
+                    var top = section.offsetTop;
+                    var height = section.offsetHeight;
+                    var id = section.getAttribute('id');
+                    if (scrollPos >= top && scrollPos < top + height) {
+                        navLinks.forEach(function(link) {
+                            link.style.color = '';
+                            if (link.getAttribute('href') === '#' + id) {
+                                link.style.color = '#fff';
+                            }
+                        });
+                    }
+                });
+            }
+
+            window.addEventListener('scroll', updateActiveLink, { passive: true });
+        });
+    </script>
+</body>
+</html>
