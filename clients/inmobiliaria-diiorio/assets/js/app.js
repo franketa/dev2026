@@ -467,30 +467,32 @@ function initHeaderScroll() {
 // Contact Form
 // ==========================================================================
 function initContactForm() {
-  DOM.contactForm?.addEventListener('submit', async (e) => {
+  DOM.contactForm?.addEventListener('submit', (e) => {
     e.preventDefault();
 
     const formData = new FormData(e.target);
     const data = Object.fromEntries(formData.entries());
 
-    // Simulate form submission
-    const submitBtn = e.target.querySelector('.form__submit');
-    const originalText = submitBtn.textContent;
-    submitBtn.textContent = 'Enviando...';
-    submitBtn.disabled = true;
+    const subjectMap = {
+      comprar: 'Quiero comprar',
+      vender: 'Quiero vender',
+      alquilar: 'Quiero alquilar',
+      tasacion: 'Solicitar tasación',
+      otro: 'Otro'
+    };
 
-    try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1500));
+    let message = `*Consulta desde la web*\n`;
+    message += `*Nombre:* ${data.name}\n`;
+    message += `*Email:* ${data.email}\n`;
+    if (data.phone) message += `*Teléfono:* ${data.phone}\n`;
+    if (data.subject) message += `*Asunto:* ${subjectMap[data.subject] || data.subject}\n`;
+    if (data.message) message += `*Mensaje:* ${data.message}`;
 
-      showNotification('Mensaje enviado correctamente. Nos pondremos en contacto pronto.', 'success');
-      e.target.reset();
-    } catch (error) {
-      showNotification('Error al enviar el mensaje. Por favor intente nuevamente.', 'error');
-    } finally {
-      submitBtn.textContent = originalText;
-      submitBtn.disabled = false;
-    }
+    const whatsappUrl = `https://wa.me/542346566388?text=${encodeURIComponent(message)}`;
+    window.open(whatsappUrl, '_blank');
+
+    showNotification('Redirigiendo a WhatsApp...', 'success');
+    e.target.reset();
   });
 }
 
@@ -578,25 +580,26 @@ function initPropertySubmitForm() {
     modal.querySelector('.modal__close').addEventListener('click', closeModal);
 
     // Handle form submission
-    modal.querySelector('#property-submit-form').addEventListener('submit', async (e) => {
+    modal.querySelector('#property-submit-form').addEventListener('submit', (e) => {
       e.preventDefault();
 
       const formData = new FormData(e.target);
       const data = Object.fromEntries(formData.entries());
 
-      const submitBtn = e.target.querySelector('.form__submit');
-      submitBtn.textContent = 'Enviando...';
-      submitBtn.disabled = true;
+      let message = `*Solicitud de publicación de propiedad*\n`;
+      message += `*Nombre:* ${data.name}\n`;
+      message += `*Email:* ${data.email}\n`;
+      message += `*Teléfono:* ${data.phone}\n`;
+      if (data.propertyType) message += `*Tipo:* ${data.propertyType}\n`;
+      if (data.operation) message += `*Operación:* ${data.operation}\n`;
+      message += `*Dirección:* ${data.address}\n`;
+      if (data.description) message += `*Descripción:* ${data.description}`;
 
-      try {
-        await new Promise(resolve => setTimeout(resolve, 1500));
-        showNotification('Solicitud enviada. Nos contactaremos para coordinar la visita y toma de fotos.', 'success');
-        closeModal();
-      } catch (error) {
-        showNotification('Error al enviar. Por favor intente nuevamente.', 'error');
-        submitBtn.textContent = 'Enviar solicitud';
-        submitBtn.disabled = false;
-      }
+      const whatsappUrl = `https://wa.me/542346566388?text=${encodeURIComponent(message)}`;
+      window.open(whatsappUrl, '_blank');
+
+      showNotification('Redirigiendo a WhatsApp...', 'success');
+      closeModal();
     });
   });
 }
