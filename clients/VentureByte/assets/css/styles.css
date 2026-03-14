@@ -499,6 +499,7 @@ p {
   object-fit: cover;
   z-index: var(--z-hero-svg);
   pointer-events: none;
+  will-change: transform;
 }
 
 .hero__video-overlay {
@@ -507,6 +508,7 @@ p {
   background: rgba(2, 6, 23, 0.55);
   z-index: calc(var(--z-hero-svg) + 1);
   pointer-events: none;
+  will-change: transform;
 }
 
 .hero__content {
@@ -773,9 +775,10 @@ p {
 
 .about__image img {
   width: 100%;
-  height: 100%;
+  height: 120%;
+  min-height: 120%;
   object-fit: cover;
-  min-height: 220px;
+  will-change: transform;
 }
 
 .about__image::after {
@@ -1009,9 +1012,11 @@ p {
 
 .contact__bg img {
   width: 100%;
-  height: 100%;
+  height: 120%;
+  min-height: 120%;
   object-fit: cover;
   opacity: 0.15;
+  will-change: transform;
 }
 
 .contact__inner {
@@ -1622,7 +1627,7 @@ p {
   }
 
   .about__image img {
-    min-height: 300px;
+    min-height: 120%;
   }
 
   /* Stats */

@@ -159,6 +159,78 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   /* ----------------------------------------------------------
+     6. Parallax Scroll Effects (desktop only)
+     ---------------------------------------------------------- */
+  const heroVideo = document.querySelector('.hero__video');
+  const heroOverlay = document.querySelector('.hero__video-overlay');
+  const aboutImg = document.querySelector('.about__image img');
+  const contactBgImg = document.querySelector('.contact__bg img');
+
+  if (heroVideo || aboutImg || contactBgImg) {
+    let ticking = false;
+
+    const applyParallax = () => {
+      const scrollY = window.scrollY;
+      const vh = window.innerHeight;
+
+      // Hero video + overlay: factor 0.4
+      if (heroVideo) {
+        const offset = scrollY * 0.4;
+        heroVideo.style.transform = `translate3d(0, ${offset}px, 0)`;
+        if (heroOverlay) {
+          heroOverlay.style.transform = `translate3d(0, ${offset}px, 0)`;
+        }
+      }
+
+      // About image: factor 0.15 relative to viewport position
+      if (aboutImg) {
+        const container = aboutImg.closest('.about__image');
+        const rect = container.getBoundingClientRect();
+        const center = rect.top + rect.height / 2 - vh / 2;
+        const offset = center * -0.15;
+        aboutImg.style.transform = `translate3d(0, ${offset}px, 0)`;
+      }
+
+      // Contact background: factor 0.3 relative to viewport position
+      if (contactBgImg) {
+        const container = contactBgImg.closest('.contact__bg');
+        const rect = container.getBoundingClientRect();
+        const center = rect.top + rect.height / 2 - vh / 2;
+        const offset = center * -0.3;
+        contactBgImg.style.transform = `translate3d(0, ${offset}px, 0)`;
+      }
+
+      ticking = false;
+    };
+
+    const onScroll = () => {
+      if (window.innerWidth < 768) return;
+      if (!ticking) {
+        requestAnimationFrame(applyParallax);
+        ticking = true;
+      }
+    };
+
+    // Clear transforms on resize to mobile
+    const onResize = () => {
+      if (window.innerWidth < 768) {
+        if (heroVideo) heroVideo.style.transform = '';
+        if (heroOverlay) heroOverlay.style.transform = '';
+        if (aboutImg) aboutImg.style.transform = '';
+        if (contactBgImg) contactBgImg.style.transform = '';
+      }
+    };
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onResize, { passive: true });
+
+    // Initial apply if desktop
+    if (window.innerWidth >= 768) {
+      requestAnimationFrame(applyParallax);
+    }
+  }
+
+  /* ----------------------------------------------------------
      7. Contact Form → WhatsApp
      ---------------------------------------------------------- */
   const form = document.getElementById('contactForm');
