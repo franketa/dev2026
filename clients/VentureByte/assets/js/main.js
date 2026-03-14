@@ -107,28 +107,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   /* ----------------------------------------------------------
-     5. Scroll Reveal
-     ---------------------------------------------------------- */
-  const revealElements = document.querySelectorAll('.reveal');
-
-  if (revealElements.length > 0) {
-    const observerReveal = new IntersectionObserver(
-      (entries) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('reveal--visible');
-            observerReveal.unobserve(entry.target);
-          }
-        });
-      },
-      { threshold: 0.12, rootMargin: '0px 0px -40px 0px' }
-    );
-
-    revealElements.forEach(el => observerReveal.observe(el));
-  }
-
-  /* ----------------------------------------------------------
-     6. Counter Animation
+     5. Counter Animation
      ---------------------------------------------------------- */
   const statNumbers = document.querySelectorAll('.stat__number[data-target]');
 
@@ -243,19 +222,4 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  /* ----------------------------------------------------------
-     8. WhatsApp Float Tooltip
-     ---------------------------------------------------------- */
-  const tooltip = document.querySelector('.whatsapp-float__tooltip');
-
-  if (tooltip && !sessionStorage.getItem('vb-wa-tooltip')) {
-    setTimeout(() => {
-      tooltip.classList.add('whatsapp-float__tooltip--visible');
-      sessionStorage.setItem('vb-wa-tooltip', '1');
-
-      setTimeout(() => {
-        tooltip.classList.remove('whatsapp-float__tooltip--visible');
-      }, 4000);
-    }, 3000);
-  }
 });
