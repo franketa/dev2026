@@ -530,17 +530,11 @@ p {
   color: var(--accent-blue);
   letter-spacing: 0.03em;
   margin-bottom: 1.25rem;
-  opacity: 0;
-  animation: fadeInUp 0.7s var(--transition-slow) forwards;
-  animation-delay: 0.2s;
 }
 
 .hero__title {
   color: var(--soft-white);
   margin-bottom: 1.25rem;
-  opacity: 0;
-  animation: fadeInUp 0.7s var(--transition-slow) forwards;
-  animation-delay: 0.35s;
 }
 
 .hero__title .accent {
@@ -553,18 +547,12 @@ p {
   line-height: 1.7;
   margin-bottom: 2.25rem;
   max-width: 560px;
-  opacity: 0;
-  animation: fadeInUp 0.7s var(--transition-slow) forwards;
-  animation-delay: 0.5s;
 }
 
 .hero__actions {
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
-  opacity: 0;
-  animation: fadeInUp 0.7s var(--transition-slow) forwards;
-  animation-delay: 0.65s;
 }
 
 .hero__actions .btn {
@@ -586,7 +574,6 @@ p {
   font-size: 0.75rem;
   font-family: var(--font-mono);
   letter-spacing: 0.1em;
-  animation: scrollBounce 2s ease-in-out infinite;
 }
 
 .hero__scroll svg {
@@ -594,78 +581,8 @@ p {
   height: 20px;
 }
 
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(24px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes scrollBounce {
-  0%, 100% { transform: translateX(-50%) translateY(0); }
-  50% { transform: translateX(-50%) translateY(8px); }
-}
-
 /* ----------------------------------------------------------
-   8. Circuit SVG Animation
-   ---------------------------------------------------------- */
-.circuit-path {
-  fill: none;
-  stroke: var(--primary-blue);
-  stroke-width: 1.5;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  stroke-dasharray: 1000;
-  stroke-dashoffset: 1000;
-  animation: circuitDraw 3s ease forwards;
-}
-
-.circuit-path:nth-child(1)  { animation-delay: 0s; }
-.circuit-path:nth-child(2)  { animation-delay: 0.15s; }
-.circuit-path:nth-child(3)  { animation-delay: 0.3s; }
-.circuit-path:nth-child(4)  { animation-delay: 0.45s; }
-.circuit-path:nth-child(5)  { animation-delay: 0.6s; }
-.circuit-path:nth-child(6)  { animation-delay: 0.75s; }
-.circuit-path:nth-child(7)  { animation-delay: 0.9s; }
-.circuit-path:nth-child(8)  { animation-delay: 1.05s; }
-.circuit-path:nth-child(9)  { animation-delay: 1.2s; }
-.circuit-path:nth-child(10) { animation-delay: 1.35s; }
-
-.circuit-node {
-  fill: none;
-  stroke: var(--accent-blue);
-  stroke-width: 1.5;
-  opacity: 0;
-  animation: nodeAppear 0.5s ease forwards;
-}
-
-.circuit-node:nth-child(11) { animation-delay: 1.5s; }
-.circuit-node:nth-child(12) { animation-delay: 1.6s; }
-.circuit-node:nth-child(13) { animation-delay: 1.7s; }
-.circuit-node:nth-child(14) { animation-delay: 1.8s; }
-.circuit-node:nth-child(15) { animation-delay: 1.9s; }
-.circuit-node:nth-child(16) { animation-delay: 2.0s; }
-.circuit-node:nth-child(17) { animation-delay: 2.1s; }
-.circuit-node:nth-child(18) { animation-delay: 2.2s; }
-
-@keyframes circuitDraw {
-  to {
-    stroke-dashoffset: 0;
-  }
-}
-
-@keyframes nodeAppear {
-  to {
-    opacity: 0.8;
-  }
-}
-
-/* ----------------------------------------------------------
-   9. Partners
+   8. Partners
    ---------------------------------------------------------- */
 .partners {
   padding: 3rem 0;
@@ -1306,13 +1223,11 @@ p {
   justify-content: center;
   box-shadow: 0 4px 16px rgba(37, 211, 102, 0.4);
   transition: all var(--transition-base);
-  animation: whatsappPulse 2.5s ease-in-out infinite;
 }
 
 .whatsapp-float__btn:hover {
   transform: scale(1.1);
   box-shadow: 0 6px 24px rgba(37, 211, 102, 0.5);
-  animation: none;
 }
 
 .whatsapp-float__btn svg {
@@ -1341,13 +1256,8 @@ p {
   transform: translateX(0);
 }
 
-@keyframes whatsappPulse {
-  0%, 100% { box-shadow: 0 4px 16px rgba(37, 211, 102, 0.4); }
-  50% { box-shadow: 0 4px 24px rgba(37, 211, 102, 0.6), 0 0 0 8px rgba(37, 211, 102, 0.1); }
-}
-
 /* ----------------------------------------------------------
-   19. Scroll Reveal
+   18. Scroll Reveal
    ---------------------------------------------------------- */
 .reveal {
   opacity: 0;
@@ -1404,9 +1314,6 @@ p {
 .page-hero__content h1 {
   color: var(--soft-white);
   margin-bottom: 1rem;
-  opacity: 0;
-  animation: fadeInUp 0.7s var(--transition-slow) forwards;
-  animation-delay: 0.2s;
 }
 
 .page-hero__content p {
@@ -1414,9 +1321,6 @@ p {
   font-size: 1rem;
   max-width: 560px;
   margin: 0 auto;
-  opacity: 0;
-  animation: fadeInUp 0.7s var(--transition-slow) forwards;
-  animation-delay: 0.35s;
 }
 
 /* ----------------------------------------------------------
