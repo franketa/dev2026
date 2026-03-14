@@ -62,31 +62,11 @@
        HERO
        ==================================================== -->
   <section class="hero" id="inicio">
-    <!-- Circuit Board SVG Background -->
-    <svg class="hero__circuit-svg" viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
-      <!-- Horizontal traces -->
-      <path class="circuit-path" d="M0 200 H300 L340 240 H600"/>
-      <path class="circuit-path" d="M1440 350 H1100 L1060 310 H800 L760 350 H500"/>
-      <path class="circuit-path" d="M0 500 H200 L240 460 H450"/>
-      <path class="circuit-path" d="M1440 600 H1200 L1160 560 H900"/>
-      <!-- Vertical traces -->
-      <path class="circuit-path" d="M400 0 V180 L440 220 V400"/>
-      <path class="circuit-path" d="M700 900 V700 L740 660 V500"/>
-      <path class="circuit-path" d="M1000 0 V150 L960 190 V350"/>
-      <path class="circuit-path" d="M200 900 V750 L240 710 V550"/>
-      <!-- Diagonal connectors -->
-      <path class="circuit-path" d="M600 200 L640 240 H800 L840 200"/>
-      <path class="circuit-path" d="M450 460 L490 500 V600 L530 640"/>
-      <!-- Circuit nodes -->
-      <circle class="circuit-node" cx="300" cy="200" r="4"/>
-      <circle class="circuit-node" cx="600" cy="240" r="4"/>
-      <circle class="circuit-node" cx="500" cy="350" r="4"/>
-      <circle class="circuit-node" cx="450" cy="460" r="4"/>
-      <circle class="circuit-node" cx="400" cy="400" r="4"/>
-      <circle class="circuit-node" cx="700" cy="500" r="4"/>
-      <circle class="circuit-node" cx="1000" cy="350" r="4"/>
-      <circle class="circuit-node" cx="900" cy="560" r="4"/>
-    </svg>
+    <!-- Video Background -->
+    <video class="hero__video" autoplay loop muted playsinline>
+      <source src="assets/videos/custom-rad-hero-bg-video.mp4" type="video/mp4">
+    </video>
+    <div class="hero__video-overlay"></div>
 
     <div class="container">
       <div class="hero__content">

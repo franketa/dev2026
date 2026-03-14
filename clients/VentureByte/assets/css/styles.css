@@ -491,13 +491,21 @@ p {
   padding: 6rem 0 3.5rem;
 }
 
-.hero__circuit-svg {
+.hero__video {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
+  object-fit: cover;
   z-index: var(--z-hero-svg);
-  opacity: 0.12;
+  pointer-events: none;
+}
+
+.hero__video-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(2, 6, 23, 0.55);
+  z-index: calc(var(--z-hero-svg) + 1);
   pointer-events: none;
 }
 
