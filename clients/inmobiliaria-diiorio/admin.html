@@ -915,8 +915,8 @@
               </div>
 
               <div class="form-group">
-                <label for="price">Precio *</label>
-                <input type="number" id="price" required placeholder="ej: 150000" min="0">
+                <label for="price">Precio</label>
+                <input type="number" id="price" placeholder="ej: 150000" min="0">
                 <label class="checkbox-label" style="margin-top: 0.5rem;">
                   <input type="checkbox" id="showPrice" checked> Mostrar precio en el sitio
                 </label>
@@ -931,8 +931,8 @@
               </div>
 
               <div class="form-group">
-                <label for="neighborhood">Barrio *</label>
-                <input type="text" id="neighborhood" required placeholder="ej: Palermo">
+                <label for="neighborhood">Barrio</label>
+                <input type="text" id="neighborhood" placeholder="ej: Palermo">
               </div>
 
               <div class="form-group">
@@ -1335,7 +1335,7 @@
         };
 
         // Validate required fields
-        if (!data.title || !data.type || !data.operation || !data.price || !data.location.neighborhood || !data.location.city || !data.description) {
+        if (!data.title || !data.type || !data.operation || !data.location.city || !data.description) {
           showToast('Por favor completa todos los campos requeridos', 'error');
           return;
         }
