@@ -1462,6 +1462,65 @@ p {
 }
 
 /* ----------------------------------------------------------
+   19. Scroll Reveal Animations
+   ---------------------------------------------------------- */
+
+/* Hero entrance (CSS-only, triggers on page load) */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.hero__badge   { animation: fadeUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.2s both; }
+.hero__title   { animation: fadeUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.4s both; }
+.hero__subtitle{ animation: fadeUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.55s both; }
+.hero__actions { animation: fadeUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.7s both; }
+
+.page-hero__content .eyebrow { animation: fadeUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.15s both; }
+.page-hero__content h1       { animation: fadeUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.3s both; }
+.page-hero__content p        { animation: fadeUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.45s both; }
+
+/* Scroll reveal base — default: fade up */
+.reveal {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.reveal--visible {
+  opacity: 1;
+  transform: none !important;
+}
+
+/* Directional variants (override initial transform) */
+.reveal--left  { transform: translateX(-50px); }
+.reveal--right { transform: translateX(50px); }
+.reveal--scale { transform: scale(0.9); }
+
+/* Staggered delays */
+.reveal--delay-1 { transition-delay: 0.12s; }
+.reveal--delay-2 { transition-delay: 0.24s; }
+.reveal--delay-3 { transition-delay: 0.36s; }
+.reveal--delay-4 { transition-delay: 0.48s; }
+
+/* Accessibility: disable all animations for users who prefer reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .reveal,
+  .reveal--left,
+  .reveal--right,
+  .reveal--scale {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  .hero__badge, .hero__title, .hero__subtitle, .hero__actions,
+  .page-hero__content .eyebrow, .page-hero__content h1, .page-hero__content p {
+    animation: none;
+  }
+}
+
+/* ----------------------------------------------------------
    23a. Media Queries — Small Mobile+ (480px)
    ---------------------------------------------------------- */
 @media (min-width: 480px) {

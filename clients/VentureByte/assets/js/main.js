@@ -159,7 +159,28 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   /* ----------------------------------------------------------
-     6. Parallax Scroll Effects (desktop only)
+     6. Scroll Reveal Animations
+     ---------------------------------------------------------- */
+  const reveals = document.querySelectorAll('.reveal');
+
+  if (reveals.length > 0) {
+    const observerReveal = new IntersectionObserver(
+      (entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('reveal--visible');
+            observerReveal.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.1, rootMargin: '0px 0px -40px 0px' }
+    );
+
+    reveals.forEach(el => observerReveal.observe(el));
+  }
+
+  /* ----------------------------------------------------------
+     7. Parallax Scroll Effects (desktop only)
      ---------------------------------------------------------- */
   const heroVideo = document.querySelector('.hero__video');
   const heroOverlay = document.querySelector('.hero__video-overlay');
@@ -231,7 +252,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   /* ----------------------------------------------------------
-     7. Contact Form → WhatsApp
+     8. Contact Form → WhatsApp
      ---------------------------------------------------------- */
   const form = document.getElementById('contactForm');
 
