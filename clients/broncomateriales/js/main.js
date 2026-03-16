@@ -99,7 +99,7 @@ function smoothScrollToSection(e) {
 function initScrollReveal() {
     // Add reveal class to elements that should animate
     const revealElements = document.querySelectorAll(
-        '.product-card, .value__list-item, .contact__method, .hero__stat'
+        '.product-card, .value__list-item, .contact__method'
     );
 
     revealElements.forEach((el, index) => {
