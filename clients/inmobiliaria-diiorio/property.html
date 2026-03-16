@@ -17,7 +17,11 @@
   <!-- Styles -->
   <link rel="stylesheet" href="assets/css/styles.css">
   <style>
-    /* Property Detail Page Specific Styles */
+    /* =============================================
+       Property Detail Page — Self-contained styles
+       ============================================= */
+
+    /* Page shell */
     .property-page {
       padding-top: 72px;
       min-height: 100vh;
@@ -33,16 +37,14 @@
       font-weight: 500;
       transition: color 0.2s;
     }
+    .property-page__back:hover { color: var(--primary-color); }
 
-    .property-page__back:hover {
-      color: var(--primary-color);
-    }
-
+    /* ---- Gallery ---- */
     .property-gallery {
       position: relative;
-      aspect-ratio: auto;
       background: var(--gray-100);
       overflow: hidden;
+      border-radius: 0;          /* mobile: no radius */
     }
 
     .property-gallery__main-wrapper {
@@ -69,161 +71,148 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      background: rgba(0, 0, 0, 0.45);
-      color: white;
+      background: rgba(0,0,0,.45);
+      color: #fff;
       border: none;
       border-radius: 50%;
       cursor: pointer;
       z-index: 2;
-      transition: background 0.2s;
+      transition: background .2s;
       padding: 0;
     }
-
-    .property-gallery__arrow:hover {
-      background: rgba(0, 0, 0, 0.7);
-    }
-
-    .property-gallery__arrow--prev {
-      left: 0.75rem;
-    }
-
-    .property-gallery__arrow--next {
-      right: 0.75rem;
-    }
+    .property-gallery__arrow:hover { background: rgba(0,0,0,.7); }
+    .property-gallery__arrow--prev { left: .75rem; }
+    .property-gallery__arrow--next { right: .75rem; }
 
     .property-gallery__counter {
       position: absolute;
-      bottom: 0.75rem;
-      right: 0.75rem;
-      padding: 0.25rem 0.75rem;
-      font-size: 0.8125rem;
+      bottom: .75rem;
+      right: .75rem;
+      padding: .25rem .75rem;
+      font-size: .8125rem;
       font-weight: 500;
-      color: white;
-      background: rgba(0, 0, 0, 0.5);
+      color: #fff;
+      background: rgba(0,0,0,.5);
       border-radius: 2rem;
       z-index: 2;
     }
 
     .property-gallery__thumbs {
       display: flex;
-      gap: 0.5rem;
-      padding: 0.75rem 1rem;
+      gap: .5rem;
+      padding: .75rem 1rem;
       overflow-x: auto;
       -webkit-overflow-scrolling: touch;
       scrollbar-width: thin;
       background: var(--gray-100);
     }
-
-    .property-gallery__thumbs::-webkit-scrollbar {
-      height: 4px;
-    }
-
-    .property-gallery__thumbs::-webkit-scrollbar-thumb {
-      background: var(--gray-300);
-      border-radius: 2px;
-    }
+    .property-gallery__thumbs::-webkit-scrollbar { height: 4px; }
+    .property-gallery__thumbs::-webkit-scrollbar-thumb { background: var(--gray-300); border-radius: 2px; }
 
     .property-gallery__thumb {
       flex-shrink: 0;
       width: 80px;
       height: 56px;
       object-fit: cover;
-      border-radius: 0.375rem;
+      border-radius: .375rem;
       cursor: pointer;
       border: 2px solid transparent;
-      opacity: 0.6;
-      transition: opacity 0.2s, border-color 0.2s;
+      opacity: .6;
+      transition: opacity .2s, border-color .2s;
     }
-
-    .property-gallery__thumb:hover {
-      opacity: 0.85;
-    }
-
-    .property-gallery__thumb--active {
-      opacity: 1;
-      border-color: var(--primary-color);
-    }
+    .property-gallery__thumb:hover { opacity: .85; }
+    .property-gallery__thumb--active { opacity: 1; border-color: var(--primary-color); }
 
     .property-gallery--single .property-gallery__arrow,
     .property-gallery--single .property-gallery__counter,
-    .property-gallery--single .property-gallery__thumbs {
-      display: none;
-    }
-
-    @media (max-width: 767px) {
-      .property-gallery__arrow {
-        width: 34px;
-        height: 34px;
-      }
-
-      .property-gallery__thumb {
-        width: 64px;
-        height: 44px;
-      }
-
-      .property-page {
-        padding-top: 64px;
-      }
-    }
-
-    @media (max-width: 479px) {
-      .property-features {
-        grid-template-columns: 1fr;
-      }
-    }
+    .property-gallery--single .property-gallery__thumbs { display: none; }
 
     .property-gallery__badge {
       position: absolute;
       top: 1rem;
       left: 1rem;
-      padding: 0.5rem 1rem;
-      font-size: 0.875rem;
+      padding: .5rem 1rem;
+      font-size: .875rem;
       font-weight: 600;
       text-transform: uppercase;
-      border-radius: 0.5rem;
-      color: white;
+      border-radius: .5rem;
+      color: #fff;
+      z-index: 2;
+    }
+    .property-gallery__badge--venta     { background: var(--primary-color); }
+    .property-gallery__badge--alquiler  { background: var(--secondary-color); }
+    .property-gallery__badge--vendido   { background: var(--success); }
+    .property-gallery__badge--alquilado { background: #8b5cf6; }
+    .property-gallery__badge--reservado { background: var(--warning); }
+
+    /* ---- Sidebar (contact + CTA) ---- */
+    .property-sidebar {
+      padding: 1rem;
     }
 
-    .property-gallery__badge--venta {
-      background: var(--primary-color);
+    .property-contact-card {
+      background: var(--gray-50);
+      border-radius: 1rem;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+    .property-contact-card h3 {
+      font-family: var(--font-display);
+      font-size: 1.125rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+    }
+    .property-contact-card p {
+      font-size: .9375rem;
+      color: var(--gray-600);
+      margin-bottom: .5rem;
     }
 
-    .property-gallery__badge--alquiler {
-      background: var(--secondary-color);
+    .property-cta {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 1rem;
+      background: #fff;
+      box-shadow: 0 -4px 20px rgba(0,0,0,.1);
+      display: flex;
+      gap: .75rem;
+      z-index: 100;
     }
-
-    .property-gallery__badge--vendido {
-      background: var(--success);
+    .property-cta .btn {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: .5rem;
+      padding: 1rem;
+      font-weight: 600;
+      border-radius: .75rem;
+      text-decoration: none;
     }
+    .btn--whatsapp       { background: #25D366; color: #fff; }
+    .btn--whatsapp:hover { background: #20bd5a; }
+    .btn--phone          { background: var(--primary-color); color: #fff; }
+    .btn--phone:hover    { background: var(--primary-light); }
 
-    .property-gallery__badge--alquilado {
-      background: #8b5cf6;
-    }
-
-    .property-gallery__badge--reservado {
-      background: var(--warning);
-    }
-
+    /* ---- Content (details below gallery) ---- */
     .property-content {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 2rem 1rem 6rem;
+      padding: 2rem 1rem 6rem;   /* 6rem bottom = space for fixed CTA on mobile */
     }
 
-    .property-header {
-      margin-bottom: 2rem;
-    }
+    .property-header { margin-bottom: 2rem; }
 
     .property-header__type {
       display: inline-block;
-      padding: 0.25rem 0.75rem;
-      font-size: 0.75rem;
+      padding: .25rem .75rem;
+      font-size: .75rem;
       font-weight: 600;
       text-transform: uppercase;
       background: var(--gray-100);
       color: var(--gray-600);
-      border-radius: 0.25rem;
-      margin-bottom: 0.75rem;
+      border-radius: .25rem;
+      margin-bottom: .75rem;
     }
 
     .property-header__title {
@@ -231,20 +220,17 @@
       font-size: clamp(1.5rem, 4vw, 2rem);
       font-weight: 700;
       color: var(--gray-900);
-      margin-bottom: 0.5rem;
+      margin-bottom: .5rem;
     }
 
     .property-header__location {
       display: flex;
       align-items: center;
-      gap: 0.5rem;
+      gap: .5rem;
       font-size: 1rem;
       color: var(--gray-500);
     }
-
-    .property-header__location svg {
-      flex-shrink: 0;
-    }
+    .property-header__location svg { flex-shrink: 0; }
 
     .property-price {
       font-family: var(--font-display);
@@ -264,11 +250,7 @@
       margin-bottom: 2rem;
     }
 
-    .property-feature {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-    }
+    .property-feature { display: flex; align-items: center; gap: .75rem; }
 
     .property-feature__icon {
       width: 48px;
@@ -276,185 +258,111 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      background: white;
-      border-radius: 0.75rem;
+      background: #fff;
+      border-radius: .75rem;
       color: var(--primary-color);
       box-shadow: var(--shadow-sm);
+      flex-shrink: 0;
     }
 
-    .property-feature__text {
-      font-size: 0.875rem;
-      color: var(--gray-500);
-    }
+    .property-feature__text { font-size: .875rem; color: var(--gray-500); }
+    .property-feature__value { display: block; font-size: 1.125rem; font-weight: 600; color: var(--gray-900); }
 
-    .property-feature__value {
-      display: block;
-      font-size: 1.125rem;
-      font-weight: 600;
-      color: var(--gray-900);
-    }
-
-    .property-section {
-      margin-bottom: 2rem;
-    }
-
+    .property-section { margin-bottom: 2rem; }
     .property-section__title {
       font-family: var(--font-display);
       font-size: 1.25rem;
       font-weight: 600;
       color: var(--gray-900);
       margin-bottom: 1rem;
-      padding-bottom: 0.5rem;
+      padding-bottom: .5rem;
       border-bottom: 2px solid var(--gray-100);
     }
 
-    .property-description {
-      font-size: 1rem;
-      line-height: 1.8;
-      color: var(--gray-600);
-    }
+    .property-description { font-size: 1rem; line-height: 1.8; color: var(--gray-600); }
 
-    .property-amenities {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.75rem;
-    }
-
+    .property-amenities { display: flex; flex-wrap: wrap; gap: .75rem; }
     .property-amenity {
       display: inline-flex;
       align-items: center;
-      gap: 0.5rem;
-      padding: 0.5rem 1rem;
-      font-size: 0.875rem;
+      gap: .5rem;
+      padding: .5rem 1rem;
+      font-size: .875rem;
       color: var(--gray-700);
       background: var(--gray-100);
       border-radius: 2rem;
     }
+    .property-amenity svg { color: var(--success); }
 
-    .property-amenity svg {
-      color: var(--success);
+    /* ---- Small mobile ---- */
+    @media (max-width: 767px) {
+      .property-page { padding-top: 64px; }
+      .property-gallery__arrow { width: 34px; height: 34px; }
+      .property-gallery__thumb { width: 64px; height: 44px; }
+    }
+    @media (max-width: 479px) {
+      .property-features { grid-template-columns: 1fr; }
     }
 
-    .property-cta {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      padding: 1rem;
-      background: white;
-      box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.1);
-      display: flex;
-      gap: 0.75rem;
-      z-index: 100;
-    }
-
-    .property-sidebar {
-      padding: 0 1rem 6rem;
-    }
-
-    .property-contact-card {
-      background: var(--gray-50);
-      border-radius: 1rem;
-      padding: 1.5rem;
-      margin-bottom: 1.5rem;
-    }
-
-    .property-contact-card h3 {
-      font-family: var(--font-display);
-      font-size: 1.125rem;
-      font-weight: 600;
-      margin-bottom: 1rem;
-    }
-
-    .property-contact-card p {
-      font-size: 0.9375rem;
-      color: var(--gray-600);
-      margin-bottom: 0.5rem;
-    }
-
-    .property-cta .btn {
-      flex: 1;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.5rem;
-      padding: 1rem;
-      font-weight: 600;
-      border-radius: 0.75rem;
-      text-decoration: none;
-    }
-
-    .btn--whatsapp {
-      background: #25D366;
-      color: white;
-    }
-
-    .btn--whatsapp:hover {
-      background: #20bd5a;
-    }
-
-    .btn--phone {
-      background: var(--primary-color);
-      color: white;
-    }
-
-    .btn--phone:hover {
-      background: var(--primary-light);
-    }
-
-    /* Desktop Layout */
+    /* ---- Desktop layout: gallery + sidebar side by side ---- */
     @media (min-width: 1024px) {
       .property-page__inner {
         display: grid;
         grid-template-columns: 1fr 380px;
-        gap: 2rem;
+        grid-template-rows: auto 1fr;
+        gap: 0 2rem;
         max-width: 1400px;
         margin: 0 auto;
-        padding: 0 1.5rem;
+        padding: 1rem 1.5rem 0;
       }
 
+      /* Gallery = col 1, row 1 */
       .property-gallery {
+        grid-column: 1;
+        grid-row: 1;
         border-radius: 1rem;
-        margin: 1rem;
         height: auto;
         position: relative;
         top: auto;
       }
+      .property-gallery__main-wrapper { aspect-ratio: 4 / 3; }
 
-      .property-gallery__main-wrapper {
-        aspect-ratio: 4 / 3;
-      }
-
-      .property-content {
-        padding: 2rem;
-        padding-bottom: 2rem;
-      }
-
+      /* Sidebar = col 2, row 1 */
       .property-sidebar {
-        padding: 2rem 0;
+        grid-column: 2;
+        grid-row: 1;
+        padding: 0;
+        position: sticky;
+        top: 90px;
+        align-self: start;
       }
 
+      /* Content = full width, row 2 */
+      .property-content {
+        grid-column: 1 / -1;
+        grid-row: 2;
+        padding: 2rem 0;
+        max-width: none;
+      }
+
+      /* CTA becomes static in sidebar */
       .property-cta {
         position: static;
         flex-direction: column;
         box-shadow: var(--shadow-lg);
         border-radius: 1rem;
         padding: 1.5rem;
-        background: white;
+        background: #fff;
       }
 
-      .property-features {
-        grid-template-columns: repeat(2, 1fr);
-      }
+      .property-features { grid-template-columns: repeat(3, 1fr); }
     }
 
     @media (min-width: 1280px) {
-      .property-features {
-        grid-template-columns: repeat(4, 1fr);
-      }
+      .property-features { grid-template-columns: repeat(4, 1fr); }
     }
 
-    /* Error/Loading States */
+    /* ---- Error / Loading ---- */
     .property-loading,
     .property-error {
       display: flex;
@@ -465,38 +373,18 @@
       text-align: center;
       padding: 2rem;
     }
-
-    .property-error__icon {
-      width: 64px;
-      height: 64px;
-      margin-bottom: 1rem;
-      color: var(--gray-300);
-    }
-
-    .property-error__title {
-      font-size: 1.25rem;
-      font-weight: 600;
-      color: var(--gray-900);
-      margin-bottom: 0.5rem;
-    }
-
-    .property-error__text {
-      color: var(--gray-500);
-      margin-bottom: 1.5rem;
-    }
+    .property-error__icon { width: 64px; height: 64px; margin-bottom: 1rem; color: var(--gray-300); }
+    .property-error__title { font-size: 1.25rem; font-weight: 600; color: var(--gray-900); margin-bottom: .5rem; }
+    .property-error__text { color: var(--gray-500); margin-bottom: 1.5rem; }
 
     .spinner {
-      width: 40px;
-      height: 40px;
+      width: 40px; height: 40px;
       border: 3px solid var(--gray-200);
       border-top-color: var(--primary-color);
       border-radius: 50%;
       animation: spin 1s linear infinite;
     }
-
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
+    @keyframes spin { to { transform: rotate(360deg); } }
   </style>
 
   <title>Propiedad | Di Iorio Inmobiliaria</title>
@@ -556,45 +444,27 @@
 
     // Get property image
     function getPropertyImage(property) {
-      // Use cover image first
       if (property && property.coverImage) {
         if (property.coverImage.startsWith('data:') || property.coverImage.startsWith('/uploads/')) return property.coverImage;
         return `assets/images/properties/${property.coverImage}`;
       }
-      // Fallback to first gallery image
       if (property && property.images && property.images.length > 0) {
         const img = property.images[0];
         if (img.startsWith('data:') || img.startsWith('/uploads/')) return img;
       }
-      // Fallback to local images
       const imageNumber = ((property.id - 1) % 25) + 1;
       return `assets/images/properties/prop-${imageNumber}.jpg`;
     }
 
     // Get property type label
     function getTypeLabel(type) {
-      const types = {
-        casa: 'Casa',
-        departamento: 'Departamento',
-        ph: 'PH',
-        local: 'Local Comercial',
-        oficina: 'Oficina',
-        terreno: 'Terreno',
-        lote: 'Lote',
-        cochera: 'Cochera'
-      };
+      const types = { casa:'Casa', departamento:'Departamento', ph:'PH', local:'Local Comercial', oficina:'Oficina', terreno:'Terreno', lote:'Lote', cochera:'Cochera' };
       return types[type] || type;
     }
 
     // Get operation label
     function getOperationLabel(operation) {
-      const operations = {
-        venta: 'En Venta',
-        alquiler: 'En Alquiler',
-        vendido: 'Vendido',
-        alquilado: 'Alquilado',
-        reservado: 'Reservado'
-      };
+      const operations = { venta:'En Venta', alquiler:'En Alquiler', vendido:'Vendido', alquilado:'Alquilado', reservado:'Reservado' };
       return operations[operation] || operation;
     }
 
@@ -613,7 +483,6 @@
           }
         });
       }
-      // If no real images, use stock photo based on property ID
       if (images.length === 0) {
         images.push(getPropertyImage(property));
       }
@@ -627,12 +496,17 @@
       const allImages = getAllImages(property);
       const isSingle = allImages.length <= 1;
 
-      // Update page title
       document.title = `${property.title} | Di Iorio Inmobiliaria`;
 
       const thumbsHTML = allImages.map((src, i) =>
         `<img src="${src}" alt="Foto ${i + 1}" class="property-gallery__thumb${i === 0 ? ' property-gallery__thumb--active' : ''}" data-index="${i}" onerror="this.style.display='none'">`
       ).join('');
+
+      const locationParts = [
+        property.location.address,
+        property.location.neighborhood,
+        property.location.city
+      ].filter(Boolean);
 
       page.innerHTML = `
         <a href="index.html#propiedades" class="property-page__back">
@@ -643,131 +517,22 @@
         </a>
 
         <div class="property-page__inner">
-          <div class="property-main">
-            <div class="property-gallery${isSingle ? ' property-gallery--single' : ''}">
-              <div class="property-gallery__main-wrapper">
-                <img src="${allImages[0]}" alt="${property.title}" class="property-gallery__main" onerror="this.src='https://placehold.co/800x600/e5e7eb/9ca3af?text=Sin+imagen'">
-                <button class="property-gallery__arrow property-gallery__arrow--prev" aria-label="Imagen anterior">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
-                </button>
-                <button class="property-gallery__arrow property-gallery__arrow--next" aria-label="Imagen siguiente">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
-                </button>
-                <span class="property-gallery__counter">1 / ${allImages.length}</span>
-                <span class="property-gallery__badge property-gallery__badge--${property.operation}">
-                  ${getOperationLabel(property.operation)}
-                </span>
-              </div>
-              <div class="property-gallery__thumbs">
-                ${thumbsHTML}
-              </div>
+          <div class="property-gallery${isSingle ? ' property-gallery--single' : ''}">
+            <div class="property-gallery__main-wrapper">
+              <img src="${allImages[0]}" alt="${property.title}" class="property-gallery__main" onerror="this.src='https://placehold.co/800x600/e5e7eb/9ca3af?text=Sin+imagen'">
+              <button class="property-gallery__arrow property-gallery__arrow--prev" aria-label="Imagen anterior">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+              </button>
+              <button class="property-gallery__arrow property-gallery__arrow--next" aria-label="Imagen siguiente">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+              </button>
+              <span class="property-gallery__counter">1 / ${allImages.length}</span>
+              <span class="property-gallery__badge property-gallery__badge--${property.operation}">
+                ${getOperationLabel(property.operation)}
+              </span>
             </div>
-
-            <div class="property-content">
-              <header class="property-header">
-                <span class="property-header__type">${getTypeLabel(property.type)}</span>
-                <h1 class="property-header__title">${property.title}</h1>
-                <p class="property-header__location">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
-                    <circle cx="12" cy="10" r="3"></circle>
-                  </svg>
-                  ${property.location.address ? property.location.address + ', ' : ''}${property.location.neighborhood ? property.location.neighborhood + ', ' : ''}${property.location.city}
-                </p>
-              </header>
-
-              <p class="property-price">${property.showPrice !== false ? formatPrice(property.price, property.currency) : 'Consultar'}</p>
-
-              <div class="property-features">
-                ${property.features.bedrooms > 0 ? `
-                  <div class="property-feature">
-                    <div class="property-feature__icon">
-                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M3 7v11a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V7"></path>
-                        <path d="M21 7H3l2-4h14l2 4z"></path>
-                      </svg>
-                    </div>
-                    <div class="property-feature__text">
-                      <span class="property-feature__value">${property.features.bedrooms}</span>
-                      Ambientes
-                    </div>
-                  </div>
-                ` : ''}
-                ${property.features.bathrooms > 0 ? `
-                  <div class="property-feature">
-                    <div class="property-feature__icon">
-                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M9 6 6.5 3.5a1.5 1.5 0 0 0-1-.5C4.683 3 4 3.683 4 4.5V17a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-5"></path>
-                        <line x1="2" y1="12" x2="22" y2="12"></line>
-                      </svg>
-                    </div>
-                    <div class="property-feature__text">
-                      <span class="property-feature__value">${property.features.bathrooms}</span>
-                      ${property.features.bathrooms === 1 ? 'Baño' : 'Baños'}
-                    </div>
-                  </div>
-                ` : ''}
-                <div class="property-feature">
-                  <div class="property-feature__icon">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                      <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-                    </svg>
-                  </div>
-                  <div class="property-feature__text">
-                    <span class="property-feature__value">${property.features.area} m²</span>
-                    Superficie total
-                  </div>
-                </div>
-                ${property.features.coveredArea > 0 ? `
-                  <div class="property-feature">
-                    <div class="property-feature__icon">
-                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
-                      </svg>
-                    </div>
-                    <div class="property-feature__text">
-                      <span class="property-feature__value">${property.features.coveredArea} m²</span>
-                      Cubiertos
-                    </div>
-                  </div>
-                ` : ''}
-                ${property.features.garage > 0 ? `
-                  <div class="property-feature">
-                    <div class="property-feature__icon">
-                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M19 17h2V7a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v10h2"></path>
-                        <circle cx="6.5" cy="17.5" r="2.5"></circle>
-                        <circle cx="17.5" cy="17.5" r="2.5"></circle>
-                      </svg>
-                    </div>
-                    <div class="property-feature__text">
-                      <span class="property-feature__value">${property.features.garage}</span>
-                      ${property.features.garage === 1 ? 'Cochera' : 'Cocheras'}
-                    </div>
-                  </div>
-                ` : ''}
-              </div>
-
-              <section class="property-section">
-                <h2 class="property-section__title">Descripción</h2>
-                <p class="property-description">${property.description}</p>
-              </section>
-
-              ${property.amenities && property.amenities.length > 0 ? `
-                <section class="property-section">
-                  <h2 class="property-section__title">Amenities y características</h2>
-                  <div class="property-amenities">
-                    ${property.amenities.map(amenity => `
-                      <span class="property-amenity">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                          <polyline points="20 6 9 17 4 12"></polyline>
-                        </svg>
-                        ${amenity}
-                      </span>
-                    `).join('')}
-                  </div>
-                </section>
-              ` : ''}
+            <div class="property-gallery__thumbs">
+              ${thumbsHTML}
             </div>
           </div>
 
@@ -793,6 +558,113 @@
               </a>
             </div>
           </aside>
+
+          <div class="property-content">
+            <header class="property-header">
+              <span class="property-header__type">${getTypeLabel(property.type)}</span>
+              <h1 class="property-header__title">${property.title}</h1>
+              <p class="property-header__location">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                  <circle cx="12" cy="10" r="3"></circle>
+                </svg>
+                ${locationParts.join(', ')}
+              </p>
+            </header>
+
+            <p class="property-price">${property.showPrice !== false ? formatPrice(property.price, property.currency) : 'Consultar'}</p>
+
+            <div class="property-features">
+              ${property.features.bedrooms > 0 ? `
+                <div class="property-feature">
+                  <div class="property-feature__icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M3 7v11a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V7"></path>
+                      <path d="M21 7H3l2-4h14l2 4z"></path>
+                    </svg>
+                  </div>
+                  <div class="property-feature__text">
+                    <span class="property-feature__value">${property.features.bedrooms}</span>
+                    Ambientes
+                  </div>
+                </div>
+              ` : ''}
+              ${property.features.bathrooms > 0 ? `
+                <div class="property-feature">
+                  <div class="property-feature__icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M9 6 6.5 3.5a1.5 1.5 0 0 0-1-.5C4.683 3 4 3.683 4 4.5V17a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-5"></path>
+                      <line x1="2" y1="12" x2="22" y2="12"></line>
+                    </svg>
+                  </div>
+                  <div class="property-feature__text">
+                    <span class="property-feature__value">${property.features.bathrooms}</span>
+                    ${property.features.bathrooms === 1 ? 'Baño' : 'Baños'}
+                  </div>
+                </div>
+              ` : ''}
+              <div class="property-feature">
+                <div class="property-feature__icon">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                  </svg>
+                </div>
+                <div class="property-feature__text">
+                  <span class="property-feature__value">${property.features.area} m²</span>
+                  Superficie total
+                </div>
+              </div>
+              ${property.features.coveredArea > 0 ? `
+                <div class="property-feature">
+                  <div class="property-feature__icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                    </svg>
+                  </div>
+                  <div class="property-feature__text">
+                    <span class="property-feature__value">${property.features.coveredArea} m²</span>
+                    Cubiertos
+                  </div>
+                </div>
+              ` : ''}
+              ${property.features.garage > 0 ? `
+                <div class="property-feature">
+                  <div class="property-feature__icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M19 17h2V7a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v10h2"></path>
+                      <circle cx="6.5" cy="17.5" r="2.5"></circle>
+                      <circle cx="17.5" cy="17.5" r="2.5"></circle>
+                    </svg>
+                  </div>
+                  <div class="property-feature__text">
+                    <span class="property-feature__value">${property.features.garage}</span>
+                    ${property.features.garage === 1 ? 'Cochera' : 'Cocheras'}
+                  </div>
+                </div>
+              ` : ''}
+            </div>
+
+            <section class="property-section">
+              <h2 class="property-section__title">Descripción</h2>
+              <p class="property-description">${property.description}</p>
+            </section>
+
+            ${property.amenities && property.amenities.length > 0 ? `
+              <section class="property-section">
+                <h2 class="property-section__title">Amenities y características</h2>
+                <div class="property-amenities">
+                  ${property.amenities.map(amenity => `
+                    <span class="property-amenity">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="20 6 9 17 4 12"></polyline>
+                      </svg>
+                      ${amenity}
+                    </span>
+                  `).join('')}
+                </div>
+              </section>
+            ` : ''}
+          </div>
         </div>
       `;
 
@@ -813,7 +685,6 @@
           mainImg.src = allImages[currentIndex];
           counter.textContent = `${currentIndex + 1} / ${allImages.length}`;
           thumbs.forEach((t, i) => t.classList.toggle('property-gallery__thumb--active', i === currentIndex));
-          // Scroll active thumb into view
           const activeThumb = thumbs[currentIndex];
           if (activeThumb && thumbsContainer) {
             const offset = activeThumb.offsetLeft - thumbsContainer.offsetWidth / 2 + activeThumb.offsetWidth / 2;
@@ -828,22 +699,16 @@
           thumb.addEventListener('click', () => showSlide(parseInt(thumb.dataset.index)));
         });
 
-        // Keyboard navigation
         document.addEventListener('keydown', (e) => {
           if (e.key === 'ArrowLeft') showSlide(currentIndex - 1);
           if (e.key === 'ArrowRight') showSlide(currentIndex + 1);
         });
 
-        // Touch/swipe support
         let touchStartX = 0;
-        let touchEndX = 0;
         wrapper.addEventListener('touchstart', (e) => { touchStartX = e.changedTouches[0].screenX; }, { passive: true });
         wrapper.addEventListener('touchend', (e) => {
-          touchEndX = e.changedTouches[0].screenX;
-          const diff = touchStartX - touchEndX;
-          if (Math.abs(diff) > 50) {
-            showSlide(currentIndex + (diff > 0 ? 1 : -1));
-          }
+          const diff = touchStartX - e.changedTouches[0].screenX;
+          if (Math.abs(diff) > 50) showSlide(currentIndex + (diff > 0 ? 1 : -1));
         }, { passive: true });
       }
     }
@@ -869,7 +734,6 @@
     function initMobileMenu() {
       const menuBtn = document.querySelector('.header__menu-btn');
       const nav = document.querySelector('.nav');
-
       menuBtn?.addEventListener('click', () => {
         menuBtn.classList.toggle('active');
         nav?.classList.toggle('active');
@@ -879,34 +743,22 @@
 
     // Initialize
     async function init() {
-      if (!propertyId) {
-        showError();
-        return;
-      }
+      if (!propertyId) { showError(); return; }
 
-      // Try API first
       try {
         if (window.API) {
           const property = await window.API.getProperty(propertyId);
-          if (property) {
-            renderProperty(property);
-            return;
-          }
+          if (property) { renderProperty(property); return; }
         }
       } catch (e) {
         console.warn('API fetch failed, trying local data');
       }
 
-      // Fallback to PROPERTIES_DATA
       if (window.PROPERTIES_DATA) {
         const property = window.PROPERTIES_DATA.properties.find(p => p.id === propertyId);
-        if (property) {
-          renderProperty(property);
-          return;
-        }
+        if (property) { renderProperty(property); return; }
       }
 
-      // Wait for async load
       await new Promise((resolve) => {
         window.addEventListener('properties-loaded', resolve, { once: true });
         setTimeout(resolve, 5000);
@@ -914,16 +766,12 @@
 
       if (window.PROPERTIES_DATA) {
         const property = window.PROPERTIES_DATA.properties.find(p => p.id === propertyId);
-        if (property) {
-          renderProperty(property);
-          return;
-        }
+        if (property) { renderProperty(property); return; }
       }
 
       showError();
     }
 
-    // Start
     if (document.readyState === 'loading') {
       document.addEventListener('DOMContentLoaded', init);
     } else {
