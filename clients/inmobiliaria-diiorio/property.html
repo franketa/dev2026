@@ -21,6 +21,7 @@
     .property-page {
       padding-top: 72px;
       min-height: 100vh;
+      overflow-x: hidden;
     }
 
     .property-page__back {
@@ -39,7 +40,6 @@
 
     .property-gallery {
       position: relative;
-      width: 100%;
       aspect-ratio: auto;
       background: var(--gray-100);
       overflow: hidden;
@@ -160,6 +160,16 @@
         width: 64px;
         height: 44px;
       }
+
+      .property-page {
+        padding-top: 64px;
+      }
+    }
+
+    @media (max-width: 479px) {
+      .property-features {
+        grid-template-columns: 1fr;
+      }
     }
 
     .property-gallery__badge {
@@ -197,7 +207,7 @@
     .property-content {
       max-width: 1200px;
       margin: 0 auto;
-      padding: 2rem 1rem;
+      padding: 2rem 1rem 6rem;
     }
 
     .property-header {
@@ -338,6 +348,30 @@
       z-index: 100;
     }
 
+    .property-sidebar {
+      padding: 0 1rem 6rem;
+    }
+
+    .property-contact-card {
+      background: var(--gray-50);
+      border-radius: 1rem;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .property-contact-card h3 {
+      font-family: var(--font-display);
+      font-size: 1.125rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+    }
+
+    .property-contact-card p {
+      font-size: 0.9375rem;
+      color: var(--gray-600);
+      margin-bottom: 0.5rem;
+    }
+
     .property-cta .btn {
       flex: 1;
       display: flex;
@@ -372,10 +406,11 @@
     @media (min-width: 1024px) {
       .property-page__inner {
         display: grid;
-        grid-template-columns: 1fr 400px;
+        grid-template-columns: 1fr 380px;
         gap: 2rem;
         max-width: 1400px;
         margin: 0 auto;
+        padding: 0 1.5rem;
       }
 
       .property-gallery {
@@ -395,8 +430,7 @@
       }
 
       .property-sidebar {
-        padding: 2rem;
-        padding-left: 0;
+        padding: 2rem 0;
       }
 
       .property-cta {
@@ -406,26 +440,6 @@
         border-radius: 1rem;
         padding: 1.5rem;
         background: white;
-      }
-
-      .property-contact-card {
-        background: var(--gray-50);
-        border-radius: 1rem;
-        padding: 1.5rem;
-        margin-bottom: 1.5rem;
-      }
-
-      .property-contact-card h3 {
-        font-family: var(--font-display);
-        font-size: 1.125rem;
-        font-weight: 600;
-        margin-bottom: 1rem;
-      }
-
-      .property-contact-card p {
-        font-size: 0.9375rem;
-        color: var(--gray-600);
-        margin-bottom: 0.5rem;
       }
 
       .property-features {
