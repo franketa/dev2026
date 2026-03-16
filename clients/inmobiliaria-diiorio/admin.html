@@ -1216,7 +1216,7 @@
 
       container.innerHTML = filtered.map(p => {
         const imageUrl = getPropertyImage(p);
-        const priceFormatted = p.showPrice !== false ? formatPrice(p.price, p.currency) : 'Consultar';
+        const priceFormatted = p.showPrice !== false ? formatPrice(p.price, p.currency) : 'Precio: Consultar';
         const typeLabel = getTypeLabel(p.type);
 
         return `

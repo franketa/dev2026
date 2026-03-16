@@ -572,7 +572,7 @@
               </p>
             </header>
 
-            <p class="property-price">${property.showPrice !== false ? formatPrice(property.price, property.currency) : 'Consultar'}</p>
+            <p class="property-price">${property.showPrice !== false ? 'Precio: ' + formatPrice(property.price, property.currency) : 'Precio: Consultar'}</p>
 
             <div class="property-features">
               ${property.features.bedrooms > 0 ? `
