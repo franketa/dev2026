@@ -1230,7 +1230,7 @@
             <div class="property-card__content">
               <div class="property-card__price">${priceFormatted}</div>
               <div class="property-card__title">${p.title}</div>
-              <div class="property-card__location">${p.location.neighborhood}, ${p.location.city}</div>
+              <div class="property-card__location">${p.location.neighborhood ? p.location.neighborhood + ', ' : ''}${p.location.city}</div>
               <div class="property-card__meta">
                 <span>${typeLabel}</span>
                 ${p.features.bedrooms > 0 ? `<span>${p.features.bedrooms} amb.</span>` : ''}
