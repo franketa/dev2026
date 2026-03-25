@@ -505,7 +505,7 @@ p {
 .hero__video-overlay {
   position: absolute;
   inset: 0;
-  background: rgba(2, 6, 23, 0.55);
+  background: rgba(2, 6, 23, 0.25);
   z-index: calc(var(--z-hero-svg) + 1);
   pointer-events: none;
   will-change: transform;
