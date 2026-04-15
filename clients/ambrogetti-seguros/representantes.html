@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Representantes | Ambrogetti Seguros SRL</title>
+    <meta name="description" content="Conocé a los representantes de Ambrogetti Seguros en toda la región. Profesionales respaldados por más de 53 años de trayectoria.">
+    <meta property="og:title" content="Representantes | Ambrogetti Seguros SRL">
+    <meta property="og:description" content="Conocé a los representantes de Ambrogetti Seguros en toda la región.">
+    <meta property="og:type" content="website">
+    <meta property="og:locale" content="es_AR">
+    <meta name="robots" content="index, follow">
+    <meta name="theme-color" content="#1B2A4A">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=DM+Serif+Display&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --red: #D42027;
+            --red-dark: #B01B20;
+            --red-light: rgba(212, 32, 39, 0.08);
+            --navy: #1B2A4A;
+            --navy-light: #243556;
+            --navy-dark: #111d35;
+            --white: #FFFFFF;
+            --gray-bg: #F5F6F8;
+            --gray-border: #E2E5EA;
+            --text-dark: #333333;
+            --text-medium: #555555;
+            --text-light: #777777;
+            --font-serif: 'DM Serif Display', Georgia, serif;
+            --font-sans: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            --shadow-sm: 0 2px 8px rgba(27, 42, 74, 0.06);
+            --shadow-md: 0 4px 20px rgba(27, 42, 74, 0.1);
+            --shadow-lg: 0 8px 40px rgba(27, 42, 74, 0.14);
+            --radius: 10px;
+            --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        html { scroll-behavior: smooth; scroll-padding-top: 80px; }
+
+        body {
+            font-family: var(--font-sans);
+            color: var(--text-dark);
+            line-height: 1.6;
+            overflow-x: hidden;
+            background: var(--white);
+            -webkit-font-smoothing: antialiased;
+        }
+
+        img { max-width: 100%; height: auto; display: block; }
+        a { text-decoration: none; color: inherit; }
+        ul { list-style: none; }
+
+        .container { width: 100%; max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+
+        .section-label {
+            font-family: var(--font-sans);
+            font-size: 0.8rem;
+            font-weight: 700;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--red);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .section-label::before {
+            content: '';
+            display: inline-block;
+            width: 30px;
+            height: 2px;
+            background: var(--red);
+        }
+
+        .section-title {
+            font-family: var(--font-serif);
+            font-size: clamp(1.8rem, 4vw, 2.6rem);
+            color: var(--navy);
+            line-height: 1.2;
+            margin-bottom: 20px;
+        }
+
+        .section-title--light { color: var(--white); }
+
+        .section-subtitle {
+            font-size: 1.05rem;
+            color: var(--text-medium);
+            line-height: 1.7;
+        }
+
+        .reveal { opacity: 0; transform: translateY(30px); transition: opacity 0.7s var(--transition), transform 0.7s var(--transition); }
+        .reveal.visible { opacity: 1; transform: translateY(0); }
+        .reveal-delay-1 { transition-delay: 0.1s; }
+        .reveal-delay-2 { transition-delay: 0.2s; }
+        .reveal-delay-3 { transition-delay: 0.3s; }
+        .reveal-delay-4 { transition-delay: 0.4s; }
+        .reveal-delay-5 { transition-delay: 0.5s; }
+
+        .bg-pattern-dark {
+            background-color: var(--navy);
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' xmlns='http://www.w3.org/2000/svg'%3E%3Cline x1='0' y1='60' x2='60' y2='0' stroke='rgba(255,255,255,0.035)' stroke-width='1'/%3E%3C/svg%3E");
+        }
+
+        .bg-pattern-light {
+            background-color: var(--gray-bg);
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' xmlns='http://www.w3.org/2000/svg'%3E%3Cline x1='0' y1='60' x2='60' y2='0' stroke='rgba(27,42,74,0.025)' stroke-width='1'/%3E%3C/svg%3E");
+        }
+
+        /* NAVBAR */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            padding: 20px 0;
+            background: var(--navy);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            transition: padding var(--transition);
+        }
+
+        .navbar.scrolled { padding: 12px 0; }
+
+        .navbar .container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .navbar__logo img {
+            height: 48px;
+            width: auto;
+            transition: height var(--transition);
+        }
+
+        .navbar.scrolled .navbar__logo img { height: 40px; }
+
+        .navbar__links { display: flex; align-items: center; gap: 32px; }
+
+        .navbar__links a {
+            font-size: 0.85rem;
+            font-weight: 600;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.85);
+            transition: color var(--transition);
+            position: relative;
+        }
+
+        .navbar__links a::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--red);
+            transition: width var(--transition);
+        }
+
+        .navbar__links a:hover { color: var(--white); }
+        .navbar__links a:hover::after { width: 100%; }
+
+        .navbar__links a.is-active { color: var(--white); }
+        .navbar__links a.is-active::after { width: 100%; }
+
+        .navbar__cta {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--red);
+            color: var(--white) !important;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-size: 0.82rem !important;
+            font-weight: 700 !important;
+            letter-spacing: 0.03em;
+            transition: background var(--transition), transform var(--transition) !important;
+        }
+        .navbar__cta::after { display: none !important; }
+        .navbar__cta:hover { background: var(--red-dark) !important; transform: translateY(-1px); }
+        .navbar__cta svg { width: 16px; height: 16px; }
+
+        .navbar__hamburger {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            cursor: pointer;
+            padding: 4px;
+            z-index: 1001;
+        }
+
+        .navbar__hamburger span {
+            display: block;
+            width: 24px;
+            height: 2px;
+            background: var(--white);
+            border-radius: 2px;
+            transition: transform var(--transition), opacity var(--transition);
+        }
+
+        .navbar__hamburger.active span:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
+        .navbar__hamburger.active span:nth-child(2) { opacity: 0; }
+        .navbar__hamburger.active span:nth-child(3) { transform: rotate(-45deg) translate(5px, -5px); }
+
+        .mobile-menu {
+            display: none;
+            position: fixed;
+            top: 0;
+            right: -100%;
+            width: 100%;
+            max-width: 360px;
+            height: 100vh;
+            background: var(--navy);
+            z-index: 999;
+            padding: 100px 40px 40px;
+            transition: right 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow-y: auto;
+        }
+
+        .mobile-menu.open { right: 0; }
+
+        .mobile-menu a {
+            display: block;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.8);
+            padding: 16px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            transition: color var(--transition), padding-left var(--transition);
+        }
+
+        .mobile-menu a:hover { color: var(--white); padding-left: 8px; }
+        .mobile-menu a.is-active { color: var(--white); }
+
+        .mobile-menu__cta {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 24px;
+            background: var(--red);
+            color: var(--white) !important;
+            padding: 14px 28px;
+            border-radius: 6px;
+            font-weight: 700;
+        }
+
+        .mobile-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 998;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .mobile-overlay.visible { opacity: 1; }
+
+        @media (max-width: 1023px) {
+            .navbar__links { display: none; }
+            .navbar__hamburger { display: flex; }
+            .mobile-menu { display: block; }
+        }
+
+        /* BUTTONS */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 14px 30px;
+            border-radius: 8px;
+            font-family: var(--font-sans);
+            font-size: 0.95rem;
+            font-weight: 700;
+            cursor: pointer;
+            border: none;
+            transition: all var(--transition);
+        }
+        .btn svg, .btn i { width: 18px; height: 18px; }
+
+        .btn--primary { background: var(--red); color: var(--white); }
+        .btn--primary:hover {
+            background: var(--red-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 24px rgba(212, 32, 39, 0.35);
+        }
+
+        .btn--outline {
+            background: transparent;
+            color: var(--white);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+        .btn--outline:hover {
+            border-color: var(--white);
+            background: rgba(255, 255, 255, 0.06);
+        }
+
+        /* PAGE HERO (compact) */
+        .page-hero {
+            position: relative;
+            padding: 160px 0 80px;
+            overflow: hidden;
+        }
+
+        .page-hero__bg {
+            position: absolute;
+            inset: 0;
+            background-color: var(--navy);
+            background-image:
+                url("data:image/svg+xml,%3Csvg width='60' height='60' xmlns='http://www.w3.org/2000/svg'%3E%3Cline x1='0' y1='60' x2='60' y2='0' stroke='rgba(255,255,255,0.03)' stroke-width='1'/%3E%3C/svg%3E"),
+                linear-gradient(160deg, var(--navy-dark) 0%, var(--navy) 50%, var(--navy-light) 100%);
+        }
+
+        .page-hero__triangle {
+            position: absolute;
+            right: -60px;
+            bottom: -80px;
+            width: 360px;
+            height: 320px;
+            clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+            background: rgba(255, 255, 255, 0.03);
+            pointer-events: none;
+        }
+
+        .page-hero__content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            max-width: 720px;
+            margin: 0 auto;
+        }
+
+        .page-hero__label {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.78rem;
+            font-weight: 700;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 18px;
+        }
+        .page-hero__label::before {
+            content: '';
+            width: 36px;
+            height: 2px;
+            background: var(--red);
+        }
+
+        .page-hero__title {
+            font-family: var(--font-serif);
+            font-size: clamp(2.2rem, 5vw, 3.2rem);
+            color: var(--white);
+            line-height: 1.15;
+            margin-bottom: 18px;
+        }
+        .page-hero__title span { color: var(--red); }
+
+        .page-hero__subtitle {
+            font-size: clamp(1rem, 1.8vw, 1.1rem);
+            color: rgba(255, 255, 255, 0.72);
+            line-height: 1.7;
+            max-width: 580px;
+            margin: 0 auto;
+        }
+
+        /* REPS GRID */
+        .reps {
+            padding: 80px 0 100px;
+        }
+
+        .reps__grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 24px;
+            max-width: 920px;
+            margin: 0 auto;
+        }
+
+        .rep-card {
+            display: grid;
+            grid-template-columns: 220px 1fr;
+            gap: 32px;
+            background: var(--white);
+            border: 1px solid var(--gray-border);
+            border-radius: var(--radius);
+            padding: 28px;
+            transition: all var(--transition);
+            position: relative;
+            overflow: hidden;
+            align-items: center;
+        }
+
+        .rep-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--red), var(--navy));
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform var(--transition);
+        }
+
+        .rep-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+            border-color: transparent;
+        }
+        .rep-card:hover::before { transform: scaleX(1); }
+
+        .rep-card__photo {
+            width: 220px;
+            height: 260px;
+            border-radius: 12px;
+            overflow: hidden;
+            background: var(--gray-bg);
+            position: relative;
+        }
+
+        .rep-card__photo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center top;
+        }
+
+        .rep-card__body { min-width: 0; }
+
+        .rep-card__eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.72rem;
+            font-weight: 700;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: var(--red);
+            margin-bottom: 10px;
+        }
+        .rep-card__eyebrow i { width: 14px; height: 14px; }
+
+        .rep-card__name {
+            font-family: var(--font-serif);
+            font-size: 1.8rem;
+            color: var(--navy);
+            line-height: 1.15;
+            margin-bottom: 6px;
+        }
+
+        .rep-card__role {
+            font-size: 0.95rem;
+            color: var(--text-medium);
+            margin-bottom: 18px;
+        }
+
+        .rep-card__role strong { color: var(--navy); }
+
+        .rep-card__tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 22px;
+        }
+
+        .rep-card__tag {
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: var(--navy);
+            background: var(--gray-bg);
+            padding: 6px 12px;
+            border-radius: 50px;
+        }
+
+        .rep-card__actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .rep-card__btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            background: var(--navy);
+            color: var(--white);
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            letter-spacing: 0.02em;
+            transition: all var(--transition);
+        }
+
+        .rep-card__btn:hover {
+            background: var(--red);
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(212, 32, 39, 0.28);
+        }
+
+        .rep-card__btn i { width: 16px; height: 16px; }
+
+        .rep-card__wa {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 18px;
+            background: transparent;
+            color: #25D366;
+            border: 2px solid rgba(37, 211, 102, 0.35);
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            transition: all var(--transition);
+        }
+
+        .rep-card__wa:hover {
+            background: #25D366;
+            color: var(--white);
+            border-color: #25D366;
+        }
+
+        .rep-card__wa svg { width: 16px; height: 16px; }
+
+        /* FOOTER */
+        .footer {
+            background: var(--navy-dark);
+            padding: 48px 0 24px;
+        }
+
+        .footer__top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-bottom: 28px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .footer__logo img { height: 40px; width: auto; }
+
+        .footer__nav {
+            display: flex;
+            gap: 24px;
+            flex-wrap: wrap;
+        }
+
+        .footer__nav a {
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.5);
+            transition: color var(--transition);
+        }
+
+        .footer__nav a:hover { color: var(--white); }
+
+        .footer__ssn {
+            font-size: 0.75rem;
+            color: rgba(255, 255, 255, 0.25);
+            max-width: 600px;
+            line-height: 1.5;
+            text-align: center;
+            margin: 0 auto;
+        }
+
+        .footer__bottom {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin-top: 20px;
+        }
+
+        .footer__copyright {
+            font-size: 0.82rem;
+            color: rgba(255, 255, 255, 0.35);
+        }
+
+        .footer__credit {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.72rem;
+            color: rgba(255, 255, 255, 0.3);
+        }
+
+        .footer__credit img {
+            height: 16px;
+            width: auto;
+            opacity: 0.4;
+            transition: opacity var(--transition);
+        }
+
+        .footer__credit:hover img { opacity: 0.7; }
+        .footer__credit:hover { color: rgba(255, 255, 255, 0.5); }
+
+        /* WHATSAPP FLOAT */
+        .whatsapp-float {
+            position: fixed;
+            bottom: 28px;
+            right: 28px;
+            z-index: 900;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: #25D366;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+            box-shadow: 0 4px 16px rgba(37, 211, 102, 0.4);
+            transition: all var(--transition);
+            animation: pulse-wa 2.5s infinite;
+        }
+
+        .whatsapp-float:hover {
+            transform: scale(1.08);
+            box-shadow: 0 6px 24px rgba(37, 211, 102, 0.5);
+        }
+
+        .whatsapp-float svg { width: 28px; height: 28px; }
+
+        @keyframes pulse-wa {
+            0%, 100% { box-shadow: 0 4px 16px rgba(37, 211, 102, 0.4); }
+            50% { box-shadow: 0 4px 28px rgba(37, 211, 102, 0.6), 0 0 0 12px rgba(37, 211, 102, 0.08); }
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 639px) {
+            .page-hero { padding: 140px 0 60px; }
+
+            .rep-card {
+                grid-template-columns: 1fr;
+                gap: 20px;
+                padding: 20px;
+            }
+
+            .rep-card__photo {
+                width: 100%;
+                height: 320px;
+            }
+
+            .rep-card__name { font-size: 1.5rem; }
+
+            .rep-card__actions {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .rep-card__btn, .rep-card__wa {
+                justify-content: center;
+            }
+
+            .footer__top { flex-direction: column; align-items: flex-start; }
+            .footer__bottom { flex-direction: column; align-items: flex-start; }
+
+            .whatsapp-float { bottom: 16px; right: 16px; width: 50px; height: 50px; }
+            .whatsapp-float svg { width: 24px; height: 24px; }
+        }
+
+        @media (min-width: 1024px) {
+            .reps__grid {
+                grid-template-columns: 1fr;
+                max-width: 960px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ==================== NAVBAR ==================== -->
+    <nav class="navbar" id="navbar" role="navigation" aria-label="Navegación principal">
+        <div class="container">
+            <a href="index.html" class="navbar__logo" aria-label="Ambrogetti Seguros - Inicio">
+                <img src="assets/logo/logo.png" alt="Ambrogetti Seguros SRL">
+            </a>
+            <div class="navbar__links">
+                <a href="index.html#inicio">Inicio</a>
+                <a href="index.html#nosotros">Nosotros</a>
+                <a href="index.html#seguros">Seguros</a>
+                <a href="index.html#companias">Compañías</a>
+                <a href="representantes.html" class="is-active">Representantes</a>
+                <a href="index.html#contacto">Contacto</a>
+                <a href="https://wa.me/542346696066" target="_blank" rel="noopener" class="navbar__cta">
+                    <svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+                    Escribinos
+                </a>
+            </div>
+            <div class="navbar__hamburger" id="hamburger" aria-label="Menú" role="button" tabindex="0">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+    </nav>
+
+    <div class="mobile-overlay" id="mobileOverlay"></div>
+    <div class="mobile-menu" id="mobileMenu" role="navigation" aria-label="Menú móvil">
+        <a href="index.html#inicio">Inicio</a>
+        <a href="index.html#nosotros">Nosotros</a>
+        <a href="index.html#seguros">Seguros</a>
+        <a href="index.html#companias">Compañías</a>
+        <a href="representantes.html" class="is-active">Representantes</a>
+        <a href="index.html#contacto">Contacto</a>
+        <a href="https://wa.me/542346696066" target="_blank" rel="noopener" class="mobile-menu__cta">
+            <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+            Consultá por WhatsApp
+        </a>
+    </div>
+
+    <!-- ==================== PAGE HERO ==================== -->
+    <section class="page-hero">
+        <div class="page-hero__bg"></div>
+        <div class="page-hero__triangle" aria-hidden="true"></div>
+        <div class="container page-hero__content">
+            <div class="page-hero__label reveal">Nuestra red</div>
+            <h1 class="page-hero__title reveal reveal-delay-1">
+                Nuestros <span>Representantes</span>
+            </h1>
+            <p class="page-hero__subtitle reveal reveal-delay-2">
+                Profesionales respaldados por más de 53 años de trayectoria de Ambrogetti Seguros. Cercanía, atención personalizada y el respaldo de las mejores compañías del país.
+            </p>
+        </div>
+    </section>
+
+    <!-- ==================== REPS GRID ==================== -->
+    <section class="reps bg-pattern-light">
+        <div class="container">
+            <div class="reps__grid">
+
+                <article class="rep-card reveal">
+                    <div class="rep-card__photo">
+                        <img src="assets/images/santiago-fernandez/Foto Santiago.JPG" alt="Santiago Fernández" loading="lazy">
+                    </div>
+                    <div class="rep-card__body">
+                        <div class="rep-card__eyebrow">
+                            <i data-lucide="map-pin"></i>
+                            Chivilcoy y zona
+                        </div>
+                        <h2 class="rep-card__name">Santiago Fernández</h2>
+                        <p class="rep-card__role">
+                            <strong>Representante</strong> &middot; Atención en 25 de Mayo, 9 de Julio, Suipacha, Bragado y General Pinto.
+                        </p>
+                        <div class="rep-card__tags">
+                            <span class="rep-card__tag">Agrícola</span>
+                            <span class="rep-card__tag">Automotor</span>
+                            <span class="rep-card__tag">Comercios</span>
+                            <span class="rep-card__tag">ART</span>
+                            <span class="rep-card__tag">Retiro</span>
+                            <span class="rep-card__tag">+3</span>
+                        </div>
+                        <div class="rep-card__actions">
+                            <a href="representantes/santiago-fernandez.html" class="rep-card__btn">
+                                Ver perfil
+                                <i data-lucide="arrow-right"></i>
+                            </a>
+                            <a href="https://wa.me/542346696066" target="_blank" rel="noopener" class="rep-card__wa">
+                                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+                                WhatsApp
+                            </a>
+                        </div>
+                    </div>
+                </article>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== FOOTER ==================== -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer__top">
+                <a href="index.html" class="footer__logo" aria-label="Ambrogetti Seguros - Inicio">
+                    <img src="assets/logo/logo.png" alt="Ambrogetti Seguros SRL">
+                </a>
+                <nav class="footer__nav" aria-label="Navegación del pie de página">
+                    <a href="index.html#inicio">Inicio</a>
+                    <a href="index.html#nosotros">Nosotros</a>
+                    <a href="index.html#seguros">Seguros</a>
+                    <a href="index.html#companias">Compañías</a>
+                    <a href="representantes.html">Representantes</a>
+                    <a href="index.html#contacto">Contacto</a>
+                </nav>
+            </div>
+            <div class="footer__ssn">
+                N.° de inscripción en la SSN: [pendiente]. Atención al asegurado: <a href="https://www.argentina.gob.ar/ssn" target="_blank" rel="noopener" style="color:rgba(255,255,255,0.4);text-decoration:underline;">www.argentina.gob.ar/ssn</a> — 0800-666-8400.
+            </div>
+            <div class="footer__bottom">
+                <span class="footer__copyright">&copy; 2026 Ambrogetti Seguros SRL &mdash; Todos los derechos reservados</span>
+                <a href="#" class="footer__credit" aria-label="Creado por VentureByte">
+                    Creado por
+                    <img src="assets/images/venturebyte-white.png" alt="VentureByte">
+                </a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ==================== WHATSAPP FLOAT ==================== -->
+    <a href="https://wa.me/542346696066" target="_blank" rel="noopener" class="whatsapp-float" aria-label="Contactanos por WhatsApp">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+    </a>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            if (typeof lucide !== 'undefined') { lucide.createIcons(); }
+
+            const navbar = document.getElementById('navbar');
+            function handleNavScroll() {
+                if (window.scrollY > 60) navbar.classList.add('scrolled');
+                else navbar.classList.remove('scrolled');
+            }
+            window.addEventListener('scroll', handleNavScroll, { passive: true });
+            handleNavScroll();
+
+            const hamburger = document.getElementById('hamburger');
+            const mobileMenu = document.getElementById('mobileMenu');
+            const mobileOverlay = document.getElementById('mobileOverlay');
+
+            function openMenu() {
+                hamburger.classList.add('active');
+                mobileMenu.classList.add('open');
+                mobileOverlay.style.display = 'block';
+                requestAnimationFrame(function() { mobileOverlay.classList.add('visible'); });
+                document.body.style.overflow = 'hidden';
+            }
+            function closeMenu() {
+                hamburger.classList.remove('active');
+                mobileMenu.classList.remove('open');
+                mobileOverlay.classList.remove('visible');
+                document.body.style.overflow = '';
+                setTimeout(function() { mobileOverlay.style.display = 'none'; }, 300);
+            }
+
+            hamburger.addEventListener('click', function() {
+                if (mobileMenu.classList.contains('open')) closeMenu();
+                else openMenu();
+            });
+            hamburger.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); hamburger.click(); }
+            });
+            mobileOverlay.addEventListener('click', closeMenu);
+            mobileMenu.querySelectorAll('a').forEach(function(link) {
+                link.addEventListener('click', closeMenu);
+            });
+
+            var revealElements = document.querySelectorAll('.reveal');
+            var revealObserver = new IntersectionObserver(function(entries) {
+                entries.forEach(function(entry) {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                        revealObserver.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+            revealElements.forEach(function(el) { revealObserver.observe(el); });
+        });
+    </script>
+</body>
+</html>
