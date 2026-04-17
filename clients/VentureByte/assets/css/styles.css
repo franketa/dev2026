@@ -1820,6 +1820,10 @@ p {
 /* ----------------------------------------------------------
    25. Step Form (solicitud.html)
    ---------------------------------------------------------- */
+[hidden] {
+  display: none !important;
+}
+
 .sr-only {
   position: absolute;
   width: 1px;
