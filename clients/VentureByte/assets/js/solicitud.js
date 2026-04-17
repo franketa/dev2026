@@ -190,6 +190,23 @@
     }
   });
 
+  // ----- File inputs custom: mostrar nombre del archivo seleccionado -----
+  form.querySelectorAll('.file-input__native').forEach(inp => {
+    inp.addEventListener('change', () => {
+      const wrap = inp.closest('.file-input');
+      const nameEl = wrap && wrap.querySelector('.file-input__name');
+      if (!nameEl) return;
+      const file = inp.files && inp.files[0];
+      if (file) {
+        nameEl.textContent = file.name;
+        wrap.classList.add('file-input--has-file');
+      } else {
+        nameEl.textContent = nameEl.dataset.placeholder || 'Ningún archivo seleccionado';
+        wrap.classList.remove('file-input--has-file');
+      }
+    });
+  });
+
   // ----- Chips (paso 6) -----
   const chipContainer = document.getElementById('estiloChips');
   if (chipContainer) {

@@ -1824,6 +1824,51 @@ p {
   display: none !important;
 }
 
+/* ---- Overflow safety — previene cualquier desborde horizontal
+   del formulario en viewports angostos. ---- */
+.step-form,
+.step-form__container,
+.step-form__form,
+.step,
+.form-group,
+.radio-card,
+.radio-card__body,
+.checkbox-card {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.step-form__form {
+  overflow: hidden;
+}
+
+.step__question,
+.step__hint,
+.step__legend,
+.form-group label,
+.form-group__label,
+.form-group__hint {
+  overflow-wrap: break-word;
+  word-break: break-word;
+  hyphens: auto;
+}
+
+.radio-card__body strong,
+.radio-card__body span,
+.checkbox-card > span {
+  overflow-wrap: break-word;
+  word-break: break-word;
+  min-width: 0;
+}
+
+.form-group input,
+.form-group textarea,
+.form-group select {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+}
+
 .sr-only {
   position: absolute;
   width: 1px;
@@ -2002,27 +2047,83 @@ p {
   margin-top: 0.25rem;
 }
 
-.step .form-group--file input[type="file"] {
-  padding: 0.75rem;
-  cursor: pointer;
-  font-family: var(--font-body);
+/* Custom file input — oculta el nativo y usa un botón + label */
+.form-group__label {
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.7);
+  display: block;
 }
 
-.step .form-group--file input[type="file"]::-webkit-file-upload-button {
+.file-input {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 0.45rem 0.55rem;
+  cursor: pointer;
+  transition: border-color var(--transition-fast), background var(--transition-fast);
+  min-width: 0;
+  max-width: 100%;
+}
+
+.file-input:hover {
+  border-color: rgba(77, 140, 245, 0.45);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.file-input:focus-within {
+  border-color: var(--primary-blue);
+}
+
+.file-input__native {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  clip: rect(0, 0, 0, 0);
+  pointer-events: none;
+}
+
+.file-input__button {
   background: var(--primary-blue-10);
   color: var(--accent-blue);
   border: 1px solid rgba(77, 140, 245, 0.3);
   padding: 0.45rem 0.85rem;
   border-radius: 6px;
-  font-family: inherit;
   font-size: 0.8125rem;
-  cursor: pointer;
-  margin-right: 0.75rem;
+  font-family: var(--font-body);
+  white-space: nowrap;
+  flex-shrink: 0;
   transition: background var(--transition-fast);
 }
 
-.step .form-group--file input[type="file"]::-webkit-file-upload-button:hover {
+.file-input:hover .file-input__button {
   background: var(--primary-blue-20);
+}
+
+.file-input__name {
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 0.8125rem;
+  font-family: var(--font-body);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+  flex: 1 1 0;
+}
+
+.file-input--has-file {
+  border-color: rgba(77, 140, 245, 0.4);
+  background: rgba(77, 140, 245, 0.05);
+}
+
+.file-input--has-file .file-input__name {
+  color: rgba(255, 255, 255, 0.9);
 }
 
 /* Chips */

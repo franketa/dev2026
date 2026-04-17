@@ -129,8 +129,12 @@
           </div>
 
           <div class="form-group form-group--file" id="logoUploadWrap" hidden>
-            <label for="logo">Subí tu logo</label>
-            <input type="file" id="logo" name="logo" accept="image/png,image/jpeg,image/svg+xml">
+            <span class="form-group__label">Subí tu logo</span>
+            <label class="file-input" for="logo">
+              <input type="file" id="logo" name="logo" accept="image/png,image/jpeg,image/svg+xml" class="file-input__native">
+              <span class="file-input__button">Elegir archivo</span>
+              <span class="file-input__name" data-placeholder="Ningún archivo seleccionado">Ningún archivo seleccionado</span>
+            </label>
             <span class="form-group__hint">Máx 5 MB. Preferimos PNG transparente o SVG.</span>
           </div>
         </fieldset>
@@ -142,8 +146,12 @@
           <p class="step__hint">Cualquiera de estas opciones nos sirve. Podés completar más de una.</p>
 
           <div class="form-group form-group--file">
-            <label for="manual_marca">Subí tu manual de marca (opcional)</label>
-            <input type="file" id="manual_marca" name="manual_marca" accept="application/pdf,image/*">
+            <span class="form-group__label">Subí tu manual de marca (opcional)</span>
+            <label class="file-input" for="manual_marca">
+              <input type="file" id="manual_marca" name="manual_marca" accept="application/pdf,image/*" class="file-input__native">
+              <span class="file-input__button">Elegir archivo</span>
+              <span class="file-input__name" data-placeholder="Ningún archivo seleccionado">Ningún archivo seleccionado</span>
+            </label>
             <span class="form-group__hint">PDF o imagen, máx 5 MB.</span>
           </div>
 
