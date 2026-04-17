@@ -34,27 +34,41 @@
   let currentIndex = 0; // index in `steps` array
 
   // ----- Render paso actual -----
+  // Secuencia: --active → --exit (fade-out) → swap → --enter (estado inicial)
+  // → reflow → --active (anima hacia adentro). Sin scroll automático.
+  const EXIT_MS = 200;
   function renderStep(newIndex, direction) {
     const oldStep = steps[currentIndex];
     const newStep = steps[newIndex];
+    const isBack = direction === 'back';
 
+    // 1) Animar salida del paso viejo
     oldStep.classList.remove('step--active');
-    oldStep.classList.add('step--leaving');
+    oldStep.classList.add(isBack ? 'step--exit-back' : 'step--exit');
 
-    // small delay for fade out
     setTimeout(() => {
-      oldStep.classList.remove('step--leaving');
-      newStep.classList.add('step--active');
-      currentIndex = newIndex;
-      updateControls();
-      // focus primer input del paso nuevo
-      const firstInput = newStep.querySelector('input:not([type="radio"]):not([type="checkbox"]):not([hidden]), textarea, select');
-      if (firstInput && !newStep.classList.contains('step--success')) {
-        setTimeout(() => firstInput.focus({ preventScroll: false }), 120);
-      }
-      // scroll top suave
-      form.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }, 180);
+      oldStep.classList.remove('step--exit', 'step--exit-back');
+
+      // 2) Estado inicial del paso nuevo (fuera de pantalla, sin transición)
+      newStep.classList.add(isBack ? 'step--enter-back' : 'step--enter');
+
+      // 3) Forzar reflow para lockear el estado inicial antes de animar
+      void newStep.offsetWidth;
+
+      // 4) Next frame: activamos y deja que la transición corra
+      requestAnimationFrame(() => {
+        newStep.classList.remove('step--enter', 'step--enter-back');
+        newStep.classList.add('step--active');
+        currentIndex = newIndex;
+        updateControls();
+
+        // focus sin scroll — usamos preventScroll para no saltar la página
+        const firstInput = newStep.querySelector('input:not([type="radio"]):not([type="checkbox"]):not([hidden]), textarea, select');
+        if (firstInput && !newStep.classList.contains('step--success')) {
+          setTimeout(() => firstInput.focus({ preventScroll: true }), 150);
+        }
+      });
+    }, EXIT_MS);
   }
 
   function updateControls() {

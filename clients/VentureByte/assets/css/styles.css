@@ -1917,20 +1917,54 @@ p {
   padding: 0;
   margin: 0;
   display: none;
-  opacity: 0;
-  transform: translateY(18px);
-  transition: opacity 0.25s ease, transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Todas las variantes animables quedan display:block para que la
+   transición pueda correr; solo la activa está visible por opacity. */
+.step--active,
+.step--enter,
+.step--enter-back,
+.step--exit,
+.step--exit-back {
+  display: block;
 }
 
 .step--active {
-  display: block;
   opacity: 1;
-  transform: translateY(0);
+  transform: translate3d(0, 0, 0);
+  transition:
+    opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
 }
 
-.step--leaving {
+/* Estado inicial del paso que entra — NO tiene transición,
+   se setea de una y el frame siguiente salta a --active. */
+.step--enter {
   opacity: 0;
-  transform: translateY(-8px);
+  transform: translate3d(0, 22px, 0);
+}
+.step--enter-back {
+  opacity: 0;
+  transform: translate3d(0, -22px, 0);
+}
+
+/* Estado de salida — sí anima. */
+.step--exit {
+  opacity: 0;
+  transform: translate3d(0, -16px, 0);
+  transition:
+    opacity 0.2s ease,
+    transform 0.25s cubic-bezier(0.4, 0, 1, 1);
+  pointer-events: none;
+}
+.step--exit-back {
+  opacity: 0;
+  transform: translate3d(0, 16px, 0);
+  transition:
+    opacity 0.2s ease,
+    transform 0.25s cubic-bezier(0.4, 0, 1, 1);
+  pointer-events: none;
 }
 
 .step__legend {
