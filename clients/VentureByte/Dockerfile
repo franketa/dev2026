@@ -12,10 +12,12 @@ COPY . .
 RUN mkdir -p /app/uploads
 
 ENV NODE_ENV=production
-ENV PORT=3000
+# PORT lo define Coolify en runtime (suele inyectar 80). Si no lo
+# define, server.js cae a 3000.
+EXPOSE 80
 EXPOSE 3000
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s \
-  CMD wget -qO- http://localhost:3000/healthz || exit 1
+HEALTHCHECK --interval=30s --timeout=5s --start-period=15s \
+  CMD wget -qO- "http://localhost:${PORT:-3000}/healthz" || exit 1
 
 CMD ["node", "server.js"]
