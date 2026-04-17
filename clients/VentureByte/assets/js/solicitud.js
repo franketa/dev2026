@@ -8,7 +8,7 @@
   // 👉 REEMPLAZÁ ESTO POR TU ACCESS KEY DE web3forms.com (gratis)
   //    Registrate en https://web3forms.com con venturebytedigital@gmail.com
   //    Copiá el access key y pegalo acá abajo.
-  const WEB3FORMS_ACCESS_KEY = 'REEMPLAZAR_CON_KEY_DE_WEB3FORMS';
+  const WEB3FORMS_ACCESS_KEY = '27365ceb-64f5-4ac4-aa6b-206fc3a9f443';
   const WEB3FORMS_ENDPOINT = 'https://api.web3forms.com/submit';
   const MAX_FILE_SIZE_MB = 5;
 
@@ -221,6 +221,19 @@
     submitErrorEl.hidden = true;
   });
 
+  // ----- Helpers de upload al backend -----
+  // Sube un archivo a /api/upload y devuelve su URL pública.
+  async function uploadToBackend(file) {
+    const fd = new FormData();
+    fd.append('file', file);
+    const res = await fetch('/api/upload', { method: 'POST', body: fd });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok || !data.url) {
+      throw new Error(data.error || 'No pudimos subir ' + file.name);
+    }
+    return data.url;
+  }
+
   // ----- Submit -----
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -230,20 +243,45 @@
     form.classList.add('step-form__form--sending');
     btnSubmit.disabled = true;
     const originalText = btnSubmit.innerHTML;
-    btnSubmit.innerHTML = 'Enviando…';
 
     try {
+      if (WEB3FORMS_ACCESS_KEY === 'REEMPLAZAR_CON_KEY_DE_WEB3FORMS') {
+        throw new Error('Access key no configurado. Registrate en web3forms.com y pegá el key en solicitud.js.');
+      }
+
+      // 1) Subir archivos al backend de Coolify primero, sacar URLs.
+      //    Esto evita la feature paga de Web3Forms para adjuntos.
+      const logoInput = form.querySelector('#logo');
+      const manualInput = form.querySelector('#manual_marca');
+      const logoFile = logoInput && logoInput.files && logoInput.files[0];
+      const manualFile = manualInput && manualInput.files && manualInput.files[0];
+
+      let logoUrl = '';
+      let manualUrl = '';
+
+      if (logoFile || manualFile) {
+        btnSubmit.innerHTML = 'Subiendo archivos…';
+        const tasks = [];
+        if (logoFile)   tasks.push(uploadToBackend(logoFile).then(u => (logoUrl = u)));
+        if (manualFile) tasks.push(uploadToBackend(manualFile).then(u => (manualUrl = u)));
+        await Promise.all(tasks);
+      }
+
+      // 2) Armar payload para Web3Forms (sin los files, con las URLs como texto).
+      btnSubmit.innerHTML = 'Enviando…';
       const fd = new FormData(form);
+      fd.delete('logo');
+      fd.delete('manual_marca');
+      if (logoUrl)   fd.append('logo_url', logoUrl);
+      if (manualUrl) fd.append('manual_marca_url', manualUrl);
+
       fd.append('access_key', WEB3FORMS_ACCESS_KEY);
       const nombre = (fd.get('nombre_negocio') || 'sin nombre').toString().trim();
       fd.append('subject', `Nueva solicitud de landing — ${nombre}`);
       fd.append('from_name', 'VentureByte · Formulario de solicitud');
       fd.append('botcheck', '');
 
-      if (WEB3FORMS_ACCESS_KEY === 'REEMPLAZAR_CON_KEY_DE_WEB3FORMS') {
-        throw new Error('Access key no configurado. Registrate en web3forms.com y pegá el key en solicitud.js.');
-      }
-
+      // 3) Enviar a Web3Forms
       const res = await fetch(WEB3FORMS_ENDPOINT, {
         method: 'POST',
         body: fd
