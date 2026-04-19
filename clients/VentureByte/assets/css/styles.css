@@ -2383,11 +2383,13 @@ p {
   }
   .step__nav {
     justify-content: stretch;
+    gap: 0.5rem;
+    flex-wrap: wrap;
   }
   .step__nav .btn {
-    flex: 1;
+    flex: 1 1 auto;
     min-width: 0;
-    padding: 0.75rem 0.75rem;
+    padding: 0.7rem 0.75rem;
     font-size: 0.8125rem;
   }
   .step__nav #btnPrev {
@@ -2395,11 +2397,40 @@ p {
     flex: 0 1 auto;
     min-width: 44px;
   }
-  .step__nav #btnPrev span { display: none; }
-  .btn--ghost {
-    flex: 0 1 auto !important;
-    min-width: 0 !important;
+  .step__nav #btnNext,
+  .step__nav #btnSubmit {
+    flex: 1 1 auto;
   }
+  /* Saltar baja a su propia fila, así Atrás + Siguiente/Enviar
+     mantienen espacio cómodo en la primera línea. */
+  .btn--ghost.step__skip {
+    flex: 1 1 100% !important;
+    order: 3;
+    min-width: 0 !important;
+    padding: 0.4rem 0.5rem;
+  }
+}
+
+/* Swap de label largo/corto en botones muy angostos. */
+.btn__label-short { display: none; }
+
+/* Muy angosto (iPhone SE / 320–380 px) — botones más compactos,
+   iconos más chicos y copy más corto. */
+@media (max-width: 380px) {
+  .step__nav .btn {
+    padding: 0.65rem 0.55rem;
+    font-size: 0.78rem;
+    letter-spacing: 0;
+  }
+  .step__nav .btn svg {
+    width: 14px;
+    height: 14px;
+  }
+  .step__nav {
+    gap: 0.4rem;
+  }
+  .btn__label-full { display: none; }
+  .btn__label-short { display: inline; }
 }
 
 /* Tablet */
