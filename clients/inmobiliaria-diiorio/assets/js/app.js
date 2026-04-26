@@ -153,6 +153,24 @@ function populateFilterOptions(data) {
 function renderProperties() {
   if (!DOM.propertiesGrid) return;
 
+  if (state.filteredProperties.length === 0) {
+    DOM.propertiesGrid.innerHTML = `
+      <div class="properties__empty">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+        <h3 class="properties__empty-title">No encontramos propiedades con esos filtros</h3>
+        <p class="properties__empty-text">Probá ajustando la zona, el tipo o el rango de precio.</p>
+        <button type="button" class="btn btn--outline properties__empty-btn">Limpiar filtros</button>
+      </div>
+    `;
+    DOM.propertiesGrid.querySelector('.properties__empty-btn')
+      .addEventListener('click', resetAllFilters);
+    updateLoadMoreButton();
+    return;
+  }
+
   const propertiesToShow = state.filteredProperties.slice(0, state.visibleCount);
 
   DOM.propertiesGrid.innerHTML = propertiesToShow.map((property, index) => {
@@ -296,6 +314,27 @@ function loadMore() {
 // ==========================================================================
 // Filtering
 // ==========================================================================
+function resetAllFilters() {
+  state.currentFilter = {
+    operation: 'todos',
+    type: 'todos',
+    neighborhood: '',
+    minPrice: '',
+    maxPrice: ''
+  };
+
+  DOM.searchForm?.reset();
+
+  DOM.filterBtns?.forEach(btn => {
+    btn.classList.toggle(
+      'active',
+      btn.dataset.filter === 'operation' && btn.dataset.value === 'todos'
+    );
+  });
+
+  filterProperties();
+}
+
 function filterProperties() {
   state.filteredProperties = state.properties.filter(property => {
     // Operation filter
