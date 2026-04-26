@@ -60,10 +60,8 @@ router.get('/', (req, res) => {
     ],
     neighborhoods: [
       'Barrio Norte', 'Palermo', 'Villa Crespo', 'Recoleta', 'Belgrano',
-      'Caballito', 'Microcentro', 'Puerto Madero', 'Retiro', 'Pilar',
-      'Nuñez', 'San Telmo', 'Nordelta', 'Palermo Soho', 'Almagro',
-      'Vicente López', 'Las Cañitas', 'Flores', 'Olivos', 'Monserrat',
-      'Colegiales', 'Escobar', 'Barracas'
+      'Caballito', 'Microcentro',
+      'Chivilcoy', 'Alberti', '25 de Mayo', 'Bragado', 'Chacabuco'
     ]
   });
 });
