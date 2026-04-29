@@ -1328,6 +1328,256 @@
             .container { max-width: 1400px; }
             .seguros__grid { grid-template-columns: repeat(5, 1fr); }
         }
+
+        /* ========================================
+           CONTACT MODAL
+           ======================================== */
+        .contact-modal {
+            position: fixed;
+            inset: 0;
+            z-index: 1100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            background: rgba(17, 29, 53, 0.6);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.28s ease, visibility 0.28s ease;
+        }
+
+        .contact-modal.is-open {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .contact-modal__panel {
+            position: relative;
+            width: 100%;
+            max-width: 460px;
+            background: var(--white);
+            border-radius: 16px;
+            box-shadow: 0 30px 80px rgba(17, 29, 53, 0.35);
+            overflow: hidden;
+            transform: translateY(16px) scale(0.98);
+            transition: transform 0.32s cubic-bezier(0.4, 0, 0.2, 1);
+            max-height: calc(100vh - 48px);
+            overflow-y: auto;
+        }
+
+        .contact-modal.is-open .contact-modal__panel {
+            transform: translateY(0) scale(1);
+        }
+
+        .contact-modal__header {
+            position: relative;
+            background: linear-gradient(135deg, var(--navy) 0%, var(--navy-light) 100%);
+            color: var(--white);
+            padding: 28px 28px 24px;
+            overflow: hidden;
+        }
+
+        .contact-modal__header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--red), var(--navy-dark));
+        }
+
+        .contact-modal__header::after {
+            content: '';
+            position: absolute;
+            top: -40px;
+            right: -40px;
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(212, 32, 39, 0.18) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .contact-modal__eyebrow {
+            font-size: 0.72rem;
+            font-weight: 700;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.65);
+            margin-bottom: 8px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .contact-modal__eyebrow::before {
+            content: '';
+            width: 18px;
+            height: 1.5px;
+            background: var(--red);
+        }
+
+        .contact-modal__title {
+            font-family: var(--font-serif);
+            font-size: 1.5rem;
+            line-height: 1.2;
+            margin-bottom: 6px;
+            color: var(--white);
+        }
+
+        .contact-modal__subtitle {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.78);
+            line-height: 1.5;
+        }
+
+        .contact-modal__close {
+            position: absolute;
+            top: 14px;
+            right: 14px;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: none;
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--white);
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s ease, transform 0.2s ease;
+            z-index: 2;
+        }
+
+        .contact-modal__close:hover {
+            background: rgba(255, 255, 255, 0.22);
+            transform: rotate(90deg);
+        }
+
+        .contact-modal__close svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        .contact-modal__body {
+            padding: 22px 24px 26px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .contact-modal__option {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 16px;
+            border: 1.5px solid var(--gray-border);
+            border-radius: 12px;
+            background: var(--white);
+            text-align: left;
+            cursor: pointer;
+            transition: border-color 0.25s ease, box-shadow 0.25s ease, transform 0.25s ease, background 0.25s ease;
+            color: inherit;
+            font-family: inherit;
+            width: 100%;
+        }
+
+        .contact-modal__option:hover {
+            border-color: var(--navy);
+            background: #FBFBFD;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 28px rgba(27, 42, 74, 0.12);
+        }
+
+        .contact-modal__option-icon {
+            flex-shrink: 0;
+            width: 46px;
+            height: 46px;
+            border-radius: 12px;
+            background: #25D366;
+            color: var(--white);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 6px 16px rgba(37, 211, 102, 0.32);
+        }
+
+        .contact-modal__option-icon svg {
+            width: 22px;
+            height: 22px;
+        }
+
+        .contact-modal__option-content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .contact-modal__option-label {
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: var(--red);
+            margin-bottom: 2px;
+        }
+
+        .contact-modal__option-name {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--navy);
+            margin-bottom: 2px;
+            line-height: 1.25;
+        }
+
+        .contact-modal__option-phone {
+            font-size: 0.85rem;
+            color: var(--text-medium);
+            font-weight: 500;
+        }
+
+        .contact-modal__option-arrow {
+            flex-shrink: 0;
+            color: var(--navy);
+            opacity: 0.4;
+            transition: transform 0.25s ease, opacity 0.25s ease;
+        }
+
+        .contact-modal__option:hover .contact-modal__option-arrow {
+            opacity: 1;
+            transform: translateX(3px);
+        }
+
+        .contact-modal__option-arrow svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        .contact-modal__footnote {
+            margin-top: 4px;
+            font-size: 0.78rem;
+            color: var(--text-light);
+            text-align: center;
+            line-height: 1.5;
+        }
+
+        @media (max-width: 380px) {
+            .contact-modal { padding: 12px; }
+            .contact-modal__header { padding: 24px 20px 20px; }
+            .contact-modal__title { font-size: 1.25rem; }
+            .contact-modal__subtitle { font-size: 0.85rem; }
+            .contact-modal__body { padding: 18px 16px 20px; }
+            .contact-modal__option { padding: 12px; gap: 10px; }
+            .contact-modal__option-icon { width: 40px; height: 40px; border-radius: 10px; }
+            .contact-modal__option-icon svg { width: 18px; height: 18px; }
+            .contact-modal__option-name { font-size: 0.92rem; }
+            .contact-modal__option-phone { font-size: 0.78rem; }
+            .contact-modal__option-label { font-size: 0.62rem; letter-spacing: 0.12em; }
+            .contact-modal__option-arrow { display: none; }
+            .contact-modal__close { top: 10px; right: 10px; width: 32px; height: 32px; }
+        }
     </style>
 </head>
 <body>
@@ -1394,10 +1644,10 @@
                 Desde Chivilcoy, acompañamos a familias, comercios y productores agropecuarios de toda la región con el respaldo de las mejores compañías aseguradoras del país.
             </p>
             <div class="hero__actions reveal reveal-delay-3">
-                <a href="https://wa.me/542346696066" target="_blank" rel="noopener" class="btn btn--primary">
+                <button type="button" class="btn btn--primary" data-contact-modal-open>
                     <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
                     Consultanos
-                </a>
+                </button>
                 <a href="#seguros" class="btn btn--outline">
                     <i data-lucide="shield-check"></i>
                     Conocé nuestros servicios
@@ -1649,9 +1899,52 @@
     </footer>
 
     <!-- ==================== WHATSAPP FLOAT ==================== -->
-    <a href="https://wa.me/542346696066" target="_blank" rel="noopener" class="whatsapp-float" aria-label="Contactanos por WhatsApp">
+    <button type="button" class="whatsapp-float" aria-label="Contactanos por WhatsApp" data-contact-modal-open style="border:none;cursor:pointer;padding:0;">
         <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-    </a>
+    </button>
+
+    <!-- ==================== CONTACT MODAL ==================== -->
+    <div class="contact-modal" id="contactModal" role="dialog" aria-modal="true" aria-labelledby="contactModalTitle" aria-hidden="true">
+        <div class="contact-modal__panel" role="document">
+            <button type="button" class="contact-modal__close" aria-label="Cerrar" data-contact-modal-close>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            </button>
+            <div class="contact-modal__header">
+                <span class="contact-modal__eyebrow">Contactanos</span>
+                <h3 class="contact-modal__title" id="contactModalTitle">¿Con quién querés hablar?</h3>
+                <p class="contact-modal__subtitle">Elegí la opción que prefieras y te respondemos al instante por WhatsApp.</p>
+            </div>
+            <div class="contact-modal__body">
+                <a href="https://wa.me/542346601478" target="_blank" rel="noopener" class="contact-modal__option">
+                    <span class="contact-modal__option-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2h-4a2 2 0 0 1-2-2v-5a2 2 0 0 0-4 0v5a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg>
+                    </span>
+                    <span class="contact-modal__option-content">
+                        <span class="contact-modal__option-label">Oficina central</span>
+                        <span class="contact-modal__option-name">Ambrogetti Seguros</span>
+                        <span class="contact-modal__option-phone">(2346) 60-1478</span>
+                    </span>
+                    <span class="contact-modal__option-arrow" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                    </span>
+                </a>
+                <a href="https://wa.me/542346696066" target="_blank" rel="noopener" class="contact-modal__option">
+                    <span class="contact-modal__option-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                    </span>
+                    <span class="contact-modal__option-content">
+                        <span class="contact-modal__option-label">Asesor</span>
+                        <span class="contact-modal__option-name">Atención personalizada</span>
+                        <span class="contact-modal__option-phone">(2346) 69-6066</span>
+                    </span>
+                    <span class="contact-modal__option-arrow" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                    </span>
+                </a>
+                <p class="contact-modal__footnote">Lunes a viernes de 8:30 a 17:00 hs</p>
+            </div>
+        </div>
+    </div>
 
     <!-- ==================== JAVASCRIPT ==================== -->
     <script>
@@ -1815,6 +2108,64 @@
             }
 
             window.addEventListener('scroll', updateActiveLink, { passive: true });
+
+            // ---- Contact modal ----
+            var contactModal = document.getElementById('contactModal');
+            if (contactModal) {
+                var openTriggers = document.querySelectorAll('[data-contact-modal-open]');
+                var closeTriggers = contactModal.querySelectorAll('[data-contact-modal-close]');
+                var lastFocused = null;
+
+                function openContactModal() {
+                    lastFocused = document.activeElement;
+                    contactModal.classList.add('is-open');
+                    contactModal.setAttribute('aria-hidden', 'false');
+                    document.body.style.overflow = 'hidden';
+                    var firstOption = contactModal.querySelector('.contact-modal__option');
+                    if (firstOption) {
+                        setTimeout(function() { firstOption.focus(); }, 60);
+                    }
+                }
+
+                function closeContactModal() {
+                    contactModal.classList.remove('is-open');
+                    contactModal.setAttribute('aria-hidden', 'true');
+                    document.body.style.overflow = '';
+                    if (lastFocused && typeof lastFocused.focus === 'function') {
+                        lastFocused.focus();
+                    }
+                }
+
+                openTriggers.forEach(function(btn) {
+                    btn.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        openContactModal();
+                    });
+                });
+
+                closeTriggers.forEach(function(btn) {
+                    btn.addEventListener('click', closeContactModal);
+                });
+
+                contactModal.addEventListener('click', function(e) {
+                    if (e.target === contactModal) {
+                        closeContactModal();
+                    }
+                });
+
+                document.addEventListener('keydown', function(e) {
+                    if (e.key === 'Escape' && contactModal.classList.contains('is-open')) {
+                        closeContactModal();
+                    }
+                });
+
+                // Close modal after clicking a WhatsApp option (so re-open feels fresh)
+                contactModal.querySelectorAll('.contact-modal__option').forEach(function(opt) {
+                    opt.addEventListener('click', function() {
+                        setTimeout(closeContactModal, 150);
+                    });
+                });
+            }
         });
     </script>
 </body>
