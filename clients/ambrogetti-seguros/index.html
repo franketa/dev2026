@@ -1461,17 +1461,25 @@
 
         .cta-banner__hint {
             display: inline-flex;
-            align-items: center;
+            align-items: flex-start;
             gap: 8px;
             font-size: 0.78rem;
             color: rgba(255, 255, 255, 0.78);
             font-weight: 500;
+            line-height: 1.45;
+            max-width: 360px;
+        }
+
+        .cta-banner__hint > span {
+            min-width: 0;
         }
 
         .cta-banner__hint i,
         .cta-banner__hint svg {
             width: 14px;
             height: 14px;
+            flex-shrink: 0;
+            margin-top: 2px;
         }
 
         @media (max-width: 767px) {
@@ -1927,7 +1935,7 @@
                 <article class="seguro-card reveal reveal-delay-2">
                     <div class="seguro-card__icon"><i data-lucide="building-2"></i></div>
                     <h3 class="seguro-card__title">Seguros de Consorcios</h3>
-                    <p class="seguro-card__desc">Gestión integral de edificios y barrios cerrados con cobertura específica para áreas comunes.</p>
+                    <p class="seguro-card__desc">Seguros integrales para edificios y administración de consorcios</p>
                 </article>
 
             </div>
@@ -1955,7 +1963,7 @@
                     </button>
                     <span class="cta-banner__hint">
                         <i data-lucide="clock"></i>
-                        Lun a vie · 8:30 a 17:00 hs
+                        <span>Lun a vie 9 a 12 y 15 a 18:30 hs · Sáb 9 a 12 hs</span>
                     </span>
                 </div>
             </div>
@@ -2136,7 +2144,7 @@
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
                     </span>
                 </a>
-                <p class="contact-modal__footnote">Lunes a viernes de 8:30 a 17:00 hs</p>
+                <p class="contact-modal__footnote">Lun a vie de 9:00 a 12:00 y de 15:00 a 18:30 hs<br>Sábados de 9:00 a 12:00 hs</p>
             </div>
         </div>
     </div>
