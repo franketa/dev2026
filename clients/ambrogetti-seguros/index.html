@@ -1330,6 +1330,171 @@
         }
 
         /* ========================================
+           CTA BANNER (Contactate con un asesor)
+           ======================================== */
+        .cta-banner {
+            position: relative;
+            padding: 80px 0;
+            background: linear-gradient(135deg, var(--red) 0%, var(--red-dark) 100%);
+            color: var(--white);
+            overflow: hidden;
+            isolation: isolate;
+        }
+
+        .cta-banner::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' xmlns='http://www.w3.org/2000/svg'%3E%3Cline x1='0' y1='60' x2='60' y2='0' stroke='rgba(255,255,255,0.06)' stroke-width='1'/%3E%3C/svg%3E");
+            z-index: -1;
+        }
+
+        .cta-banner__triangle {
+            position: absolute;
+            right: -120px;
+            top: 50%;
+            transform: translateY(-50%) rotate(15deg);
+            width: 420px;
+            height: 420px;
+            border-right: 2px solid rgba(255, 255, 255, 0.18);
+            border-top: 2px solid rgba(255, 255, 255, 0.18);
+            opacity: 0.55;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .cta-banner__triangle::before {
+            content: '';
+            position: absolute;
+            inset: 30px;
+            border-right: 2px solid rgba(255, 255, 255, 0.12);
+            border-top: 2px solid rgba(255, 255, 255, 0.12);
+        }
+
+        .cta-banner__inner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 48px;
+            flex-wrap: wrap;
+        }
+
+        .cta-banner__content {
+            flex: 1;
+            min-width: 260px;
+        }
+
+        .cta-banner__eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.85);
+            margin-bottom: 14px;
+        }
+
+        .cta-banner__eyebrow::before {
+            content: '';
+            width: 24px;
+            height: 1.5px;
+            background: var(--white);
+        }
+
+        .cta-banner__title {
+            font-family: var(--font-serif);
+            font-size: 2.4rem;
+            line-height: 1.1;
+            margin-bottom: 14px;
+            color: var(--white);
+        }
+
+        .cta-banner__title em {
+            font-style: italic;
+            color: rgba(255, 255, 255, 0.78);
+        }
+
+        .cta-banner__subtitle {
+            font-size: 1rem;
+            line-height: 1.55;
+            color: rgba(255, 255, 255, 0.88);
+            max-width: 540px;
+        }
+
+        .cta-banner__action {
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 12px;
+        }
+
+        .cta-banner__btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            padding: 18px 32px;
+            background: var(--white);
+            color: var(--red);
+            border: none;
+            border-radius: 10px;
+            font-family: var(--font-sans);
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform var(--transition), box-shadow var(--transition), background var(--transition);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+        }
+
+        .cta-banner__btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 14px 32px rgba(0, 0, 0, 0.28);
+            background: #FFF7F7;
+        }
+
+        .cta-banner__btn svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        .cta-banner__hint {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.78rem;
+            color: rgba(255, 255, 255, 0.78);
+            font-weight: 500;
+        }
+
+        .cta-banner__hint i,
+        .cta-banner__hint svg {
+            width: 14px;
+            height: 14px;
+        }
+
+        @media (max-width: 767px) {
+            .cta-banner { padding: 56px 0; }
+            .cta-banner__inner { flex-direction: column; align-items: flex-start; gap: 28px; }
+            .cta-banner__title { font-size: 1.85rem; }
+            .cta-banner__subtitle { font-size: 0.95rem; }
+            .cta-banner__action { width: 100%; align-items: stretch; }
+            .cta-banner__btn { justify-content: center; width: 100%; padding: 16px 24px; }
+            .cta-banner__hint { justify-content: center; }
+            .cta-banner__triangle { width: 280px; height: 280px; right: -90px; opacity: 0.35; }
+        }
+
+        @media (max-width: 380px) {
+            .cta-banner { padding: 48px 0; }
+            .cta-banner__title { font-size: 1.55rem; }
+            .cta-banner__subtitle { font-size: 0.88rem; }
+            .cta-banner__btn { font-size: 0.92rem; padding: 14px 18px; gap: 10px; }
+            .cta-banner__eyebrow { font-size: 0.68rem; letter-spacing: 0.14em; }
+            .cta-banner__triangle { display: none; }
+        }
+
+        /* ========================================
            CONTACT MODAL
            ======================================== */
         .contact-modal {
@@ -1765,6 +1930,34 @@
                     <p class="seguro-card__desc">Soluciones integrales para proteger los activos y la operación de tu empresa.</p>
                 </article>
 
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== CTA BANNER ==================== -->
+    <section class="cta-banner" aria-labelledby="ctaBannerTitle">
+        <div class="cta-banner__triangle" aria-hidden="true"></div>
+        <div class="container">
+            <div class="cta-banner__inner">
+                <div class="cta-banner__content">
+                    <span class="cta-banner__eyebrow reveal">Atención personalizada</span>
+                    <h2 class="cta-banner__title reveal reveal-delay-1" id="ctaBannerTitle">
+                        Contactate con uno de <em>nuestros asesores</em>
+                    </h2>
+                    <p class="cta-banner__subtitle reveal reveal-delay-2">
+                        Te ayudamos a encontrar la cobertura ideal sin compromiso. Respuesta rápida por WhatsApp y asesoramiento de un especialista que conoce tu zona.
+                    </p>
+                </div>
+                <div class="cta-banner__action reveal reveal-delay-3">
+                    <button type="button" class="cta-banner__btn" data-contact-modal-open>
+                        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+                        Hablar con un asesor
+                    </button>
+                    <span class="cta-banner__hint">
+                        <i data-lucide="clock"></i>
+                        Lun a vie · 8:30 a 17:00 hs
+                    </span>
+                </div>
             </div>
         </div>
     </section>
