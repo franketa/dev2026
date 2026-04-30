@@ -61,18 +61,23 @@ function debounce(func, wait) {
   };
 }
 
+function resolveImageSrc(src) {
+  if (!src) return null;
+  if (src.startsWith('http://') || src.startsWith('https://') ||
+      src.startsWith('data:') || src.startsWith('blob:') ||
+      src.startsWith('/')) {
+    return src;
+  }
+  return `assets/images/properties/${src}`;
+}
+
 function getPropertyImage(property, index) {
-  // Use cover image first
   if (property && property.coverImage) {
-    if (property.coverImage.startsWith('data:') || property.coverImage.startsWith('/uploads/')) return property.coverImage;
-    return `assets/images/properties/${property.coverImage}`;
+    return resolveImageSrc(property.coverImage);
   }
-  // Fallback to first gallery image
   if (property && property.images && property.images.length > 0) {
-    const img = property.images[0];
-    if (img.startsWith('data:') || img.startsWith('/uploads/')) return img;
+    return resolveImageSrc(property.images[0]);
   }
-  // Fallback to local images (prop-1.jpg through prop-25.jpg)
   const imageNumber = (index % 25) + 1;
   return `assets/images/properties/prop-${imageNumber}.jpg`;
 }

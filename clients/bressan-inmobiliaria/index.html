@@ -441,7 +441,17 @@
       justify-content: center;
       box-shadow: 0 4px 12px rgba(37, 211, 102, 0.4);
       z-index: 999;
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      transition: transform 0.3s ease, box-shadow 0.3s ease, opacity 0.3s ease, visibility 0.3s ease;
+      opacity: 1;
+      visibility: visible;
+    }
+
+    /* Hide while in hero (search box is in the same screen area on mobile);
+       JS toggles .whatsapp-float--hidden based on scroll. */
+    .whatsapp-float--hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
     }
 
     .whatsapp-float:hover {
@@ -468,6 +478,23 @@
       }
     }
   </style>
+  <script>
+    // Hide the WhatsApp float button while the user is still on the hero
+    // (avoids overlap with the search box on mobile).
+    (function () {
+      const btn = document.querySelector('.whatsapp-float');
+      if (!btn) return;
+      const hero = document.querySelector('.hero');
+      const threshold = () => Math.max(120, (hero?.offsetHeight || 600) * 0.45);
+      const update = () => {
+        if (window.scrollY < threshold()) btn.classList.add('whatsapp-float--hidden');
+        else btn.classList.remove('whatsapp-float--hidden');
+      };
+      update();
+      window.addEventListener('scroll', update, { passive: true });
+      window.addEventListener('resize', update);
+    })();
+  </script>
 
   <!-- Scripts -->
   <script src="assets/js/api.js"></script>

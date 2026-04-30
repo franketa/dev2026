@@ -1581,19 +1581,19 @@
     }
 
     // Helpers
+    function resolveImageSrc(src) {
+      if (!src) return null;
+      if (src.startsWith('http://') || src.startsWith('https://') ||
+          src.startsWith('data:') || src.startsWith('blob:') ||
+          src.startsWith('/')) {
+        return src;
+      }
+      return `assets/images/properties/${src}`;
+    }
+
     function getPropertyImage(property) {
-      // Use cover image first
-      if (property.coverImage) {
-        if (property.coverImage.startsWith('data:') || property.coverImage.startsWith('/uploads/') || property.coverImage.startsWith('blob:')) return property.coverImage;
-        return `assets/images/properties/${property.coverImage}`;
-      }
-      // Fallback to first gallery image
-      if (property.images && property.images.length > 0) {
-        const img = property.images[0];
-        if (img.startsWith('data:') || img.startsWith('/uploads/') || img.startsWith('blob:')) return img;
-        const index = (property.id - 1) % 25 + 1;
-        return `assets/images/properties/prop-${index}.jpg`;
-      }
+      if (property.coverImage) return resolveImageSrc(property.coverImage);
+      if (property.images && property.images.length > 0) return resolveImageSrc(property.images[0]);
       return 'https://placehold.co/400x250/e5e7eb/9ca3af?text=Sin+imagen';
     }
 

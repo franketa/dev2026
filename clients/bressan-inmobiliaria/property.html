@@ -198,7 +198,7 @@
 
     /* ---- Content (details below gallery) ---- */
     .property-content {
-      padding: 2rem 1rem 6rem;   /* 6rem bottom = space for fixed CTA on mobile */
+      padding: 2rem 1rem 9rem;   /* 9rem bottom = headroom over fixed CTA on mobile */
     }
 
     .property-header { margin-bottom: 2rem; }
@@ -444,15 +444,19 @@
     }
 
     // Get property image
+    function resolveImageSrc(src) {
+      if (!src) return null;
+      if (src.startsWith('http://') || src.startsWith('https://') ||
+          src.startsWith('data:') || src.startsWith('blob:') ||
+          src.startsWith('/')) {
+        return src;
+      }
+      return `assets/images/properties/${src}`;
+    }
+
     function getPropertyImage(property) {
-      if (property && property.coverImage) {
-        if (property.coverImage.startsWith('data:') || property.coverImage.startsWith('/uploads/')) return property.coverImage;
-        return `assets/images/properties/${property.coverImage}`;
-      }
-      if (property && property.images && property.images.length > 0) {
-        const img = property.images[0];
-        if (img.startsWith('data:') || img.startsWith('/uploads/')) return img;
-      }
+      if (property && property.coverImage) return resolveImageSrc(property.coverImage);
+      if (property && property.images && property.images.length > 0) return resolveImageSrc(property.images[0]);
       const imageNumber = ((property.id - 1) % 25) + 1;
       return `assets/images/properties/prop-${imageNumber}.jpg`;
     }
@@ -472,16 +476,12 @@
     // Build all images array for a property
     function getAllImages(property) {
       const images = [];
-      if (property.coverImage) {
-        if (property.coverImage.startsWith('data:') || property.coverImage.startsWith('/uploads/')) {
-          images.push(property.coverImage);
-        }
-      }
+      const cover = resolveImageSrc(property.coverImage);
+      if (cover) images.push(cover);
       if (property.images && property.images.length > 0) {
-        property.images.forEach(img => {
-          if (img.startsWith('data:') || img.startsWith('/uploads/')) {
-            if (!images.includes(img)) images.push(img);
-          }
+        property.images.forEach(raw => {
+          const src = resolveImageSrc(raw);
+          if (src && !images.includes(src)) images.push(src);
         });
       }
       if (images.length === 0) {
