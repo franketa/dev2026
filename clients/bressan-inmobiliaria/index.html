@@ -3,36 +3,1425 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <meta name="description" content="Valentín Bressan — Negocios Inmobiliarios. Compra, venta, alquiler y administración de propiedades urbanas y rurales en Lobos y zona. Tasaciones y gestión de campos ganaderos.">
+  <meta name="description" content="Valentín Bressan — Negocios Inmobiliarios. Quintas, campos ganaderos, casas y terrenos en Lobos y zona. Compra-venta, alquiler, tasaciones y administración integral.">
   <meta name="theme-color" content="#0d2226">
 
-  <!-- Open Graph -->
-  <meta property="og:title" content="Valentín Bressan | Negocios Inmobiliarios">
-  <meta property="og:description" content="Asesoramiento integral en propiedades urbanas y rurales en Lobos, Buenos Aires. Compra, venta, alquiler, tasaciones y administración de campos.">
+  <meta property="og:title" content="Valentín Bressan — Negocios Inmobiliarios">
+  <meta property="og:description" content="Tierra, casa y oficio. Compra-venta, alquileres, tasaciones y campos ganaderos en Lobos, Bs. As.">
   <meta property="og:type" content="website">
   <meta property="og:locale" content="es_AR">
 
-  <!-- Favicon -->
   <link rel="icon" type="image/png" href="assets/images/logos/bressan-logoaccent.png">
 
-  <!-- Preconnect to external resources -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@300;400;500;600&family=Manrope:wght@200;300;400;500;600;700;800&display=swap" rel="stylesheet">
 
-  <!-- Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Asap:wght@400;500;600;700&family=Cormorant+Garamond:wght@400;500;600;700&display=swap" rel="stylesheet">
-
-  <!-- Styles -->
   <link rel="stylesheet" href="assets/css/styles.css">
 
-  <title>Valentín Bressan | Negocios Inmobiliarios — Lobos, Bs. As.</title>
+  <title>Valentín Bressan — Negocios Inmobiliarios · Lobos, Bs. As.</title>
+
+  <style>
+    /* ============================================================
+       PAMPAS EDITORIAL — Bressan homepage
+       Self-contained styles. Body baseline + shared header/footer
+       come from styles.css. Everything below overrides for the
+       homepage's editorial layout.
+       ============================================================ */
+
+    :root {
+      --grain-overlay: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.4 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
+    }
+
+    body {
+      background: var(--paper);
+      color: var(--gray-800);
+      font-feature-settings: "ss01", "ss02", "kern";
+    }
+
+    /* Faint paper grain on the whole page */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: var(--grain-overlay);
+      opacity: 0.32;
+      mix-blend-mode: multiply;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    /* ---- Utility ribbon (top sticky strip) ---- */
+    .ribbon {
+      background: var(--primary-color);
+      color: var(--paper);
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      padding: 0.5rem 1rem;
+      position: relative;
+      z-index: var(--z-fixed);
+    }
+    .ribbon__inner {
+      max-width: 1320px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+    }
+    .ribbon__left, .ribbon__right {
+      display: flex;
+      gap: 1.25rem;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .ribbon__dot {
+      display: inline-block;
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: var(--gold-accent);
+      margin: 0 0.6rem;
+      vertical-align: middle;
+    }
+    .ribbon a { color: inherit; transition: color .2s; }
+    .ribbon a:hover { color: var(--gold-accent); }
+    @media (max-width: 640px) {
+      .ribbon__hide-mobile { display: none; }
+    }
+
+    /* ---- Header override (paper, refined) ---- */
+    .header {
+      position: sticky;
+      top: 0;
+      background: var(--paper);
+      border-bottom: 1px solid rgba(13, 34, 38, 0.08);
+      box-shadow: none;
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+    }
+    .header.scrolled {
+      background: rgba(242, 235, 219, 0.94);
+      box-shadow: 0 1px 0 rgba(13, 34, 38, 0.12);
+      backdrop-filter: blur(8px);
+    }
+    .header__inner {
+      height: 76px;
+      max-width: 1320px;
+      margin: 0 auto;
+    }
+    .header__logo-text {
+      color: var(--primary-color);
+      text-transform: none;
+      font-family: var(--font-display);
+      font-weight: 400;
+      font-size: 1.375rem;
+      letter-spacing: 0;
+      line-height: 1;
+    }
+    .header__logo-text span {
+      color: var(--accent-color);
+      border-top: none;
+      padding-top: 4px;
+      margin-top: 4px;
+      font-family: var(--font-mono);
+      font-size: 0.6rem;
+      letter-spacing: 0.22em;
+    }
+    .header__menu-btn span { background: var(--primary-color); }
+    .nav { background: var(--paper); }
+    .nav__link { color: rgba(13, 34, 38, 0.72); }
+
+    @media (min-width: 768px) {
+      .nav__link {
+        font-family: var(--font-mono);
+        font-weight: 400;
+        font-size: 0.75rem;
+        letter-spacing: 0.18em;
+        padding: 0.5rem 0.85rem;
+      }
+      .nav__link:hover, .nav__link.active {
+        color: var(--accent-color);
+        background: transparent;
+      }
+      .nav__link.active::after {
+        content: '';
+        display: block;
+        height: 1px;
+        background: var(--accent-color);
+        margin-top: 3px;
+      }
+    }
+
+    /* ---- HERO — Magazine cover composition ---- */
+    .editorial-hero {
+      position: relative;
+      padding: 0;
+      isolation: isolate;
+      overflow: hidden;
+    }
+    .editorial-hero__inner {
+      max-width: 1320px;
+      margin: 0 auto;
+      padding: 4rem 1.25rem 5rem;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 2.5rem;
+      position: relative;
+    }
+
+    @media (min-width: 1024px) {
+      .editorial-hero__inner {
+        grid-template-columns: 1.15fr 0.85fr;
+        gap: 3rem;
+        padding: 5rem 1.5rem 7rem;
+        align-items: center;
+      }
+    }
+
+    /* Volume tag — top-left of left column */
+    .vol-tag {
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: var(--gray-500);
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 1.75rem;
+    }
+    .vol-tag::before {
+      content: '';
+      width: 32px;
+      height: 1px;
+      background: var(--accent-color);
+    }
+
+    .editorial-hero__title {
+      font-family: var(--font-display);
+      font-weight: 400;
+      font-size: clamp(2.75rem, 9vw, 6rem);
+      line-height: 0.95;
+      letter-spacing: -0.02em;
+      color: var(--primary-color);
+      margin: 0 0 1.5rem;
+    }
+    .editorial-hero__title em {
+      font-style: italic;
+      color: var(--accent-color);
+      font-weight: 400;
+    }
+    .editorial-hero__title-mark {
+      color: var(--earth);
+      font-style: italic;
+    }
+
+    .editorial-hero__lede {
+      font-family: var(--font-primary);
+      font-weight: 300;
+      font-size: clamp(1rem, 1.6vw, 1.125rem);
+      line-height: 1.65;
+      color: var(--gray-700);
+      max-width: 480px;
+      margin: 0 0 2rem;
+    }
+
+    .editorial-hero__meta {
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--gray-500);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+      margin-bottom: 2.25rem;
+      padding: 0.75rem 0;
+      border-top: 1px solid rgba(13, 34, 38, 0.12);
+      border-bottom: 1px solid rgba(13, 34, 38, 0.12);
+    }
+    .editorial-hero__meta span {
+      display: flex;
+      align-items: baseline;
+      gap: 0.5rem;
+    }
+    .editorial-hero__meta strong {
+      font-family: var(--font-display);
+      font-weight: 400;
+      font-size: 1.125rem;
+      color: var(--primary-color);
+      letter-spacing: 0;
+      text-transform: none;
+    }
+
+    .editorial-hero__cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.875rem;
+      padding: 0.875rem 1.75rem;
+      background: var(--primary-color);
+      color: var(--paper);
+      font-family: var(--font-mono);
+      font-weight: 500;
+      font-size: 0.75rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      border-radius: 0;
+      transition: background .25s ease, transform .25s ease;
+      border: 1px solid var(--primary-color);
+    }
+    .editorial-hero__cta:hover {
+      background: var(--accent-color);
+      border-color: var(--accent-color);
+      transform: translate(-2px, -2px);
+      box-shadow: 6px 6px 0 var(--primary-color);
+    }
+    .editorial-hero__cta-arrow {
+      width: 18px;
+      height: 1px;
+      background: currentColor;
+      position: relative;
+    }
+    .editorial-hero__cta-arrow::after {
+      content: '';
+      position: absolute;
+      right: 0;
+      top: -3px;
+      width: 7px;
+      height: 7px;
+      border-right: 1px solid currentColor;
+      border-top: 1px solid currentColor;
+      transform: rotate(45deg);
+    }
+
+    /* Hero right-side: stacked photo collage with brushstroke */
+    .editorial-hero__visual {
+      position: relative;
+      aspect-ratio: 4 / 5;
+      max-width: 540px;
+      width: 100%;
+      justify-self: center;
+    }
+
+    @media (min-width: 1024px) {
+      .editorial-hero__visual { justify-self: end; aspect-ratio: 4/5.2; }
+    }
+
+    .editorial-hero__photo {
+      position: absolute;
+      inset: 0;
+      background-image: linear-gradient(180deg, rgba(13, 34, 38, 0.05), rgba(13, 34, 38, 0.25)),
+                        url('https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=1200&q=80');
+      background-size: cover;
+      background-position: center;
+      filter: contrast(1.05) saturate(0.92);
+    }
+    .editorial-hero__photo::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, transparent 30%, rgba(31, 95, 102, 0.3) 100%);
+      mix-blend-mode: multiply;
+    }
+
+    /* The teal brushstroke ring echoing the logo */
+    .editorial-hero__ring {
+      position: absolute;
+      width: 62%;
+      aspect-ratio: 1;
+      right: -8%;
+      bottom: -10%;
+      border: 2px solid var(--accent-color);
+      border-radius: 50%;
+      transform: rotate(-12deg) skewX(-3deg);
+      opacity: 0.95;
+      pointer-events: none;
+    }
+    .editorial-hero__ring::before {
+      content: '';
+      position: absolute;
+      inset: -8%;
+      border: 1px solid var(--accent-color);
+      border-radius: 50%;
+      opacity: 0.45;
+      transform: rotate(7deg) skewX(2deg);
+    }
+
+    /* The featured property "postcard" floating over the photo */
+    .featured-card {
+      position: absolute;
+      left: -10%;
+      bottom: 8%;
+      width: 78%;
+      max-width: 320px;
+      background: var(--bone);
+      padding: 1rem 1.125rem 1.125rem;
+      box-shadow: 12px 14px 0 var(--primary-color);
+      transform: rotate(-2deg);
+      z-index: 2;
+      border: 1px solid rgba(13, 34, 38, 0.08);
+    }
+    @media (min-width: 768px) {
+      .featured-card { width: 65%; left: -14%; }
+    }
+    .featured-card__label {
+      font-family: var(--font-mono);
+      font-size: 0.6rem;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: var(--accent-color);
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 0.625rem;
+    }
+    .featured-card__title {
+      font-family: var(--font-display);
+      font-weight: 400;
+      font-style: italic;
+      font-size: 1.5rem;
+      line-height: 1.1;
+      color: var(--primary-color);
+      margin-bottom: 0.5rem;
+    }
+    .featured-card__meta {
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      letter-spacing: 0.06em;
+      color: var(--gray-600);
+      display: flex;
+      justify-content: space-between;
+      padding-top: 0.625rem;
+      border-top: 1px solid rgba(13, 34, 38, 0.18);
+    }
+    .featured-card__meta strong {
+      color: var(--primary-color);
+      font-weight: 500;
+    }
+
+    /* ---- Marquee strip ---- */
+    .marquee {
+      background: var(--primary-color);
+      color: var(--paper);
+      overflow: hidden;
+      border-top: 1px solid rgba(212, 168, 68, 0.18);
+      border-bottom: 1px solid rgba(212, 168, 68, 0.18);
+      position: relative;
+      z-index: 2;
+    }
+    .marquee__track {
+      display: flex;
+      gap: 3rem;
+      width: max-content;
+      animation: marquee 38s linear infinite;
+      padding: 1.4rem 0;
+    }
+    .marquee__item {
+      font-family: var(--font-display);
+      font-weight: 400;
+      font-style: italic;
+      font-size: 1.625rem;
+      letter-spacing: 0;
+      white-space: nowrap;
+      color: var(--paper);
+    }
+    .marquee__item--mark {
+      font-family: var(--font-mono);
+      font-style: normal;
+      font-size: 0.875rem;
+      color: var(--gold-accent);
+      align-self: center;
+      letter-spacing: 0.2em;
+    }
+    @keyframes marquee {
+      from { transform: translateX(0); }
+      to   { transform: translateX(-50%); }
+    }
+
+    /* ---- Stats / numerals band ---- */
+    .stats-band {
+      padding: 5rem 1.25rem;
+      max-width: 1320px;
+      margin: 0 auto;
+    }
+    .stats-band__grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 2.25rem 1.5rem;
+    }
+    @media (min-width: 768px) {
+      .stats-band__grid { grid-template-columns: repeat(4, 1fr); }
+    }
+    .stat {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      padding-top: 1rem;
+      border-top: 1px solid var(--primary-color);
+    }
+    .stat__num {
+      font-family: var(--font-display);
+      font-weight: 400;
+      font-size: clamp(3rem, 6vw, 4.5rem);
+      line-height: 0.9;
+      color: var(--primary-color);
+      font-feature-settings: "tnum";
+    }
+    .stat__num em {
+      font-style: italic;
+      color: var(--accent-color);
+    }
+    .stat__label {
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--gray-500);
+      max-width: 18ch;
+    }
+
+    /* ---- Properties section "EN CARTERA" ---- */
+    .cartera {
+      padding: 6rem 0 7rem;
+      background: var(--paper);
+      position: relative;
+      z-index: 2;
+      border-top: 1px solid rgba(13, 34, 38, 0.08);
+    }
+    .cartera__container {
+      max-width: 1320px;
+      margin: 0 auto;
+      padding: 0 1.25rem;
+    }
+    .cartera__head {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+      align-items: end;
+      margin-bottom: 3rem;
+    }
+    @media (min-width: 900px) {
+      .cartera__head {
+        grid-template-columns: auto 1fr auto;
+      }
+    }
+    .eyebrow {
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: var(--accent-color);
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .eyebrow::before {
+      content: '';
+      width: 24px;
+      height: 1px;
+      background: var(--accent-color);
+    }
+    .cartera__title {
+      font-family: var(--font-display);
+      font-weight: 400;
+      font-size: clamp(2.5rem, 5vw, 3.75rem);
+      line-height: 0.95;
+      color: var(--primary-color);
+      margin-top: 0.5rem;
+      letter-spacing: -0.02em;
+    }
+    .cartera__title em {
+      font-style: italic;
+      color: var(--accent-color);
+    }
+    .cartera__subtitle {
+      max-width: 36ch;
+      font-size: 1rem;
+      line-height: 1.55;
+      color: var(--gray-600);
+      align-self: end;
+    }
+    .cartera__count {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--gray-500);
+      align-self: end;
+      text-align: right;
+    }
+    .cartera__count strong {
+      font-family: var(--font-display);
+      font-weight: 400;
+      font-size: 2rem;
+      color: var(--primary-color);
+      line-height: 1;
+      display: block;
+    }
+
+    /* Search box: editorial reset */
+    .search-box {
+      background: var(--bone);
+      border: 1px solid rgba(13, 34, 38, 0.1);
+      border-radius: 0;
+      padding: 0;
+      box-shadow: none;
+      margin-bottom: 2rem;
+      overflow: hidden;
+    }
+    .search-box__tabs {
+      display: flex;
+      gap: 0;
+      margin-bottom: 0;
+      background: transparent;
+      border-radius: 0;
+      padding: 0;
+      border-bottom: 1px solid rgba(13, 34, 38, 0.1);
+    }
+    .search-box__tab {
+      flex: 1;
+      padding: 0.875rem 1rem;
+      font-family: var(--font-mono);
+      font-weight: 500;
+      font-size: 0.7rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--gray-500);
+      background: transparent;
+      border-radius: 0;
+      transition: color .2s, background .2s;
+      border-right: 1px solid rgba(13, 34, 38, 0.1);
+    }
+    .search-box__tab:last-child { border-right: none; }
+    .search-box__tab.active {
+      background: var(--primary-color);
+      color: var(--paper);
+      box-shadow: none;
+    }
+    .search-box__form {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 0;
+      padding: 0;
+    }
+    @media (min-width: 768px) {
+      .search-box__form {
+        grid-template-columns: repeat(4, 1fr) auto;
+      }
+    }
+    .search-box__field {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+      padding: 1rem 1.125rem;
+      border-bottom: 1px solid rgba(13, 34, 38, 0.08);
+    }
+    @media (min-width: 768px) {
+      .search-box__field {
+        border-bottom: none;
+        border-right: 1px solid rgba(13, 34, 38, 0.08);
+      }
+    }
+    .search-box__label {
+      font-family: var(--font-mono);
+      font-size: 0.6rem;
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+      color: var(--gray-500);
+      font-weight: 500;
+    }
+    .search-box__input,
+    .search-box__select {
+      width: 100%;
+      padding: 0;
+      border: none;
+      border-radius: 0;
+      font-size: 0.95rem;
+      color: var(--primary-color);
+      background: transparent;
+      font-family: var(--font-display);
+      font-weight: 400;
+      transition: none;
+    }
+    .search-box__input::placeholder { color: var(--gray-400); font-style: italic; }
+    .search-box__input:focus,
+    .search-box__select:focus {
+      outline: none;
+      box-shadow: none;
+    }
+    .search-box__btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.625rem;
+      padding: 1.125rem 2rem;
+      background: var(--primary-color);
+      color: var(--paper);
+      font-family: var(--font-mono);
+      font-weight: 500;
+      font-size: 0.7rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      border-radius: 0;
+      transition: background .25s ease;
+    }
+    .search-box__btn:hover { background: var(--accent-color); }
+
+    /* Filter pills row */
+    .filter-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 2.5rem;
+      padding-bottom: 0;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+    }
+    .filter-bar::-webkit-scrollbar { display: none; }
+    .filter-btn {
+      flex-shrink: 0;
+      padding: 0.5rem 1rem;
+      font-family: var(--font-mono);
+      font-weight: 400;
+      font-size: 0.7rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--gray-600);
+      background: transparent;
+      border: 1px solid rgba(13, 34, 38, 0.18);
+      border-radius: 0;
+      white-space: nowrap;
+      transition: all .2s;
+    }
+    .filter-btn:hover {
+      border-color: var(--accent-color);
+      color: var(--accent-color);
+    }
+    .filter-btn.active {
+      background: var(--primary-color);
+      color: var(--paper);
+      border-color: var(--primary-color);
+    }
+
+    /* Properties grid — editorial */
+    .properties__grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 2.25rem 1.75rem;
+    }
+    @media (min-width: 640px)  { .properties__grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (min-width: 1024px) { .properties__grid { grid-template-columns: repeat(3, 1fr); } }
+
+    /* Property card — editorial style */
+    .property-card {
+      background: transparent;
+      border: none;
+      border-radius: 0;
+      box-shadow: none;
+      overflow: visible;
+      transition: transform .35s cubic-bezier(0.16, 1, 0.3, 1);
+      cursor: pointer;
+      position: relative;
+    }
+    .property-card:hover { transform: translateY(-4px); box-shadow: none; }
+    .property-card__image {
+      aspect-ratio: 4 / 5;
+      background: var(--gray-100);
+      overflow: hidden;
+      position: relative;
+      margin-bottom: 1rem;
+      filter: contrast(1.02) saturate(0.96);
+    }
+    .property-card__img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .property-card:hover .property-card__img { transform: scale(1.04); }
+
+    .property-card__badge {
+      position: absolute;
+      top: 0.875rem;
+      left: 0.875rem;
+      padding: 0.3rem 0.6rem;
+      font-family: var(--font-mono);
+      font-size: 0.6rem;
+      font-weight: 500;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      border-radius: 0;
+      background: var(--bone);
+      color: var(--primary-color);
+    }
+    .property-card__badge--venta     { background: var(--bone); color: var(--primary-color); }
+    .property-card__badge--alquiler  { background: var(--accent-color); color: var(--paper); }
+    .property-card__badge--vendido   { background: var(--earth); color: var(--paper); }
+    .property-card__badge--alquilado { background: var(--earth-deep); color: var(--paper); }
+    .property-card__badge--reservado { background: var(--gold-accent); color: var(--primary-color); }
+
+    .property-card__favorite {
+      position: absolute;
+      top: 0.875rem;
+      right: 0.875rem;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255, 250, 236, 0.92);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      border-radius: 50%;
+      color: var(--gray-600);
+      transition: all .2s;
+    }
+    .property-card__favorite:hover,
+    .property-card__favorite.active { color: var(--earth); background: var(--bone); }
+
+    .property-card__content { padding: 0; }
+    .property-card__location {
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--gray-500);
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .property-card__location svg { width: 12px; height: 12px; color: var(--accent-color); }
+    .property-card__title {
+      font-family: var(--font-display);
+      font-weight: 400;
+      font-size: 1.5rem;
+      line-height: 1.1;
+      color: var(--primary-color);
+      margin-bottom: 0.625rem;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      letter-spacing: -0.01em;
+    }
+    .property-card__price {
+      font-family: var(--font-mono);
+      font-weight: 500;
+      font-size: 1rem;
+      letter-spacing: 0.04em;
+      color: var(--primary-color);
+      margin-bottom: 0;
+    }
+    .property-card__features {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem 1.25rem;
+      padding-top: 0.875rem;
+      margin-top: 0.875rem;
+      border-top: 1px solid rgba(13, 34, 38, 0.12);
+    }
+    .property-card__feature {
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      letter-spacing: 0.06em;
+      color: var(--gray-600);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .property-card__feature svg { width: 14px; height: 14px; color: var(--gray-400); }
+
+    .properties__empty {
+      grid-column: 1 / -1;
+      padding: 3rem 1rem;
+      text-align: center;
+      color: var(--gray-500);
+      border: 1px dashed rgba(13, 34, 38, 0.18);
+    }
+    .properties__empty-title {
+      font-family: var(--font-display);
+      font-size: 1.5rem;
+      color: var(--primary-color);
+      margin: 0.75rem 0 0.4rem;
+    }
+    .properties__empty-text {
+      font-size: 0.9rem;
+      color: var(--gray-500);
+    }
+    .properties__empty-btn {
+      margin-top: 1rem;
+      display: inline-flex;
+      padding: 0.625rem 1.25rem;
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      border: 1px solid var(--primary-color);
+      color: var(--primary-color);
+      background: transparent;
+      transition: all .2s;
+    }
+    .properties__empty-btn:hover { background: var(--primary-color); color: var(--paper); }
+
+    .properties__load-more {
+      display: flex;
+      justify-content: center;
+      margin-top: 3rem;
+    }
+    .properties__load-more .load-more-btn {
+      padding: 0.875rem 2rem;
+      background: transparent;
+      color: var(--primary-color);
+      border: 1px solid var(--primary-color);
+      font-family: var(--font-mono);
+      font-weight: 500;
+      font-size: 0.7rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      transition: all .25s;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.625rem;
+    }
+    .properties__load-more .load-more-btn:hover {
+      background: var(--primary-color);
+      color: var(--paper);
+    }
+
+    /* ---- Manifesto / About ---- */
+    .manifesto {
+      background: var(--primary-color);
+      color: var(--paper);
+      padding: 7rem 0;
+      position: relative;
+      overflow: hidden;
+    }
+    .manifesto::before {
+      content: '';
+      position: absolute;
+      top: -25%;
+      right: -10%;
+      width: 50%;
+      aspect-ratio: 1;
+      border: 1.5px solid rgba(31, 95, 102, 0.45);
+      border-radius: 50%;
+      transform: rotate(-8deg);
+      pointer-events: none;
+    }
+    .manifesto__container {
+      max-width: 1320px;
+      margin: 0 auto;
+      padding: 0 1.25rem;
+      position: relative;
+    }
+    .manifesto__grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 3rem;
+    }
+    @media (min-width: 1024px) {
+      .manifesto__grid { grid-template-columns: 1fr 1.2fr; gap: 4rem; align-items: start; }
+    }
+    .manifesto__eyebrow {
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: var(--gold-accent);
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .manifesto__eyebrow::before {
+      content: '';
+      width: 24px;
+      height: 1px;
+      background: var(--gold-accent);
+    }
+    .manifesto__heading {
+      font-family: var(--font-display);
+      font-weight: 400;
+      font-size: clamp(2.25rem, 4.5vw, 3.5rem);
+      line-height: 1;
+      letter-spacing: -0.01em;
+      color: var(--paper);
+      max-width: 14ch;
+    }
+    .manifesto__heading em { font-style: italic; color: var(--gold-accent); }
+    .manifesto__body {
+      font-family: var(--font-primary);
+      font-weight: 300;
+      font-size: 1.0625rem;
+      line-height: 1.75;
+      color: rgba(248, 242, 226, 0.78);
+    }
+    .manifesto__body p + p { margin-top: 1rem; }
+    .manifesto__quote {
+      font-family: var(--font-display);
+      font-style: italic;
+      font-size: 1.25rem;
+      line-height: 1.4;
+      color: var(--paper);
+      margin-top: 2rem;
+      padding-left: 1.25rem;
+      border-left: 2px solid var(--accent-color);
+    }
+    .manifesto__sign {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--gold-accent);
+      margin-top: 2rem;
+      display: flex;
+      align-items: center;
+      gap: 0.875rem;
+    }
+    .manifesto__sign::before {
+      content: '';
+      width: 28px;
+      height: 1px;
+      background: var(--gold-accent);
+    }
+
+    /* ---- Services — numbered list ---- */
+    .services-list {
+      padding: 6rem 0 7rem;
+      background: var(--paper);
+      position: relative;
+      z-index: 2;
+    }
+    .services-list__container {
+      max-width: 1320px;
+      margin: 0 auto;
+      padding: 0 1.25rem;
+    }
+    .services-list__head {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+      margin-bottom: 3.5rem;
+    }
+    @media (min-width: 900px) {
+      .services-list__head {
+        grid-template-columns: 1fr 1.4fr;
+        align-items: end;
+      }
+    }
+    .services-list__title {
+      font-family: var(--font-display);
+      font-weight: 400;
+      font-size: clamp(2.25rem, 5vw, 3.75rem);
+      line-height: 0.95;
+      color: var(--primary-color);
+      letter-spacing: -0.02em;
+      margin-top: 0.5rem;
+    }
+    .services-list__title em { font-style: italic; color: var(--accent-color); }
+    .services-list__sub {
+      color: var(--gray-600);
+      max-width: 56ch;
+      line-height: 1.6;
+    }
+
+    .service-row {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      column-gap: 1.5rem;
+      row-gap: 0.5rem;
+      padding: 2rem 0;
+      border-top: 1px solid rgba(13, 34, 38, 0.18);
+      align-items: baseline;
+    }
+    .service-row:last-of-type { border-bottom: 1px solid rgba(13, 34, 38, 0.18); }
+    @media (min-width: 900px) {
+      .service-row {
+        grid-template-columns: 7rem 1fr 1.4fr;
+        gap: 2rem;
+      }
+    }
+    .service-row__num {
+      font-family: var(--font-display);
+      font-weight: 400;
+      font-style: italic;
+      font-size: clamp(2.5rem, 4.5vw, 3.5rem);
+      line-height: 1;
+      color: var(--accent-color);
+      font-feature-settings: "tnum";
+    }
+    .service-row__title {
+      font-family: var(--font-display);
+      font-weight: 400;
+      font-size: 1.625rem;
+      line-height: 1.1;
+      color: var(--primary-color);
+      letter-spacing: -0.01em;
+    }
+    .service-row__desc {
+      color: var(--gray-700);
+      font-size: 0.9375rem;
+      line-height: 1.65;
+      max-width: 52ch;
+    }
+    @media (max-width: 899px) {
+      .service-row__desc { grid-column: 1 / -1; }
+    }
+
+    /* ---- Contact — postcard style ---- */
+    .contact-section {
+      background: var(--paper-soft);
+      padding: 6rem 0 7rem;
+      position: relative;
+      z-index: 2;
+      border-top: 1px solid rgba(13, 34, 38, 0.08);
+    }
+    .contact-section__container {
+      max-width: 1320px;
+      margin: 0 auto;
+      padding: 0 1.25rem;
+    }
+    .contact-section__head {
+      margin-bottom: 3.5rem;
+    }
+    .contact-section__title {
+      font-family: var(--font-display);
+      font-weight: 400;
+      font-size: clamp(2.25rem, 5vw, 3.75rem);
+      line-height: 0.95;
+      color: var(--primary-color);
+      letter-spacing: -0.02em;
+      margin-top: 0.5rem;
+      max-width: 12ch;
+    }
+    .contact-section__title em { font-style: italic; color: var(--accent-color); }
+
+    .contact-section__grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 2.5rem;
+    }
+    @media (min-width: 1024px) {
+      .contact-section__grid { grid-template-columns: 1fr 1.1fr; gap: 4rem; align-items: start; }
+    }
+
+    .postcard {
+      background: var(--bone);
+      padding: 2.25rem;
+      border: 1px solid rgba(13, 34, 38, 0.1);
+      box-shadow: 14px 14px 0 var(--primary-color);
+      position: relative;
+    }
+    .postcard__stamp {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      width: 64px;
+      height: 80px;
+      border: 2px dashed var(--primary-color);
+      padding: 4px;
+      font-family: var(--font-mono);
+      font-size: 0.55rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--primary-color);
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      text-align: center;
+      transform: rotate(4deg);
+      line-height: 1.15;
+    }
+    .postcard__stamp::before {
+      content: '';
+      position: absolute;
+      top: 14px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 36px;
+      height: 36px;
+      background: var(--accent-color);
+      border-radius: 50%;
+    }
+    .postcard__brand {
+      font-family: var(--font-display);
+      font-weight: 400;
+      font-size: 1.875rem;
+      color: var(--primary-color);
+      line-height: 1;
+      margin-bottom: 0.25rem;
+    }
+    .postcard__brand-sub {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+      color: var(--accent-color);
+      margin-bottom: 2rem;
+    }
+    .postcard__list {
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+    .postcard__row {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+    .postcard__label {
+      font-family: var(--font-mono);
+      font-size: 0.6rem;
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+      color: var(--gray-500);
+    }
+    .postcard__value {
+      font-family: var(--font-display);
+      font-size: 1.125rem;
+      line-height: 1.4;
+      color: var(--primary-color);
+    }
+    .postcard__value a {
+      color: inherit;
+      border-bottom: 1px solid rgba(13, 34, 38, 0.2);
+      transition: border-color .2s, color .2s;
+    }
+    .postcard__value a:hover { color: var(--accent-color); border-color: var(--accent-color); }
+
+    .contact-form {
+      background: transparent;
+      padding: 0;
+      border: none;
+      box-shadow: none;
+    }
+    .contact-form__field {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+      margin-bottom: 1.5rem;
+    }
+    .contact-form__label {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--gray-500);
+    }
+    .contact-form__input,
+    .contact-form__textarea,
+    .contact-form__select {
+      width: 100%;
+      padding: 0.625rem 0;
+      border: none;
+      border-bottom: 1px solid rgba(13, 34, 38, 0.25);
+      border-radius: 0;
+      font-family: var(--font-display);
+      font-weight: 400;
+      font-size: 1.125rem;
+      color: var(--primary-color);
+      background: transparent;
+      transition: border-color .2s;
+    }
+    .contact-form__textarea {
+      min-height: 80px;
+      resize: vertical;
+      font-family: var(--font-primary);
+      font-size: 1rem;
+      line-height: 1.55;
+    }
+    .contact-form__input:focus,
+    .contact-form__textarea:focus,
+    .contact-form__select:focus {
+      outline: none;
+      border-bottom-color: var(--accent-color);
+    }
+    .contact-form__submit {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.875rem;
+      padding: 0.875rem 1.75rem;
+      background: var(--primary-color);
+      color: var(--paper);
+      font-family: var(--font-mono);
+      font-weight: 500;
+      font-size: 0.7rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      border-radius: 0;
+      border: 1px solid var(--primary-color);
+      transition: all .25s;
+      cursor: pointer;
+      margin-top: 0.75rem;
+    }
+    .contact-form__submit:hover {
+      background: var(--accent-color);
+      border-color: var(--accent-color);
+    }
+
+    /* ---- Footer — minimal ---- */
+    .footer {
+      background: var(--primary-dark);
+      color: var(--paper);
+      padding: 3.5rem 0 1.5rem;
+      border-top: 1px solid rgba(212, 168, 68, 0.15);
+      position: relative;
+      z-index: 2;
+    }
+    .footer__container {
+      max-width: 1320px;
+      margin: 0 auto;
+      padding: 0 1.25rem;
+    }
+    .footer__grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 2.5rem;
+      margin-bottom: 2.5rem;
+    }
+    @media (min-width: 768px) {
+      .footer__grid { grid-template-columns: 2fr 1fr 1fr 1fr; align-items: start; }
+    }
+    .footer__brand-row {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 1rem;
+    }
+    .footer__logo-img {
+      width: 44px;
+      height: 44px;
+      object-fit: contain;
+    }
+    .footer__brand-name {
+      font-family: var(--font-display);
+      font-size: 1.5rem;
+      color: var(--paper);
+      line-height: 1;
+    }
+    .footer__brand-sub {
+      font-family: var(--font-mono);
+      font-size: 0.6rem;
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+      color: var(--gold-accent);
+      margin-top: 4px;
+    }
+    .footer__desc {
+      font-size: 0.875rem;
+      line-height: 1.6;
+      color: rgba(248, 242, 226, 0.6);
+      max-width: 36ch;
+      margin-top: 1rem;
+    }
+    .footer__col h4 {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+      color: var(--gold-accent);
+      margin-bottom: 1rem;
+      font-weight: 500;
+    }
+    .footer__links { display: flex; flex-direction: column; gap: 0.625rem; }
+    .footer__link {
+      font-family: var(--font-display);
+      font-size: 1.0625rem;
+      color: rgba(248, 242, 226, 0.78);
+      transition: color .2s;
+    }
+    .footer__link:hover { color: var(--gold-accent); }
+    .footer__bottom {
+      padding-top: 1.5rem;
+      border-top: 1px solid rgba(248, 242, 226, 0.12);
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    .footer__copyright,
+    .footer__credit {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: rgba(248, 242, 226, 0.5);
+    }
+
+    /* ---- WhatsApp float (preserved with hide-in-hero) ---- */
+    .whatsapp-float {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      width: 56px;
+      height: 56px;
+      background: #25D366;
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 8px 24px rgba(37, 211, 102, 0.35);
+      z-index: 999;
+      transition: transform .3s ease, opacity .3s ease, visibility .3s ease;
+    }
+    .whatsapp-float--hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+    .whatsapp-float:hover { transform: scale(1.06); }
+    .whatsapp-float svg { width: 26px; height: 26px; }
+
+    /* ---- Mobile refinements ---- */
+    @media (max-width: 768px) {
+      .editorial-hero__inner { padding: 2.5rem 1rem 4rem; }
+      .editorial-hero__visual {
+        aspect-ratio: 4/4.5;
+        max-width: 380px;
+      }
+      .featured-card {
+        position: relative;
+        left: auto;
+        bottom: auto;
+        margin-top: 1.5rem;
+        transform: rotate(-1.5deg);
+        width: 88%;
+        box-shadow: 8px 10px 0 var(--primary-color);
+      }
+      .editorial-hero__ring { display: none; }
+      .marquee__item { font-size: 1.25rem; }
+      .stats-band { padding: 3.5rem 1.25rem; }
+      .cartera, .services-list, .contact-section { padding: 4rem 0; }
+      .manifesto { padding: 4.5rem 0; }
+      .postcard { padding: 1.75rem 1.5rem; }
+      .postcard__stamp { width: 50px; height: 64px; }
+      .postcard__stamp::before { width: 28px; height: 28px; }
+    }
+  </style>
 </head>
 <body>
+
+  <!-- Top utility ribbon -->
+  <div class="ribbon">
+    <div class="ribbon__inner">
+      <div class="ribbon__left">
+        <span>Lobos · Bs. As.</span>
+        <span class="ribbon__hide-mobile">Vol. 01 / 2026</span>
+      </div>
+      <div class="ribbon__right">
+        <a href="tel:+542227521437" class="ribbon__hide-mobile">+54 2227 521437</a>
+        <a href="https://wa.me/542227522178" target="_blank" rel="noopener noreferrer">WhatsApp 522178</a>
+        <a href="https://instagram.com/valentinbressaninmobiliaria" target="_blank" rel="noopener noreferrer">Instagram</a>
+      </div>
+    </div>
+  </div>
+
   <!-- Header -->
   <header class="header" role="banner">
     <div class="header__inner container">
       <a href="#" class="header__logo" aria-label="Valentín Bressan Negocios Inmobiliarios - Inicio">
-        <img src="assets/images/logos/bressan-logoaccent.png" alt="Valentín Bressan" class="header__logo-icon" style="width: 48px; height: 48px; object-fit: contain; background: none;">
+        <img src="assets/images/logos/bressan-logoaccent.png" alt="Valentín Bressan" class="header__logo-icon" style="width: 44px; height: 44px; object-fit: contain;">
         <div class="header__logo-text">
           Valentín Bressan
           <span>Negocios Inmobiliarios</span>
@@ -48,31 +1437,142 @@
       <nav class="nav" role="navigation" aria-label="Navegación principal">
         <ul class="nav__list">
           <li><a href="#inicio" class="nav__link active">Inicio</a></li>
-          <li><a href="#propiedades" class="nav__link">Propiedades</a></li>
+          <li><a href="#propiedades" class="nav__link">En cartera</a></li>
+          <li><a href="#nosotros" class="nav__link">Quiénes somos</a></li>
           <li><a href="#servicios" class="nav__link">Servicios</a></li>
-          <li><a href="#nosotros" class="nav__link">Nosotros</a></li>
-          <li><a href="#contacto" class="nav__link">Contacto</a></li>
+          <li><a href="#contacto" class="nav__link">Escribinos</a></li>
         </ul>
       </nav>
     </div>
   </header>
 
   <main>
-    <!-- Hero Section -->
-    <section id="inicio" class="hero">
-      <!-- YouTube Video Background -->
-      <div class="hero__video-bg">
-        <div id="heroVideo"></div>
+
+    <!-- HERO ============================================ -->
+    <section id="inicio" class="editorial-hero">
+      <div class="editorial-hero__inner">
+
+        <!-- LEFT column: editorial title block -->
+        <div>
+          <p class="vol-tag">Desde Lobos · Bs. As. · Est. 2024</p>
+
+          <h1 class="editorial-hero__title">
+            La tierra<br>
+            <em>que te</em><br>
+            <span class="editorial-hero__title-mark">espera.</span>
+          </h1>
+
+          <p class="editorial-hero__lede">
+            Quintas, campos ganaderos, casas de pueblo y oportunidades urbanas
+            en Lobos y la región. Un equipo joven, un oficio antiguo: hacer
+            que cada negocio termine en un cliente que vuelve.
+          </p>
+
+          <div class="editorial-hero__meta">
+            <span><strong>13</strong> zonas</span>
+            <span><strong>04</strong> servicios</span>
+            <span><strong>+500</strong> ha. asesoradas</span>
+          </div>
+
+          <a href="#propiedades" class="editorial-hero__cta">
+            Ver la cartera
+            <span class="editorial-hero__cta-arrow"></span>
+          </a>
+        </div>
+
+        <!-- RIGHT column: photo + featured postcard -->
+        <div class="editorial-hero__visual">
+          <div class="editorial-hero__photo" role="img" aria-label="Pampa al atardecer"></div>
+          <div class="editorial-hero__ring" aria-hidden="true"></div>
+
+          <div class="featured-card">
+            <div class="featured-card__label">
+              <span>Destacada</span>
+              <span>Nº 01 / 12</span>
+            </div>
+            <div class="featured-card__title">Campo ganadero<br>en Salvador María</div>
+            <div class="featured-card__meta">
+              <span><strong>120 ha.</strong></span>
+              <span>Casco · Manga · Molino</span>
+            </div>
+          </div>
+        </div>
+
       </div>
+    </section>
 
-      <div class="hero__content">
-        <h1 class="hero__title animate-fade-in-up">Negocios seguros, clientes que vuelven</h1>
-        <p class="hero__subtitle animate-fade-in-up" style="animation-delay: 100ms">
-          Compra, venta, alquiler y administración de propiedades urbanas y rurales en Lobos y la zona. Asesoramiento integral con la calidez de un equipo joven y comprometido.
-        </p>
+    <!-- MARQUEE ============================================ -->
+    <div class="marquee" aria-hidden="true">
+      <div class="marquee__track">
+        <span class="marquee__item">Quintas</span>
+        <span class="marquee__item--mark">·</span>
+        <span class="marquee__item">Campos ganaderos</span>
+        <span class="marquee__item--mark">·</span>
+        <span class="marquee__item">Casas de pueblo</span>
+        <span class="marquee__item--mark">·</span>
+        <span class="marquee__item">Terrenos sobre asfalto</span>
+        <span class="marquee__item--mark">·</span>
+        <span class="marquee__item">Departamentos</span>
+        <span class="marquee__item--mark">·</span>
+        <span class="marquee__item">Locales comerciales</span>
+        <span class="marquee__item--mark">★</span>
+        <!-- Duplicate for seamless loop -->
+        <span class="marquee__item">Quintas</span>
+        <span class="marquee__item--mark">·</span>
+        <span class="marquee__item">Campos ganaderos</span>
+        <span class="marquee__item--mark">·</span>
+        <span class="marquee__item">Casas de pueblo</span>
+        <span class="marquee__item--mark">·</span>
+        <span class="marquee__item">Terrenos sobre asfalto</span>
+        <span class="marquee__item--mark">·</span>
+        <span class="marquee__item">Departamentos</span>
+        <span class="marquee__item--mark">·</span>
+        <span class="marquee__item">Locales comerciales</span>
+        <span class="marquee__item--mark">★</span>
+      </div>
+    </div>
 
-        <!-- Search Box -->
-        <div class="search-box animate-fade-in-up" style="animation-delay: 200ms">
+    <!-- STATS BAND ============================================ -->
+    <section class="stats-band">
+      <div class="stats-band__grid">
+        <div class="stat">
+          <p class="stat__num">13</p>
+          <p class="stat__label">Zonas cubiertas en y alrededor de Lobos</p>
+        </div>
+        <div class="stat">
+          <p class="stat__num"><em>04</em></p>
+          <p class="stat__label">Servicios integrados, urbano y rural</p>
+        </div>
+        <div class="stat">
+          <p class="stat__num">+500<sup style="font-size:0.4em">ha</sup></p>
+          <p class="stat__label">Tierras ganaderas asesoradas</p>
+        </div>
+        <div class="stat">
+          <p class="stat__num">2024</p>
+          <p class="stat__label">Año en que abrimos las puertas</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- EN CARTERA ============================================ -->
+    <section id="propiedades" class="cartera">
+      <div class="cartera__container">
+        <header class="cartera__head">
+          <div>
+            <p class="eyebrow">En cartera</p>
+            <h2 class="cartera__title">Propiedades<br><em>en venta y alquiler.</em></h2>
+          </div>
+          <p class="cartera__subtitle">
+            Una selección actualizada de quintas, casas, campos y terrenos en Lobos,
+            Antonio Carboni, Elvira, Navarro y zonas vecinas.
+          </p>
+          <p class="cartera__count">
+            Total<strong id="propertiesTotal">12</strong>propiedades
+          </p>
+        </header>
+
+        <!-- Search box (kept for app.js bindings) -->
+        <div class="search-box">
           <div class="search-box__tabs">
             <button class="search-box__tab active" data-operation="todos">Todos</button>
             <button class="search-box__tab" data-operation="venta">Venta</button>
@@ -88,64 +1588,49 @@
             </div>
 
             <div class="search-box__field">
-              <label class="search-box__label" for="neighborhood-select">Ubicación</label>
+              <label class="search-box__label" for="neighborhood-select">Zona</label>
               <select id="neighborhood-select" name="neighborhood" class="search-box__select">
                 <option value="">Todas las zonas</option>
               </select>
             </div>
 
             <div class="search-box__field">
-              <label class="search-box__label" for="min-price">Precio mín.</label>
-              <input type="number" id="min-price" name="minPrice" class="search-box__input" placeholder="Desde">
+              <label class="search-box__label" for="min-price">Desde</label>
+              <input type="number" id="min-price" name="minPrice" class="search-box__input" placeholder="—">
             </div>
 
             <div class="search-box__field">
-              <label class="search-box__label" for="max-price">Precio máx.</label>
-              <input type="number" id="max-price" name="maxPrice" class="search-box__input" placeholder="Hasta">
+              <label class="search-box__label" for="max-price">Hasta</label>
+              <input type="number" id="max-price" name="maxPrice" class="search-box__input" placeholder="—">
             </div>
 
             <button type="submit" class="search-box__btn">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <circle cx="11" cy="11" r="8"></circle>
-                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-              </svg>
               Buscar
             </button>
           </form>
         </div>
-      </div>
-    </section>
 
-    <!-- Properties Section -->
-    <section id="propiedades" class="properties">
-      <div class="container">
-        <header class="section-header">
-          <h2 class="section-title">Propiedades destacadas</h2>
-          <p class="section-subtitle">Casas, quintas, campos y propiedades urbanas en Lobos y la región</p>
-        </header>
-
-        <!-- Filter Bar -->
+        <!-- Filter pills -->
         <div class="filter-bar">
           <button class="filter-btn active" data-filter="operation" data-value="todos">Todos</button>
           <button class="filter-btn" data-filter="operation" data-value="venta">En venta</button>
           <button class="filter-btn" data-filter="operation" data-value="alquiler">En alquiler</button>
-          <button class="filter-btn" data-filter="type" data-value="casa">Casas</button>
           <button class="filter-btn" data-filter="type" data-value="quinta">Quintas</button>
           <button class="filter-btn" data-filter="type" data-value="campo">Campos</button>
+          <button class="filter-btn" data-filter="type" data-value="casa">Casas</button>
           <button class="filter-btn" data-filter="type" data-value="terreno">Terrenos</button>
           <button class="filter-btn" data-filter="type" data-value="departamento">Departamentos</button>
         </div>
 
-        <!-- Properties Grid -->
+        <!-- Grid (rendered by app.js) -->
         <div class="properties__grid">
-          <!-- Properties will be loaded dynamically via JavaScript -->
+          <!-- Cards injected here -->
         </div>
 
-        <!-- Load More Button -->
         <div class="properties__load-more">
           <button class="btn btn--outline load-more-btn">
             Ver más propiedades
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <polyline points="6 9 12 15 18 9"></polyline>
             </svg>
           </button>
@@ -153,180 +1638,163 @@
       </div>
     </section>
 
-    <!-- Services Section -->
-    <section id="servicios" class="services">
-      <div class="container">
-        <header class="section-header">
-          <h2 class="section-title">Nuestros servicios</h2>
-          <p class="section-subtitle">Asesoramiento integral en propiedades urbanas y rurales</p>
-        </header>
-
-        <div class="services__grid">
-          <article class="service-card reveal">
-            <div class="service-card__icon">
-              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
-                <polyline points="9 22 9 12 15 12 15 22"></polyline>
-              </svg>
-            </div>
-            <h3 class="service-card__title">Compra-venta de inmuebles</h3>
-            <p class="service-card__desc">Te acompañamos en cada paso de la operación: desde la primera consulta hasta la firma de la escritura, con propuestas seguras y transparentes.</p>
-          </article>
-
-          <article class="service-card reveal" style="animation-delay: 100ms">
-            <div class="service-card__icon">
-              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-                <line x1="16" y1="2" x2="16" y2="6"></line>
-                <line x1="8" y1="2" x2="8" y2="6"></line>
-                <line x1="3" y1="10" x2="21" y2="10"></line>
-              </svg>
-            </div>
-            <h3 class="service-card__title">Alquileres y administración</h3>
-            <p class="service-card__desc">Gestionamos contratos de alquiler y administración integral de propiedades urbanas y rurales con garantías verificadas y seguimiento permanente.</p>
-          </article>
-
-          <article class="service-card reveal" style="animation-delay: 200ms">
-            <div class="service-card__icon">
-              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <circle cx="12" cy="12" r="10"></circle>
-                <line x1="12" y1="8" x2="12" y2="12"></line>
-                <line x1="12" y1="16" x2="12.01" y2="16"></line>
-              </svg>
-            </div>
-            <h3 class="service-card__title">Tasaciones</h3>
-            <p class="service-card__desc">Tasaciones profesionales actualizadas al valor real del mercado, basadas en el conocimiento profundo de la zona y sus particularidades.</p>
-          </article>
-
-          <article class="service-card reveal" style="animation-delay: 300ms">
-            <div class="service-card__icon">
-              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M3 21h18"></path>
-                <path d="M5 21V7l7-4 7 4v14"></path>
-                <path d="M9 21v-6h6v6"></path>
-                <path d="M9 13h.01"></path>
-                <path d="M15 13h.01"></path>
-                <path d="M9 9h.01"></path>
-                <path d="M15 9h.01"></path>
-              </svg>
-            </div>
-            <h3 class="service-card__title">Gestión de campos ganaderos</h3>
-            <p class="service-card__desc">Asesoramiento en la gestión comercial, sanitaria y productiva de establecimientos ganaderos: una mirada integral del negocio del campo.</p>
-          </article>
-        </div>
-      </div>
-    </section>
-
-    <!-- About Section -->
-    <section id="nosotros" class="contact" style="padding-bottom: var(--space-2xl);">
-      <div class="container">
-        <header class="section-header">
-          <h2 class="section-title">Sobre nosotros</h2>
-          <p class="section-subtitle">Conocenos</p>
-        </header>
-
-        <div style="max-width: 820px; margin: 0 auto; text-align: center;">
-          <p style="font-size: 1.0625rem; color: var(--gray-600); line-height: 1.85; font-family: var(--font-display); font-style: italic;">
-            En nuestra inmobiliaria joven y dinámica, un equipo apasionado se dedica a ofrecer un servicio excepcional, combinando conocimiento y compromiso para brindar asesoramiento integral en la compra-venta de inmuebles, arrendamientos y administración de propiedades urbanas y rurales, así como en la gestión comercial, sanitaria y productiva de campos ganaderos.
-          </p>
-          <p style="margin-top: var(--space-md); font-size: 1rem; color: var(--gray-500); line-height: 1.8;">
-            Nuestra misión es proponer negocios seguros y confiables, haciendo que quienes ingresen como clientes salgan como amigos — más felices y con la calidez de un servicio que los invite a regresar para futuras inversiones.
-          </p>
-        </div>
-      </div>
-    </section>
-
-    <!-- Contact Section -->
-    <section id="contacto" class="contact">
-      <div class="container">
-        <header class="section-header">
-          <h2 class="section-title">Contactanos</h2>
-          <p class="section-subtitle">Hablemos de tu próximo negocio inmobiliario</p>
-        </header>
-
-        <div class="contact__grid">
-          <div class="contact__info reveal">
-            <h3>Valentín Bressan</h3>
-            <p>Negocios y servicios inmobiliarios en Lobos y toda la zona. Propiedades urbanas, quintas, campos y administración integral. Estamos para acompañarte.</p>
-
-            <div class="contact__details">
-              <div class="contact__item">
-                <div class="contact__item-icon">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
-                    <circle cx="12" cy="10" r="3"></circle>
-                  </svg>
-                </div>
-                <div class="contact__item-text">
-                  <strong>Dirección</strong>
-                  Hipólito Yrigoyen 1217, Lobos, Bs. As.
-                </div>
-              </div>
-
-              <div class="contact__item">
-                <div class="contact__item-icon">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
-                  </svg>
-                </div>
-                <div class="contact__item-text">
-                  <strong>Teléfonos</strong>
-                  Oficina: 2227-521437<br>
-                  WhatsApp: 2227-522178
-                </div>
-              </div>
-
-              <div class="contact__item">
-                <div class="contact__item-icon">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
-                    <polyline points="22,6 12,13 2,6"></polyline>
-                  </svg>
-                </div>
-                <div class="contact__item-text">
-                  <strong>Email</strong>
-                  contacto@valentinbressaninmobiliaria.com.ar<br>
-                  bressaninmobiliaria@gmail.com
-                </div>
-              </div>
-
-              <div class="contact__item">
-                <div class="contact__item-icon">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <circle cx="12" cy="12" r="10"></circle>
-                    <polyline points="12 6 12 12 16 14"></polyline>
-                  </svg>
-                </div>
-                <div class="contact__item-text">
-                  <strong>Horarios</strong>
-                  Lun - Vie: 9:00 - 12:00<br>
-                  Lun - Vie: 16:00 - 19:00
-                </div>
-              </div>
-            </div>
+    <!-- MANIFESTO / NOSOTROS ============================================ -->
+    <section id="nosotros" class="manifesto">
+      <div class="manifesto__container">
+        <div class="manifesto__grid">
+          <div>
+            <p class="manifesto__eyebrow">Quiénes somos</p>
+            <h2 class="manifesto__heading">
+              Tierra,<br>
+              <em>casa</em> y<br>
+              oficio.
+            </h2>
           </div>
+          <div class="manifesto__body">
+            <p>
+              Somos una inmobiliaria joven y dinámica, dedicada a brindar
+              asesoramiento integral en compra-venta de inmuebles, arrendamientos
+              y administración de propiedades urbanas y rurales — incluyendo la
+              gestión comercial, sanitaria y productiva de campos ganaderos.
+            </p>
+            <p>
+              Trabajamos en Lobos y toda la región sur de Buenos Aires, donde
+              cada operación combina conocimiento del territorio, compromiso con
+              cada cliente y una manera de hacer las cosas que invita a volver.
+            </p>
+            <blockquote class="manifesto__quote">
+              Que quienes ingresen como clientes salgan como amigos —
+              más felices y con la calidez de un servicio que los invite
+              a regresar para futuras inversiones.
+            </blockquote>
+            <p class="manifesto__sign">Valentín Bressan · Lobos, Bs. As.</p>
+          </div>
+        </div>
+      </div>
+    </section>
 
-          <div class="contact__form reveal" style="animation-delay: 100ms">
+    <!-- SERVICES ============================================ -->
+    <section id="servicios" class="services-list">
+      <div class="services-list__container">
+        <header class="services-list__head">
+          <div>
+            <p class="eyebrow">Qué hacemos</p>
+            <h2 class="services-list__title">Cuatro<br><em>servicios,</em><br>una mirada.</h2>
+          </div>
+          <p class="services-list__sub">
+            Acompañamos cada operación de principio a fin: desde la primera
+            consulta y la tasación hasta la firma, la entrega y la administración
+            posterior. Trabajamos con la misma vara para casas urbanas, quintas
+            de fin de semana y campos ganaderos productivos.
+          </p>
+        </header>
+
+        <article class="service-row">
+          <div class="service-row__num">01</div>
+          <h3 class="service-row__title">Compra-venta<br>de inmuebles</h3>
+          <p class="service-row__desc">
+            Te acompañamos en cada paso del proceso, desde la primera consulta
+            hasta la firma de la escritura. Casas, departamentos, quintas y
+            terrenos urbanos o rurales, con propuestas seguras y transparentes.
+          </p>
+        </article>
+
+        <article class="service-row">
+          <div class="service-row__num">02</div>
+          <h3 class="service-row__title">Alquileres y<br>administración</h3>
+          <p class="service-row__desc">
+            Gestionamos contratos de alquiler y administración integral de
+            propiedades urbanas y rurales: garantías verificadas, cobranzas
+            puntuales y un seguimiento permanente que te deja tranquilo.
+          </p>
+        </article>
+
+        <article class="service-row">
+          <div class="service-row__num">03</div>
+          <h3 class="service-row__title">Tasaciones<br>profesionales</h3>
+          <p class="service-row__desc">
+            Tasaciones actualizadas al valor real de mercado, basadas en el
+            conocimiento profundo de la zona, las particularidades del campo
+            argentino y el ritmo de los pueblos del interior.
+          </p>
+        </article>
+
+        <article class="service-row">
+          <div class="service-row__num">04</div>
+          <h3 class="service-row__title">Gestión de<br>campos ganaderos</h3>
+          <p class="service-row__desc">
+            Asesoramos en la gestión comercial, sanitaria y productiva de
+            establecimientos ganaderos. Una mirada integral del negocio
+            del campo, articulada con productores y profesionales locales.
+          </p>
+        </article>
+      </div>
+    </section>
+
+    <!-- CONTACT ============================================ -->
+    <section id="contacto" class="contact-section">
+      <div class="contact-section__container">
+        <header class="contact-section__head">
+          <p class="eyebrow">Escribinos</p>
+          <h2 class="contact-section__title"><em>Hablemos</em><br>de lo que buscás.</h2>
+        </header>
+
+        <div class="contact-section__grid">
+
+          <!-- LEFT: Postcard -->
+          <aside class="postcard">
+            <div class="postcard__stamp">Lobos<br>Bs. As.</div>
+            <p class="postcard__brand">Valentín Bressan</p>
+            <p class="postcard__brand-sub">Negocios Inmobiliarios</p>
+
+            <div class="postcard__list">
+              <div class="postcard__row">
+                <span class="postcard__label">Dirección</span>
+                <span class="postcard__value">Hipólito Yrigoyen 1217<br>Lobos, Bs. As.</span>
+              </div>
+              <div class="postcard__row">
+                <span class="postcard__label">Teléfonos</span>
+                <span class="postcard__value">
+                  Oficina: <a href="tel:+542227521437">2227-521437</a><br>
+                  WhatsApp: <a href="https://wa.me/542227522178" target="_blank" rel="noopener noreferrer">2227-522178</a>
+                </span>
+              </div>
+              <div class="postcard__row">
+                <span class="postcard__label">Email</span>
+                <span class="postcard__value">
+                  <a href="mailto:contacto@valentinbressaninmobiliaria.com.ar">contacto@valentinbressaninmobiliaria.com.ar</a><br>
+                  <a href="mailto:bressaninmobiliaria@gmail.com">bressaninmobiliaria@gmail.com</a>
+                </span>
+              </div>
+              <div class="postcard__row">
+                <span class="postcard__label">Horarios</span>
+                <span class="postcard__value">Lun a Vie · 9–12 hs<br>Lun a Vie · 16–19 hs</span>
+              </div>
+            </div>
+          </aside>
+
+          <!-- RIGHT: Form -->
+          <div class="contact__form">
             <form>
-              <div class="form__group">
-                <label class="form__label" for="contact-name">Nombre completo</label>
-                <input type="text" id="contact-name" name="name" class="form__input" required>
+              <div class="contact-form__field">
+                <label class="contact-form__label" for="contact-name">Nombre</label>
+                <input type="text" id="contact-name" name="name" class="contact-form__input" required>
               </div>
 
-              <div class="form__group">
-                <label class="form__label" for="contact-email">Email</label>
-                <input type="email" id="contact-email" name="email" class="form__input" required>
+              <div class="contact-form__field">
+                <label class="contact-form__label" for="contact-email">Email</label>
+                <input type="email" id="contact-email" name="email" class="contact-form__input" required>
               </div>
 
-              <div class="form__group">
-                <label class="form__label" for="contact-phone">Teléfono</label>
-                <input type="tel" id="contact-phone" name="phone" class="form__input">
+              <div class="contact-form__field">
+                <label class="contact-form__label" for="contact-phone">Teléfono</label>
+                <input type="tel" id="contact-phone" name="phone" class="contact-form__input">
               </div>
 
-              <div class="form__group">
-                <label class="form__label" for="contact-subject">Asunto</label>
-                <select id="contact-subject" name="subject" class="form__select">
-                  <option value="">Seleccionar...</option>
+              <div class="contact-form__field">
+                <label class="contact-form__label" for="contact-subject">Asunto</label>
+                <select id="contact-subject" name="subject" class="contact-form__select">
+                  <option value="">Seleccionar…</option>
                   <option value="comprar">Quiero comprar</option>
                   <option value="vender">Quiero vender</option>
                   <option value="alquilar">Quiero alquilar</option>
@@ -336,14 +1804,18 @@
                 </select>
               </div>
 
-              <div class="form__group">
-                <label class="form__label" for="contact-message">Mensaje</label>
-                <textarea id="contact-message" name="message" class="form__textarea" rows="4" placeholder="Contanos en qué podemos ayudarte..."></textarea>
+              <div class="contact-form__field">
+                <label class="contact-form__label" for="contact-message">Mensaje</label>
+                <textarea id="contact-message" name="message" class="contact-form__textarea" rows="3" placeholder="Contanos en qué podemos ayudarte…"></textarea>
               </div>
 
-              <button type="submit" class="form__submit">Enviar mensaje</button>
+              <button type="submit" class="contact-form__submit">
+                Enviar mensaje
+                <span class="editorial-hero__cta-arrow"></span>
+              </button>
             </form>
           </div>
+
         </div>
       </div>
     </section>
@@ -351,73 +1823,64 @@
 
   <!-- Footer -->
   <footer class="footer" role="contentinfo">
-    <div class="container">
+    <div class="footer__container">
       <div class="footer__grid">
         <div class="footer__brand">
-          <a href="#" class="footer__logo">
-            <img src="assets/images/logos/bressan-logoaccent.png" alt="Valentín Bressan" class="footer__logo-icon" style="width: 56px; height: 56px; object-fit: contain; background: none;">
-            <div class="footer__logo-text">
-              Valentín Bressan
-              <span>Negocios Inmobiliarios</span>
+          <div class="footer__brand-row">
+            <img src="assets/images/logos/bressan-logoaccent.png" alt="" class="footer__logo-img">
+            <div>
+              <div class="footer__brand-name">Valentín Bressan</div>
+              <div class="footer__brand-sub">Negocios Inmobiliarios</div>
             </div>
-          </a>
+          </div>
           <p class="footer__desc">
-            Tu socio de confianza en negocios inmobiliarios urbanos y rurales. Lobos y zona. Que quienes ingresen como clientes salgan como amigos.
+            Tierra, casa y oficio. Inmobiliaria con sede en Lobos, Bs. As.,
+            especializada en propiedades urbanas y rurales del corredor sur.
           </p>
         </div>
 
-        <div class="footer__section">
-          <h4>Enlaces rápidos</h4>
-          <ul class="footer__links">
-            <li><a href="#inicio" class="footer__link">Inicio</a></li>
-            <li><a href="#propiedades" class="footer__link">Propiedades</a></li>
-            <li><a href="#servicios" class="footer__link">Servicios</a></li>
-            <li><a href="#nosotros" class="footer__link">Nosotros</a></li>
-            <li><a href="#contacto" class="footer__link">Contacto</a></li>
-          </ul>
+        <div class="footer__col">
+          <h4>Sitio</h4>
+          <div class="footer__links">
+            <a href="#inicio" class="footer__link">Inicio</a>
+            <a href="#propiedades" class="footer__link">En cartera</a>
+            <a href="#nosotros" class="footer__link">Quiénes somos</a>
+            <a href="#servicios" class="footer__link">Servicios</a>
+            <a href="#contacto" class="footer__link">Escribinos</a>
+          </div>
         </div>
 
-        <div class="footer__section">
-          <h4>Propiedades</h4>
-          <ul class="footer__links">
-            <li><a href="#propiedades" class="footer__link">Casas en venta</a></li>
-            <li><a href="#propiedades" class="footer__link">Quintas</a></li>
-            <li><a href="#propiedades" class="footer__link">Campos</a></li>
-            <li><a href="#propiedades" class="footer__link">Alquileres</a></li>
-            <li><a href="#propiedades" class="footer__link">Terrenos</a></li>
-          </ul>
+        <div class="footer__col">
+          <h4>Cartera</h4>
+          <div class="footer__links">
+            <a href="#propiedades" class="footer__link">Quintas</a>
+            <a href="#propiedades" class="footer__link">Campos</a>
+            <a href="#propiedades" class="footer__link">Casas</a>
+            <a href="#propiedades" class="footer__link">Terrenos</a>
+          </div>
         </div>
 
-        <div class="footer__section">
-          <h4>Seguinos</h4>
-          <div class="footer__social">
-            <a href="https://instagram.com/valentinbressaninmobiliaria" class="footer__social-link" aria-label="Instagram" target="_blank" rel="noopener noreferrer">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
-                <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
-                <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
-              </svg>
-            </a>
-            <a href="https://wa.me/542227522178" class="footer__social-link" aria-label="WhatsApp" target="_blank" rel="noopener noreferrer">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
-              </svg>
-            </a>
+        <div class="footer__col">
+          <h4>Contacto</h4>
+          <div class="footer__links">
+            <a href="tel:+542227521437" class="footer__link">2227-521437</a>
+            <a href="https://wa.me/542227522178" class="footer__link" target="_blank" rel="noopener noreferrer">WhatsApp</a>
+            <a href="mailto:contacto@valentinbressaninmobiliaria.com.ar" class="footer__link">Email</a>
+            <a href="https://instagram.com/valentinbressaninmobiliaria" class="footer__link" target="_blank" rel="noopener noreferrer">Instagram</a>
           </div>
         </div>
       </div>
 
       <div class="footer__bottom">
-        <p class="footer__copyright">
-          &copy; 2026 Valentín Bressan — Negocios Inmobiliarios. Todos los derechos reservados.
-        </p>
+        <p class="footer__copyright">© 2026 Valentín Bressan · Negocios Inmobiliarios</p>
+        <p class="footer__credit">Lobos · Bs. As. · Vol. 01</p>
       </div>
     </div>
   </footer>
 
-  <!-- WhatsApp Floating Button -->
+  <!-- WhatsApp Floating Button (hidden during hero on mobile) -->
   <a href="https://wa.me/542227522178?text=Hola,%20me%20interesa%20consultar%20por%20una%20propiedad"
-     class="whatsapp-float"
+     class="whatsapp-float whatsapp-float--hidden"
      target="_blank"
      rel="noopener noreferrer"
      aria-label="Contactar por WhatsApp">
@@ -426,66 +1889,13 @@
     </svg>
   </a>
 
-  <style>
-    .whatsapp-float {
-      position: fixed;
-      bottom: 24px;
-      right: 24px;
-      width: 60px;
-      height: 60px;
-      background: #25D366;
-      color: white;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 4px 12px rgba(37, 211, 102, 0.4);
-      z-index: 999;
-      transition: transform 0.3s ease, box-shadow 0.3s ease, opacity 0.3s ease, visibility 0.3s ease;
-      opacity: 1;
-      visibility: visible;
-    }
-
-    /* Hide while in hero (search box is in the same screen area on mobile);
-       JS toggles .whatsapp-float--hidden based on scroll. */
-    .whatsapp-float--hidden {
-      opacity: 0;
-      visibility: hidden;
-      pointer-events: none;
-    }
-
-    .whatsapp-float:hover {
-      transform: scale(1.1);
-      box-shadow: 0 6px 20px rgba(37, 211, 102, 0.5);
-    }
-
-    .whatsapp-float svg {
-      width: 32px;
-      height: 32px;
-    }
-
-    @media (max-width: 768px) {
-      .whatsapp-float {
-        bottom: 16px;
-        right: 16px;
-        width: 56px;
-        height: 56px;
-      }
-
-      .whatsapp-float svg {
-        width: 28px;
-        height: 28px;
-      }
-    }
-  </style>
   <script>
-    // Hide the WhatsApp float button while the user is still on the hero
-    // (avoids overlap with the search box on mobile).
+    // Hide the WhatsApp float while in the hero (avoid covering CTAs).
     (function () {
       const btn = document.querySelector('.whatsapp-float');
       if (!btn) return;
-      const hero = document.querySelector('.hero');
-      const threshold = () => Math.max(120, (hero?.offsetHeight || 600) * 0.45);
+      const hero = document.querySelector('.editorial-hero');
+      const threshold = () => Math.max(120, (hero?.offsetHeight || 600) * 0.35);
       const update = () => {
         if (window.scrollY < threshold()) btn.classList.add('whatsapp-float--hidden');
         else btn.classList.remove('whatsapp-float--hidden');
@@ -494,70 +1904,18 @@
       window.addEventListener('scroll', update, { passive: true });
       window.addEventListener('resize', update);
     })();
+
+    // Update properties total in the head section once data loads
+    window.addEventListener('properties-loaded', () => {
+      const total = (window.PROPERTIES_DATA?.properties || []).length;
+      const el = document.getElementById('propertiesTotal');
+      if (el) el.textContent = String(total).padStart(2, '0');
+    });
   </script>
 
-  <!-- Scripts -->
   <script src="assets/js/api.js"></script>
   <script src="assets/js/properties-data.js"></script>
   <script src="assets/js/app.js"></script>
 
-  <!-- YouTube Player API for Hero Video -->
-  <script>
-    var tag = document.createElement('script');
-    tag.src = "https://www.youtube.com/iframe_api";
-    var firstScriptTag = document.getElementsByTagName('script')[0];
-    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-
-    var heroPlayer;
-    var videoStartTime = 120; // 2:00
-    var videoEndTime = 300;   // 5:00
-    var loopCheckInterval;
-
-    function onYouTubeIframeAPIReady() {
-      heroPlayer = new YT.Player('heroVideo', {
-        videoId: 'Wio2J4fZpoM',
-        playerVars: {
-          autoplay: 1,
-          mute: 1,
-          controls: 0,
-          showinfo: 0,
-          rel: 0,
-          start: videoStartTime,
-          modestbranding: 1,
-          playsinline: 1,
-          loop: 0,
-          disablekb: 1,
-          fs: 0,
-          iv_load_policy: 3
-        },
-        events: {
-          onReady: onHeroPlayerReady,
-          onStateChange: onHeroPlayerStateChange
-        }
-      });
-    }
-
-    function onHeroPlayerReady(event) {
-      event.target.seekTo(videoStartTime);
-      event.target.playVideo();
-      loopCheckInterval = setInterval(checkVideoLoop, 500);
-    }
-
-    function checkVideoLoop() {
-      if (heroPlayer && heroPlayer.getCurrentTime) {
-        var currentTime = heroPlayer.getCurrentTime();
-        if (currentTime >= videoEndTime || currentTime < videoStartTime) {
-          heroPlayer.seekTo(videoStartTime);
-        }
-      }
-    }
-
-    function onHeroPlayerStateChange(event) {
-      if (event.data === YT.PlayerState.ENDED || event.data === YT.PlayerState.PAUSED) {
-        heroPlayer.seekTo(videoStartTime);
-        heroPlayer.playVideo();
-      }
-    }
-  </script>
 </body>
 </html>

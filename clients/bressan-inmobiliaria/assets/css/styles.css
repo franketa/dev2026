@@ -4,7 +4,7 @@
 
 /* CSS Variables */
 :root {
-  /* Brand Colors - Valentín Bressan */
+  /* Brand Colors - Valentín Bressan / Pampas Editorial */
   --primary-color: #0d2226;
   --primary-light: #1a3a40;
   --primary-dark: #061418;
@@ -17,28 +17,38 @@
   --gold-light: #e0be6a;
   --gold-muted: rgba(212, 168, 68, 0.15);
 
-  /* Neutral Colors */
+  /* Editorial paper + earth tones */
+  --paper: #F2EBDB;
+  --paper-soft: #F8F2E2;
+  --bone: #FFFAEC;
+  --earth: #A87651;
+  --earth-deep: #7d543a;
+  --mist: #C5CCB8;
+  --teal-soft: #8DAFA9;
+
+  /* Neutral Colors (warmed up to read against paper) */
   --white: #ffffff;
-  --cream: #faf8f5;
-  --gray-50: #f8f7f6;
-  --gray-100: #f0eeec;
-  --gray-200: #e2dfdc;
-  --gray-300: #d1cdca;
-  --gray-400: #9c9691;
-  --gray-500: #6b6560;
-  --gray-600: #4b4641;
-  --gray-700: #373330;
-  --gray-800: #252220;
-  --gray-900: #141211;
+  --cream: #F2EBDB;
+  --gray-50: #F8F2E2;
+  --gray-100: #ECE4D1;
+  --gray-200: #DCD3BD;
+  --gray-300: #BFB59C;
+  --gray-400: #948B73;
+  --gray-500: #6B6453;
+  --gray-600: #4A4538;
+  --gray-700: #2F2C24;
+  --gray-800: #1F1D17;
+  --gray-900: #14130E;
 
   /* Status Colors */
-  --success: #10b981;
-  --warning: #f59e0b;
-  --error: #ef4444;
+  --success: #5b8a6b;
+  --warning: #c89849;
+  --error: #c25048;
 
-  /* Typography */
-  --font-primary: 'Asap', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  --font-display: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
+  /* Typography — Editorial pampas */
+  --font-primary: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-display: 'Instrument Serif', 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, 'SFMono-Regular', Consolas, monospace;
 
   /* Spacing */
   --space-xs: 0.25rem;
@@ -262,13 +272,18 @@ ul, ol {
   bottom: 0;
   background: var(--primary-color);
   padding: var(--space-lg);
-  transform: translateX(100%);
-  transition: transform var(--transition-slow);
   overflow-y: auto;
+  visibility: hidden;
+  opacity: 0;
+  transform: translateY(-12px);
+  transition: opacity var(--transition-normal), transform var(--transition-slow), visibility 0s linear var(--transition-normal);
 }
 
 .nav.active {
-  transform: translateX(0);
+  visibility: visible;
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity var(--transition-normal), transform var(--transition-slow), visibility 0s linear 0s;
 }
 
 .nav__list {
