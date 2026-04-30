@@ -1398,6 +1398,359 @@
       .postcard__stamp { width: 50px; height: 64px; }
       .postcard__stamp::before { width: 28px; height: 28px; }
     }
+
+    /* ============================================================
+       MOTION SYSTEM
+       Editorial-feel animations: gentle, restrained, "turning the
+       page of a magazine" — never bouncy or playful.
+       Easing across the board: cubic-bezier(0.16, 1, 0.3, 1) — a
+       luxe ease-out that decelerates softly.
+       ============================================================ */
+
+    @media (prefers-reduced-motion: no-preference) {
+
+      /* ---- HERO entrance keyframes ---- */
+      @keyframes fade-rise {
+        from { opacity: 0; transform: translateY(18px); }
+        to   { opacity: 1; transform: translateY(0); }
+      }
+      @keyframes fade-fall {
+        from { opacity: 0; transform: translateY(-10px); }
+        to   { opacity: 1; transform: translateY(0); }
+      }
+      @keyframes line-rise {
+        /* The inner span starts pushed below its line-height and rises into place */
+        from { transform: translateY(110%); opacity: 0; }
+        70%  { opacity: 1; }
+        to   { transform: translateY(0); opacity: 1; }
+      }
+      @keyframes scale-grow-x {
+        from { transform: scaleX(0); }
+        to   { transform: scaleX(1); }
+      }
+      @keyframes scale-fade {
+        from { opacity: 0; transform: scale(0.96); }
+        to   { opacity: 1; transform: scale(1); }
+      }
+      @keyframes photo-reveal {
+        from { opacity: 0; clip-path: inset(28% 0 0 0); transform: scale(1.06); }
+        to   { opacity: 1; clip-path: inset(0); transform: scale(1); }
+      }
+      @keyframes ring-arrive {
+        from { opacity: 0; transform: rotate(0deg) skewX(0) scale(0.78); }
+        to   { opacity: 0.95; transform: rotate(-12deg) skewX(-3deg) scale(1); }
+      }
+      @keyframes postcard-arrive {
+        from { opacity: 0; transform: translate(48px, 0) rotate(8deg); }
+        to   { opacity: 1; transform: translate(0, 0) rotate(-2deg); }
+      }
+      @keyframes postcard-arrive-mobile {
+        from { opacity: 0; transform: translate(0, 24px) rotate(4deg); }
+        to   { opacity: 1; transform: translate(0, 0) rotate(-1.5deg); }
+      }
+
+      /* Apply hero entrance — only on first paint, no infinite loops */
+      .vol-tag,
+      .editorial-hero__lede,
+      .editorial-hero__meta,
+      .editorial-hero__cta,
+      .editorial-hero__photo,
+      .editorial-hero__ring,
+      .featured-card {
+        opacity: 0;
+        animation-fill-mode: forwards;
+        animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      .vol-tag           { animation: fade-fall 700ms 100ms forwards cubic-bezier(0.16, 1, 0.3, 1); }
+      .editorial-hero__lede { animation: fade-rise 900ms 750ms forwards cubic-bezier(0.16, 1, 0.3, 1); }
+      .editorial-hero__meta { animation: fade-rise 800ms 900ms forwards cubic-bezier(0.16, 1, 0.3, 1); }
+      .editorial-hero__cta  { animation: scale-fade 800ms 1050ms forwards cubic-bezier(0.16, 1, 0.3, 1); }
+      .editorial-hero__photo { animation: photo-reveal 1200ms 450ms forwards cubic-bezier(0.16, 1, 0.3, 1); }
+      .editorial-hero__ring  { animation: ring-arrive 1400ms 850ms forwards cubic-bezier(0.16, 1, 0.3, 1); }
+      .featured-card         { animation: postcard-arrive 1100ms 1150ms forwards cubic-bezier(0.16, 1, 0.3, 1); }
+
+      @media (max-width: 768px) {
+        .featured-card { animation-name: postcard-arrive-mobile; }
+      }
+
+      /* Title — per-line rise (text comes up from below the line height) */
+      .editorial-hero__title-line {
+        display: block;
+        overflow: hidden;
+        padding-bottom: 0.05em;
+      }
+      .editorial-hero__title-line > * {
+        display: inline-block;
+        will-change: transform;
+        transform: translateY(110%);
+        opacity: 0;
+      }
+      .editorial-hero__title-line:nth-child(1) > * { animation: line-rise 900ms 250ms forwards cubic-bezier(0.16, 1, 0.3, 1); }
+      .editorial-hero__title-line:nth-child(2) > * { animation: line-rise 900ms 380ms forwards cubic-bezier(0.16, 1, 0.3, 1); }
+      .editorial-hero__title-line:nth-child(3) > * { animation: line-rise 900ms 520ms forwards cubic-bezier(0.16, 1, 0.3, 1); }
+
+      /* Meta strip: divider lines grow from left */
+      .editorial-hero__meta {
+        position: relative;
+        transform-origin: left center;
+      }
+
+      /* ---- Scroll reveal — drives off existing .reveal class set by app.js ---- */
+      .reveal {
+        opacity: 0;
+        transform: translateY(28px);
+        transition: opacity 800ms cubic-bezier(0.16, 1, 0.3, 1),
+                    transform 800ms cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      .reveal.visible {
+        opacity: 1;
+        transform: translateY(0);
+      }
+      .reveal[data-delay="1"] { transition-delay: 80ms; }
+      .reveal[data-delay="2"] { transition-delay: 160ms; }
+      .reveal[data-delay="3"] { transition-delay: 240ms; }
+      .reveal[data-delay="4"] { transition-delay: 320ms; }
+      .reveal[data-delay="5"] { transition-delay: 400ms; }
+      .reveal[data-delay="6"] { transition-delay: 480ms; }
+
+      /* Stat cards: top border draws from left, num scales subtly */
+      .stat {
+        border-top-color: transparent !important;
+        background-image: linear-gradient(to right, var(--primary-color), var(--primary-color));
+        background-position: 0 0;
+        background-size: 0% 1px;
+        background-repeat: no-repeat;
+        transition: background-size 1100ms cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      .stat.visible { background-size: 100% 1px; }
+      .stat .stat__num {
+        opacity: 0;
+        transform: translateY(14px);
+        transition: opacity 700ms 200ms cubic-bezier(0.16, 1, 0.3, 1),
+                    transform 700ms 200ms cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      .stat.visible .stat__num { opacity: 1; transform: translateY(0); }
+      .stat .stat__label {
+        opacity: 0;
+        transform: translateY(8px);
+        transition: opacity 600ms 380ms ease,
+                    transform 600ms 380ms cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      .stat.visible .stat__label { opacity: 1; transform: translateY(0); }
+
+      /* Service rows: top border draws from left when row enters view */
+      .service-row {
+        border-top-color: transparent !important;
+        background-image: linear-gradient(to right, rgba(13, 34, 38, 0.18), rgba(13, 34, 38, 0.18));
+        background-position: 0 0;
+        background-size: 0% 1px;
+        background-repeat: no-repeat;
+        transition: background-size 1100ms cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      .service-row.visible { background-size: 100% 1px; }
+      .service-row__num,
+      .service-row__title,
+      .service-row__desc {
+        opacity: 0;
+        transform: translateY(16px);
+        transition: opacity 700ms cubic-bezier(0.16, 1, 0.3, 1),
+                    transform 700ms cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      .service-row.visible .service-row__num   { opacity: 1; transform: translateY(0); transition-delay: 250ms; }
+      .service-row.visible .service-row__title { opacity: 1; transform: translateY(0); transition-delay: 350ms; }
+      .service-row.visible .service-row__desc  { opacity: 1; transform: translateY(0); transition-delay: 450ms; }
+
+      /* Property cards staggered reveal — uses nth-child since app.js renders in order */
+      .properties__grid > .property-card.reveal:nth-child(1)  { transition-delay: 0ms; }
+      .properties__grid > .property-card.reveal:nth-child(2)  { transition-delay: 70ms; }
+      .properties__grid > .property-card.reveal:nth-child(3)  { transition-delay: 140ms; }
+      .properties__grid > .property-card.reveal:nth-child(4)  { transition-delay: 210ms; }
+      .properties__grid > .property-card.reveal:nth-child(5)  { transition-delay: 70ms; }
+      .properties__grid > .property-card.reveal:nth-child(6)  { transition-delay: 140ms; }
+      .properties__grid > .property-card.reveal:nth-child(7)  { transition-delay: 210ms; }
+      .properties__grid > .property-card.reveal:nth-child(8)  { transition-delay: 280ms; }
+
+      /* ---- Hover refinements ---- */
+
+      /* Filter pills: solid fills from left */
+      .filter-btn {
+        position: relative;
+        overflow: hidden;
+        z-index: 0;
+        transition: color 280ms ease, border-color 280ms ease;
+      }
+      .filter-btn::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: var(--primary-color);
+        transform: scaleX(0);
+        transform-origin: left center;
+        transition: transform 380ms cubic-bezier(0.16, 1, 0.3, 1);
+        z-index: -1;
+      }
+      .filter-btn:hover::before { transform: scaleX(1); }
+      .filter-btn:hover { color: var(--paper); border-color: var(--primary-color); }
+      .filter-btn.active::before { transform: scaleX(1); }
+
+      /* Property card: title shifts to teal + arrow on hover */
+      .property-card__title {
+        transition: color 320ms ease, transform 500ms cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      .property-card:hover .property-card__title { color: var(--accent-color); }
+      .property-card__location {
+        transition: transform 500ms cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      .property-card:hover .property-card__location { transform: translateX(4px); }
+      .property-card__features {
+        transition: border-color 350ms ease;
+      }
+      .property-card:hover .property-card__features {
+        border-top-color: rgba(31, 95, 102, 0.45);
+      }
+
+      /* Service row hover: number color shift + slight scale, line ruling intensifies */
+      .service-row__num {
+        transition: color 350ms ease, transform 500ms cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      .service-row__title {
+        transition: color 350ms ease, transform 500ms cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      .service-row:hover .service-row__num   { color: var(--earth); transform: translateX(-4px); }
+      .service-row:hover .service-row__title { color: var(--accent-color); }
+
+      /* CTA arrow grows on hover */
+      .editorial-hero__cta-arrow {
+        transition: width 320ms cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      .editorial-hero__cta:hover .editorial-hero__cta-arrow { width: 26px; }
+
+      /* Postcard: lifts and un-tilts on hover */
+      .postcard {
+        transition: transform 600ms cubic-bezier(0.16, 1, 0.3, 1),
+                    box-shadow 400ms ease;
+      }
+      .contact-section__grid .postcard:hover {
+        transform: translate(-4px, -4px);
+        box-shadow: 18px 18px 0 var(--accent-color);
+      }
+      .postcard__stamp {
+        transition: transform 600ms cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      .contact-section__grid .postcard:hover .postcard__stamp {
+        transform: rotate(8deg) scale(1.05);
+      }
+
+      /* Featured card hover */
+      .featured-card {
+        transition: transform 600ms cubic-bezier(0.16, 1, 0.3, 1),
+                    box-shadow 400ms ease;
+      }
+      .featured-card:hover {
+        transform: rotate(0deg) translateY(-3px);
+      }
+
+      /* Nav link underline grows from center on hover */
+      @media (min-width: 768px) {
+        .header .nav__link:not(.active) {
+          position: relative;
+        }
+        .header .nav__link:not(.active)::after {
+          content: '';
+          position: absolute;
+          left: 50%;
+          right: 50%;
+          bottom: -1px;
+          height: 1px;
+          background: var(--accent-color);
+          transition: left 320ms cubic-bezier(0.16, 1, 0.3, 1),
+                      right 320ms cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .header .nav__link:not(.active):hover::after {
+          left: 0.85rem;
+          right: 0.85rem;
+        }
+      }
+
+      /* Search box: focus highlight slides under field labels */
+      .search-box__field {
+        transition: background-color 300ms ease;
+      }
+      .search-box__field:focus-within {
+        background-color: var(--paper);
+      }
+
+      /* Form fields: underline expands on focus */
+      .contact-form__input,
+      .contact-form__textarea,
+      .contact-form__select {
+        background-image: linear-gradient(to right, var(--accent-color), var(--accent-color));
+        background-position: 0 100%;
+        background-size: 0% 2px;
+        background-repeat: no-repeat;
+        transition: background-size 400ms cubic-bezier(0.16, 1, 0.3, 1),
+                    border-bottom-color 200ms ease;
+      }
+      .contact-form__input:focus,
+      .contact-form__textarea:focus,
+      .contact-form__select:focus {
+        background-size: 100% 2px;
+      }
+
+      /* Form submit: slight push on hover */
+      .contact-form__submit {
+        transition: background 280ms ease, transform 320ms cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      .contact-form__submit:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(13, 34, 38, 0.18);
+      }
+
+      /* Marquee: pause on hover */
+      .marquee:hover .marquee__track {
+        animation-play-state: paused;
+      }
+
+      /* Manifesto ring: very slow continuous rotation */
+      @keyframes ring-spin {
+        from { transform: rotate(-8deg); }
+        to   { transform: rotate(352deg); }
+      }
+      .manifesto::before {
+        animation: ring-spin 120s linear infinite;
+      }
+
+      /* WhatsApp float: gentle pulse when first appearing */
+      @keyframes wa-pop {
+        from { transform: scale(0.6); opacity: 0; }
+        to   { transform: scale(1); opacity: 1; }
+      }
+      .whatsapp-float:not(.whatsapp-float--hidden) {
+        animation: wa-pop 450ms cubic-bezier(0.16, 1, 0.3, 1);
+      }
+
+      /* Section eyebrow: leading line draws on reveal */
+      .reveal .eyebrow::before,
+      .eyebrow {
+        transition: opacity 600ms 200ms ease;
+      }
+    }
+
+    /* ---- Reduced motion: kill heavy animation, keep accessibility ---- */
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+      .reveal { opacity: 1 !important; transform: none !important; }
+      .editorial-hero__title-line > * { transform: none !important; opacity: 1 !important; }
+      .vol-tag, .editorial-hero__lede, .editorial-hero__meta,
+      .editorial-hero__cta, .editorial-hero__photo,
+      .editorial-hero__ring, .featured-card { opacity: 1 !important; }
+    }
   </style>
 </head>
 <body>
@@ -1457,9 +1810,9 @@
           <p class="vol-tag">Desde Lobos · Bs. As. · Est. 2024</p>
 
           <h1 class="editorial-hero__title">
-            La tierra<br>
-            <em>que te</em><br>
-            <span class="editorial-hero__title-mark">espera.</span>
+            <span class="editorial-hero__title-line"><span>La tierra</span></span>
+            <span class="editorial-hero__title-line"><em>que te</em></span>
+            <span class="editorial-hero__title-line"><span class="editorial-hero__title-mark">espera.</span></span>
           </h1>
 
           <p class="editorial-hero__lede">
@@ -1535,20 +1888,20 @@
     <!-- STATS BAND ============================================ -->
     <section class="stats-band">
       <div class="stats-band__grid">
-        <div class="stat">
-          <p class="stat__num">13</p>
+        <div class="stat reveal" data-delay="1">
+          <p class="stat__num"><span data-counter data-target="13">13</span></p>
           <p class="stat__label">Zonas cubiertas en y alrededor de Lobos</p>
         </div>
-        <div class="stat">
-          <p class="stat__num"><em>04</em></p>
+        <div class="stat reveal" data-delay="2">
+          <p class="stat__num"><em><span data-counter data-target="4" data-pad="2">04</span></em></p>
           <p class="stat__label">Servicios integrados, urbano y rural</p>
         </div>
-        <div class="stat">
-          <p class="stat__num">+500<sup style="font-size:0.4em">ha</sup></p>
+        <div class="stat reveal" data-delay="3">
+          <p class="stat__num"><span data-counter data-target="500" data-prefix="+">+500</span><sup style="font-size:0.4em">ha</sup></p>
           <p class="stat__label">Tierras ganaderas asesoradas</p>
         </div>
-        <div class="stat">
-          <p class="stat__num">2024</p>
+        <div class="stat reveal" data-delay="4">
+          <p class="stat__num"><span data-counter data-target="2024">2024</span></p>
           <p class="stat__label">Año en que abrimos las puertas</p>
         </div>
       </div>
@@ -1558,15 +1911,15 @@
     <section id="propiedades" class="cartera">
       <div class="cartera__container">
         <header class="cartera__head">
-          <div>
+          <div class="reveal">
             <p class="eyebrow">En cartera</p>
             <h2 class="cartera__title">Propiedades<br><em>en venta y alquiler.</em></h2>
           </div>
-          <p class="cartera__subtitle">
+          <p class="cartera__subtitle reveal" data-delay="2">
             Una selección actualizada de quintas, casas, campos y terrenos en Lobos,
             Antonio Carboni, Elvira, Navarro y zonas vecinas.
           </p>
-          <p class="cartera__count">
+          <p class="cartera__count reveal" data-delay="3">
             Total<strong id="propertiesTotal">12</strong>propiedades
           </p>
         </header>
@@ -1642,7 +1995,7 @@
     <section id="nosotros" class="manifesto">
       <div class="manifesto__container">
         <div class="manifesto__grid">
-          <div>
+          <div class="reveal">
             <p class="manifesto__eyebrow">Quiénes somos</p>
             <h2 class="manifesto__heading">
               Tierra,<br>
@@ -1651,23 +2004,23 @@
             </h2>
           </div>
           <div class="manifesto__body">
-            <p>
+            <p class="reveal" data-delay="2">
               Somos una inmobiliaria joven y dinámica, dedicada a brindar
               asesoramiento integral en compra-venta de inmuebles, arrendamientos
               y administración de propiedades urbanas y rurales — incluyendo la
               gestión comercial, sanitaria y productiva de campos ganaderos.
             </p>
-            <p>
+            <p class="reveal" data-delay="3">
               Trabajamos en Lobos y toda la región sur de Buenos Aires, donde
               cada operación combina conocimiento del territorio, compromiso con
               cada cliente y una manera de hacer las cosas que invita a volver.
             </p>
-            <blockquote class="manifesto__quote">
+            <blockquote class="manifesto__quote reveal" data-delay="4">
               Que quienes ingresen como clientes salgan como amigos —
               más felices y con la calidez de un servicio que los invite
               a regresar para futuras inversiones.
             </blockquote>
-            <p class="manifesto__sign">Valentín Bressan · Lobos, Bs. As.</p>
+            <p class="manifesto__sign reveal" data-delay="5">Valentín Bressan · Lobos, Bs. As.</p>
           </div>
         </div>
       </div>
@@ -1677,11 +2030,11 @@
     <section id="servicios" class="services-list">
       <div class="services-list__container">
         <header class="services-list__head">
-          <div>
+          <div class="reveal">
             <p class="eyebrow">Qué hacemos</p>
             <h2 class="services-list__title">Cuatro<br><em>servicios,</em><br>una mirada.</h2>
           </div>
-          <p class="services-list__sub">
+          <p class="services-list__sub reveal" data-delay="2">
             Acompañamos cada operación de principio a fin: desde la primera
             consulta y la tasación hasta la firma, la entrega y la administración
             posterior. Trabajamos con la misma vara para casas urbanas, quintas
@@ -1689,7 +2042,7 @@
           </p>
         </header>
 
-        <article class="service-row">
+        <article class="service-row reveal">
           <div class="service-row__num">01</div>
           <h3 class="service-row__title">Compra-venta<br>de inmuebles</h3>
           <p class="service-row__desc">
@@ -1699,7 +2052,7 @@
           </p>
         </article>
 
-        <article class="service-row">
+        <article class="service-row reveal">
           <div class="service-row__num">02</div>
           <h3 class="service-row__title">Alquileres y<br>administración</h3>
           <p class="service-row__desc">
@@ -1709,7 +2062,7 @@
           </p>
         </article>
 
-        <article class="service-row">
+        <article class="service-row reveal">
           <div class="service-row__num">03</div>
           <h3 class="service-row__title">Tasaciones<br>profesionales</h3>
           <p class="service-row__desc">
@@ -1719,7 +2072,7 @@
           </p>
         </article>
 
-        <article class="service-row">
+        <article class="service-row reveal">
           <div class="service-row__num">04</div>
           <h3 class="service-row__title">Gestión de<br>campos ganaderos</h3>
           <p class="service-row__desc">
@@ -1734,7 +2087,7 @@
     <!-- CONTACT ============================================ -->
     <section id="contacto" class="contact-section">
       <div class="contact-section__container">
-        <header class="contact-section__head">
+        <header class="contact-section__head reveal">
           <p class="eyebrow">Escribinos</p>
           <h2 class="contact-section__title"><em>Hablemos</em><br>de lo que buscás.</h2>
         </header>
@@ -1742,7 +2095,7 @@
         <div class="contact-section__grid">
 
           <!-- LEFT: Postcard -->
-          <aside class="postcard">
+          <aside class="postcard reveal" data-delay="2">
             <div class="postcard__stamp">Lobos<br>Bs. As.</div>
             <p class="postcard__brand">Valentín Bressan</p>
             <p class="postcard__brand-sub">Negocios Inmobiliarios</p>
@@ -1774,7 +2127,7 @@
           </aside>
 
           <!-- RIGHT: Form -->
-          <div class="contact__form">
+          <div class="contact__form reveal" data-delay="3">
             <form>
               <div class="contact-form__field">
                 <label class="contact-form__label" for="contact-name">Nombre</label>
@@ -1890,6 +2243,9 @@
   </a>
 
   <script>
+    // ---------------- Motion utilities ----------------
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
     // Hide the WhatsApp float while in the hero (avoid covering CTAs).
     (function () {
       const btn = document.querySelector('.whatsapp-float');
@@ -1911,6 +2267,50 @@
       const el = document.getElementById('propertiesTotal');
       if (el) el.textContent = String(total).padStart(2, '0');
     });
+
+    // ---------------- Counter animation for stats ----------------
+    (function () {
+      const counters = document.querySelectorAll('[data-counter]');
+      if (!counters.length) return;
+      if (prefersReducedMotion) {
+        counters.forEach(el => {
+          const target = parseFloat(el.dataset.target);
+          const pad = parseInt(el.dataset.pad || '0', 10);
+          const prefix = el.dataset.prefix || '';
+          let str = String(Math.round(target));
+          if (pad > 0) str = str.padStart(pad, '0');
+          el.textContent = prefix + str;
+        });
+        return;
+      }
+      const ease = t => 1 - Math.pow(1 - t, 3);
+      const animate = el => {
+        const target = parseFloat(el.dataset.target);
+        const pad = parseInt(el.dataset.pad || '0', 10);
+        const prefix = el.dataset.prefix || '';
+        const duration = Math.min(1600, 700 + Math.log10(Math.max(target, 1)) * 350);
+        let start;
+        const tick = now => {
+          if (!start) start = now;
+          const t = Math.min(1, (now - start) / duration);
+          const v = Math.round(target * ease(t));
+          let str = String(v);
+          if (pad > 0) str = str.padStart(pad, '0');
+          el.textContent = prefix + str;
+          if (t < 1) requestAnimationFrame(tick);
+        };
+        requestAnimationFrame(tick);
+      };
+      const obs = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+          if (!entry.isIntersecting) return;
+          animate(entry.target);
+          obs.unobserve(entry.target);
+        });
+      }, { threshold: 0.5, rootMargin: '0px 0px -10% 0px' });
+      counters.forEach(c => obs.observe(c));
+    })();
+
   </script>
 
   <script src="assets/js/api.js"></script>
