@@ -1,0 +1,412 @@
+{
+  "properties": [
+    {
+      "id": 1,
+      "title": "Quinta en Antonio Carboni con pileta",
+      "type": "quinta",
+      "operation": "venta",
+      "price": 100000,
+      "currency": "USD",
+      "showPrice": true,
+      "location": {
+        "neighborhood": "Antonio Carboni",
+        "city": "Lobos",
+        "address": "Camino vecinal s/n"
+      },
+      "features": {
+        "bedrooms": 1,
+        "bathrooms": 2,
+        "garage": 1,
+        "area": 600,
+        "coveredArea": 120
+      },
+      "description": "Hermosa quinta lista para disfrutar. Vivienda con living amplio, cocina, parrilla, lavadero y pileta. Cerramiento perimetral completo, sistema de cámaras de seguridad y servicios de luz, agua y gas. Un espacio listo desde el primer día, ubicada en un entorno tranquilo y familiar de Antonio Carboni.",
+      "amenities": ["pileta", "parrilla", "jardín", "alarma", "seguridad 24hs"],
+      "coverImage": "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=1200&q=80",
+      "images": [
+        "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=1200&q=80",
+        "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1200&q=80",
+        "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&q=80",
+        "https://images.unsplash.com/photo-1600585152220-90363fe7e115?w=1200&q=80"
+      ],
+      "featured": true,
+      "status": "disponible",
+      "createdAt": "2026-04-15"
+    },
+    {
+      "id": 2,
+      "title": "Casa a restaurar en Elvira, Lobos",
+      "type": "casa",
+      "operation": "venta",
+      "price": 45000,
+      "currency": "USD",
+      "showPrice": true,
+      "location": {
+        "neighborhood": "Elvira",
+        "city": "Lobos",
+        "address": "Esquina sobre lote de 2.235 m²"
+      },
+      "features": {
+        "bedrooms": 2,
+        "bathrooms": 1,
+        "garage": 0,
+        "area": 2235,
+        "coveredArea": 80
+      },
+      "description": "Propiedad ubicada sobre terreno en esquina de 2.235 m², ideal para quien busca espacio, tranquilidad y potencial de desarrollo en un pueblo con historia. Vivienda prefabricada de aproximadamente 15 años de antigüedad con 2 dormitorios, cocina-comedor integrado y baño. Cuenta con electricidad, fibra óptica y perforación de agua con tanque conectado. Construcción tipo rancho de ladrillos a desarmar o reutilizar.",
+      "amenities": ["jardín", "parque amplio"],
+      "coverImage": "https://images.unsplash.com/photo-1518780664697-55e3ad937233?w=1200&q=80",
+      "images": [
+        "https://images.unsplash.com/photo-1518780664697-55e3ad937233?w=1200&q=80",
+        "https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=1200&q=80",
+        "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=1200&q=80"
+      ],
+      "featured": true,
+      "status": "disponible",
+      "createdAt": "2026-04-10"
+    },
+    {
+      "id": 3,
+      "title": "Campo ganadero en Salvador María",
+      "type": "campo",
+      "operation": "venta",
+      "price": 850000,
+      "currency": "USD",
+      "showPrice": true,
+      "location": {
+        "neighborhood": "Salvador María",
+        "city": "Lobos",
+        "address": "Ruta Provincial 41, km 142"
+      },
+      "features": {
+        "bedrooms": 3,
+        "bathrooms": 2,
+        "garage": 2,
+        "area": 1200000,
+        "coveredArea": 180
+      },
+      "description": "Establecimiento ganadero de 120 hectáreas en zona productiva. Casco con casa principal de 3 dormitorios, galpón maquinarias, manga de hacienda con balanza, 4 molinos con tanques australianos, alambrado perimetral en buen estado y aguadas naturales. Apto para cría e invernada. Excelente relación campo-vivienda. Asesoramiento integral en gestión comercial, sanitaria y productiva incluido.",
+      "amenities": ["molino", "manga", "galpón", "casco", "tanque australiano", "aguada natural"],
+      "coverImage": "https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=1200&q=80",
+      "images": [
+        "https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=1200&q=80",
+        "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=1200&q=80",
+        "https://images.unsplash.com/photo-1524813686514-a57563d77965?w=1200&q=80",
+        "https://images.unsplash.com/photo-1500076656116-558758c991c1?w=1200&q=80"
+      ],
+      "featured": true,
+      "status": "disponible",
+      "createdAt": "2026-04-05"
+    },
+    {
+      "id": 4,
+      "title": "Casa céntrica en Lobos sobre Yrigoyen",
+      "type": "casa",
+      "operation": "venta",
+      "price": 95000,
+      "currency": "USD",
+      "showPrice": true,
+      "location": {
+        "neighborhood": "Lobos",
+        "city": "Lobos",
+        "address": "Hipólito Yrigoyen 950"
+      },
+      "features": {
+        "bedrooms": 3,
+        "bathrooms": 2,
+        "garage": 1,
+        "area": 280,
+        "coveredArea": 140
+      },
+      "description": "Casa familiar a metros del centro. 3 dormitorios, living comedor amplio, cocina con office, lavadero, patio con parrilla. Cochera cubierta para un auto y excelente fondo con jardín. Frente totalmente refaccionado, instalaciones eléctricas y sanitarias renovadas. Lista para mudarse.",
+      "amenities": ["parrilla", "jardín", "patio", "lavadero"],
+      "coverImage": "https://images.unsplash.com/photo-1570129477492-45c003edd2be?w=1200&q=80",
+      "images": [
+        "https://images.unsplash.com/photo-1570129477492-45c003edd2be?w=1200&q=80",
+        "https://images.unsplash.com/photo-1583608205776-bfd35f0d9f83?w=1200&q=80",
+        "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=1200&q=80",
+        "https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?w=1200&q=80"
+      ],
+      "featured": true,
+      "status": "disponible",
+      "createdAt": "2026-04-12"
+    },
+    {
+      "id": 5,
+      "title": "Quinta en Navarro con casco completo",
+      "type": "quinta",
+      "operation": "venta",
+      "price": 135000,
+      "currency": "USD",
+      "showPrice": true,
+      "location": {
+        "neighborhood": "Navarro",
+        "city": "Navarro",
+        "address": "Calle 2 bis, e/113 y 115"
+      },
+      "features": {
+        "bedrooms": 3,
+        "bathrooms": 2,
+        "garage": 2,
+        "area": 5000,
+        "coveredArea": 200
+      },
+      "description": "Quinta de media hectárea en zona consolidada de Navarro. Casa principal con 3 dormitorios, 2 baños, living con hogar a leña, cocina equipada y galería techada con vista al parque. Pileta con solárium, quincho con parrilla y horno de barro, casita de huéspedes. Arboleda añosa y huerta. Ideal residencia permanente o fin de semana.",
+      "amenities": ["pileta", "quincho", "parrilla", "horno de barro", "hogar a leña", "casa de huéspedes", "arboleda"],
+      "coverImage": "https://images.unsplash.com/photo-1600047509807-ba8f99d2cdde?w=1200&q=80",
+      "images": [
+        "https://images.unsplash.com/photo-1600047509807-ba8f99d2cdde?w=1200&q=80",
+        "https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=1200&q=80",
+        "https://images.unsplash.com/photo-1613977257363-707ba9348227?w=1200&q=80",
+        "https://images.unsplash.com/photo-1505691938895-1758d7feb511?w=1200&q=80"
+      ],
+      "featured": true,
+      "status": "disponible",
+      "createdAt": "2026-04-08"
+    },
+    {
+      "id": 6,
+      "title": "Departamento 2 ambientes en Lobos centro",
+      "type": "departamento",
+      "operation": "alquiler",
+      "price": 280000,
+      "currency": "ARS",
+      "showPrice": true,
+      "location": {
+        "neighborhood": "Lobos",
+        "city": "Lobos",
+        "address": "Belgrano 654, 2° piso"
+      },
+      "features": {
+        "bedrooms": 2,
+        "bathrooms": 1,
+        "garage": 0,
+        "area": 55,
+        "coveredArea": 55
+      },
+      "description": "Departamento luminoso de 2 ambientes en pleno centro de Lobos. Living comedor con balcón, dormitorio principal con placard, cocina separada, baño completo. Edificio con ascensor y portero. A metros de la plaza principal, comercios y trámites. Ideal para profesionales o pareja joven.",
+      "amenities": ["ascensor", "balcón", "portero"],
+      "coverImage": "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=1200&q=80",
+      "images": [
+        "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=1200&q=80",
+        "https://images.unsplash.com/photo-1493809842364-78817add7ffb?w=1200&q=80",
+        "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=1200&q=80"
+      ],
+      "featured": false,
+      "status": "disponible",
+      "createdAt": "2026-04-18"
+    },
+    {
+      "id": 7,
+      "title": "Terreno en Empalme Lobos sobre asfalto",
+      "type": "terreno",
+      "operation": "venta",
+      "price": 22000,
+      "currency": "USD",
+      "showPrice": true,
+      "location": {
+        "neighborhood": "Empalme Lobos",
+        "city": "Lobos",
+        "address": "Ruta 205 km 109"
+      },
+      "features": {
+        "bedrooms": 0,
+        "bathrooms": 0,
+        "garage": 0,
+        "area": 1000,
+        "coveredArea": 0
+      },
+      "description": "Lote de 20x50 m sobre Ruta 205, ideal para construcción de vivienda o emprendimiento comercial. Acceso pavimentado, frente con servicios de luz cerca, posibilidad de gas y agua corriente. Excelente ubicación a 10 minutos del centro de Lobos y 15 de Cañuelas. Documentación en regla.",
+      "amenities": ["frente sobre asfalto", "luz cerca"],
+      "coverImage": "https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=1200&q=80",
+      "images": [
+        "https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=1200&q=80",
+        "https://images.unsplash.com/photo-1466692476868-aef1dfb1e735?w=1200&q=80"
+      ],
+      "featured": false,
+      "status": "disponible",
+      "createdAt": "2026-04-02"
+    },
+    {
+      "id": 8,
+      "title": "Casa con quincho en Las Chacras",
+      "type": "casa",
+      "operation": "venta",
+      "price": 78000,
+      "currency": "USD",
+      "showPrice": true,
+      "location": {
+        "neighborhood": "Las Chacras",
+        "city": "Lobos",
+        "address": "Acceso a Las Chacras s/n"
+      },
+      "features": {
+        "bedrooms": 2,
+        "bathrooms": 1,
+        "garage": 2,
+        "area": 1500,
+        "coveredArea": 110
+      },
+      "description": "Casa rural en barrio Las Chacras. 2 dormitorios, living comedor con estufa a leña, cocina amplia, baño completo. Quincho con parrilla y horno de barro, galpón doble para herramientas y vehículos. Lote de 1.500 m² con arboleda y huerta. Tranquilidad absoluta, a 8 minutos del centro.",
+      "amenities": ["quincho", "parrilla", "horno de barro", "galpón", "arboleda", "estufa a leña"],
+      "coverImage": "https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=1200&q=80",
+      "images": [
+        "https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=1200&q=80",
+        "https://images.unsplash.com/photo-1572120360610-d971b9d7767c?w=1200&q=80",
+        "https://images.unsplash.com/photo-1605276373954-0c4a0dac5b12?w=1200&q=80"
+      ],
+      "featured": false,
+      "status": "disponible",
+      "createdAt": "2026-03-28"
+    },
+    {
+      "id": 9,
+      "title": "Local comercial sobre Yrigoyen",
+      "type": "local",
+      "operation": "alquiler",
+      "price": 350000,
+      "currency": "ARS",
+      "showPrice": true,
+      "location": {
+        "neighborhood": "Lobos",
+        "city": "Lobos",
+        "address": "Hipólito Yrigoyen 1100"
+      },
+      "features": {
+        "bedrooms": 0,
+        "bathrooms": 1,
+        "garage": 0,
+        "area": 70,
+        "coveredArea": 70
+      },
+      "description": "Local comercial con vidriera amplia sobre la principal arteria comercial de Lobos. 70 m² distribuidos en salón principal, depósito y baño. Frente totalmente vidriado, alto tránsito peatonal y vehicular. Ideal indumentaria, gastronomía o servicios. Listo para entrar.",
+      "amenities": ["aire acondicionado", "vidriera", "depósito"],
+      "coverImage": "https://images.unsplash.com/photo-1582037928769-181f2644cf68?w=1200&q=80",
+      "images": [
+        "https://images.unsplash.com/photo-1582037928769-181f2644cf68?w=1200&q=80",
+        "https://images.unsplash.com/photo-1604014237800-1c9102c219da?w=1200&q=80"
+      ],
+      "featured": false,
+      "status": "disponible",
+      "createdAt": "2026-04-20"
+    },
+    {
+      "id": 10,
+      "title": "Campo mixto en Roque Pérez",
+      "type": "campo",
+      "operation": "venta",
+      "price": 1450000,
+      "currency": "USD",
+      "showPrice": true,
+      "location": {
+        "neighborhood": "Roque Pérez",
+        "city": "Roque Pérez",
+        "address": "Ruta 205 km 165"
+      },
+      "features": {
+        "bedrooms": 4,
+        "bathrooms": 2,
+        "garage": 3,
+        "area": 2500000,
+        "coveredArea": 220
+      },
+      "description": "Establecimiento mixto agrícola-ganadero de 250 hectáreas. 60% apto agrícola y 40% ganadero. Casco con vivienda principal de 4 dormitorios, casa de capataz, galpón cerealero, manga, instalaciones para tambo en desuso (recuperables) y aguadas. Acceso pavimentado hasta el casco. Excelente arboleda añosa. Asesoramiento integral en gestión comercial, sanitaria y productiva incluido.",
+      "amenities": ["molino", "manga", "galpón cerealero", "casco doble", "aguadas", "arboleda", "acceso pavimentado"],
+      "coverImage": "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=1200&q=80",
+      "images": [
+        "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=1200&q=80",
+        "https://images.unsplash.com/photo-1500076656116-558758c991c1?w=1200&q=80",
+        "https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=1200&q=80",
+        "https://images.unsplash.com/photo-1487300001871-12053913095d?w=1200&q=80"
+      ],
+      "featured": true,
+      "status": "disponible",
+      "createdAt": "2026-03-25"
+    },
+    {
+      "id": 11,
+      "title": "Casa en alquiler en Lobos centro",
+      "type": "casa",
+      "operation": "alquiler",
+      "price": 420000,
+      "currency": "ARS",
+      "showPrice": true,
+      "location": {
+        "neighborhood": "Lobos",
+        "city": "Lobos",
+        "address": "Sarmiento 320"
+      },
+      "features": {
+        "bedrooms": 3,
+        "bathrooms": 2,
+        "garage": 1,
+        "area": 320,
+        "coveredArea": 130
+      },
+      "description": "Casa en alquiler en zona céntrica de Lobos. 3 dormitorios, 2 baños, living comedor, cocina equipada, lavadero independiente, patio con parrilla y cochera cubierta. Excelente estado general. A 4 cuadras de la plaza. Contrato 24 meses con garantía propietaria.",
+      "amenities": ["parrilla", "patio", "cochera cubierta", "lavadero"],
+      "coverImage": "https://images.unsplash.com/photo-1583608205776-bfd35f0d9f83?w=1200&q=80",
+      "images": [
+        "https://images.unsplash.com/photo-1583608205776-bfd35f0d9f83?w=1200&q=80",
+        "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1200&q=80",
+        "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&q=80"
+      ],
+      "featured": false,
+      "status": "disponible",
+      "createdAt": "2026-04-22"
+    },
+    {
+      "id": 12,
+      "title": "Lote en Laguna de Lobos con vista al espejo",
+      "type": "lote",
+      "operation": "venta",
+      "price": 38000,
+      "currency": "USD",
+      "showPrice": true,
+      "location": {
+        "neighborhood": "Laguna de Lobos",
+        "city": "Lobos",
+        "address": "Costanera de la Laguna"
+      },
+      "features": {
+        "bedrooms": 0,
+        "bathrooms": 0,
+        "garage": 0,
+        "area": 800,
+        "coveredArea": 0
+      },
+      "description": "Lote de 20x40 con vista directa a la Laguna de Lobos. Zona en pleno crecimiento, ideal para casa de fin de semana o inversión. Servicios de luz disponibles, posibilidad de pozo de agua. Acceso por camino mejorado. A 5 minutos del club de pesca y náutica.",
+      "amenities": ["vista a la laguna", "luz disponible"],
+      "coverImage": "https://images.unsplash.com/photo-1466692476868-aef1dfb1e735?w=1200&q=80",
+      "images": [
+        "https://images.unsplash.com/photo-1466692476868-aef1dfb1e735?w=1200&q=80",
+        "https://images.unsplash.com/photo-1502082553048-f009c37129b9?w=1200&q=80"
+      ],
+      "featured": false,
+      "status": "disponible",
+      "createdAt": "2026-03-30"
+    }
+  ],
+  "propertyTypes": [
+    {"id": "casa", "label": "Casa"},
+    {"id": "departamento", "label": "Departamento"},
+    {"id": "quinta", "label": "Quinta"},
+    {"id": "campo", "label": "Campo"},
+    {"id": "ph", "label": "PH"},
+    {"id": "local", "label": "Local Comercial"},
+    {"id": "oficina", "label": "Oficina"},
+    {"id": "terreno", "label": "Terreno"},
+    {"id": "lote", "label": "Lote"},
+    {"id": "cochera", "label": "Cochera"}
+  ],
+  "operations": [
+    {"id": "venta", "label": "Venta"},
+    {"id": "alquiler", "label": "Alquiler"}
+  ],
+  "neighborhoods": [
+    "Lobos", "Antonio Carboni", "Elvira", "Salvador María",
+    "Empalme Lobos", "Las Chacras", "Laguna de Lobos",
+    "Navarro", "San Miguel del Monte", "Roque Pérez",
+    "Cañuelas", "25 de Mayo", "Saladillo"
+  ]
+}
