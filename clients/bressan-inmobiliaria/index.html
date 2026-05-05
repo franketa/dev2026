@@ -3,2319 +3,1157 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <meta name="description" content="Valentín Bressan — Negocios Inmobiliarios. Quintas, campos ganaderos, casas y terrenos en Lobos y zona. Compra-venta, alquiler, tasaciones y administración integral.">
-  <meta name="theme-color" content="#0d2226">
+  <meta name="description" content="Vairo Propiedades — Inmobiliaria en Lobos, Buenos Aires. Casas, quintas, campos ganaderos y terrenos. Compra-venta, alquileres, tasaciones y administración.">
+  <meta name="theme-color" content="#D9622E">
 
-  <meta property="og:title" content="Valentín Bressan — Negocios Inmobiliarios">
-  <meta property="og:description" content="Tierra, casa y oficio. Compra-venta, alquileres, tasaciones y campos ganaderos en Lobos, Bs. As.">
+  <meta property="og:title" content="Vairo Propiedades — Inmobiliaria en Lobos">
+  <meta property="og:description" content="Casas, quintas, campos y terrenos en Lobos, Bs. As. Compra-venta, alquileres, tasaciones y administración integral.">
   <meta property="og:type" content="website">
   <meta property="og:locale" content="es_AR">
 
-  <link rel="icon" type="image/png" href="assets/images/logos/bressan-logoaccent.png">
+  <link rel="icon" type="image/png" href="assets/images/logos/vairo-logo.png">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@300;400;500;600&family=Manrope:wght@200;300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..600&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="assets/css/styles.css">
 
-  <title>Valentín Bressan — Negocios Inmobiliarios · Lobos, Bs. As.</title>
+  <title>Vairo Propiedades — Inmobiliaria en Lobos, Bs. As.</title>
 
   <style>
     /* ============================================================
-       PAMPAS EDITORIAL — Bressan homepage
-       Self-contained styles. Body baseline + shared header/footer
-       come from styles.css. Everything below overrides for the
-       homepage's editorial layout.
+       VAIRO — Homepage editorial
        ============================================================ */
 
-    :root {
-      --grain-overlay: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.4 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
-    }
-
-    body {
-      background: var(--paper);
-      color: var(--gray-800);
-      font-feature-settings: "ss01", "ss02", "kern";
-    }
-
-    /* Faint paper grain on the whole page */
-    body::before {
-      content: '';
-      position: fixed;
-      inset: 0;
-      background-image: var(--grain-overlay);
-      opacity: 0.32;
-      mix-blend-mode: multiply;
-      pointer-events: none;
-      z-index: 1;
-    }
-
-    /* ---- Utility ribbon (top sticky strip) ---- */
+    /* ---- Utility ribbon ---- */
     .ribbon {
-      background: var(--primary-color);
-      color: var(--paper);
+      background: var(--ink);
+      color: var(--sand);
       font-family: var(--font-mono);
       font-size: 0.6875rem;
       letter-spacing: 0.18em;
       text-transform: uppercase;
-      padding: 0.5rem 1rem;
+      padding: 0.55rem 0;
       position: relative;
       z-index: var(--z-fixed);
     }
     .ribbon__inner {
-      max-width: 1320px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      max-width: var(--container-max);
       margin: 0 auto;
+      padding: 0 1.25rem;
+    }
+    .ribbon__left, .ribbon__right { display: flex; gap: 1.25rem; align-items: center; flex-wrap: wrap; }
+    .ribbon__dot {
+      display: inline-block;
+      width: 5px; height: 5px;
+      border-radius: 50%;
+      background: var(--terracotta);
+      margin: 0 0.55rem;
+      vertical-align: middle;
+    }
+    .ribbon a { color: inherit; transition: color var(--t-fast); }
+    .ribbon a:hover { color: var(--terracotta-soft); }
+    @media (max-width: 720px) { .ribbon__hide-mobile { display: none; } }
+
+    /* ============================================================
+       HERO
+       ============================================================ */
+    .hero {
+      position: relative;
+      padding: 4rem 0 5rem;
+      overflow: hidden;
+      background:
+        radial-gradient(120% 80% at 100% 0%, rgba(217, 98, 46, 0.10) 0%, transparent 60%),
+        linear-gradient(180deg, var(--paper) 0%, var(--bone) 70%, var(--sand-soft) 100%);
+    }
+
+    @media (min-width: 900px) {
+      .hero { padding: 5.5rem 0 6.5rem; }
+    }
+
+    .hero__grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 3rem;
+      align-items: center;
+    }
+
+    @media (min-width: 1024px) {
+      .hero__grid {
+        grid-template-columns: 1.1fr 0.9fr;
+        gap: 5rem;
+      }
+    }
+
+    .hero__eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.625rem;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+      color: var(--terracotta);
+      margin-bottom: 1.5rem;
+    }
+    .hero__eyebrow::before {
+      content: '';
+      width: 24px; height: 1px;
+      background: currentColor;
+    }
+
+    .hero__title {
+      font-family: var(--font-display);
+      font-size: clamp(2.5rem, 7vw, 5.25rem);
+      line-height: 0.96;
+      letter-spacing: -0.03em;
+      color: var(--ink);
+      margin-bottom: 1.5rem;
+      font-weight: 300;
+    }
+    .hero__title em {
+      font-style: italic;
+      font-weight: 400;
+      color: var(--terracotta);
+    }
+    .hero__title .underline {
+      position: relative;
+      display: inline-block;
+    }
+    .hero__title .underline::after {
+      content: '';
+      position: absolute;
+      left: 0; right: 0;
+      bottom: 0.05em;
+      height: 0.16em;
+      background: var(--terracotta-soft);
+      opacity: 0.4;
+      z-index: -1;
+    }
+
+    .hero__lede {
+      font-size: 1.125rem;
+      line-height: 1.65;
+      color: var(--ink-soft);
+      max-width: 480px;
+      margin-bottom: 2rem;
+    }
+
+    .hero__actions {
+      display: flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+
+    .hero__stats {
+      display: flex;
+      gap: 2.5rem;
+      margin-top: 3rem;
+      padding-top: 2rem;
+      border-top: 1px solid var(--line);
+      flex-wrap: wrap;
+    }
+    .hero__stat-num {
+      font-family: var(--font-display);
+      font-size: 2.25rem;
+      font-weight: 400;
+      color: var(--ink);
+      line-height: 1;
+      margin-bottom: 0.4rem;
+    }
+    .hero__stat-num em { color: var(--terracotta); font-style: normal; }
+    .hero__stat-label {
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--ink-mute);
+    }
+
+    /* ---- Hero image collage ---- */
+    .hero__visual {
+      position: relative;
+      aspect-ratio: 4 / 5;
+      max-height: 640px;
+    }
+    .hero__visual-frame {
+      position: absolute;
+      inset: 0;
+      border-radius: var(--radius-xl);
+      overflow: hidden;
+      box-shadow: var(--shadow-xl);
+    }
+    .hero__visual-frame img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+    }
+
+    .hero__visual-tag {
+      position: absolute;
+      bottom: 1.5rem;
+      left: 1.5rem;
+      right: 1.5rem;
+      padding: 1rem 1.25rem;
+      background: rgba(251, 247, 236, 0.94);
+      backdrop-filter: blur(12px);
+      border-radius: var(--radius-md);
       display: flex;
       justify-content: space-between;
       align-items: center;
       gap: 1rem;
     }
-    .ribbon__left, .ribbon__right {
-      display: flex;
-      gap: 1.25rem;
-      align-items: center;
-      flex-wrap: wrap;
-    }
-    .ribbon__dot {
-      display: inline-block;
-      width: 5px;
-      height: 5px;
-      border-radius: 50%;
-      background: var(--gold-accent);
-      margin: 0 0.6rem;
-      vertical-align: middle;
-    }
-    .ribbon a { color: inherit; transition: color .2s; }
-    .ribbon a:hover { color: var(--gold-accent); }
-    @media (max-width: 640px) {
-      .ribbon__hide-mobile { display: none; }
-    }
-
-    /* ---- Header override (paper, refined) ---- */
-    .header {
-      position: sticky;
-      top: 0;
-      background: var(--paper);
-      border-bottom: 1px solid rgba(13, 34, 38, 0.08);
-      box-shadow: none;
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
-    }
-    .header.scrolled {
-      background: rgba(242, 235, 219, 0.94);
-      box-shadow: 0 1px 0 rgba(13, 34, 38, 0.12);
-      backdrop-filter: blur(8px);
-    }
-    .header__inner {
-      height: 76px;
-      max-width: 1320px;
-      margin: 0 auto;
-    }
-    .header__logo-text {
-      color: var(--primary-color);
-      text-transform: none;
-      font-family: var(--font-display);
-      font-weight: 400;
-      font-size: 1.375rem;
-      letter-spacing: 0;
-      line-height: 1;
-    }
-    .header__logo-text span {
-      color: var(--accent-color);
-      border-top: none;
-      padding-top: 4px;
-      margin-top: 4px;
-      font-family: var(--font-mono);
-      font-size: 0.6rem;
-      letter-spacing: 0.22em;
-    }
-    .header__menu-btn span { background: var(--primary-color); }
-    .nav { background: var(--paper); }
-    .nav__link { color: rgba(13, 34, 38, 0.72); }
-
-    @media (min-width: 768px) {
-      .nav__link {
-        font-family: var(--font-mono);
-        font-weight: 400;
-        font-size: 0.75rem;
-        letter-spacing: 0.18em;
-        padding: 0.5rem 0.85rem;
-      }
-      .nav__link:hover, .nav__link.active {
-        color: var(--accent-color);
-        background: transparent;
-      }
-      .nav__link.active::after {
-        content: '';
-        display: block;
-        height: 1px;
-        background: var(--accent-color);
-        margin-top: 3px;
-      }
-    }
-
-    /* ---- HERO — Magazine cover composition ---- */
-    .editorial-hero {
-      position: relative;
-      padding: 0;
-      isolation: isolate;
-      overflow: hidden;
-    }
-    .editorial-hero__inner {
-      max-width: 1320px;
-      margin: 0 auto;
-      padding: 4rem 1.25rem 5rem;
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 2.5rem;
-      position: relative;
-    }
-
-    @media (min-width: 1024px) {
-      .editorial-hero__inner {
-        grid-template-columns: 1.15fr 0.85fr;
-        gap: 3rem;
-        padding: 5rem 1.5rem 7rem;
-        align-items: center;
-      }
-    }
-
-    /* Volume tag — top-left of left column */
-    .vol-tag {
-      font-family: var(--font-mono);
-      font-size: 0.6875rem;
-      letter-spacing: 0.28em;
-      text-transform: uppercase;
-      color: var(--gray-500);
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      margin-bottom: 1.75rem;
-    }
-    .vol-tag::before {
-      content: '';
-      width: 32px;
-      height: 1px;
-      background: var(--accent-color);
-    }
-
-    .editorial-hero__title {
-      font-family: var(--font-display);
-      font-weight: 400;
-      font-size: clamp(2.75rem, 9vw, 6rem);
-      line-height: 0.95;
-      letter-spacing: -0.02em;
-      color: var(--primary-color);
-      margin: 0 0 1.5rem;
-    }
-    .editorial-hero__title em {
-      font-style: italic;
-      color: var(--accent-color);
-      font-weight: 400;
-    }
-    .editorial-hero__title-mark {
-      color: var(--earth);
-      font-style: italic;
-    }
-
-    .editorial-hero__lede {
-      font-family: var(--font-primary);
-      font-weight: 300;
-      font-size: clamp(1rem, 1.6vw, 1.125rem);
-      line-height: 1.65;
-      color: var(--gray-700);
-      max-width: 480px;
-      margin: 0 0 2rem;
-    }
-
-    .editorial-hero__meta {
+    .hero__visual-tag-label {
       font-family: var(--font-mono);
       font-size: 0.6875rem;
       letter-spacing: 0.18em;
       text-transform: uppercase;
-      color: var(--gray-500);
-      display: flex;
-      flex-wrap: wrap;
-      gap: 1.5rem;
-      margin-bottom: 2.25rem;
-      padding: 0.75rem 0;
-      border-top: 1px solid rgba(13, 34, 38, 0.12);
-      border-bottom: 1px solid rgba(13, 34, 38, 0.12);
+      color: var(--ink-mute);
+      margin-bottom: 0.25rem;
     }
-    .editorial-hero__meta span {
-      display: flex;
-      align-items: baseline;
-      gap: 0.5rem;
-    }
-    .editorial-hero__meta strong {
+    .hero__visual-tag-value {
       font-family: var(--font-display);
-      font-weight: 400;
       font-size: 1.125rem;
-      color: var(--primary-color);
-      letter-spacing: 0;
-      text-transform: none;
+      color: var(--ink);
     }
 
-    .editorial-hero__cta {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.875rem;
-      padding: 0.875rem 1.75rem;
-      background: var(--primary-color);
-      color: var(--paper);
-      font-family: var(--font-mono);
-      font-weight: 500;
-      font-size: 0.75rem;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      border-radius: 0;
-      transition: background .25s ease, transform .25s ease;
-      border: 1px solid var(--primary-color);
-    }
-    .editorial-hero__cta:hover {
-      background: var(--accent-color);
-      border-color: var(--accent-color);
-      transform: translate(-2px, -2px);
-      box-shadow: 6px 6px 0 var(--primary-color);
-    }
-    .editorial-hero__cta-arrow {
-      width: 18px;
-      height: 1px;
-      background: currentColor;
-      position: relative;
-    }
-    .editorial-hero__cta-arrow::after {
-      content: '';
+    .hero__monogram {
       position: absolute;
-      right: 0;
-      top: -3px;
-      width: 7px;
-      height: 7px;
-      border-right: 1px solid currentColor;
-      border-top: 1px solid currentColor;
-      transform: rotate(45deg);
-    }
-
-    /* Hero right-side: stacked photo collage with brushstroke */
-    .editorial-hero__visual {
-      position: relative;
-      aspect-ratio: 4 / 5;
-      max-width: 540px;
-      width: 100%;
-      justify-self: center;
-    }
-
-    @media (min-width: 1024px) {
-      .editorial-hero__visual { justify-self: end; aspect-ratio: 4/5.2; }
-    }
-
-    .editorial-hero__photo {
-      position: absolute;
-      inset: 0;
-      background-image: linear-gradient(180deg, rgba(13, 34, 38, 0.05), rgba(13, 34, 38, 0.25)),
-                        url('https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=1200&q=80');
-      background-size: cover;
-      background-position: center;
-      filter: contrast(1.05) saturate(0.92);
-    }
-    .editorial-hero__photo::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(180deg, transparent 30%, rgba(31, 95, 102, 0.3) 100%);
-      mix-blend-mode: multiply;
-    }
-
-    /* The teal brushstroke ring echoing the logo */
-    .editorial-hero__ring {
-      position: absolute;
-      width: 62%;
-      aspect-ratio: 1;
-      right: -8%;
-      bottom: -10%;
-      border: 2px solid var(--accent-color);
-      border-radius: 50%;
-      transform: rotate(-12deg) skewX(-3deg);
-      opacity: 0.95;
-      pointer-events: none;
-    }
-    .editorial-hero__ring::before {
-      content: '';
-      position: absolute;
-      inset: -8%;
-      border: 1px solid var(--accent-color);
-      border-radius: 50%;
-      opacity: 0.45;
-      transform: rotate(7deg) skewX(2deg);
-    }
-
-    /* The featured property "postcard" floating over the photo */
-    .featured-card {
-      position: absolute;
-      left: -10%;
-      bottom: 8%;
-      width: 78%;
-      max-width: 320px;
-      background: var(--bone);
-      padding: 1rem 1.125rem 1.125rem;
-      box-shadow: 12px 14px 0 var(--primary-color);
-      transform: rotate(-2deg);
-      z-index: 2;
-      border: 1px solid rgba(13, 34, 38, 0.08);
-    }
-    @media (min-width: 768px) {
-      .featured-card { width: 65%; left: -14%; }
-    }
-    .featured-card__label {
-      font-family: var(--font-mono);
-      font-size: 0.6rem;
-      letter-spacing: 0.28em;
-      text-transform: uppercase;
-      color: var(--accent-color);
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 0.625rem;
-    }
-    .featured-card__title {
-      font-family: var(--font-display);
-      font-weight: 400;
-      font-style: italic;
-      font-size: 1.5rem;
-      line-height: 1.1;
-      color: var(--primary-color);
-      margin-bottom: 0.5rem;
-    }
-    .featured-card__meta {
-      font-family: var(--font-mono);
-      font-size: 0.6875rem;
-      letter-spacing: 0.06em;
-      color: var(--gray-600);
-      display: flex;
-      justify-content: space-between;
-      padding-top: 0.625rem;
-      border-top: 1px solid rgba(13, 34, 38, 0.18);
-    }
-    .featured-card__meta strong {
-      color: var(--primary-color);
-      font-weight: 500;
-    }
-
-    /* ---- Marquee strip ---- */
-    .marquee {
-      background: var(--primary-color);
-      color: var(--paper);
-      overflow: hidden;
-      border-top: 1px solid rgba(212, 168, 68, 0.18);
-      border-bottom: 1px solid rgba(212, 168, 68, 0.18);
-      position: relative;
+      top: -28px;
+      right: -28px;
+      width: 120px;
+      height: 120px;
+      border-radius: 16px;
+      object-fit: cover;
+      box-shadow: var(--shadow-lg);
+      border: 4px solid var(--paper);
+      transform: rotate(6deg);
       z-index: 2;
     }
-    .marquee__track {
-      display: flex;
-      gap: 3rem;
-      width: max-content;
-      animation: marquee 38s linear infinite;
-      padding: 1.4rem 0;
-    }
-    .marquee__item {
-      font-family: var(--font-display);
-      font-weight: 400;
-      font-style: italic;
-      font-size: 1.625rem;
-      letter-spacing: 0;
-      white-space: nowrap;
-      color: var(--paper);
-    }
-    .marquee__item--mark {
-      font-family: var(--font-mono);
-      font-style: normal;
-      font-size: 0.875rem;
-      color: var(--gold-accent);
-      align-self: center;
-      letter-spacing: 0.2em;
-    }
-    @keyframes marquee {
-      from { transform: translateX(0); }
-      to   { transform: translateX(-50%); }
+    @media (max-width: 600px) {
+      .hero__monogram { width: 84px; height: 84px; top: -16px; right: -16px; }
     }
 
-    /* ---- Stats / numerals band ---- */
-    .stats-band {
-      padding: 5rem 1.25rem;
-      max-width: 1320px;
-      margin: 0 auto;
-    }
-    .stats-band__grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 2.25rem 1.5rem;
-    }
-    @media (min-width: 768px) {
-      .stats-band__grid { grid-template-columns: repeat(4, 1fr); }
-    }
-    .stat {
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
-      padding-top: 1rem;
-      border-top: 1px solid var(--primary-color);
-    }
-    .stat__num {
-      font-family: var(--font-display);
-      font-weight: 400;
-      font-size: clamp(3rem, 6vw, 4.5rem);
-      line-height: 0.9;
-      color: var(--primary-color);
-      font-feature-settings: "tnum";
-    }
-    .stat__num em {
-      font-style: italic;
-      color: var(--accent-color);
-    }
-    .stat__label {
-      font-family: var(--font-mono);
-      font-size: 0.6875rem;
-      letter-spacing: 0.22em;
-      text-transform: uppercase;
-      color: var(--gray-500);
-      max-width: 18ch;
-    }
-
-    /* ---- Properties section "EN CARTERA" ---- */
-    .cartera {
-      padding: 6rem 0 7rem;
-      background: var(--paper);
+    /* ============================================================
+       SEARCH BOX (floats below hero)
+       ============================================================ */
+    .search-section {
+      margin-top: -3rem;
       position: relative;
-      z-index: 2;
-      border-top: 1px solid rgba(13, 34, 38, 0.08);
-    }
-    .cartera__container {
-      max-width: 1320px;
-      margin: 0 auto;
+      z-index: 5;
       padding: 0 1.25rem;
     }
-    .cartera__head {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 1.5rem;
-      align-items: end;
-      margin-bottom: 3rem;
-    }
-    @media (min-width: 900px) {
-      .cartera__head {
-        grid-template-columns: auto 1fr auto;
-      }
-    }
-    .eyebrow {
-      font-family: var(--font-mono);
-      font-size: 0.6875rem;
-      letter-spacing: 0.28em;
-      text-transform: uppercase;
-      color: var(--accent-color);
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-    }
-    .eyebrow::before {
-      content: '';
-      width: 24px;
-      height: 1px;
-      background: var(--accent-color);
-    }
-    .cartera__title {
-      font-family: var(--font-display);
-      font-weight: 400;
-      font-size: clamp(2.5rem, 5vw, 3.75rem);
-      line-height: 0.95;
-      color: var(--primary-color);
-      margin-top: 0.5rem;
-      letter-spacing: -0.02em;
-    }
-    .cartera__title em {
-      font-style: italic;
-      color: var(--accent-color);
-    }
-    .cartera__subtitle {
-      max-width: 36ch;
-      font-size: 1rem;
-      line-height: 1.55;
-      color: var(--gray-600);
-      align-self: end;
-    }
-    .cartera__count {
-      font-family: var(--font-mono);
-      font-size: 0.75rem;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      color: var(--gray-500);
-      align-self: end;
-      text-align: right;
-    }
-    .cartera__count strong {
-      font-family: var(--font-display);
-      font-weight: 400;
-      font-size: 2rem;
-      color: var(--primary-color);
-      line-height: 1;
-      display: block;
-    }
+    @media (min-width: 768px) { .search-section { padding: 0 2rem; } }
 
-    /* Search box: editorial reset */
     .search-box {
+      max-width: var(--container-max);
+      margin: 0 auto;
       background: var(--bone);
-      border: 1px solid rgba(13, 34, 38, 0.1);
-      border-radius: 0;
-      padding: 0;
-      box-shadow: none;
-      margin-bottom: 2rem;
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-xl);
+      border: 1px solid var(--line);
       overflow: hidden;
     }
+
     .search-box__tabs {
       display: flex;
-      gap: 0;
-      margin-bottom: 0;
-      background: transparent;
-      border-radius: 0;
-      padding: 0;
-      border-bottom: 1px solid rgba(13, 34, 38, 0.1);
+      border-bottom: 1px solid var(--line);
+      background: var(--sand-soft);
     }
     .search-box__tab {
       flex: 1;
-      padding: 0.875rem 1rem;
-      font-family: var(--font-mono);
-      font-weight: 500;
-      font-size: 0.7rem;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      color: var(--gray-500);
+      padding: 1rem;
+      text-align: center;
       background: transparent;
-      border-radius: 0;
-      transition: color .2s, background .2s;
-      border-right: 1px solid rgba(13, 34, 38, 0.1);
+      border: none;
+      font-family: var(--font-primary);
+      font-size: 0.875rem;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--ink-mute);
+      cursor: pointer;
+      position: relative;
+      transition: color var(--t-fast), background var(--t-fast);
     }
-    .search-box__tab:last-child { border-right: none; }
+    .search-box__tab:hover { color: var(--ink); }
     .search-box__tab.active {
-      background: var(--primary-color);
-      color: var(--paper);
-      box-shadow: none;
+      background: var(--bone);
+      color: var(--terracotta);
     }
+    .search-box__tab.active::after {
+      content: '';
+      position: absolute;
+      bottom: -1px; left: 25%; right: 25%;
+      height: 2px;
+      background: var(--terracotta);
+    }
+
     .search-box__form {
       display: grid;
       grid-template-columns: 1fr;
       gap: 0;
-      padding: 0;
     }
     @media (min-width: 768px) {
       .search-box__form {
-        grid-template-columns: repeat(4, 1fr) auto;
+        grid-template-columns: 1.2fr 1fr 1fr auto;
+        align-items: stretch;
       }
     }
+
     .search-box__field {
       display: flex;
       flex-direction: column;
-      gap: 0.25rem;
-      padding: 1rem 1.125rem;
-      border-bottom: 1px solid rgba(13, 34, 38, 0.08);
+      padding: 1rem 1.25rem;
+      border-right: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+      transition: background var(--t-fast);
     }
+    .search-box__field:last-of-type { border-right: none; }
     @media (min-width: 768px) {
-      .search-box__field {
-        border-bottom: none;
-        border-right: 1px solid rgba(13, 34, 38, 0.08);
-      }
+      .search-box__field { border-bottom: none; }
     }
+    .search-box__field:hover { background: var(--sand-soft); }
+
     .search-box__label {
       font-family: var(--font-mono);
-      font-size: 0.6rem;
-      letter-spacing: 0.24em;
+      font-size: 0.6875rem;
+      letter-spacing: 0.18em;
       text-transform: uppercase;
-      color: var(--gray-500);
-      font-weight: 500;
+      color: var(--ink-mute);
+      margin-bottom: 0.35rem;
     }
     .search-box__input,
     .search-box__select {
       width: 100%;
       padding: 0;
-      border: none;
-      border-radius: 0;
-      font-size: 0.95rem;
-      color: var(--primary-color);
       background: transparent;
-      font-family: var(--font-display);
-      font-weight: 400;
-      transition: none;
-    }
-    .search-box__input::placeholder { color: var(--gray-400); font-style: italic; }
-    .search-box__input:focus,
-    .search-box__select:focus {
+      border: none;
+      font-size: 0.9375rem;
+      font-weight: 500;
+      color: var(--ink);
       outline: none;
-      box-shadow: none;
+      appearance: none;
     }
-    .search-box__btn {
-      display: flex;
+    .search-box__select {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8' fill='none'%3E%3Cpath d='M1 1.5L6 6.5L11 1.5' stroke='%231A1410' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 0.25rem center;
+      padding-right: 1.5rem;
+    }
+    .search-box__price-range {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.5rem;
+    }
+    .search-box__price-range input {
+      padding: 0;
+      background: transparent;
+      border: none;
+      font-size: 0.9375rem;
+      font-weight: 500;
+      color: var(--ink);
+      outline: none;
+      width: 100%;
+    }
+
+    .search-box__submit {
+      padding: 1rem 2rem;
+      background: var(--terracotta);
+      color: var(--bone);
+      border: none;
+      font-family: var(--font-primary);
+      font-size: 0.9375rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      cursor: pointer;
+      display: inline-flex;
       align-items: center;
       justify-content: center;
-      gap: 0.625rem;
-      padding: 1.125rem 2rem;
-      background: var(--primary-color);
-      color: var(--paper);
-      font-family: var(--font-mono);
-      font-weight: 500;
-      font-size: 0.7rem;
-      letter-spacing: 0.22em;
-      text-transform: uppercase;
-      border-radius: 0;
-      transition: background .25s ease;
-    }
-    .search-box__btn:hover { background: var(--accent-color); }
-
-    /* Filter pills row */
-    .filter-bar {
-      display: flex;
-      flex-wrap: wrap;
       gap: 0.5rem;
-      margin-bottom: 2.5rem;
-      padding-bottom: 0;
-      overflow-x: auto;
-      -webkit-overflow-scrolling: touch;
-      scrollbar-width: none;
+      transition: background var(--t-base);
+      width: 100%;
     }
-    .filter-bar::-webkit-scrollbar { display: none; }
+    @media (min-width: 768px) { .search-box__submit { width: auto; } }
+    .search-box__submit:hover { background: var(--terracotta-deep); }
+
+    /* ============================================================
+       FILTER CHIPS
+       ============================================================ */
+    .filters-bar {
+      padding: 4rem 0 1rem;
+    }
+    .filters-bar__head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 2rem;
+      flex-wrap: wrap;
+      margin-bottom: 2rem;
+    }
+    .filters-bar__chips {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      padding-bottom: 0.5rem;
+    }
     .filter-btn {
-      flex-shrink: 0;
-      padding: 0.5rem 1rem;
-      font-family: var(--font-mono);
-      font-weight: 400;
-      font-size: 0.7rem;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      color: var(--gray-600);
+      padding: 0.55rem 1.05rem;
       background: transparent;
-      border: 1px solid rgba(13, 34, 38, 0.18);
-      border-radius: 0;
+      color: var(--ink-soft);
+      border: 1px solid var(--line-strong);
+      border-radius: var(--radius-full);
+      font-size: 0.875rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all var(--t-base);
       white-space: nowrap;
-      transition: all .2s;
     }
     .filter-btn:hover {
-      border-color: var(--accent-color);
-      color: var(--accent-color);
+      border-color: var(--terracotta);
+      color: var(--terracotta);
     }
     .filter-btn.active {
-      background: var(--primary-color);
-      color: var(--paper);
-      border-color: var(--primary-color);
+      background: var(--ink);
+      color: var(--bone);
+      border-color: var(--ink);
     }
 
-    /* Properties grid — editorial */
-    .properties__grid {
+    /* ============================================================
+       PROPERTIES SECTION
+       ============================================================ */
+    .properties {
+      padding: 1rem 0 5rem;
+    }
+
+    /* ============================================================
+       SERVICES
+       ============================================================ */
+    .services {
+      padding: 6rem 0;
+      background: linear-gradient(180deg, var(--paper) 0%, var(--sand-soft) 100%);
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+    }
+    .services__grid {
       display: grid;
-      grid-template-columns: 1fr;
-      gap: 2.25rem 1.75rem;
-    }
-    @media (min-width: 640px)  { .properties__grid { grid-template-columns: repeat(2, 1fr); } }
-    @media (min-width: 1024px) { .properties__grid { grid-template-columns: repeat(3, 1fr); } }
-
-    /* Property card — editorial style */
-    .property-card {
-      background: transparent;
-      border: none;
-      border-radius: 0;
-      box-shadow: none;
-      overflow: visible;
-      transition: transform .35s cubic-bezier(0.16, 1, 0.3, 1);
-      cursor: pointer;
-      position: relative;
-    }
-    .property-card:hover { transform: translateY(-4px); box-shadow: none; }
-    .property-card__image {
-      aspect-ratio: 4 / 5;
-      background: var(--gray-100);
-      overflow: hidden;
-      position: relative;
-      margin-bottom: 1rem;
-      filter: contrast(1.02) saturate(0.96);
-    }
-    .property-card__img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-    .property-card:hover .property-card__img { transform: scale(1.04); }
-
-    .property-card__badge {
-      position: absolute;
-      top: 0.875rem;
-      left: 0.875rem;
-      padding: 0.3rem 0.6rem;
-      font-family: var(--font-mono);
-      font-size: 0.6rem;
-      font-weight: 500;
-      letter-spacing: 0.22em;
-      text-transform: uppercase;
-      border-radius: 0;
-      background: var(--bone);
-      color: var(--primary-color);
-    }
-    .property-card__badge--venta     { background: var(--bone); color: var(--primary-color); }
-    .property-card__badge--alquiler  { background: var(--accent-color); color: var(--paper); }
-    .property-card__badge--vendido   { background: var(--earth); color: var(--paper); }
-    .property-card__badge--alquilado { background: var(--earth-deep); color: var(--paper); }
-    .property-card__badge--reservado { background: var(--gold-accent); color: var(--primary-color); }
-
-    .property-card__favorite {
-      position: absolute;
-      top: 0.875rem;
-      right: 0.875rem;
-      width: 32px;
-      height: 32px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: rgba(255, 250, 236, 0.92);
-      backdrop-filter: blur(6px);
-      -webkit-backdrop-filter: blur(6px);
-      border-radius: 50%;
-      color: var(--gray-600);
-      transition: all .2s;
-    }
-    .property-card__favorite:hover,
-    .property-card__favorite.active { color: var(--earth); background: var(--bone); }
-
-    .property-card__content { padding: 0; }
-    .property-card__location {
-      font-family: var(--font-mono);
-      font-size: 0.6875rem;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      color: var(--gray-500);
-      margin-bottom: 0.5rem;
-      display: flex;
-      align-items: center;
-      gap: 0.4rem;
-    }
-    .property-card__location svg { width: 12px; height: 12px; color: var(--accent-color); }
-    .property-card__title {
-      font-family: var(--font-display);
-      font-weight: 400;
-      font-size: 1.5rem;
-      line-height: 1.1;
-      color: var(--primary-color);
-      margin-bottom: 0.625rem;
-      display: -webkit-box;
-      -webkit-line-clamp: 2;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-      letter-spacing: -0.01em;
-    }
-    .property-card__price {
-      font-family: var(--font-mono);
-      font-weight: 500;
-      font-size: 1rem;
-      letter-spacing: 0.04em;
-      color: var(--primary-color);
-      margin-bottom: 0;
-    }
-    .property-card__features {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 1rem 1.25rem;
-      padding-top: 0.875rem;
-      margin-top: 0.875rem;
-      border-top: 1px solid rgba(13, 34, 38, 0.12);
-    }
-    .property-card__feature {
-      font-family: var(--font-mono);
-      font-size: 0.6875rem;
-      letter-spacing: 0.06em;
-      color: var(--gray-600);
-      display: inline-flex;
-      align-items: center;
-      gap: 0.4rem;
-    }
-    .property-card__feature svg { width: 14px; height: 14px; color: var(--gray-400); }
-
-    .properties__empty {
-      grid-column: 1 / -1;
-      padding: 3rem 1rem;
-      text-align: center;
-      color: var(--gray-500);
-      border: 1px dashed rgba(13, 34, 38, 0.18);
-    }
-    .properties__empty-title {
-      font-family: var(--font-display);
-      font-size: 1.5rem;
-      color: var(--primary-color);
-      margin: 0.75rem 0 0.4rem;
-    }
-    .properties__empty-text {
-      font-size: 0.9rem;
-      color: var(--gray-500);
-    }
-    .properties__empty-btn {
-      margin-top: 1rem;
-      display: inline-flex;
-      padding: 0.625rem 1.25rem;
-      font-family: var(--font-mono);
-      font-size: 0.7rem;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      border: 1px solid var(--primary-color);
-      color: var(--primary-color);
-      background: transparent;
-      transition: all .2s;
-    }
-    .properties__empty-btn:hover { background: var(--primary-color); color: var(--paper); }
-
-    .properties__load-more {
-      display: flex;
-      justify-content: center;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1.25rem;
       margin-top: 3rem;
     }
-    .properties__load-more .load-more-btn {
-      padding: 0.875rem 2rem;
-      background: transparent;
-      color: var(--primary-color);
-      border: 1px solid var(--primary-color);
-      font-family: var(--font-mono);
-      font-weight: 500;
-      font-size: 0.7rem;
-      letter-spacing: 0.22em;
-      text-transform: uppercase;
-      transition: all .25s;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.625rem;
-    }
-    .properties__load-more .load-more-btn:hover {
-      background: var(--primary-color);
-      color: var(--paper);
-    }
-
-    /* ---- Manifesto / About ---- */
-    .manifesto {
-      background: var(--primary-color);
-      color: var(--paper);
-      padding: 7rem 0;
+    .service-card {
       position: relative;
+      padding: 2rem 1.75rem;
+      background: var(--bone);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg);
+      transition: all var(--t-base) var(--ease-out);
       overflow: hidden;
     }
-    .manifesto::before {
-      content: '';
-      position: absolute;
-      top: -25%;
-      right: -10%;
-      width: 50%;
-      aspect-ratio: 1;
-      border: 1.5px solid rgba(31, 95, 102, 0.45);
-      border-radius: 50%;
-      transform: rotate(-8deg);
-      pointer-events: none;
+    .service-card:hover {
+      border-color: var(--terracotta-soft);
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-lg);
     }
-    .manifesto__container {
-      max-width: 1320px;
-      margin: 0 auto;
-      padding: 0 1.25rem;
+    .service-card__num {
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      letter-spacing: 0.22em;
+      color: var(--terracotta);
+      margin-bottom: 1.5rem;
+    }
+    .service-card__icon {
+      width: 48px;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--terracotta-tint);
+      color: var(--terracotta);
+      border-radius: 12px;
+      margin-bottom: 1.25rem;
+    }
+    .service-card__title {
+      font-family: var(--font-display);
+      font-size: 1.5rem;
+      color: var(--ink);
+      margin-bottom: 0.75rem;
+    }
+    .service-card__text {
+      font-size: 0.9375rem;
+      line-height: 1.6;
+      color: var(--ink-mute);
+    }
+
+    /* ============================================================
+       ABOUT / WHY VAIRO
+       ============================================================ */
+    .about {
+      padding: 7rem 0;
       position: relative;
     }
-    .manifesto__grid {
+    .about__grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 3rem;
+      align-items: center;
+    }
+    @media (min-width: 1024px) {
+      .about__grid { grid-template-columns: 0.95fr 1.05fr; gap: 5rem; }
+    }
+    .about__visual {
+      position: relative;
+      aspect-ratio: 4 / 5;
+      border-radius: var(--radius-xl);
+      overflow: hidden;
+    }
+    .about__visual img { width: 100%; height: 100%; object-fit: cover; }
+    .about__visual-pattern {
+      position: absolute;
+      bottom: -20px;
+      right: -20px;
+      width: 140px;
+      height: 140px;
+      background: var(--terracotta);
+      border-radius: var(--radius-lg);
+      z-index: -1;
+    }
+    .about__title {
+      font-family: var(--font-display);
+      font-size: clamp(2rem, 4.5vw, 3.5rem);
+      line-height: 1.05;
+      letter-spacing: -0.02em;
+      font-weight: 400;
+      margin-bottom: 1.5rem;
+    }
+    .about__title em { color: var(--terracotta); font-style: italic; }
+    .about__text {
+      font-size: 1.0625rem;
+      line-height: 1.7;
+      color: var(--ink-soft);
+      margin-bottom: 1.25rem;
+    }
+    .about__values {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.5rem;
+      margin-top: 2.5rem;
+      padding-top: 2.5rem;
+      border-top: 1px solid var(--line);
+    }
+    .about__value-num {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      letter-spacing: 0.18em;
+      color: var(--terracotta);
+      margin-bottom: 0.5rem;
+    }
+    .about__value-title {
+      font-family: var(--font-display);
+      font-size: 1.25rem;
+      color: var(--ink);
+      margin-bottom: 0.4rem;
+    }
+    .about__value-text {
+      font-size: 0.9375rem;
+      color: var(--ink-mute);
+      line-height: 1.55;
+    }
+
+    /* ============================================================
+       BANNER CTA
+       ============================================================ */
+    .banner-cta {
+      padding: 5rem 0;
+    }
+    .banner-cta__inner {
+      position: relative;
+      padding: 4rem 2rem;
+      background: var(--ink);
+      color: var(--sand);
+      border-radius: var(--radius-xl);
+      overflow: hidden;
+      text-align: center;
+    }
+    .banner-cta__inner::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -10%;
+      width: 380px; height: 380px;
+      background: radial-gradient(circle, rgba(217, 98, 46, 0.35) 0%, transparent 65%);
+    }
+    .banner-cta__content { position: relative; z-index: 1; }
+    .banner-cta__eyebrow {
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+      color: var(--terracotta-soft);
+      margin-bottom: 1rem;
+    }
+    .banner-cta__title {
+      font-family: var(--font-display);
+      font-size: clamp(2rem, 4vw, 3rem);
+      line-height: 1.1;
+      color: var(--bone);
+      margin-bottom: 1.5rem;
+      font-weight: 400;
+    }
+    .banner-cta__title em { color: var(--terracotta); font-style: italic; }
+    .banner-cta__text {
+      font-size: 1.0625rem;
+      color: rgba(232, 221, 201, 0.8);
+      max-width: 560px;
+      margin: 0 auto 2rem;
+      line-height: 1.65;
+    }
+    .banner-cta__actions {
+      display: flex;
+      gap: 0.75rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .banner-cta .btn--primary { background: var(--terracotta); }
+    .banner-cta .btn--primary:hover { background: var(--terracotta-deep); }
+    .banner-cta .btn--outline { color: var(--bone); border-color: rgba(232, 221, 201, 0.3); }
+    .banner-cta .btn--outline:hover { background: rgba(232, 221, 201, 0.08); border-color: var(--terracotta-soft); color: var(--bone); }
+
+    /* ============================================================
+       CONTACT
+       ============================================================ */
+    .contact {
+      padding: 6rem 0;
+      background: var(--sand-soft);
+      border-top: 1px solid var(--line);
+    }
+    .contact__grid {
       display: grid;
       grid-template-columns: 1fr;
       gap: 3rem;
     }
     @media (min-width: 1024px) {
-      .manifesto__grid { grid-template-columns: 1fr 1.2fr; gap: 4rem; align-items: start; }
+      .contact__grid { grid-template-columns: 1fr 1.1fr; gap: 5rem; align-items: start; }
     }
-    .manifesto__eyebrow {
-      font-family: var(--font-mono);
-      font-size: 0.6875rem;
-      letter-spacing: 0.28em;
-      text-transform: uppercase;
-      color: var(--gold-accent);
-      margin-bottom: 1.5rem;
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-    }
-    .manifesto__eyebrow::before {
-      content: '';
-      width: 24px;
-      height: 1px;
-      background: var(--gold-accent);
-    }
-    .manifesto__heading {
-      font-family: var(--font-display);
-      font-weight: 400;
-      font-size: clamp(2.25rem, 4.5vw, 3.5rem);
-      line-height: 1;
-      letter-spacing: -0.01em;
-      color: var(--paper);
-      max-width: 14ch;
-    }
-    .manifesto__heading em { font-style: italic; color: var(--gold-accent); }
-    .manifesto__body {
-      font-family: var(--font-primary);
-      font-weight: 300;
-      font-size: 1.0625rem;
-      line-height: 1.75;
-      color: rgba(248, 242, 226, 0.78);
-    }
-    .manifesto__body p + p { margin-top: 1rem; }
-    .manifesto__quote {
-      font-family: var(--font-display);
-      font-style: italic;
-      font-size: 1.25rem;
-      line-height: 1.4;
-      color: var(--paper);
-      margin-top: 2rem;
-      padding-left: 1.25rem;
-      border-left: 2px solid var(--accent-color);
-    }
-    .manifesto__sign {
-      font-family: var(--font-mono);
-      font-size: 0.7rem;
-      letter-spacing: 0.22em;
-      text-transform: uppercase;
-      color: var(--gold-accent);
-      margin-top: 2rem;
-      display: flex;
-      align-items: center;
-      gap: 0.875rem;
-    }
-    .manifesto__sign::before {
-      content: '';
-      width: 28px;
-      height: 1px;
-      background: var(--gold-accent);
-    }
-
-    /* ---- Services — numbered list ---- */
-    .services-list {
-      padding: 6rem 0 7rem;
-      background: var(--paper);
-      position: relative;
-      z-index: 2;
-    }
-    .services-list__container {
-      max-width: 1320px;
-      margin: 0 auto;
-      padding: 0 1.25rem;
-    }
-    .services-list__head {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 1.5rem;
-      margin-bottom: 3.5rem;
-    }
-    @media (min-width: 900px) {
-      .services-list__head {
-        grid-template-columns: 1fr 1.4fr;
-        align-items: end;
-      }
-    }
-    .services-list__title {
-      font-family: var(--font-display);
-      font-weight: 400;
-      font-size: clamp(2.25rem, 5vw, 3.75rem);
-      line-height: 0.95;
-      color: var(--primary-color);
-      letter-spacing: -0.02em;
-      margin-top: 0.5rem;
-    }
-    .services-list__title em { font-style: italic; color: var(--accent-color); }
-    .services-list__sub {
-      color: var(--gray-600);
-      max-width: 56ch;
-      line-height: 1.6;
-    }
-
-    .service-row {
-      display: grid;
-      grid-template-columns: auto 1fr;
-      column-gap: 1.5rem;
-      row-gap: 0.5rem;
-      padding: 2rem 0;
-      border-top: 1px solid rgba(13, 34, 38, 0.18);
-      align-items: baseline;
-    }
-    .service-row:last-of-type { border-bottom: 1px solid rgba(13, 34, 38, 0.18); }
-    @media (min-width: 900px) {
-      .service-row {
-        grid-template-columns: 7rem 1fr 1.4fr;
-        gap: 2rem;
-      }
-    }
-    .service-row__num {
-      font-family: var(--font-display);
-      font-weight: 400;
-      font-style: italic;
-      font-size: clamp(2.5rem, 4.5vw, 3.5rem);
-      line-height: 1;
-      color: var(--accent-color);
-      font-feature-settings: "tnum";
-    }
-    .service-row__title {
-      font-family: var(--font-display);
-      font-weight: 400;
-      font-size: 1.625rem;
-      line-height: 1.1;
-      color: var(--primary-color);
-      letter-spacing: -0.01em;
-    }
-    .service-row__desc {
-      color: var(--gray-700);
-      font-size: 0.9375rem;
-      line-height: 1.65;
-      max-width: 52ch;
-    }
-    @media (max-width: 899px) {
-      .service-row__desc { grid-column: 1 / -1; }
-    }
-
-    /* ---- Contact — postcard style ---- */
-    .contact-section {
-      background: var(--paper-soft);
-      padding: 6rem 0 7rem;
-      position: relative;
-      z-index: 2;
-      border-top: 1px solid rgba(13, 34, 38, 0.08);
-    }
-    .contact-section__container {
-      max-width: 1320px;
-      margin: 0 auto;
-      padding: 0 1.25rem;
-    }
-    .contact-section__head {
-      margin-bottom: 3.5rem;
-    }
-    .contact-section__title {
-      font-family: var(--font-display);
-      font-weight: 400;
-      font-size: clamp(2.25rem, 5vw, 3.75rem);
-      line-height: 0.95;
-      color: var(--primary-color);
-      letter-spacing: -0.02em;
-      margin-top: 0.5rem;
-      max-width: 12ch;
-    }
-    .contact-section__title em { font-style: italic; color: var(--accent-color); }
-
-    .contact-section__grid {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 2.5rem;
-    }
-    @media (min-width: 1024px) {
-      .contact-section__grid { grid-template-columns: 1fr 1.1fr; gap: 4rem; align-items: start; }
-    }
-
-    .postcard {
-      background: var(--bone);
-      padding: 2.25rem;
-      border: 1px solid rgba(13, 34, 38, 0.1);
-      box-shadow: 14px 14px 0 var(--primary-color);
-      position: relative;
-    }
-    .postcard__stamp {
-      position: absolute;
-      top: 1rem;
-      right: 1rem;
-      width: 64px;
-      height: 80px;
-      border: 2px dashed var(--primary-color);
-      padding: 4px;
-      font-family: var(--font-mono);
-      font-size: 0.55rem;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      color: var(--primary-color);
-      display: flex;
-      align-items: flex-end;
-      justify-content: center;
-      text-align: center;
-      transform: rotate(4deg);
-      line-height: 1.15;
-    }
-    .postcard__stamp::before {
-      content: '';
-      position: absolute;
-      top: 14px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 36px;
-      height: 36px;
-      background: var(--accent-color);
-      border-radius: 50%;
-    }
-    .postcard__brand {
-      font-family: var(--font-display);
-      font-weight: 400;
-      font-size: 1.875rem;
-      color: var(--primary-color);
-      line-height: 1;
-      margin-bottom: 0.25rem;
-    }
-    .postcard__brand-sub {
-      font-family: var(--font-mono);
-      font-size: 0.65rem;
-      letter-spacing: 0.24em;
-      text-transform: uppercase;
-      color: var(--accent-color);
-      margin-bottom: 2rem;
-    }
-    .postcard__list {
+    .contact__info-list {
       display: flex;
       flex-direction: column;
-      gap: 1.25rem;
+      gap: 2rem;
+      margin-top: 2.5rem;
     }
-    .postcard__row {
+    .contact__info-item {
       display: flex;
-      flex-direction: column;
-      gap: 0.25rem;
+      gap: 1rem;
+      align-items: flex-start;
     }
-    .postcard__label {
-      font-family: var(--font-mono);
-      font-size: 0.6rem;
-      letter-spacing: 0.24em;
-      text-transform: uppercase;
-      color: var(--gray-500);
-    }
-    .postcard__value {
-      font-family: var(--font-display);
-      font-size: 1.125rem;
-      line-height: 1.4;
-      color: var(--primary-color);
-    }
-    .postcard__value a {
-      color: inherit;
-      border-bottom: 1px solid rgba(13, 34, 38, 0.2);
-      transition: border-color .2s, color .2s;
-    }
-    .postcard__value a:hover { color: var(--accent-color); border-color: var(--accent-color); }
-
-    .contact-form {
-      background: transparent;
-      padding: 0;
-      border: none;
-      box-shadow: none;
-    }
-    .contact-form__field {
-      display: flex;
-      flex-direction: column;
-      gap: 0.4rem;
-      margin-bottom: 1.5rem;
-    }
-    .contact-form__label {
-      font-family: var(--font-mono);
-      font-size: 0.65rem;
-      letter-spacing: 0.22em;
-      text-transform: uppercase;
-      color: var(--gray-500);
-    }
-    .contact-form__input,
-    .contact-form__textarea,
-    .contact-form__select {
-      width: 100%;
-      padding: 0.625rem 0;
-      border: none;
-      border-bottom: 1px solid rgba(13, 34, 38, 0.25);
-      border-radius: 0;
-      font-family: var(--font-display);
-      font-weight: 400;
-      font-size: 1.125rem;
-      color: var(--primary-color);
-      background: transparent;
-      transition: border-color .2s;
-    }
-    .contact-form__textarea {
-      min-height: 80px;
-      resize: vertical;
-      font-family: var(--font-primary);
-      font-size: 1rem;
-      line-height: 1.55;
-    }
-    .contact-form__input:focus,
-    .contact-form__textarea:focus,
-    .contact-form__select:focus {
-      outline: none;
-      border-bottom-color: var(--accent-color);
-    }
-    .contact-form__submit {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.875rem;
-      padding: 0.875rem 1.75rem;
-      background: var(--primary-color);
-      color: var(--paper);
-      font-family: var(--font-mono);
-      font-weight: 500;
-      font-size: 0.7rem;
-      letter-spacing: 0.22em;
-      text-transform: uppercase;
-      border-radius: 0;
-      border: 1px solid var(--primary-color);
-      transition: all .25s;
-      cursor: pointer;
-      margin-top: 0.75rem;
-    }
-    .contact-form__submit:hover {
-      background: var(--accent-color);
-      border-color: var(--accent-color);
-    }
-
-    /* ---- Footer — minimal ---- */
-    .footer {
-      background: var(--primary-dark);
-      color: var(--paper);
-      padding: 3.5rem 0 1.5rem;
-      border-top: 1px solid rgba(212, 168, 68, 0.15);
-      position: relative;
-      z-index: 2;
-    }
-    .footer__container {
-      max-width: 1320px;
-      margin: 0 auto;
-      padding: 0 1.25rem;
-    }
-    .footer__grid {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 2.5rem;
-      margin-bottom: 2.5rem;
-    }
-    @media (min-width: 768px) {
-      .footer__grid { grid-template-columns: 2fr 1fr 1fr 1fr; align-items: start; }
-    }
-    .footer__brand-row {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      margin-bottom: 1rem;
-    }
-    .footer__logo-img {
+    .contact__info-icon {
       width: 44px;
       height: 44px;
-      object-fit: contain;
-    }
-    .footer__brand-name {
-      font-family: var(--font-display);
-      font-size: 1.5rem;
-      color: var(--paper);
-      line-height: 1;
-    }
-    .footer__brand-sub {
-      font-family: var(--font-mono);
-      font-size: 0.6rem;
-      letter-spacing: 0.24em;
-      text-transform: uppercase;
-      color: var(--gold-accent);
-      margin-top: 4px;
-    }
-    .footer__desc {
-      font-size: 0.875rem;
-      line-height: 1.6;
-      color: rgba(248, 242, 226, 0.6);
-      max-width: 36ch;
-      margin-top: 1rem;
-    }
-    .footer__col h4 {
-      font-family: var(--font-mono);
-      font-size: 0.65rem;
-      letter-spacing: 0.24em;
-      text-transform: uppercase;
-      color: var(--gold-accent);
-      margin-bottom: 1rem;
-      font-weight: 500;
-    }
-    .footer__links { display: flex; flex-direction: column; gap: 0.625rem; }
-    .footer__link {
-      font-family: var(--font-display);
-      font-size: 1.0625rem;
-      color: rgba(248, 242, 226, 0.78);
-      transition: color .2s;
-    }
-    .footer__link:hover { color: var(--gold-accent); }
-    .footer__bottom {
-      padding-top: 1.5rem;
-      border-top: 1px solid rgba(248, 242, 226, 0.12);
-      display: flex;
-      justify-content: space-between;
-      gap: 1rem;
-      flex-wrap: wrap;
-    }
-    .footer__copyright,
-    .footer__credit {
-      font-family: var(--font-mono);
-      font-size: 0.65rem;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      color: rgba(248, 242, 226, 0.5);
-    }
-
-    /* ---- WhatsApp float (preserved with hide-in-hero) ---- */
-    .whatsapp-float {
-      position: fixed;
-      bottom: 24px;
-      right: 24px;
-      width: 56px;
-      height: 56px;
-      background: #25D366;
-      color: white;
-      border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 8px 24px rgba(37, 211, 102, 0.35);
-      z-index: 999;
-      transition: transform .3s ease, opacity .3s ease, visibility .3s ease;
+      background: var(--terracotta-tint);
+      color: var(--terracotta);
+      border-radius: 10px;
+      flex-shrink: 0;
     }
-    .whatsapp-float--hidden { opacity: 0; visibility: hidden; pointer-events: none; }
-    .whatsapp-float:hover { transform: scale(1.06); }
-    .whatsapp-float svg { width: 26px; height: 26px; }
+    .contact__info-label {
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--ink-mute);
+      margin-bottom: 0.25rem;
+    }
+    .contact__info-value {
+      font-family: var(--font-display);
+      font-size: 1.25rem;
+      color: var(--ink);
+      line-height: 1.3;
+    }
+    .contact__info-value a:hover { color: var(--terracotta); }
 
-    /* ---- Mobile refinements ---- */
-    @media (max-width: 768px) {
-      .editorial-hero__inner { padding: 2.5rem 1rem 4rem; }
-      .editorial-hero__visual {
-        aspect-ratio: 4/4.5;
-        max-width: 380px;
-      }
-      .featured-card {
-        position: relative;
-        left: auto;
-        bottom: auto;
-        margin-top: 1.5rem;
-        transform: rotate(-1.5deg);
-        width: 88%;
-        box-shadow: 8px 10px 0 var(--primary-color);
-      }
-      .editorial-hero__ring { display: none; }
-      .marquee__item { font-size: 1.25rem; }
-      .stats-band { padding: 3.5rem 1.25rem; }
-      .cartera, .services-list, .contact-section { padding: 4rem 0; }
-      .manifesto { padding: 4.5rem 0; }
-      .postcard { padding: 1.75rem 1.5rem; }
-      .postcard__stamp { width: 50px; height: 64px; }
-      .postcard__stamp::before { width: 28px; height: 28px; }
+    .contact__form {
+      background: var(--bone);
+      padding: 2.5rem;
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--line);
     }
+    @media (max-width: 600px) {
+      .contact__form { padding: 1.75rem; }
+    }
+    .contact__form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+    @media (max-width: 540px) { .contact__form-grid { grid-template-columns: 1fr; } }
+    .contact__form-grid .form__group { margin-bottom: 0; }
 
     /* ============================================================
-       MOTION SYSTEM
-       Editorial-feel animations: gentle, restrained, "turning the
-       page of a magazine" — never bouncy or playful.
-       Easing across the board: cubic-bezier(0.16, 1, 0.3, 1) — a
-       luxe ease-out that decelerates softly.
+       Notification
        ============================================================ */
-
-    @media (prefers-reduced-motion: no-preference) {
-
-      /* ---- HERO entrance keyframes ---- */
-      @keyframes fade-rise {
-        from { opacity: 0; transform: translateY(18px); }
-        to   { opacity: 1; transform: translateY(0); }
-      }
-      @keyframes fade-fall {
-        from { opacity: 0; transform: translateY(-10px); }
-        to   { opacity: 1; transform: translateY(0); }
-      }
-      @keyframes line-rise {
-        /* The inner span starts pushed below its line-height and rises into place */
-        from { transform: translateY(110%); opacity: 0; }
-        70%  { opacity: 1; }
-        to   { transform: translateY(0); opacity: 1; }
-      }
-      @keyframes scale-grow-x {
-        from { transform: scaleX(0); }
-        to   { transform: scaleX(1); }
-      }
-      @keyframes scale-fade {
-        from { opacity: 0; transform: scale(0.96); }
-        to   { opacity: 1; transform: scale(1); }
-      }
-      @keyframes photo-reveal {
-        from { opacity: 0; clip-path: inset(28% 0 0 0); transform: scale(1.06); }
-        to   { opacity: 1; clip-path: inset(0); transform: scale(1); }
-      }
-      @keyframes ring-arrive {
-        from { opacity: 0; transform: rotate(0deg) skewX(0) scale(0.78); }
-        to   { opacity: 0.95; transform: rotate(-12deg) skewX(-3deg) scale(1); }
-      }
-      @keyframes postcard-arrive {
-        from { opacity: 0; transform: translate(48px, 0) rotate(8deg); }
-        to   { opacity: 1; transform: translate(0, 0) rotate(-2deg); }
-      }
-      @keyframes postcard-arrive-mobile {
-        from { opacity: 0; transform: translate(0, 24px) rotate(4deg); }
-        to   { opacity: 1; transform: translate(0, 0) rotate(-1.5deg); }
-      }
-
-      /* Apply hero entrance — only on first paint, no infinite loops */
-      .vol-tag,
-      .editorial-hero__lede,
-      .editorial-hero__meta,
-      .editorial-hero__cta,
-      .editorial-hero__photo,
-      .editorial-hero__ring,
-      .featured-card {
-        opacity: 0;
-        animation-fill-mode: forwards;
-        animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
-      }
-      .vol-tag           { animation: fade-fall 700ms 100ms forwards cubic-bezier(0.16, 1, 0.3, 1); }
-      .editorial-hero__lede { animation: fade-rise 900ms 750ms forwards cubic-bezier(0.16, 1, 0.3, 1); }
-      .editorial-hero__meta { animation: fade-rise 800ms 900ms forwards cubic-bezier(0.16, 1, 0.3, 1); }
-      .editorial-hero__cta  { animation: scale-fade 800ms 1050ms forwards cubic-bezier(0.16, 1, 0.3, 1); }
-      .editorial-hero__photo { animation: photo-reveal 1200ms 450ms forwards cubic-bezier(0.16, 1, 0.3, 1); }
-      .editorial-hero__ring  { animation: ring-arrive 1400ms 850ms forwards cubic-bezier(0.16, 1, 0.3, 1); }
-      .featured-card         { animation: postcard-arrive 1100ms 1150ms forwards cubic-bezier(0.16, 1, 0.3, 1); }
-
-      @media (max-width: 768px) {
-        .featured-card { animation-name: postcard-arrive-mobile; }
-      }
-
-      /* Title — per-line rise (text comes up from below the line height) */
-      .editorial-hero__title-line {
-        display: block;
-        overflow: hidden;
-        padding-bottom: 0.05em;
-      }
-      .editorial-hero__title-line > * {
-        display: inline-block;
-        will-change: transform;
-        transform: translateY(110%);
-        opacity: 0;
-      }
-      .editorial-hero__title-line:nth-child(1) > * { animation: line-rise 900ms 250ms forwards cubic-bezier(0.16, 1, 0.3, 1); }
-      .editorial-hero__title-line:nth-child(2) > * { animation: line-rise 900ms 380ms forwards cubic-bezier(0.16, 1, 0.3, 1); }
-      .editorial-hero__title-line:nth-child(3) > * { animation: line-rise 900ms 520ms forwards cubic-bezier(0.16, 1, 0.3, 1); }
-
-      /* Meta strip: divider lines grow from left */
-      .editorial-hero__meta {
-        position: relative;
-        transform-origin: left center;
-      }
-
-      /* ---- Scroll reveal — drives off existing .reveal class set by app.js ---- */
-      .reveal {
-        opacity: 0;
-        transform: translateY(28px);
-        transition: opacity 800ms cubic-bezier(0.16, 1, 0.3, 1),
-                    transform 800ms cubic-bezier(0.16, 1, 0.3, 1);
-      }
-      .reveal.visible {
-        opacity: 1;
-        transform: translateY(0);
-      }
-      .reveal[data-delay="1"] { transition-delay: 80ms; }
-      .reveal[data-delay="2"] { transition-delay: 160ms; }
-      .reveal[data-delay="3"] { transition-delay: 240ms; }
-      .reveal[data-delay="4"] { transition-delay: 320ms; }
-      .reveal[data-delay="5"] { transition-delay: 400ms; }
-      .reveal[data-delay="6"] { transition-delay: 480ms; }
-
-      /* Stat cards: top border draws from left, num scales subtly */
-      .stat {
-        border-top-color: transparent !important;
-        background-image: linear-gradient(to right, var(--primary-color), var(--primary-color));
-        background-position: 0 0;
-        background-size: 0% 1px;
-        background-repeat: no-repeat;
-        transition: background-size 1100ms cubic-bezier(0.16, 1, 0.3, 1);
-      }
-      .stat.visible { background-size: 100% 1px; }
-      .stat .stat__num {
-        opacity: 0;
-        transform: translateY(14px);
-        transition: opacity 700ms 200ms cubic-bezier(0.16, 1, 0.3, 1),
-                    transform 700ms 200ms cubic-bezier(0.16, 1, 0.3, 1);
-      }
-      .stat.visible .stat__num { opacity: 1; transform: translateY(0); }
-      .stat .stat__label {
-        opacity: 0;
-        transform: translateY(8px);
-        transition: opacity 600ms 380ms ease,
-                    transform 600ms 380ms cubic-bezier(0.16, 1, 0.3, 1);
-      }
-      .stat.visible .stat__label { opacity: 1; transform: translateY(0); }
-
-      /* Service rows: top border draws from left when row enters view */
-      .service-row {
-        border-top-color: transparent !important;
-        background-image: linear-gradient(to right, rgba(13, 34, 38, 0.18), rgba(13, 34, 38, 0.18));
-        background-position: 0 0;
-        background-size: 0% 1px;
-        background-repeat: no-repeat;
-        transition: background-size 1100ms cubic-bezier(0.16, 1, 0.3, 1);
-      }
-      .service-row.visible { background-size: 100% 1px; }
-      .service-row__num,
-      .service-row__title,
-      .service-row__desc {
-        opacity: 0;
-        transform: translateY(16px);
-        transition: opacity 700ms cubic-bezier(0.16, 1, 0.3, 1),
-                    transform 700ms cubic-bezier(0.16, 1, 0.3, 1);
-      }
-      .service-row.visible .service-row__num   { opacity: 1; transform: translateY(0); transition-delay: 250ms; }
-      .service-row.visible .service-row__title { opacity: 1; transform: translateY(0); transition-delay: 350ms; }
-      .service-row.visible .service-row__desc  { opacity: 1; transform: translateY(0); transition-delay: 450ms; }
-
-      /* Property cards staggered reveal — uses nth-child since app.js renders in order */
-      .properties__grid > .property-card.reveal:nth-child(1)  { transition-delay: 0ms; }
-      .properties__grid > .property-card.reveal:nth-child(2)  { transition-delay: 70ms; }
-      .properties__grid > .property-card.reveal:nth-child(3)  { transition-delay: 140ms; }
-      .properties__grid > .property-card.reveal:nth-child(4)  { transition-delay: 210ms; }
-      .properties__grid > .property-card.reveal:nth-child(5)  { transition-delay: 70ms; }
-      .properties__grid > .property-card.reveal:nth-child(6)  { transition-delay: 140ms; }
-      .properties__grid > .property-card.reveal:nth-child(7)  { transition-delay: 210ms; }
-      .properties__grid > .property-card.reveal:nth-child(8)  { transition-delay: 280ms; }
-
-      /* ---- Hover refinements ---- */
-
-      /* Filter pills: solid fills from left */
-      .filter-btn {
-        position: relative;
-        overflow: hidden;
-        z-index: 0;
-        transition: color 280ms ease, border-color 280ms ease;
-      }
-      .filter-btn::before {
-        content: '';
-        position: absolute;
-        inset: 0;
-        background: var(--primary-color);
-        transform: scaleX(0);
-        transform-origin: left center;
-        transition: transform 380ms cubic-bezier(0.16, 1, 0.3, 1);
-        z-index: -1;
-      }
-      .filter-btn:hover::before { transform: scaleX(1); }
-      .filter-btn:hover { color: var(--paper); border-color: var(--primary-color); }
-      .filter-btn.active::before { transform: scaleX(1); }
-
-      /* Property card: title shifts to teal + arrow on hover */
-      .property-card__title {
-        transition: color 320ms ease, transform 500ms cubic-bezier(0.16, 1, 0.3, 1);
-      }
-      .property-card:hover .property-card__title { color: var(--accent-color); }
-      .property-card__location {
-        transition: transform 500ms cubic-bezier(0.16, 1, 0.3, 1);
-      }
-      .property-card:hover .property-card__location { transform: translateX(4px); }
-      .property-card__features {
-        transition: border-color 350ms ease;
-      }
-      .property-card:hover .property-card__features {
-        border-top-color: rgba(31, 95, 102, 0.45);
-      }
-
-      /* Service row hover: number color shift + slight scale, line ruling intensifies */
-      .service-row__num {
-        transition: color 350ms ease, transform 500ms cubic-bezier(0.16, 1, 0.3, 1);
-      }
-      .service-row__title {
-        transition: color 350ms ease, transform 500ms cubic-bezier(0.16, 1, 0.3, 1);
-      }
-      .service-row:hover .service-row__num   { color: var(--earth); transform: translateX(-4px); }
-      .service-row:hover .service-row__title { color: var(--accent-color); }
-
-      /* CTA arrow grows on hover */
-      .editorial-hero__cta-arrow {
-        transition: width 320ms cubic-bezier(0.16, 1, 0.3, 1);
-      }
-      .editorial-hero__cta:hover .editorial-hero__cta-arrow { width: 26px; }
-
-      /* Postcard: lifts and un-tilts on hover */
-      .postcard {
-        transition: transform 600ms cubic-bezier(0.16, 1, 0.3, 1),
-                    box-shadow 400ms ease;
-      }
-      .contact-section__grid .postcard:hover {
-        transform: translate(-4px, -4px);
-        box-shadow: 18px 18px 0 var(--accent-color);
-      }
-      .postcard__stamp {
-        transition: transform 600ms cubic-bezier(0.16, 1, 0.3, 1);
-      }
-      .contact-section__grid .postcard:hover .postcard__stamp {
-        transform: rotate(8deg) scale(1.05);
-      }
-
-      /* Featured card hover */
-      .featured-card {
-        transition: transform 600ms cubic-bezier(0.16, 1, 0.3, 1),
-                    box-shadow 400ms ease;
-      }
-      .featured-card:hover {
-        transform: rotate(0deg) translateY(-3px);
-      }
-
-      /* Nav link underline grows from center on hover */
-      @media (min-width: 768px) {
-        .header .nav__link:not(.active) {
-          position: relative;
-        }
-        .header .nav__link:not(.active)::after {
-          content: '';
-          position: absolute;
-          left: 50%;
-          right: 50%;
-          bottom: -1px;
-          height: 1px;
-          background: var(--accent-color);
-          transition: left 320ms cubic-bezier(0.16, 1, 0.3, 1),
-                      right 320ms cubic-bezier(0.16, 1, 0.3, 1);
-        }
-        .header .nav__link:not(.active):hover::after {
-          left: 0.85rem;
-          right: 0.85rem;
-        }
-      }
-
-      /* Search box: focus highlight slides under field labels */
-      .search-box__field {
-        transition: background-color 300ms ease;
-      }
-      .search-box__field:focus-within {
-        background-color: var(--paper);
-      }
-
-      /* Form fields: underline expands on focus */
-      .contact-form__input,
-      .contact-form__textarea,
-      .contact-form__select {
-        background-image: linear-gradient(to right, var(--accent-color), var(--accent-color));
-        background-position: 0 100%;
-        background-size: 0% 2px;
-        background-repeat: no-repeat;
-        transition: background-size 400ms cubic-bezier(0.16, 1, 0.3, 1),
-                    border-bottom-color 200ms ease;
-      }
-      .contact-form__input:focus,
-      .contact-form__textarea:focus,
-      .contact-form__select:focus {
-        background-size: 100% 2px;
-      }
-
-      /* Form submit: slight push on hover */
-      .contact-form__submit {
-        transition: background 280ms ease, transform 320ms cubic-bezier(0.16, 1, 0.3, 1);
-      }
-      .contact-form__submit:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 6px 20px rgba(13, 34, 38, 0.18);
-      }
-
-      /* Marquee: pause on hover */
-      .marquee:hover .marquee__track {
-        animation-play-state: paused;
-      }
-
-      /* Manifesto ring: very slow continuous rotation */
-      @keyframes ring-spin {
-        from { transform: rotate(-8deg); }
-        to   { transform: rotate(352deg); }
-      }
-      .manifesto::before {
-        animation: ring-spin 120s linear infinite;
-      }
-
-      /* WhatsApp float: gentle pulse when first appearing */
-      @keyframes wa-pop {
-        from { transform: scale(0.6); opacity: 0; }
-        to   { transform: scale(1); opacity: 1; }
-      }
-      .whatsapp-float:not(.whatsapp-float--hidden) {
-        animation: wa-pop 450ms cubic-bezier(0.16, 1, 0.3, 1);
-      }
-
-      /* Section eyebrow: leading line draws on reveal */
-      .reveal .eyebrow::before,
-      .eyebrow {
-        transition: opacity 600ms 200ms ease;
-      }
+    .notification {
+      position: fixed !important;
+      bottom: 1.5rem !important;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--ink) !important;
+      color: var(--bone) !important;
+      padding: 0.875rem 1.5rem !important;
+      border-radius: var(--radius-full) !important;
+      font-size: 0.875rem !important;
+      box-shadow: var(--shadow-lg) !important;
     }
-
-    /* ---- Reduced motion: kill heavy animation, keep accessibility ---- */
-    @media (prefers-reduced-motion: reduce) {
-      *,
-      *::before,
-      *::after {
-        animation-duration: 0.01ms !important;
-        animation-iteration-count: 1 !important;
-        transition-duration: 0.01ms !important;
-      }
-      .reveal { opacity: 1 !important; transform: none !important; }
-      .editorial-hero__title-line > * { transform: none !important; opacity: 1 !important; }
-      .vol-tag, .editorial-hero__lede, .editorial-hero__meta,
-      .editorial-hero__cta, .editorial-hero__photo,
-      .editorial-hero__ring, .featured-card { opacity: 1 !important; }
-    }
+    .notification--success { background: var(--success) !important; }
+    .notification--error { background: var(--error) !important; }
   </style>
 </head>
 <body>
 
-  <!-- Top utility ribbon -->
+  <!-- ============== Top utility ribbon ============== -->
   <div class="ribbon">
     <div class="ribbon__inner">
       <div class="ribbon__left">
-        <span>Lobos · Bs. As.</span>
-        <span class="ribbon__hide-mobile">Vol. 01 / 2026</span>
+        <span><span class="ribbon__dot"></span>Lobos · Buenos Aires</span>
+        <span class="ribbon__hide-mobile">Lun–Vie 9–18 hs · Sáb 9–13 hs</span>
       </div>
       <div class="ribbon__right">
-        <a href="tel:+542227521437" class="ribbon__hide-mobile">+54 2227 521437</a>
-        <a href="https://wa.me/542227522178" target="_blank" rel="noopener noreferrer">WhatsApp 522178</a>
-        <a href="https://instagram.com/valentinbressaninmobiliaria" target="_blank" rel="noopener noreferrer">Instagram</a>
+        <a href="tel:+542227522178" class="ribbon__hide-mobile">+54 2227 52-2178</a>
+        <a href="https://wa.me/542227522178">WhatsApp</a>
+        <a href="#" data-action="open-submit-modal">Publicá tu propiedad</a>
       </div>
     </div>
   </div>
 
-  <!-- Header -->
-  <header class="header" role="banner">
-    <div class="header__inner container">
-      <a href="#" class="header__logo" aria-label="Valentín Bressan Negocios Inmobiliarios - Inicio">
-        <img src="assets/images/logos/bressan-logoaccent.png" alt="Valentín Bressan" class="header__logo-icon" style="width: 44px; height: 44px; object-fit: contain;">
-        <div class="header__logo-text">
-          Valentín Bressan
-          <span>Negocios Inmobiliarios</span>
-        </div>
+  <!-- ============== Header ============== -->
+  <header class="header">
+    <div class="header__inner">
+      <a href="#" class="header__brand" aria-label="Vairo Propiedades — inicio">
+        <img src="assets/images/logos/vairo-logo.png" alt="" class="header__brand-mark">
+        <span class="header__brand-text">
+          <span class="header__brand-name">Vairo</span>
+          <span class="header__brand-tagline">Propiedades</span>
+        </span>
       </a>
 
-      <button class="header__menu-btn" aria-label="Abrir menú" aria-expanded="false">
-        <span></span>
-        <span></span>
-        <span></span>
-      </button>
-
-      <nav class="nav" role="navigation" aria-label="Navegación principal">
-        <ul class="nav__list">
-          <li><a href="#inicio" class="nav__link active">Inicio</a></li>
-          <li><a href="#propiedades" class="nav__link">En cartera</a></li>
-          <li><a href="#nosotros" class="nav__link">Quiénes somos</a></li>
-          <li><a href="#servicios" class="nav__link">Servicios</a></li>
-          <li><a href="#contacto" class="nav__link">Escribinos</a></li>
-        </ul>
+      <nav class="nav" aria-label="Navegación principal">
+        <a href="#properties" class="nav__link active">Propiedades</a>
+        <a href="#services" class="nav__link">Servicios</a>
+        <a href="#about" class="nav__link">Nosotros</a>
+        <a href="#contact" class="nav__link">Contacto</a>
+        <a href="#contact" class="nav__cta">Hablar con un asesor</a>
       </nav>
+
+      <button class="header__menu-btn" aria-label="Abrir menú" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
     </div>
   </header>
 
-  <main>
-
-    <!-- HERO ============================================ -->
-    <section id="inicio" class="editorial-hero">
-      <div class="editorial-hero__inner">
-
-        <!-- LEFT column: editorial title block -->
-        <div>
-          <p class="vol-tag">Desde Lobos · Bs. As. · Est. 2024</p>
-
-          <h1 class="editorial-hero__title">
-            <span class="editorial-hero__title-line"><span>La tierra</span></span>
-            <span class="editorial-hero__title-line"><em>que te</em></span>
-            <span class="editorial-hero__title-line"><span class="editorial-hero__title-mark">espera.</span></span>
+  <!-- ============== Hero ============== -->
+  <section class="hero">
+    <div class="container">
+      <div class="hero__grid">
+        <div class="hero__copy">
+          <span class="hero__eyebrow">Inmobiliaria · Lobos, Bs. As.</span>
+          <h1 class="hero__title">
+            Tu próxima casa,<br>
+            <em>quinta o campo</em><br>
+            con la <span class="underline">mirada Vairo</span>.
           </h1>
-
-          <p class="editorial-hero__lede">
-            Quintas, campos ganaderos, casas de pueblo y oportunidades urbanas
-            en Lobos y la región. Un equipo joven, un oficio antiguo: hacer
-            que cada negocio termine en un cliente que vuelve.
+          <p class="hero__lede">
+            Selección curada de propiedades en Lobos y la región. Acompañamos cada operación con criterio profesional, transparencia y conocimiento real del territorio.
           </p>
-
-          <div class="editorial-hero__meta">
-            <span><strong>13</strong> zonas</span>
-            <span><strong>04</strong> servicios</span>
-            <span><strong>+500</strong> ha. asesoradas</span>
+          <div class="hero__actions">
+            <a href="#properties" class="btn btn--primary btn--lg">
+              Ver propiedades
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            </a>
+            <a href="#contact" class="btn btn--outline btn--lg">Tasar mi propiedad</a>
           </div>
-
-          <a href="#propiedades" class="editorial-hero__cta">
-            Ver la cartera
-            <span class="editorial-hero__cta-arrow"></span>
-          </a>
-        </div>
-
-        <!-- RIGHT column: photo + featured postcard -->
-        <div class="editorial-hero__visual">
-          <div class="editorial-hero__photo" role="img" aria-label="Pampa al atardecer"></div>
-          <div class="editorial-hero__ring" aria-hidden="true"></div>
-
-          <div class="featured-card">
-            <div class="featured-card__label">
-              <span>Destacada</span>
-              <span>Nº 01 / 12</span>
+          <div class="hero__stats">
+            <div>
+              <div class="hero__stat-num">15<em>+</em></div>
+              <div class="hero__stat-label">Años en la zona</div>
             </div>
-            <div class="featured-card__title">Campo ganadero<br>en Salvador María</div>
-            <div class="featured-card__meta">
-              <span><strong>120 ha.</strong></span>
-              <span>Casco · Manga · Molino</span>
+            <div>
+              <div class="hero__stat-num">200<em>+</em></div>
+              <div class="hero__stat-label">Operaciones cerradas</div>
+            </div>
+            <div>
+              <div class="hero__stat-num">100<em>%</em></div>
+              <div class="hero__stat-label">Acompañamiento</div>
             </div>
           </div>
         </div>
 
-      </div>
-    </section>
-
-    <!-- MARQUEE ============================================ -->
-    <div class="marquee" aria-hidden="true">
-      <div class="marquee__track">
-        <span class="marquee__item">Quintas</span>
-        <span class="marquee__item--mark">·</span>
-        <span class="marquee__item">Campos ganaderos</span>
-        <span class="marquee__item--mark">·</span>
-        <span class="marquee__item">Casas de pueblo</span>
-        <span class="marquee__item--mark">·</span>
-        <span class="marquee__item">Terrenos sobre asfalto</span>
-        <span class="marquee__item--mark">·</span>
-        <span class="marquee__item">Departamentos</span>
-        <span class="marquee__item--mark">·</span>
-        <span class="marquee__item">Locales comerciales</span>
-        <span class="marquee__item--mark">★</span>
-        <!-- Duplicate for seamless loop -->
-        <span class="marquee__item">Quintas</span>
-        <span class="marquee__item--mark">·</span>
-        <span class="marquee__item">Campos ganaderos</span>
-        <span class="marquee__item--mark">·</span>
-        <span class="marquee__item">Casas de pueblo</span>
-        <span class="marquee__item--mark">·</span>
-        <span class="marquee__item">Terrenos sobre asfalto</span>
-        <span class="marquee__item--mark">·</span>
-        <span class="marquee__item">Departamentos</span>
-        <span class="marquee__item--mark">·</span>
-        <span class="marquee__item">Locales comerciales</span>
-        <span class="marquee__item--mark">★</span>
+        <div class="hero__visual">
+          <img src="assets/images/logos/vairo-logo.png" alt="" class="hero__monogram">
+          <div class="hero__visual-frame">
+            <img src="https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=1400&q=80" alt="Quinta moderna en Lobos al atardecer">
+            <div class="hero__visual-tag">
+              <div>
+                <div class="hero__visual-tag-label">Destacada</div>
+                <div class="hero__visual-tag-value">Quinta · Antonio Carboni</div>
+              </div>
+              <div style="text-align:right;">
+                <div class="hero__visual-tag-label">Desde</div>
+                <div class="hero__visual-tag-value">USD 100.000</div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
+  </section>
 
-    <!-- STATS BAND ============================================ -->
-    <section class="stats-band">
-      <div class="stats-band__grid">
-        <div class="stat reveal" data-delay="1">
-          <p class="stat__num"><span data-counter data-target="13">13</span></p>
-          <p class="stat__label">Zonas cubiertas en y alrededor de Lobos</p>
-        </div>
-        <div class="stat reveal" data-delay="2">
-          <p class="stat__num"><em><span data-counter data-target="4" data-pad="2">04</span></em></p>
-          <p class="stat__label">Servicios integrados, urbano y rural</p>
-        </div>
-        <div class="stat reveal" data-delay="3">
-          <p class="stat__num"><span data-counter data-target="500" data-prefix="+">+500</span><sup style="font-size:0.4em">ha</sup></p>
-          <p class="stat__label">Tierras ganaderas asesoradas</p>
-        </div>
-        <div class="stat reveal" data-delay="4">
-          <p class="stat__num"><span data-counter data-target="2024">2024</span></p>
-          <p class="stat__label">Año en que abrimos las puertas</p>
-        </div>
+  <!-- ============== Search box (floats below hero) ============== -->
+  <section class="search-section">
+    <div class="search-box">
+      <div class="search-box__tabs" role="tablist">
+        <button class="search-box__tab active" data-operation="todos">Todas</button>
+        <button class="search-box__tab" data-operation="venta">Venta</button>
+        <button class="search-box__tab" data-operation="alquiler">Alquiler</button>
       </div>
-    </section>
-
-    <!-- EN CARTERA ============================================ -->
-    <section id="propiedades" class="cartera">
-      <div class="cartera__container">
-        <header class="cartera__head">
-          <div class="reveal">
-            <p class="eyebrow">En cartera</p>
-            <h2 class="cartera__title">Propiedades<br><em>en venta y alquiler.</em></h2>
-          </div>
-          <p class="cartera__subtitle reveal" data-delay="2">
-            Una selección actualizada de quintas, casas, campos y terrenos en Lobos,
-            Antonio Carboni, Elvira, Navarro y zonas vecinas.
-          </p>
-          <p class="cartera__count reveal" data-delay="3">
-            Total<strong id="propertiesTotal">12</strong>propiedades
-          </p>
-        </header>
-
-        <!-- Search box (kept for app.js bindings) -->
-        <div class="search-box">
-          <div class="search-box__tabs">
-            <button class="search-box__tab active" data-operation="todos">Todos</button>
-            <button class="search-box__tab" data-operation="venta">Venta</button>
-            <button class="search-box__tab" data-operation="alquiler">Alquiler</button>
-          </div>
-
-          <form class="search-box__form">
-            <div class="search-box__field">
-              <label class="search-box__label" for="type-select">Tipo</label>
-              <select id="type-select" name="type" class="search-box__select">
-                <option value="">Todos los tipos</option>
-              </select>
-            </div>
-
-            <div class="search-box__field">
-              <label class="search-box__label" for="neighborhood-select">Zona</label>
-              <select id="neighborhood-select" name="neighborhood" class="search-box__select">
-                <option value="">Todas las zonas</option>
-              </select>
-            </div>
-
-            <div class="search-box__field">
-              <label class="search-box__label" for="min-price">Desde</label>
-              <input type="number" id="min-price" name="minPrice" class="search-box__input" placeholder="—">
-            </div>
-
-            <div class="search-box__field">
-              <label class="search-box__label" for="max-price">Hasta</label>
-              <input type="number" id="max-price" name="maxPrice" class="search-box__input" placeholder="—">
-            </div>
-
-            <button type="submit" class="search-box__btn">
-              Buscar
-            </button>
-          </form>
+      <form class="search-box__form" novalidate>
+        <div class="search-box__field">
+          <label class="search-box__label" for="type-select">Tipo</label>
+          <select id="type-select" name="type" class="search-box__select">
+            <option value="">Cualquier tipo</option>
+          </select>
         </div>
+        <div class="search-box__field">
+          <label class="search-box__label" for="neighborhood-select">Zona</label>
+          <select id="neighborhood-select" name="neighborhood" class="search-box__select">
+            <option value="">Todas las zonas</option>
+          </select>
+        </div>
+        <div class="search-box__field">
+          <label class="search-box__label">Precio (USD)</label>
+          <div class="search-box__price-range">
+            <input type="number" name="minPrice" placeholder="Mín." min="0">
+            <input type="number" name="maxPrice" placeholder="Máx." min="0">
+          </div>
+        </div>
+        <button type="submit" class="search-box__submit">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+          Buscar
+        </button>
+      </form>
+    </div>
+  </section>
 
-        <!-- Filter pills -->
-        <div class="filter-bar">
-          <button class="filter-btn active" data-filter="operation" data-value="todos">Todos</button>
-          <button class="filter-btn" data-filter="operation" data-value="venta">En venta</button>
-          <button class="filter-btn" data-filter="operation" data-value="alquiler">En alquiler</button>
+  <!-- ============== Properties ============== -->
+  <section class="properties" id="properties">
+    <div class="container">
+      <div class="filters-bar">
+        <div class="filters-bar__head">
+          <div>
+            <span class="section-eyebrow">Catálogo</span>
+            <h2 class="section-title">Propiedades <em>seleccionadas</em></h2>
+          </div>
+          <p class="section-lede">Casas, quintas, campos y terrenos en Lobos y la región.</p>
+        </div>
+        <div class="filters-bar__chips">
+          <button class="filter-btn active" data-filter="operation" data-value="todos">Todas</button>
+          <button class="filter-btn" data-filter="type" data-value="casa">Casas</button>
           <button class="filter-btn" data-filter="type" data-value="quinta">Quintas</button>
           <button class="filter-btn" data-filter="type" data-value="campo">Campos</button>
-          <button class="filter-btn" data-filter="type" data-value="casa">Casas</button>
           <button class="filter-btn" data-filter="type" data-value="terreno">Terrenos</button>
           <button class="filter-btn" data-filter="type" data-value="departamento">Departamentos</button>
-        </div>
-
-        <!-- Grid (rendered by app.js) -->
-        <div class="properties__grid">
-          <!-- Cards injected here -->
-        </div>
-
-        <div class="properties__load-more">
-          <button class="btn btn--outline load-more-btn">
-            Ver más propiedades
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <polyline points="6 9 12 15 18 9"></polyline>
-            </svg>
-          </button>
+          <button class="filter-btn" data-filter="type" data-value="local">Locales</button>
         </div>
       </div>
-    </section>
 
-    <!-- MANIFESTO / NOSOTROS ============================================ -->
-    <section id="nosotros" class="manifesto">
-      <div class="manifesto__container">
-        <div class="manifesto__grid">
-          <div class="reveal">
-            <p class="manifesto__eyebrow">Quiénes somos</p>
-            <h2 class="manifesto__heading">
-              Tierra,<br>
-              <em>casa</em> y<br>
-              oficio.
-            </h2>
+      <div class="properties__grid">
+        <!-- Renderizado por app.js -->
+      </div>
+
+      <div class="properties__load-more"></div>
+    </div>
+  </section>
+
+  <!-- ============== Services ============== -->
+  <section class="services" id="services">
+    <div class="container">
+      <div style="max-width: 720px;">
+        <span class="section-eyebrow">Lo que hacemos</span>
+        <h2 class="section-title">Un servicio inmobiliario <em>integral</em>, sin atajos.</h2>
+        <p class="section-lede">Desde la primera visita hasta la entrega de llaves: te acompañamos con criterio profesional en cada etapa.</p>
+      </div>
+
+      <div class="services__grid">
+        <article class="service-card reveal">
+          <div class="service-card__num">01 / Compra-venta</div>
+          <div class="service-card__icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
           </div>
-          <div class="manifesto__body">
-            <p class="reveal" data-delay="2">
-              Somos una inmobiliaria joven y dinámica, dedicada a brindar
-              asesoramiento integral en compra-venta de inmuebles, arrendamientos
-              y administración de propiedades urbanas y rurales — incluyendo la
-              gestión comercial, sanitaria y productiva de campos ganaderos.
-            </p>
-            <p class="reveal" data-delay="3">
-              Trabajamos en Lobos y toda la región sur de Buenos Aires, donde
-              cada operación combina conocimiento del territorio, compromiso con
-              cada cliente y una manera de hacer las cosas que invita a volver.
-            </p>
-            <blockquote class="manifesto__quote reveal" data-delay="4">
-              Que quienes ingresen como clientes salgan como amigos —
-              más felices y con la calidez de un servicio que los invite
-              a regresar para futuras inversiones.
-            </blockquote>
-            <p class="manifesto__sign reveal" data-delay="5">Valentín Bressan · Lobos, Bs. As.</p>
+          <h3 class="service-card__title">Compra-venta</h3>
+          <p class="service-card__text">Casas, quintas, departamentos y terrenos. Asesoramiento legal, valuación profesional y seguimiento desde la oferta hasta la escritura.</p>
+        </article>
+
+        <article class="service-card reveal">
+          <div class="service-card__num">02 / Alquileres</div>
+          <div class="service-card__icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+          </div>
+          <h3 class="service-card__title">Alquileres</h3>
+          <p class="service-card__text">Tradicionales y temporarios. Garantías, contratos transparentes y un equipo que filtra los buenos inquilinos antes de mostrarte.</p>
+        </article>
+
+        <article class="service-card reveal">
+          <div class="service-card__num">03 / Tasaciones</div>
+          <div class="service-card__icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+          </div>
+          <h3 class="service-card__title">Tasaciones</h3>
+          <p class="service-card__text">Valor real de mercado, basado en operaciones recientes y conocimiento de zona. Informe profesional, sin compromiso.</p>
+        </article>
+
+        <article class="service-card reveal">
+          <div class="service-card__num">04 / Campos</div>
+          <div class="service-card__icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 22h20"/><path d="M4 22V8l8-6 8 6v14"/><path d="M9 22v-6h6v6"/></svg>
+          </div>
+          <h3 class="service-card__title">Campos ganaderos</h3>
+          <p class="service-card__text">Selección, evaluación productiva y administración integral de establecimientos en Lobos, Salvador María y región.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============== About ============== -->
+  <section class="about" id="about">
+    <div class="container">
+      <div class="about__grid">
+        <div class="about__visual reveal">
+          <img src="https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=1200&q=80" alt="Casa de campo en Lobos">
+          <div class="about__visual-pattern"></div>
+        </div>
+        <div>
+          <span class="section-eyebrow">Sobre Vairo</span>
+          <h2 class="about__title">
+            Conocemos cada<br>
+            <em>esquina de Lobos</em>.
+          </h2>
+          <p class="about__text">
+            Nacimos para hacer las cosas bien. Cada propiedad que listamos pasa antes por una visita propia, y cada cliente recibe un acompañamiento real: sin promesas vacías, sin presiones, con la información que necesita para decidir tranquilo.
+          </p>
+          <p class="about__text">
+            Operamos en Lobos, Salvador María, Antonio Carboni, Elvira y zona — y cada operación se trabaja con la misma ética: clara, transparente y con criterio profesional.
+          </p>
+          <div class="about__values">
+            <div>
+              <div class="about__value-num">— 01</div>
+              <h4 class="about__value-title">Transparencia</h4>
+              <p class="about__value-text">Información completa y datos verificados desde el primer contacto.</p>
+            </div>
+            <div>
+              <div class="about__value-num">— 02</div>
+              <h4 class="about__value-title">Conocimiento local</h4>
+              <p class="about__value-text">Más de 15 años recorriendo cada zona de la región.</p>
+            </div>
+            <div>
+              <div class="about__value-num">— 03</div>
+              <h4 class="about__value-title">Criterio profesional</h4>
+              <p class="about__value-text">Asesoramiento legal, técnico y comercial en cada operación.</p>
+            </div>
+            <div>
+              <div class="about__value-num">— 04</div>
+              <h4 class="about__value-title">Acompañamiento</h4>
+              <p class="about__value-text">Estamos antes, durante y después de la firma. Sin desaparecer.</p>
+            </div>
           </div>
         </div>
       </div>
-    </section>
+    </div>
+  </section>
 
-    <!-- SERVICES ============================================ -->
-    <section id="servicios" class="services-list">
-      <div class="services-list__container">
-        <header class="services-list__head">
-          <div class="reveal">
-            <p class="eyebrow">Qué hacemos</p>
-            <h2 class="services-list__title">Cuatro<br><em>servicios,</em><br>una mirada.</h2>
+  <!-- ============== CTA banner ============== -->
+  <section class="banner-cta">
+    <div class="container">
+      <div class="banner-cta__inner">
+        <div class="banner-cta__content">
+          <div class="banner-cta__eyebrow">¿Querés vender o alquilar?</div>
+          <h2 class="banner-cta__title">Te ayudamos a poner en valor <em>tu propiedad</em>.</h2>
+          <p class="banner-cta__text">
+            Tasación profesional sin compromiso, fotografía profesional incluida, y una red de compradores activos en Lobos y la región.
+          </p>
+          <div class="banner-cta__actions">
+            <a href="#" class="btn btn--primary btn--lg" data-action="open-submit-modal">Publicar mi propiedad</a>
+            <a href="https://wa.me/542227522178" class="btn btn--outline btn--lg">Hablar por WhatsApp</a>
           </div>
-          <p class="services-list__sub reveal" data-delay="2">
-            Acompañamos cada operación de principio a fin: desde la primera
-            consulta y la tasación hasta la firma, la entrega y la administración
-            posterior. Trabajamos con la misma vara para casas urbanas, quintas
-            de fin de semana y campos ganaderos productivos.
-          </p>
-        </header>
-
-        <article class="service-row reveal">
-          <div class="service-row__num">01</div>
-          <h3 class="service-row__title">Compra-venta<br>de inmuebles</h3>
-          <p class="service-row__desc">
-            Te acompañamos en cada paso del proceso, desde la primera consulta
-            hasta la firma de la escritura. Casas, departamentos, quintas y
-            terrenos urbanos o rurales, con propuestas seguras y transparentes.
-          </p>
-        </article>
-
-        <article class="service-row reveal">
-          <div class="service-row__num">02</div>
-          <h3 class="service-row__title">Alquileres y<br>administración</h3>
-          <p class="service-row__desc">
-            Gestionamos contratos de alquiler y administración integral de
-            propiedades urbanas y rurales: garantías verificadas, cobranzas
-            puntuales y un seguimiento permanente que te deja tranquilo.
-          </p>
-        </article>
-
-        <article class="service-row reveal">
-          <div class="service-row__num">03</div>
-          <h3 class="service-row__title">Tasaciones<br>profesionales</h3>
-          <p class="service-row__desc">
-            Tasaciones actualizadas al valor real de mercado, basadas en el
-            conocimiento profundo de la zona, las particularidades del campo
-            argentino y el ritmo de los pueblos del interior.
-          </p>
-        </article>
-
-        <article class="service-row reveal">
-          <div class="service-row__num">04</div>
-          <h3 class="service-row__title">Gestión de<br>campos ganaderos</h3>
-          <p class="service-row__desc">
-            Asesoramos en la gestión comercial, sanitaria y productiva de
-            establecimientos ganaderos. Una mirada integral del negocio
-            del campo, articulada con productores y profesionales locales.
-          </p>
-        </article>
+        </div>
       </div>
-    </section>
+    </div>
+  </section>
 
-    <!-- CONTACT ============================================ -->
-    <section id="contacto" class="contact-section">
-      <div class="contact-section__container">
-        <header class="contact-section__head reveal">
-          <p class="eyebrow">Escribinos</p>
-          <h2 class="contact-section__title"><em>Hablemos</em><br>de lo que buscás.</h2>
-        </header>
+  <!-- ============== Contact ============== -->
+  <section class="contact" id="contact">
+    <div class="container">
+      <div class="contact__grid">
+        <div>
+          <span class="section-eyebrow">Hablemos</span>
+          <h2 class="section-title">Contanos qué <em>buscás</em>.</h2>
+          <p class="section-lede">Te respondemos por el canal que prefieras. Sin formularios eternos.</p>
 
-        <div class="contact-section__grid">
-
-          <!-- LEFT: Postcard -->
-          <aside class="postcard reveal" data-delay="2">
-            <div class="postcard__stamp">Lobos<br>Bs. As.</div>
-            <p class="postcard__brand">Valentín Bressan</p>
-            <p class="postcard__brand-sub">Negocios Inmobiliarios</p>
-
-            <div class="postcard__list">
-              <div class="postcard__row">
-                <span class="postcard__label">Dirección</span>
-                <span class="postcard__value">Hipólito Yrigoyen 1217<br>Lobos, Bs. As.</span>
+          <div class="contact__info-list">
+            <div class="contact__info-item">
+              <div class="contact__info-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.37 1.9.72 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.35 1.85.59 2.81.72A2 2 0 0 1 22 16.92z"/></svg>
               </div>
-              <div class="postcard__row">
-                <span class="postcard__label">Teléfonos</span>
-                <span class="postcard__value">
-                  Oficina: <a href="tel:+542227521437">2227-521437</a><br>
-                  WhatsApp: <a href="https://wa.me/542227522178" target="_blank" rel="noopener noreferrer">2227-522178</a>
-                </span>
-              </div>
-              <div class="postcard__row">
-                <span class="postcard__label">Email</span>
-                <span class="postcard__value">
-                  <a href="mailto:contacto@valentinbressaninmobiliaria.com.ar">contacto@valentinbressaninmobiliaria.com.ar</a><br>
-                  <a href="mailto:bressaninmobiliaria@gmail.com">bressaninmobiliaria@gmail.com</a>
-                </span>
-              </div>
-              <div class="postcard__row">
-                <span class="postcard__label">Horarios</span>
-                <span class="postcard__value">Lun a Vie · 9–12 hs<br>Lun a Vie · 16–19 hs</span>
+              <div>
+                <div class="contact__info-label">Teléfono</div>
+                <div class="contact__info-value"><a href="tel:+542227522178">+54 2227 52-2178</a></div>
               </div>
             </div>
-          </aside>
-
-          <!-- RIGHT: Form -->
-          <div class="contact__form reveal" data-delay="3">
-            <form>
-              <div class="contact-form__field">
-                <label class="contact-form__label" for="contact-name">Nombre</label>
-                <input type="text" id="contact-name" name="name" class="contact-form__input" required>
+            <div class="contact__info-item">
+              <div class="contact__info-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
               </div>
-
-              <div class="contact-form__field">
-                <label class="contact-form__label" for="contact-email">Email</label>
-                <input type="email" id="contact-email" name="email" class="contact-form__input" required>
+              <div>
+                <div class="contact__info-label">WhatsApp</div>
+                <div class="contact__info-value"><a href="https://wa.me/542227522178">+54 2227 52-2178</a></div>
               </div>
-
-              <div class="contact-form__field">
-                <label class="contact-form__label" for="contact-phone">Teléfono</label>
-                <input type="tel" id="contact-phone" name="phone" class="contact-form__input">
+            </div>
+            <div class="contact__info-item">
+              <div class="contact__info-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
               </div>
+              <div>
+                <div class="contact__info-label">Oficina</div>
+                <div class="contact__info-value">Lobos, Buenos Aires</div>
+              </div>
+            </div>
+            <div class="contact__info-item">
+              <div class="contact__info-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+              </div>
+              <div>
+                <div class="contact__info-label">Email</div>
+                <div class="contact__info-value"><a href="mailto:hola@vairopropiedades.com.ar">hola@vairopropiedades.com.ar</a></div>
+              </div>
+            </div>
+          </div>
+        </div>
 
-              <div class="contact-form__field">
-                <label class="contact-form__label" for="contact-subject">Asunto</label>
-                <select id="contact-subject" name="subject" class="contact-form__select">
-                  <option value="">Seleccionar…</option>
+        <div class="contact__form">
+          <form>
+            <div class="contact__form-grid">
+              <div class="form__group">
+                <label class="form__label" for="contact-name">Nombre</label>
+                <input type="text" id="contact-name" name="name" class="form__input" required>
+              </div>
+              <div class="form__group">
+                <label class="form__label" for="contact-email">Email</label>
+                <input type="email" id="contact-email" name="email" class="form__input" required>
+              </div>
+            </div>
+            <div class="contact__form-grid" style="margin-top: 1rem;">
+              <div class="form__group">
+                <label class="form__label" for="contact-phone">Teléfono</label>
+                <input type="tel" id="contact-phone" name="phone" class="form__input">
+              </div>
+              <div class="form__group">
+                <label class="form__label" for="contact-subject">Asunto</label>
+                <select id="contact-subject" name="subject" class="form__select">
                   <option value="comprar">Quiero comprar</option>
                   <option value="vender">Quiero vender</option>
                   <option value="alquilar">Quiero alquilar</option>
                   <option value="tasacion">Solicitar tasación</option>
-                  <option value="campo">Asesoramiento campo</option>
                   <option value="otro">Otro</option>
                 </select>
               </div>
-
-              <div class="contact-form__field">
-                <label class="contact-form__label" for="contact-message">Mensaje</label>
-                <textarea id="contact-message" name="message" class="contact-form__textarea" rows="3" placeholder="Contanos en qué podemos ayudarte…"></textarea>
-              </div>
-
-              <button type="submit" class="contact-form__submit">
-                Enviar mensaje
-                <span class="editorial-hero__cta-arrow"></span>
-              </button>
-            </form>
-          </div>
-
+            </div>
+            <div class="form__group" style="margin-top: 1rem;">
+              <label class="form__label" for="contact-message">Mensaje</label>
+              <textarea id="contact-message" name="message" class="form__textarea" rows="4" placeholder="Contanos qué estás buscando..."></textarea>
+            </div>
+            <button type="submit" class="form__submit">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+              Enviar consulta por WhatsApp
+            </button>
+          </form>
         </div>
       </div>
-    </section>
-  </main>
+    </div>
+  </section>
 
-  <!-- Footer -->
-  <footer class="footer" role="contentinfo">
-    <div class="footer__container">
+  <!-- ============== Footer ============== -->
+  <footer class="footer">
+    <div class="container">
       <div class="footer__grid">
-        <div class="footer__brand">
-          <div class="footer__brand-row">
-            <img src="assets/images/logos/bressan-logoaccent-dark.png" alt="" class="footer__logo-img">
-            <div>
-              <div class="footer__brand-name">Valentín Bressan</div>
-              <div class="footer__brand-sub">Negocios Inmobiliarios</div>
-            </div>
-          </div>
-          <p class="footer__desc">
-            Tierra, casa y oficio. Inmobiliaria con sede en Lobos, Bs. As.,
-            especializada en propiedades urbanas y rurales del corredor sur.
+        <div>
+          <a href="#" class="footer__brand">
+            <img src="assets/images/logos/vairo-logo.png" alt="">
+            <span class="footer__brand-name">Vairo Propiedades</span>
+          </a>
+          <p class="footer__about">
+            Inmobiliaria en Lobos, Buenos Aires. Casas, quintas, campos y terrenos. Operaciones acompañadas con criterio profesional.
           </p>
-        </div>
-
-        <div class="footer__col">
-          <h4>Sitio</h4>
-          <div class="footer__links">
-            <a href="#inicio" class="footer__link">Inicio</a>
-            <a href="#propiedades" class="footer__link">En cartera</a>
-            <a href="#nosotros" class="footer__link">Quiénes somos</a>
-            <a href="#servicios" class="footer__link">Servicios</a>
-            <a href="#contacto" class="footer__link">Escribinos</a>
+          <div class="footer__social">
+            <a href="https://instagram.com" aria-label="Instagram">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+            </a>
+            <a href="https://facebook.com" aria-label="Facebook">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+            </a>
+            <a href="https://wa.me/542227522178" aria-label="WhatsApp">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+            </a>
           </div>
         </div>
 
-        <div class="footer__col">
-          <h4>Cartera</h4>
-          <div class="footer__links">
-            <a href="#propiedades" class="footer__link">Quintas</a>
-            <a href="#propiedades" class="footer__link">Campos</a>
-            <a href="#propiedades" class="footer__link">Casas</a>
-            <a href="#propiedades" class="footer__link">Terrenos</a>
-          </div>
+        <div>
+          <div class="footer__title">Inmobiliaria</div>
+          <ul class="footer__list">
+            <li><a href="#properties">Propiedades</a></li>
+            <li><a href="#services">Servicios</a></li>
+            <li><a href="#about">Nosotros</a></li>
+            <li><a href="#contact">Contacto</a></li>
+          </ul>
         </div>
 
-        <div class="footer__col">
-          <h4>Contacto</h4>
-          <div class="footer__links">
-            <a href="tel:+542227521437" class="footer__link">2227-521437</a>
-            <a href="https://wa.me/542227522178" class="footer__link" target="_blank" rel="noopener noreferrer">WhatsApp</a>
-            <a href="mailto:contacto@valentinbressaninmobiliaria.com.ar" class="footer__link">Email</a>
-            <a href="https://instagram.com/valentinbressaninmobiliaria" class="footer__link" target="_blank" rel="noopener noreferrer">Instagram</a>
-          </div>
+        <div>
+          <div class="footer__title">Servicios</div>
+          <ul class="footer__list">
+            <li><a href="#services">Compra-venta</a></li>
+            <li><a href="#services">Alquileres</a></li>
+            <li><a href="#services">Tasaciones</a></li>
+            <li><a href="#services">Campos</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <div class="footer__title">Contacto</div>
+          <ul class="footer__list">
+            <li><a href="tel:+542227522178">+54 2227 52-2178</a></li>
+            <li><a href="https://wa.me/542227522178">WhatsApp</a></li>
+            <li><a href="mailto:hola@vairopropiedades.com.ar">hola@vairopropiedades.com.ar</a></li>
+            <li>Lobos, Buenos Aires</li>
+          </ul>
         </div>
       </div>
 
       <div class="footer__bottom">
-        <p class="footer__copyright">© 2026 Valentín Bressan · Negocios Inmobiliarios</p>
-        <p class="footer__credit">Lobos · Bs. As. · Vol. 01</p>
+        <span>© <span id="current-year"></span> Vairo Propiedades. Todos los derechos reservados.</span>
+        <span>Diseño y desarrollo · VentureByte</span>
       </div>
     </div>
   </footer>
 
-  <!-- WhatsApp Floating Button (hidden during hero on mobile) -->
-  <a href="https://wa.me/542227522178?text=Hola,%20me%20interesa%20consultar%20por%20una%20propiedad"
-     class="whatsapp-float whatsapp-float--hidden"
-     target="_blank"
-     rel="noopener noreferrer"
-     aria-label="Contactar por WhatsApp">
-    <svg viewBox="0 0 24 24" fill="currentColor">
-      <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
-    </svg>
-  </a>
-
   <script>
-    // ---------------- Motion utilities ----------------
-    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-    // Hide the WhatsApp float while in the hero (avoid covering CTAs).
-    (function () {
-      const btn = document.querySelector('.whatsapp-float');
-      if (!btn) return;
-      const hero = document.querySelector('.editorial-hero');
-      const threshold = () => Math.max(120, (hero?.offsetHeight || 600) * 0.35);
-      const update = () => {
-        if (window.scrollY < threshold()) btn.classList.add('whatsapp-float--hidden');
-        else btn.classList.remove('whatsapp-float--hidden');
-      };
-      update();
-      window.addEventListener('scroll', update, { passive: true });
-      window.addEventListener('resize', update);
-    })();
-
-    // Update properties total in the head section once data loads
-    window.addEventListener('properties-loaded', () => {
-      const total = (window.PROPERTIES_DATA?.properties || []).length;
-      const el = document.getElementById('propertiesTotal');
-      if (el) el.textContent = String(total).padStart(2, '0');
-    });
-
-    // ---------------- Counter animation for stats ----------------
-    (function () {
-      const counters = document.querySelectorAll('[data-counter]');
-      if (!counters.length) return;
-      if (prefersReducedMotion) {
-        counters.forEach(el => {
-          const target = parseFloat(el.dataset.target);
-          const pad = parseInt(el.dataset.pad || '0', 10);
-          const prefix = el.dataset.prefix || '';
-          let str = String(Math.round(target));
-          if (pad > 0) str = str.padStart(pad, '0');
-          el.textContent = prefix + str;
-        });
-        return;
-      }
-      const ease = t => 1 - Math.pow(1 - t, 3);
-      const animate = el => {
-        const target = parseFloat(el.dataset.target);
-        const pad = parseInt(el.dataset.pad || '0', 10);
-        const prefix = el.dataset.prefix || '';
-        const duration = Math.min(1600, 700 + Math.log10(Math.max(target, 1)) * 350);
-        let start;
-        const tick = now => {
-          if (!start) start = now;
-          const t = Math.min(1, (now - start) / duration);
-          const v = Math.round(target * ease(t));
-          let str = String(v);
-          if (pad > 0) str = str.padStart(pad, '0');
-          el.textContent = prefix + str;
-          if (t < 1) requestAnimationFrame(tick);
-        };
-        requestAnimationFrame(tick);
-      };
-      const obs = new IntersectionObserver(entries => {
-        entries.forEach(entry => {
-          if (!entry.isIntersecting) return;
-          animate(entry.target);
-          obs.unobserve(entry.target);
-        });
-      }, { threshold: 0.5, rootMargin: '0px 0px -10% 0px' });
-      counters.forEach(c => obs.observe(c));
-    })();
-
+    document.getElementById('current-year').textContent = new Date().getFullYear();
   </script>
 
-  <script src="assets/js/api.js"></script>
   <script src="assets/js/properties-data.js"></script>
+  <script src="assets/js/api.js"></script>
   <script src="assets/js/app.js"></script>
-
 </body>
 </html>
