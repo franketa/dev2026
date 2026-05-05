@@ -1,5 +1,5 @@
 {
-  "name": "bressan-inmobiliaria",
+  "name": "vairo-propiedades",
   "private": true,
   "scripts": {
     "start": "node server/index.js",

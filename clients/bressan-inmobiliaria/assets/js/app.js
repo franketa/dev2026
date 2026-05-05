@@ -1,5 +1,5 @@
 /**
- * VALENTÍN BRESSAN - Negocios Inmobiliarios | Main Application
+ * VAIRO PROPIEDADES | Main Application
  * Mobile-first real estate website
  */
 

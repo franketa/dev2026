@@ -1,6 +1,6 @@
-# Valentín Bressan — Negocios Inmobiliarios
+# Vairo Propiedades
 
-Sitio web de Valentín Bressan, inmobiliaria de Lobos, Bs. As. Listado de propiedades urbanas y rurales (casas, quintas, campos, departamentos, terrenos), búsqueda con filtros, panel de administración para alta/edición/baja de propiedades y subida de imágenes.
+Sitio web de Vairo Propiedades — inmobiliaria de Lobos, Bs. As. Listado de propiedades urbanas y rurales (casas, quintas, campos, departamentos, terrenos), búsqueda con filtros, panel de administración para alta/edición/baja de propiedades y subida de imágenes.
 
 ## Stack
 
@@ -11,7 +11,7 @@ Sitio web de Valentín Bressan, inmobiliaria de Lobos, Bs. As. Listado de propie
 ## Estructura
 
 ```
-bressan-inmobiliaria/
+vairo-propiedades/
 ├── index.html              Landing pública
 ├── property.html           Detalle de propiedad
 ├── admin.html              Panel de admin (login + CRUD propiedades)
@@ -19,17 +19,17 @@ bressan-inmobiliaria/
 ├── Dockerfile
 ├── .dockerignore / .gitignore
 ├── assets/
-│   ├── css/styles.css      Estilos (paleta teal, mobile-first)
+│   ├── css/styles.css      Estilos (paleta terracota, mobile-first)
 │   ├── js/
 │   │   ├── api.js          Cliente HTTP (fetch + JWT)
 │   │   ├── app.js          Lógica de la landing
 │   │   └── properties-data.js  Carga inicial con fallback
 │   └── images/
-│       ├── logos/          Logos de marca
+│       ├── logos/          Logos de marca (vairo-logo.png)
 │       ├── hero/           Imagen de fondo del hero
 │       └── properties/     (no usada — las imágenes van en /uploads)
 ├── data/
-│   ├── properties.json     Seed inicial (12 propiedades placeholder)
+│   ├── properties.json     Seed inicial
 │   └── db.sqlite           SQLite (creada automáticamente)
 ├── server/
 │   ├── index.js            Express bootstrap
@@ -55,8 +55,8 @@ Por defecto corre en el puerto **3000**. Override con `PORT=xxxx npm start`.
 
 Al primer arranque (BD vacía) se crea el admin por defecto:
 
-- **Email:** `admin@bressan.com`
-- **Password:** `bressan2026`
+- **Email:** `admin@vairopropiedades.com.ar`
+- **Password:** `vairo2026`
 
 ⚠️ Cambiar antes del deploy a producción. Para cambiar la contraseña, usar bcrypt y un `UPDATE admin_users` en la BD, o borrar el registro y reiniciar el servidor con la variable de entorno deseada (no hay endpoint de reset por seguridad).
 
@@ -65,7 +65,7 @@ Al primer arranque (BD vacía) se crea el admin por defecto:
 | Variable | Default | Para qué sirve |
 |---|---|---|
 | `PORT` | `3000` | Puerto HTTP del servidor |
-| `JWT_SECRET` | `bressan-dev-secret-change-in-production` | Secreto para firmar tokens. **Obligatorio cambiar en producción.** |
+| `JWT_SECRET` | `vairo-dev-secret-change-in-production` | Secreto para firmar tokens. **Obligatorio cambiar en producción.** |
 
 ## Datos persistentes (¡importante para deploy!)
 
@@ -78,11 +78,13 @@ Estos directorios deben sobrevivir entre redeploys. En Coolify hay que montar vo
 
 ## Marca
 
-- Tipografías: Asap (sans, UI) + Cormorant Garamond (serif, headings)
+- Tipografías: Inter (sans, UI) + Fraunces (serif, headings) + JetBrains Mono (detalles editoriales)
 - Paleta:
-  - Primary: `#0d2226` (teal muy oscuro, casi negro)
-  - Accent: `#1F5F66` (teal del logo)
-  - Gold accent: `#D4A844` (complemento cálido)
+  - Terracota: `#D9622E` (color principal del logo)
+  - Terracota profundo: `#B84F22` (hover / acentos densos)
+  - Crema/sand: `#E8DDC9` (color del monograma)
+  - Tinta cálida: `#1A1410` (texto y backgrounds densos)
+  - Oro: `#C39A3D` (acento estados “reservado”)
 
 ## Endpoints API
 

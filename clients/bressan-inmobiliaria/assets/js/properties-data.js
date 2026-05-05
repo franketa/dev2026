@@ -1,5 +1,5 @@
 /**
- * VALENTÍN BRESSAN - Negocios Inmobiliarios | Properties Data
+ * VAIRO PROPIEDADES | Properties Data
  * Fetches properties from the API, falls back to hardcoded defaults
  */
 (async function() {

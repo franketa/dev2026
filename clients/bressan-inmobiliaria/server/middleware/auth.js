@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken');
 
-const JWT_SECRET = process.env.JWT_SECRET || 'bressan-dev-secret-change-in-production';
+const JWT_SECRET = process.env.JWT_SECRET || 'vairo-dev-secret-change-in-production';
 
 function authMiddleware(req, res, next) {
   const header = req.headers.authorization;

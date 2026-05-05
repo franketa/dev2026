@@ -1,5 +1,5 @@
 /**
- * VALENTÍN BRESSAN - Negocios Inmobiliarios | API Client
+ * VAIRO PROPIEDADES | API Client
  * Capa de acceso a datos que conecta con el backend Express + SQLite
  */
 window.API = {
