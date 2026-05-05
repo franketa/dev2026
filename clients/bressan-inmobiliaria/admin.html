@@ -3,29 +3,34 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Valentín Bressan | Panel de Administracion</title>
-  <link rel="icon" type="image/png" href="assets/images/logos/bressan-logoaccent.png">
+  <title>Vairo Propiedades · Panel de Administración</title>
+  <link rel="icon" type="image/png" href="assets/images/logos/vairo-logo.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..600;1,9..144,400..600&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <style>
     :root {
-      --primary: #0d2226;
-      --primary-light: #1a3a40;
-      --accent: #1F5F66;
-      --accent-light: #2d8088;
-      --gold: #D4A844;
-      --gold-light: #e0be6a;
-      --gray-50: #f9fafb;
-      --gray-100: #f3f4f6;
-      --gray-200: #e5e7eb;
-      --gray-300: #d1d5db;
-      --gray-500: #6b7280;
-      --gray-700: #374151;
-      --gray-900: #111827;
-      --success: #10b981;
-      --warning: #f59e0b;
-      --error: #ef4444;
+      --primary: #1A1410;
+      --primary-light: #2A2018;
+      --accent: #D9622E;
+      --accent-light: #E8845A;
+      --accent-deep: #B84F22;
+      --gold: #C39A3D;
+      --gold-light: #D9B658;
+      --sand: #E8DDC9;
+      --sand-soft: #F2EAD9;
+      --bone: #FBF7EC;
+      --gray-50: #FBF7EC;
+      --gray-100: #F2EAD9;
+      --gray-200: #E8DDC9;
+      --gray-300: #DCCDB8;
+      --gray-400: #B8AC9C;
+      --gray-500: #6B5D4F;
+      --gray-700: #3A2F25;
+      --gray-900: #1A1410;
+      --success: #4F8A5E;
+      --warning: #C68A2C;
+      --error: #B84F4F;
     }
 
     * {
@@ -35,7 +40,7 @@
     }
 
     body {
-      font-family: 'Manrope', sans-serif;
+      font-family: 'Inter', sans-serif;
       background: var(--gray-50);
       color: var(--gray-900);
       line-height: 1.6;
@@ -49,8 +54,8 @@
       justify-content: center;
       background: var(--primary);
       background-image:
-        radial-gradient(ellipse at 20% 50%, rgba(31, 95, 102, 0.15) 0%, transparent 60%),
-        radial-gradient(ellipse at 80% 50%, rgba(212, 168, 68, 0.08) 0%, transparent 60%);
+        radial-gradient(ellipse at 20% 50%, rgba(217, 98, 46, 0.20) 0%, transparent 60%),
+        radial-gradient(ellipse at 80% 50%, rgba(232, 221, 201, 0.06) 0%, transparent 60%);
       padding: 1rem;
     }
 
@@ -131,8 +136,8 @@
 
     .login-input:focus {
       outline: none;
-      border-color: var(--gold);
-      box-shadow: 0 0 0 3px rgba(212, 168, 68, 0.15);
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(217, 98, 46, 0.20);
       background: rgba(255,255,255,0.08);
     }
 
@@ -359,7 +364,7 @@
     input:focus, select:focus, textarea:focus {
       outline: none;
       border-color: var(--accent);
-      box-shadow: 0 0 0 3px rgba(31, 95, 102, 0.15);
+      box-shadow: 0 0 0 3px rgba(217, 98, 46, 0.18);
     }
 
     textarea {
@@ -464,7 +469,7 @@
     }
 
     .checkbox-label:has(input:checked) {
-      background: rgba(31, 95, 102, 0.1);
+      background: rgba(217, 98, 46, 0.10);
       border-color: var(--accent);
       color: var(--accent);
     }
@@ -774,9 +779,9 @@
   <div class="login-screen" id="loginScreen">
     <div class="login-card">
       <div class="login-logo">
-        <img src="assets/images/logos/bressan-logoaccent-dark.png" alt="Valentín Bressan">
+        <img src="assets/images/logos/vairo-logo.png" alt="Vairo Propiedades" style="border-radius: 14px;">
       </div>
-      <h1 class="login-brand-name">Valentín Bressan</h1>
+      <h1 class="login-brand-name" style="font-family: 'Fraunces', serif; font-weight: 500; letter-spacing: 0.02em;">Vairo Propiedades</h1>
       <p class="login-brand-tagline">Negocios Inmobiliarios</p>
       <hr class="login-divider">
       <p class="login-title">Panel de Administracion</p>
@@ -796,9 +801,9 @@
       <div class="header__inner">
         <div class="header__brand">
           <div class="header__logo">
-            <img src="assets/images/logos/bressan-logoaccent-dark.png" alt="Valentín Bressan">
+            <img src="assets/images/logos/vairo-logo.png" alt="Vairo Propiedades" style="border-radius: 8px;">
           </div>
-          <h1>Valentín Bressan <span style="font-weight: 400; opacity: 0.6; font-size: 0.875rem; margin-left: 0.5rem;">Panel de Administracion</span></h1>
+          <h1 style="font-family: 'Fraunces', serif; font-weight: 500;">Vairo Propiedades <span style="font-weight: 400; opacity: 0.55; font-size: 0.8125rem; margin-left: 0.5rem; font-family: 'JetBrains Mono', monospace; letter-spacing: 0.18em; text-transform: uppercase;">Admin</span></h1>
         </div>
         <div class="header__actions">
           <a href="index.html" target="_blank">Ver sitio</a>
