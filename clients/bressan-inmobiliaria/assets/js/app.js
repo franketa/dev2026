@@ -532,7 +532,7 @@ function initContactForm() {
     if (data.subject) message += `*Asunto:* ${subjectMap[data.subject] || data.subject}\n`;
     if (data.message) message += `*Mensaje:* ${data.message}`;
 
-    const whatsappUrl = `https://wa.me/542227522178?text=${encodeURIComponent(message)}`;
+    const whatsappUrl = `https://wa.me/542346577272?text=${encodeURIComponent(message)}`;
     window.open(whatsappUrl, '_blank');
 
     showNotification('Redirigiendo a WhatsApp...', 'success');
@@ -641,7 +641,7 @@ function initPropertySubmitForm() {
       message += `*Dirección:* ${data.address}\n`;
       if (data.description) message += `*Descripción:* ${data.description}`;
 
-      const whatsappUrl = `https://wa.me/542227522178?text=${encodeURIComponent(message)}`;
+      const whatsappUrl = `https://wa.me/542346577272?text=${encodeURIComponent(message)}`;
       window.open(whatsappUrl, '_blank');
 
       showNotification('Redirigiendo a WhatsApp...', 'success');
