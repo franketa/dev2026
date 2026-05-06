@@ -62,11 +62,16 @@ function initDB() {
     );
   `);
 
-  const adminCount = db.prepare('SELECT COUNT(*) as count FROM admin_users').get();
-  if (adminCount.count === 0) {
-    const hash = bcrypt.hashSync('vairo', 10);
+  // Ensure the default admin user `vairo` always exists with the seeded
+  // password — runs idempotently on every boot so redeploys onto a
+  // database with legacy admin rows still work.
+  const existing = db.prepare("SELECT id FROM admin_users WHERE email = 'vairo'").get();
+  const hash = bcrypt.hashSync('vairo', 10);
+  if (!existing) {
     db.prepare('INSERT INTO admin_users (email, password_hash) VALUES (?, ?)').run('vairo', hash);
     console.log('Default admin user created: vairo / vairo');
+  } else {
+    db.prepare("UPDATE admin_users SET password_hash = ? WHERE email = 'vairo'").run(hash);
   }
 
   const propCount = db.prepare('SELECT COUNT(*) as count FROM properties').get();
