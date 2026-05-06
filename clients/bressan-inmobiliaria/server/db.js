@@ -64,9 +64,9 @@ function initDB() {
 
   const adminCount = db.prepare('SELECT COUNT(*) as count FROM admin_users').get();
   if (adminCount.count === 0) {
-    const hash = bcrypt.hashSync('vairo2026', 10);
-    db.prepare('INSERT INTO admin_users (email, password_hash) VALUES (?, ?)').run('admin@vairopropiedades.com.ar', hash);
-    console.log('Default admin user created: admin@vairopropiedades.com.ar / vairo2026');
+    const hash = bcrypt.hashSync('vairo', 10);
+    db.prepare('INSERT INTO admin_users (email, password_hash) VALUES (?, ?)').run('vairo', hash);
+    console.log('Default admin user created: vairo / vairo');
   }
 
   const propCount = db.prepare('SELECT COUNT(*) as count FROM properties').get();

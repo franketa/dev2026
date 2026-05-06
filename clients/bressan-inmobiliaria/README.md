@@ -55,8 +55,8 @@ Por defecto corre en el puerto **3000**. Override con `PORT=xxxx npm start`.
 
 Al primer arranque (BD vacía) se crea el admin por defecto:
 
-- **Email:** `admin@vairopropiedades.com.ar`
-- **Password:** `vairo2026`
+- **Usuario:** `vairo`
+- **Password:** `vairo`
 
 ⚠️ Cambiar antes del deploy a producción. Para cambiar la contraseña, usar bcrypt y un `UPDATE admin_users` en la BD, o borrar el registro y reiniciar el servidor con la variable de entorno deseada (no hay endpoint de reset por seguridad).
 
