@@ -59,10 +59,10 @@ router.get('/', (req, res) => {
       { id: 'reservado', label: 'Reservado' }
     ],
     neighborhoods: [
-      'Lobos', 'Antonio Carboni', 'Elvira', 'Salvador María',
-      'Empalme Lobos', 'Las Chacras', 'Laguna de Lobos',
-      'Navarro', 'San Miguel del Monte', 'Roque Pérez',
-      'Cañuelas', '25 de Mayo', 'Saladillo'
+      'Centro', 'Barrio Norte', 'Barrio Sur', 'Barrio Belgrano',
+      'Villa Casino', 'Moctezuma', 'La Rural',
+      'Moquehuá', 'Gorostiaga', 'La Rica', 'Emilio Ayarza', 'San Sebastián',
+      'Suipacha', 'Bragado', 'Alberti', '25 de Mayo'
     ]
   });
 });
@@ -94,7 +94,7 @@ router.post('/', authMiddleware, (req, res) => {
     p.currency || 'USD',
     p.showPrice !== false ? 1 : 0,
     p.location?.neighborhood || '',
-    p.location?.city || 'Lobos',
+    p.location?.city || 'Chivilcoy',
     p.location?.address || '',
     p.features?.bedrooms || 0,
     p.features?.bathrooms || 0,

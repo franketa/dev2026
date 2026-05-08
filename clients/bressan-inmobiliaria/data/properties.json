@@ -2,15 +2,15 @@
   "properties": [
     {
       "id": 1,
-      "title": "Quinta en Antonio Carboni con pileta",
+      "title": "Quinta en Moquehuá con pileta",
       "type": "quinta",
       "operation": "venta",
       "price": 100000,
       "currency": "USD",
       "showPrice": true,
       "location": {
-        "neighborhood": "Antonio Carboni",
-        "city": "Lobos",
+        "neighborhood": "Moquehuá",
+        "city": "Chivilcoy",
         "address": "Camino vecinal s/n"
       },
       "features": {
@@ -20,7 +20,7 @@
         "area": 600,
         "coveredArea": 120
       },
-      "description": "Hermosa quinta lista para disfrutar. Vivienda con living amplio, cocina, parrilla, lavadero y pileta. Cerramiento perimetral completo, sistema de cámaras de seguridad y servicios de luz, agua y gas. Un espacio listo desde el primer día, ubicada en un entorno tranquilo y familiar de Antonio Carboni.",
+      "description": "Hermosa quinta lista para disfrutar. Vivienda con living amplio, cocina, parrilla, lavadero y pileta. Cerramiento perimetral completo, sistema de cámaras de seguridad y servicios de luz, agua y gas. Un espacio listo desde el primer día, ubicada en un entorno tranquilo y familiar de Moquehuá, a pocos minutos de Chivilcoy.",
       "amenities": ["pileta", "parrilla", "jardín", "alarma", "seguridad 24hs"],
       "coverImage": "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=1200&q=80",
       "images": [
@@ -35,15 +35,15 @@
     },
     {
       "id": 2,
-      "title": "Casa a restaurar en Elvira, Lobos",
+      "title": "Casa a restaurar en La Rica, Chivilcoy",
       "type": "casa",
       "operation": "venta",
       "price": 45000,
       "currency": "USD",
       "showPrice": true,
       "location": {
-        "neighborhood": "Elvira",
-        "city": "Lobos",
+        "neighborhood": "La Rica",
+        "city": "Chivilcoy",
         "address": "Esquina sobre lote de 2.235 m²"
       },
       "features": {
@@ -67,16 +67,16 @@
     },
     {
       "id": 3,
-      "title": "Campo ganadero en Salvador María",
+      "title": "Campo ganadero en Gorostiaga",
       "type": "campo",
       "operation": "venta",
       "price": 850000,
       "currency": "USD",
       "showPrice": true,
       "location": {
-        "neighborhood": "Salvador María",
-        "city": "Lobos",
-        "address": "Ruta Provincial 41, km 142"
+        "neighborhood": "Gorostiaga",
+        "city": "Chivilcoy",
+        "address": "Ruta Provincial 30, km 65"
       },
       "features": {
         "bedrooms": 3,
@@ -100,16 +100,16 @@
     },
     {
       "id": 4,
-      "title": "Casa céntrica en Lobos sobre Yrigoyen",
+      "title": "Casa céntrica en Chivilcoy sobre Soárez",
       "type": "casa",
       "operation": "venta",
       "price": 95000,
       "currency": "USD",
       "showPrice": true,
       "location": {
-        "neighborhood": "Lobos",
-        "city": "Lobos",
-        "address": "Hipólito Yrigoyen 950"
+        "neighborhood": "Centro",
+        "city": "Chivilcoy",
+        "address": "Av. Soárez 950"
       },
       "features": {
         "bedrooms": 3,
@@ -133,16 +133,16 @@
     },
     {
       "id": 5,
-      "title": "Quinta en Navarro con casco completo",
+      "title": "Quinta en San Sebastián con casco completo",
       "type": "quinta",
       "operation": "venta",
       "price": 135000,
       "currency": "USD",
       "showPrice": true,
       "location": {
-        "neighborhood": "Navarro",
-        "city": "Navarro",
-        "address": "Calle 2 bis, e/113 y 115"
+        "neighborhood": "San Sebastián",
+        "city": "Chivilcoy",
+        "address": "Camino rural s/n"
       },
       "features": {
         "bedrooms": 3,
@@ -151,7 +151,7 @@
         "area": 5000,
         "coveredArea": 200
       },
-      "description": "Quinta de media hectárea en zona consolidada de Navarro. Casa principal con 3 dormitorios, 2 baños, living con hogar a leña, cocina equipada y galería techada con vista al parque. Pileta con solárium, quincho con parrilla y horno de barro, casita de huéspedes. Arboleda añosa y huerta. Ideal residencia permanente o fin de semana.",
+      "description": "Quinta de media hectárea en zona consolidada de San Sebastián, a pocos minutos del centro de Chivilcoy. Casa principal con 3 dormitorios, 2 baños, living con hogar a leña, cocina equipada y galería techada con vista al parque. Pileta con solárium, quincho con parrilla y horno de barro, casita de huéspedes. Arboleda añosa y huerta. Ideal residencia permanente o fin de semana.",
       "amenities": ["pileta", "quincho", "parrilla", "horno de barro", "hogar a leña", "casa de huéspedes", "arboleda"],
       "coverImage": "https://images.unsplash.com/photo-1600047509807-ba8f99d2cdde?w=1200&q=80",
       "images": [
@@ -166,16 +166,16 @@
     },
     {
       "id": 6,
-      "title": "Departamento 2 ambientes en Lobos centro",
+      "title": "Departamento 2 ambientes en Chivilcoy centro",
       "type": "departamento",
       "operation": "alquiler",
       "price": 280000,
       "currency": "ARS",
       "showPrice": true,
       "location": {
-        "neighborhood": "Lobos",
-        "city": "Lobos",
-        "address": "Belgrano 654, 2° piso"
+        "neighborhood": "Centro",
+        "city": "Chivilcoy",
+        "address": "Pellegrini 654, 2° piso"
       },
       "features": {
         "bedrooms": 2,
@@ -184,7 +184,7 @@
         "area": 55,
         "coveredArea": 55
       },
-      "description": "Departamento luminoso de 2 ambientes en pleno centro de Lobos. Living comedor con balcón, dormitorio principal con placard, cocina separada, baño completo. Edificio con ascensor y portero. A metros de la plaza principal, comercios y trámites. Ideal para profesionales o pareja joven.",
+      "description": "Departamento luminoso de 2 ambientes en pleno centro de Chivilcoy. Living comedor con balcón, dormitorio principal con placard, cocina separada, baño completo. Edificio con ascensor y portero. A metros de la Plaza 25 de Mayo, comercios y trámites. Ideal para profesionales o pareja joven.",
       "amenities": ["ascensor", "balcón", "portero"],
       "coverImage": "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=1200&q=80",
       "images": [
@@ -198,16 +198,16 @@
     },
     {
       "id": 7,
-      "title": "Terreno en Empalme Lobos sobre asfalto",
+      "title": "Terreno en Emilio Ayarza sobre asfalto",
       "type": "terreno",
       "operation": "venta",
       "price": 22000,
       "currency": "USD",
       "showPrice": true,
       "location": {
-        "neighborhood": "Empalme Lobos",
-        "city": "Lobos",
-        "address": "Ruta 205 km 109"
+        "neighborhood": "Emilio Ayarza",
+        "city": "Chivilcoy",
+        "address": "Ruta Nacional 5 km 158"
       },
       "features": {
         "bedrooms": 0,
@@ -216,7 +216,7 @@
         "area": 1000,
         "coveredArea": 0
       },
-      "description": "Lote de 20x50 m sobre Ruta 205, ideal para construcción de vivienda o emprendimiento comercial. Acceso pavimentado, frente con servicios de luz cerca, posibilidad de gas y agua corriente. Excelente ubicación a 10 minutos del centro de Lobos y 15 de Cañuelas. Documentación en regla.",
+      "description": "Lote de 20x50 m sobre Ruta Nacional 5, ideal para construcción de vivienda o emprendimiento comercial. Acceso pavimentado, frente con servicios de luz cerca, posibilidad de gas y agua corriente. Excelente ubicación a 10 minutos del centro de Chivilcoy y 15 de Suipacha. Documentación en regla.",
       "amenities": ["frente sobre asfalto", "luz cerca"],
       "coverImage": "https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=1200&q=80",
       "images": [
@@ -229,16 +229,16 @@
     },
     {
       "id": 8,
-      "title": "Casa con quincho en Las Chacras",
+      "title": "Casa con quincho en Barrio Belgrano",
       "type": "casa",
       "operation": "venta",
       "price": 78000,
       "currency": "USD",
       "showPrice": true,
       "location": {
-        "neighborhood": "Las Chacras",
-        "city": "Lobos",
-        "address": "Acceso a Las Chacras s/n"
+        "neighborhood": "Barrio Belgrano",
+        "city": "Chivilcoy",
+        "address": "Calle 14 s/n"
       },
       "features": {
         "bedrooms": 2,
@@ -247,7 +247,7 @@
         "area": 1500,
         "coveredArea": 110
       },
-      "description": "Casa rural en barrio Las Chacras. 2 dormitorios, living comedor con estufa a leña, cocina amplia, baño completo. Quincho con parrilla y horno de barro, galpón doble para herramientas y vehículos. Lote de 1.500 m² con arboleda y huerta. Tranquilidad absoluta, a 8 minutos del centro.",
+      "description": "Casa en Barrio Belgrano, zona residencial tranquila de Chivilcoy. 2 dormitorios, living comedor con estufa a leña, cocina amplia, baño completo. Quincho con parrilla y horno de barro, galpón doble para herramientas y vehículos. Lote de 1.500 m² con arboleda y huerta. A 8 minutos del centro.",
       "amenities": ["quincho", "parrilla", "horno de barro", "galpón", "arboleda", "estufa a leña"],
       "coverImage": "https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=1200&q=80",
       "images": [
@@ -261,16 +261,16 @@
     },
     {
       "id": 9,
-      "title": "Local comercial sobre Yrigoyen",
+      "title": "Local comercial sobre Calixto Calderón",
       "type": "local",
       "operation": "alquiler",
       "price": 350000,
       "currency": "ARS",
       "showPrice": true,
       "location": {
-        "neighborhood": "Lobos",
-        "city": "Lobos",
-        "address": "Hipólito Yrigoyen 1100"
+        "neighborhood": "Centro",
+        "city": "Chivilcoy",
+        "address": "Av. Calixto Calderón 1100"
       },
       "features": {
         "bedrooms": 0,
@@ -279,7 +279,7 @@
         "area": 70,
         "coveredArea": 70
       },
-      "description": "Local comercial con vidriera amplia sobre la principal arteria comercial de Lobos. 70 m² distribuidos en salón principal, depósito y baño. Frente totalmente vidriado, alto tránsito peatonal y vehicular. Ideal indumentaria, gastronomía o servicios. Listo para entrar.",
+      "description": "Local comercial con vidriera amplia sobre una de las principales arterias comerciales de Chivilcoy. 70 m² distribuidos en salón principal, depósito y baño. Frente totalmente vidriado, alto tránsito peatonal y vehicular. Ideal indumentaria, gastronomía o servicios. Listo para entrar.",
       "amenities": ["aire acondicionado", "vidriera", "depósito"],
       "coverImage": "https://images.unsplash.com/photo-1604014237800-1c9102c219da?w=1200&q=80",
       "images": [
@@ -292,16 +292,16 @@
     },
     {
       "id": 10,
-      "title": "Campo mixto en Roque Pérez",
+      "title": "Campo mixto en Suipacha",
       "type": "campo",
       "operation": "venta",
       "price": 1450000,
       "currency": "USD",
       "showPrice": true,
       "location": {
-        "neighborhood": "Roque Pérez",
-        "city": "Roque Pérez",
-        "address": "Ruta 205 km 165"
+        "neighborhood": "Suipacha",
+        "city": "Suipacha",
+        "address": "Ruta Nacional 5 km 130"
       },
       "features": {
         "bedrooms": 4,
@@ -325,15 +325,15 @@
     },
     {
       "id": 11,
-      "title": "Casa en alquiler en Lobos centro",
+      "title": "Casa en alquiler en Chivilcoy centro",
       "type": "casa",
       "operation": "alquiler",
       "price": 420000,
       "currency": "ARS",
       "showPrice": true,
       "location": {
-        "neighborhood": "Lobos",
-        "city": "Lobos",
+        "neighborhood": "Centro",
+        "city": "Chivilcoy",
         "address": "Sarmiento 320"
       },
       "features": {
@@ -343,7 +343,7 @@
         "area": 320,
         "coveredArea": 130
       },
-      "description": "Casa en alquiler en zona céntrica de Lobos. 3 dormitorios, 2 baños, living comedor, cocina equipada, lavadero independiente, patio con parrilla y cochera cubierta. Excelente estado general. A 4 cuadras de la plaza. Contrato 24 meses con garantía propietaria.",
+      "description": "Casa en alquiler en zona céntrica de Chivilcoy. 3 dormitorios, 2 baños, living comedor, cocina equipada, lavadero independiente, patio con parrilla y cochera cubierta. Excelente estado general. A 4 cuadras de la Plaza 25 de Mayo. Contrato 24 meses con garantía propietaria.",
       "amenities": ["parrilla", "patio", "cochera cubierta", "lavadero"],
       "coverImage": "https://images.unsplash.com/photo-1583608205776-bfd35f0d9f83?w=1200&q=80",
       "images": [
@@ -357,16 +357,16 @@
     },
     {
       "id": 12,
-      "title": "Lote en Laguna de Lobos con vista al espejo",
+      "title": "Lote en Villa Casino con frente arbolado",
       "type": "lote",
       "operation": "venta",
       "price": 38000,
       "currency": "USD",
       "showPrice": true,
       "location": {
-        "neighborhood": "Laguna de Lobos",
-        "city": "Lobos",
-        "address": "Costanera de la Laguna"
+        "neighborhood": "Villa Casino",
+        "city": "Chivilcoy",
+        "address": "Calle 50 e/15 y 17"
       },
       "features": {
         "bedrooms": 0,
@@ -375,8 +375,8 @@
         "area": 800,
         "coveredArea": 0
       },
-      "description": "Lote de 20x40 con vista directa a la Laguna de Lobos. Zona en pleno crecimiento, ideal para casa de fin de semana o inversión. Servicios de luz disponibles, posibilidad de pozo de agua. Acceso por camino mejorado. A 5 minutos del club de pesca y náutica.",
-      "amenities": ["vista a la laguna", "luz disponible"],
+      "description": "Lote de 20x40 en Villa Casino, una de las zonas residenciales en pleno crecimiento de Chivilcoy. Ideal para casa familiar o inversión. Servicios de luz disponibles, posibilidad de pozo de agua y conexión a red de gas natural en obra. Acceso pavimentado. A 10 minutos del centro.",
+      "amenities": ["frente arbolado", "luz disponible"],
       "coverImage": "https://images.unsplash.com/photo-1466692476868-aef1dfb1e735?w=1200&q=80",
       "images": [
         "https://images.unsplash.com/photo-1466692476868-aef1dfb1e735?w=1200&q=80",
@@ -404,9 +404,9 @@
     {"id": "alquiler", "label": "Alquiler"}
   ],
   "neighborhoods": [
-    "Lobos", "Antonio Carboni", "Elvira", "Salvador María",
-    "Empalme Lobos", "Las Chacras", "Laguna de Lobos",
-    "Navarro", "San Miguel del Monte", "Roque Pérez",
-    "Cañuelas", "25 de Mayo", "Saladillo"
+    "Centro", "Barrio Norte", "Barrio Sur", "Barrio Belgrano",
+    "Villa Casino", "Moctezuma", "La Rural",
+    "Moquehuá", "Gorostiaga", "La Rica", "Emilio Ayarza", "San Sebastián",
+    "Suipacha", "Bragado", "Alberti", "25 de Mayo"
   ]
 }

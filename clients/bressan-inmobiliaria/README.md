@@ -1,6 +1,6 @@
 # Vairo Propiedades
 
-Sitio web de Vairo Propiedades — inmobiliaria de Lobos, Bs. As. Listado de propiedades urbanas y rurales (casas, quintas, campos, departamentos, terrenos), búsqueda con filtros, panel de administración para alta/edición/baja de propiedades y subida de imágenes.
+Sitio web de Vairo Propiedades — inmobiliaria de Chivilcoy, Bs. As. Listado de propiedades urbanas y rurales (casas, quintas, campos, departamentos, terrenos), búsqueda con filtros, panel de administración para alta/edición/baja de propiedades y subida de imágenes.
 
 ## Stack
 
