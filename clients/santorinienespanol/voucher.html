@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generador de Voucher | Santorini En Español</title>
+    <meta name="robots" content="noindex, nofollow">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --color-primary: #1a3a5c;
+            --color-primary-dark: #0f2840;
+            --color-accent: #c9a227;
+            --color-accent-light: #e8c547;
+            --color-bg-cream: #f5f3ef;
+            --color-text-dark: #1a1a1a;
+            --color-text-muted: #6b7280;
+            --font-display: 'Cormorant Garamond', Georgia, serif;
+            --font-body: 'Outfit', sans-serif;
+        }
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: var(--font-body); background: var(--color-bg-cream); color: var(--color-text-dark); min-height: 100vh; padding: 40px 20px; }
+
+        .page-header { max-width: 1200px; margin: 0 auto 30px; text-align: center; }
+        .page-header h1 { font-family: var(--font-display); font-size: 2.4rem; color: var(--color-primary); font-weight: 600; }
+        .page-header p { color: var(--color-text-muted); margin-top: 6px; font-size: 0.95rem; }
+
+        .layout { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 380px 1fr; gap: 30px; align-items: start; }
+
+        /* FORM */
+        .form-card { background: #fff; border-radius: 16px; padding: 30px; box-shadow: 0 10px 40px rgba(0,0,0,0.06); position: sticky; top: 20px; }
+        .form-card h2 { font-family: var(--font-display); font-size: 1.5rem; color: var(--color-primary); margin-bottom: 22px; padding-bottom: 14px; border-bottom: 2px solid var(--color-bg-cream); }
+        .field { margin-bottom: 18px; }
+        .field label { display: block; font-size: 0.8rem; font-weight: 600; color: var(--color-primary); text-transform: uppercase; letter-spacing: 1.2px; margin-bottom: 8px; }
+        .field input { width: 100%; padding: 12px 14px; font-family: var(--font-body); font-size: 0.95rem; border: 1.5px solid #e5e1d8; border-radius: 10px; background: #fafaf8; color: var(--color-text-dark); transition: all 0.2s ease; }
+        .field input:focus { outline: none; border-color: var(--color-accent); background: #fff; box-shadow: 0 0 0 3px rgba(201, 162, 39, 0.15); }
+        .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+        .btn { width: 100%; padding: 14px; background: var(--color-accent); color: var(--color-text-dark); font-family: var(--font-body); font-weight: 600; font-size: 0.95rem; border: none; border-radius: 10px; cursor: pointer; transition: all 0.3s ease; text-transform: uppercase; letter-spacing: 1.5px; margin-top: 8px; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .btn:hover { background: var(--color-primary); color: #fff; transform: translateY(-2px); box-shadow: 0 10px 25px rgba(0,0,0,0.15); }
+        .btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+        .btn-secondary { background: transparent; color: var(--color-primary); border: 1.5px solid #e5e1d8; margin-top: 10px; }
+        .btn-secondary:hover { background: var(--color-bg-cream); color: var(--color-primary); }
+
+        /* VOUCHER PREVIEW */
+        .voucher-wrap { display: flex; justify-content: center; }
+        .voucher {
+            width: 720px;
+            max-width: 100%;
+            background: #fff;
+            border-radius: 18px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(15, 40, 64, 0.15);
+            position: relative;
+        }
+        .voucher-header {
+            background: linear-gradient(135deg, var(--color-primary-dark) 0%, var(--color-primary) 100%);
+            color: #fff;
+            padding: 40px 50px 50px;
+            position: relative;
+            overflow: hidden;
+        }
+        .voucher-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -10%;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(201, 162, 39, 0.18) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+        .voucher-brand { display: flex; align-items: center; gap: 16px; margin-bottom: 30px; position: relative; z-index: 1; }
+        .voucher-brand img { width: 64px; height: 64px; border-radius: 10px; object-fit: cover; }
+        .voucher-brand-text h3 { font-family: var(--font-display); font-size: 1.5rem; font-weight: 600; line-height: 1.1; }
+        .voucher-brand-text span { font-size: 0.7rem; letter-spacing: 3px; text-transform: uppercase; opacity: 0.85; color: var(--color-accent-light); }
+
+        .voucher-title-row { display: flex; justify-content: space-between; align-items: flex-end; position: relative; z-index: 1; }
+        .voucher-title-block .voucher-label { font-size: 0.75rem; letter-spacing: 4px; text-transform: uppercase; color: var(--color-accent); margin-bottom: 6px; }
+        .voucher-title-block h2 { font-family: var(--font-display); font-size: 2.6rem; font-weight: 600; line-height: 1; }
+        .voucher-number-block { text-align: right; }
+        .voucher-number-block .label { font-size: 0.7rem; letter-spacing: 2px; text-transform: uppercase; opacity: 0.8; margin-bottom: 4px; }
+        .voucher-number-block .value { font-family: var(--font-display); font-size: 1.2rem; font-weight: 600; color: var(--color-accent-light); }
+
+        .voucher-body { padding: 40px 50px; }
+
+        .guest-line { padding-bottom: 28px; margin-bottom: 28px; border-bottom: 1px dashed #d8d4ca; }
+        .guest-line .label { font-size: 0.7rem; letter-spacing: 3px; text-transform: uppercase; color: var(--color-text-muted); margin-bottom: 8px; }
+        .guest-line .value { font-family: var(--font-display); font-size: 2rem; font-weight: 600; color: var(--color-primary); line-height: 1.1; }
+
+        .voucher-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 24px; margin-bottom: 28px; }
+        .vfield { }
+        .vfield .label { font-size: 0.7rem; letter-spacing: 2.5px; text-transform: uppercase; color: var(--color-text-muted); margin-bottom: 8px; }
+        .vfield .value { font-family: var(--font-display); font-size: 1.3rem; font-weight: 600; color: var(--color-primary); line-height: 1.2; }
+        .vfield .value small { display: block; font-family: var(--font-body); font-size: 0.75rem; font-weight: 400; color: var(--color-text-muted); margin-top: 4px; letter-spacing: 0.5px; text-transform: none; }
+
+        .amount-row { background: var(--color-bg-cream); border-radius: 12px; padding: 22px 28px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+        .amount-row .label { font-size: 0.85rem; font-weight: 500; color: var(--color-primary); text-transform: uppercase; letter-spacing: 2px; }
+        .amount-row .value { font-family: var(--font-display); font-size: 1.8rem; font-weight: 600; color: var(--color-accent); }
+        .amount-row.hidden { display: none; }
+
+        .voucher-footer { background: var(--color-bg-cream); padding: 28px 50px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; }
+        .footer-contact { font-size: 0.8rem; color: var(--color-text-muted); line-height: 1.6; }
+        .footer-contact strong { color: var(--color-primary); display: block; font-size: 0.85rem; margin-bottom: 4px; }
+        .footer-stamp { text-align: right; }
+        .footer-stamp .signature { font-family: var(--font-display); font-style: italic; font-size: 1.1rem; color: var(--color-primary); }
+        .footer-stamp .issued { font-size: 0.7rem; color: var(--color-text-muted); letter-spacing: 1.5px; text-transform: uppercase; margin-top: 4px; }
+
+        @media (max-width: 980px) {
+            .layout { grid-template-columns: 1fr; }
+            .form-card { position: static; }
+            .voucher-body { padding: 30px; }
+            .voucher-header { padding: 30px; }
+            .voucher-footer { padding: 24px 30px; }
+            .voucher-grid { grid-template-columns: 1fr 1fr; }
+            .voucher-title-block h2 { font-size: 2rem; }
+        }
+        @media (max-width: 520px) {
+            .voucher-grid { grid-template-columns: 1fr; }
+            .voucher-title-row { flex-direction: column; align-items: flex-start; gap: 16px; }
+            .voucher-number-block { text-align: left; }
+            .field-row { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="page-header">
+        <h1>Generador de Vouchers</h1>
+        <p>Completá los datos y descargá el voucher en PDF</p>
+    </div>
+
+    <div class="layout">
+        <aside class="form-card">
+            <h2>Datos del voucher</h2>
+            <form id="voucher-form" autocomplete="off">
+                <div class="field">
+                    <label for="f-nombre">Nombre del pasajero</label>
+                    <input type="text" id="f-nombre" placeholder="Ej: María González" required>
+                </div>
+                <div class="field">
+                    <label for="f-numero">N° de voucher</label>
+                    <input type="text" id="f-numero" placeholder="SV-2026-0001">
+                </div>
+                <div class="field-row">
+                    <div class="field">
+                        <label for="f-llegada">Llegada</label>
+                        <input type="date" id="f-llegada" required>
+                    </div>
+                    <div class="field">
+                        <label for="f-fin">Fin</label>
+                        <input type="date" id="f-fin" required>
+                    </div>
+                </div>
+                <div class="field-row">
+                    <div class="field">
+                        <label for="f-personas">Personas</label>
+                        <input type="number" id="f-personas" min="1" value="2" required>
+                    </div>
+                    <div class="field">
+                        <label for="f-monto">Monto pagado</label>
+                        <input type="text" id="f-monto" placeholder="€ 250">
+                    </div>
+                </div>
+                <button type="button" class="btn" id="btn-pdf">Descargar PDF</button>
+                <button type="reset" class="btn btn-secondary" id="btn-reset">Limpiar</button>
+            </form>
+        </aside>
+
+        <div class="voucher-wrap">
+            <article class="voucher" id="voucher">
+                <header class="voucher-header">
+                    <div class="voucher-brand">
+                        <img src="logo.png" alt="Santorini En Español">
+                        <div class="voucher-brand-text">
+                            <h3>Santorini En Español</h3>
+                            <span>Tours Privados</span>
+                        </div>
+                    </div>
+                    <div class="voucher-title-row">
+                        <div class="voucher-title-block">
+                            <div class="voucher-label">Comprobante de reserva</div>
+                            <h2>Voucher</h2>
+                        </div>
+                        <div class="voucher-number-block">
+                            <div class="label">N° de voucher</div>
+                            <div class="value" id="v-numero">—</div>
+                        </div>
+                    </div>
+                </header>
+
+                <div class="voucher-body">
+                    <div class="guest-line">
+                        <div class="label">A nombre de</div>
+                        <div class="value" id="v-nombre">—</div>
+                    </div>
+
+                    <div class="voucher-grid">
+                        <div class="vfield">
+                            <div class="label">Fecha de llegada</div>
+                            <div class="value" id="v-llegada">—</div>
+                        </div>
+                        <div class="vfield">
+                            <div class="label">Fecha de fin</div>
+                            <div class="value" id="v-fin">—</div>
+                        </div>
+                        <div class="vfield">
+                            <div class="label">Pasajeros</div>
+                            <div class="value" id="v-personas">— <small id="v-noches"></small></div>
+                        </div>
+                    </div>
+
+                    <div class="amount-row hidden" id="v-amount-row">
+                        <div class="label">Monto pagado</div>
+                        <div class="value" id="v-monto">—</div>
+                    </div>
+                </div>
+
+                <footer class="voucher-footer">
+                    <div class="footer-contact">
+                        <strong>Santorini En Español</strong>
+                        santorinienespanol@gmail.com<br>
+                        (+30) 697 673 9893 · Santorini, Grecia
+                    </div>
+                    <div class="footer-stamp">
+                        <div class="signature">Santorini En Español</div>
+                        <div class="issued">Emitido el <span id="v-emitido">—</span></div>
+                    </div>
+                </footer>
+            </article>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script>
+        const MESES = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+
+        function formatDate(value) {
+            if (!value) return '—';
+            const [y, m, d] = value.split('-').map(Number);
+            if (!y || !m || !d) return '—';
+            return `${d} de ${MESES[m - 1]} de ${y}`;
+        }
+
+        function diffNights(start, end) {
+            if (!start || !end) return null;
+            const a = new Date(start), b = new Date(end);
+            const ms = b - a;
+            if (isNaN(ms) || ms <= 0) return null;
+            return Math.round(ms / (1000 * 60 * 60 * 24));
+        }
+
+        function todayLong() {
+            const d = new Date();
+            return `${d.getDate()} de ${MESES[d.getMonth()]} de ${d.getFullYear()}`;
+        }
+
+        const inputs = {
+            nombre: document.getElementById('f-nombre'),
+            numero: document.getElementById('f-numero'),
+            llegada: document.getElementById('f-llegada'),
+            fin: document.getElementById('f-fin'),
+            personas: document.getElementById('f-personas'),
+            monto: document.getElementById('f-monto'),
+        };
+
+        const out = {
+            nombre: document.getElementById('v-nombre'),
+            numero: document.getElementById('v-numero'),
+            llegada: document.getElementById('v-llegada'),
+            fin: document.getElementById('v-fin'),
+            personas: document.getElementById('v-personas'),
+            noches: document.getElementById('v-noches'),
+            monto: document.getElementById('v-monto'),
+            amountRow: document.getElementById('v-amount-row'),
+            emitido: document.getElementById('v-emitido'),
+        };
+
+        function render() {
+            out.nombre.textContent = inputs.nombre.value.trim() || '—';
+            out.numero.textContent = inputs.numero.value.trim() || '—';
+            out.llegada.textContent = formatDate(inputs.llegada.value);
+            out.fin.textContent = formatDate(inputs.fin.value);
+
+            const personas = parseInt(inputs.personas.value, 10);
+            const personasTxt = personas > 0 ? `${personas} ${personas === 1 ? 'persona' : 'personas'}` : '—';
+            const noches = diffNights(inputs.llegada.value, inputs.fin.value);
+            out.personas.innerHTML = personasTxt + (noches ? ` <small>${noches} ${noches === 1 ? 'noche' : 'noches'}</small>` : '');
+
+            const monto = inputs.monto.value.trim();
+            if (monto) {
+                out.monto.textContent = monto;
+                out.amountRow.classList.remove('hidden');
+            } else {
+                out.amountRow.classList.add('hidden');
+            }
+
+            out.emitido.textContent = todayLong();
+        }
+
+        Object.values(inputs).forEach(el => el.addEventListener('input', render));
+        document.getElementById('btn-reset').addEventListener('click', () => setTimeout(render, 0));
+
+        document.getElementById('btn-pdf').addEventListener('click', () => {
+            const nombre = inputs.nombre.value.trim();
+            if (!nombre || !inputs.llegada.value || !inputs.fin.value) {
+                alert('Por favor completá nombre, fecha de llegada y fecha de fin.');
+                return;
+            }
+            const safeName = nombre.toLowerCase().replace(/[^a-z0-9]+/gi, '-').replace(/^-|-$/g, '');
+            const numero = inputs.numero.value.trim().replace(/[^a-z0-9-]+/gi, '-');
+            const filename = `voucher-${safeName}${numero ? '-' + numero : ''}.pdf`;
+
+            const btn = document.getElementById('btn-pdf');
+            const original = btn.textContent;
+            btn.disabled = true;
+            btn.textContent = 'Generando…';
+
+            const voucher = document.getElementById('voucher');
+            html2pdf().set({
+                margin: 0,
+                filename: filename,
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2, useCORS: true, backgroundColor: '#ffffff' },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            }).from(voucher).save().then(() => {
+                btn.disabled = false;
+                btn.textContent = original;
+            }).catch(err => {
+                console.error(err);
+                btn.disabled = false;
+                btn.textContent = original;
+                alert('Hubo un error generando el PDF. Probá de nuevo.');
+            });
+        });
+
+        // Initial render with defaults
+        render();
+    </script>
+</body>
+</html>
