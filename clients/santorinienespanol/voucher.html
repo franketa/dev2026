@@ -385,14 +385,21 @@
 
             const voucher = document.getElementById('voucher');
 
-            const savedWidth = voucher.style.width;
-            const savedMaxW = voucher.style.maxWidth;
+            const saved = {
+                width: voucher.style.width,
+                maxWidth: voucher.style.maxWidth,
+                overflow: voucher.style.overflow,
+                borderRadius: voucher.style.borderRadius,
+                boxShadow: voucher.style.boxShadow,
+            };
             voucher.style.width = '600px';
             voucher.style.maxWidth = 'none';
+            voucher.style.overflow = 'visible';
+            voucher.style.borderRadius = '0';
+            voucher.style.boxShadow = 'none';
 
             function restore() {
-                voucher.style.width = savedWidth;
-                voucher.style.maxWidth = savedMaxW;
+                Object.assign(voucher.style, saved);
                 btn.disabled = false;
                 btn.textContent = original;
             }
