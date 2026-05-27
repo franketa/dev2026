@@ -385,13 +385,6 @@
 
             const voucher = document.getElementById('voucher');
 
-            const saved = {
-                width: voucher.style.width,
-                maxWidth: voucher.style.maxWidth,
-                overflow: voucher.style.overflow,
-                borderRadius: voucher.style.borderRadius,
-                boxShadow: voucher.style.boxShadow,
-            };
             voucher.style.width = '600px';
             voucher.style.maxWidth = 'none';
             voucher.style.overflow = 'visible';
@@ -399,17 +392,18 @@
             voucher.style.boxShadow = 'none';
 
             function restore() {
-                Object.assign(voucher.style, saved);
+                voucher.style.cssText = '';
                 btn.disabled = false;
                 btn.textContent = original;
             }
 
             setTimeout(() => {
+                const fullHeight = voucher.scrollHeight;
                 html2pdf().set({
                     margin: [15, 20, 15, 20],
                     filename: filename,
                     image: { type: 'jpeg', quality: 0.98 },
-                    html2canvas: { scale: 2, useCORS: true, backgroundColor: '#ffffff' },
+                    html2canvas: { scale: 2, useCORS: true, backgroundColor: '#ffffff', height: fullHeight, windowHeight: fullHeight },
                     jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
                     pagebreak: { mode: 'avoid-all' }
                 }).from(voucher).save().then(restore).catch(err => {
