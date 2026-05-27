@@ -364,40 +364,33 @@
             btn.textContent = 'Generando…';
 
             const voucher = document.getElementById('voucher');
-            const wrap = document.querySelector('.voucher-wrap');
 
+            const savedWidth = voucher.style.width;
+            const savedMaxW = voucher.style.maxWidth;
             voucher.style.width = '720px';
             voucher.style.maxWidth = 'none';
-            voucher.style.borderRadius = '0';
-            wrap.style.overflow = 'hidden';
-            wrap.style.position = 'relative';
 
-            requestAnimationFrame(() => {
+            function restore() {
+                voucher.style.width = savedWidth;
+                voucher.style.maxWidth = savedMaxW;
+                btn.disabled = false;
+                btn.textContent = original;
+            }
+
+            setTimeout(() => {
                 html2pdf().set({
-                    margin: [10, 0, 10, 0],
+                    margin: 0,
                     filename: filename,
                     image: { type: 'jpeg', quality: 0.98 },
-                    html2canvas: { scale: 2, useCORS: true, backgroundColor: '#ffffff', width: 720, windowWidth: 720 },
-                    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-                }).from(voucher).save().then(() => {
-                    voucher.style.width = '';
-                    voucher.style.maxWidth = '';
-                    voucher.style.borderRadius = '';
-                    wrap.style.overflow = '';
-                    wrap.style.position = '';
-                    btn.disabled = false;
-                    btn.textContent = original;
-                }).catch(err => {
+                    html2canvas: { scale: 2, useCORS: true, backgroundColor: '#ffffff' },
+                    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+                    pagebreak: { mode: 'avoid-all' }
+                }).from(voucher).save().then(restore).catch(err => {
                     console.error(err);
-                    voucher.style.width = '';
-                    voucher.style.maxWidth = '';
-                    voucher.style.borderRadius = '';
-                    wrap.style.overflow = '';
-                    wrap.style.position = '';
-                    btn.disabled = false;
-                    btn.textContent = original;
+                    restore();
                     alert('Hubo un error generando el PDF. Probá de nuevo.');
                 });
+            }, 100);
             });
         });
 
