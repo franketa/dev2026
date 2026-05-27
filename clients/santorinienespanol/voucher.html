@@ -280,7 +280,8 @@
         </div>
     </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script>
         const MESES = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
 
@@ -385,33 +386,53 @@
 
             const voucher = document.getElementById('voucher');
 
-            voucher.style.width = '600px';
-            voucher.style.maxWidth = 'none';
-            voucher.style.overflow = 'visible';
-            voucher.style.borderRadius = '0';
-            voucher.style.boxShadow = 'none';
+            const clone = voucher.cloneNode(true);
+            clone.style.width = '600px';
+            clone.style.maxWidth = 'none';
+            clone.style.overflow = 'visible';
+            clone.style.borderRadius = '0';
+            clone.style.boxShadow = 'none';
+            clone.style.position = 'absolute';
+            clone.style.left = '-9999px';
+            clone.style.top = '0';
+            document.body.appendChild(clone);
 
-            function restore() {
-                voucher.style.cssText = '';
+            function finish() {
+                clone.remove();
                 btn.disabled = false;
                 btn.textContent = original;
             }
 
-            setTimeout(() => {
-                const fullHeight = voucher.scrollHeight;
-                html2pdf().set({
-                    margin: [15, 20, 15, 20],
-                    filename: filename,
-                    image: { type: 'jpeg', quality: 0.98 },
-                    html2canvas: { scale: 2, useCORS: true, backgroundColor: '#ffffff', height: fullHeight, windowHeight: fullHeight },
-                    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
-                    pagebreak: { mode: 'avoid-all' }
-                }).from(voucher).save().then(restore).catch(err => {
+            setTimeout(async () => {
+                try {
+                    const canvas = await html2canvas(clone, {
+                        scale: 2,
+                        useCORS: true,
+                        backgroundColor: '#ffffff',
+                        width: clone.scrollWidth,
+                        height: clone.scrollHeight,
+                    });
+                    const imgData = canvas.toDataURL('image/jpeg', 0.95);
+
+                    const { jsPDF } = window.jspdf;
+                    const pdf = new jsPDF('portrait', 'mm', 'a4');
+                    const pageW = 210;
+                    const pageH = 297;
+                    const margin = 15;
+                    const availW = pageW - margin * 2;
+                    const imgRatio = canvas.height / canvas.width;
+                    const imgH = availW * imgRatio;
+                    const topOffset = margin;
+
+                    pdf.addImage(imgData, 'JPEG', margin, topOffset, availW, imgH);
+                    pdf.save(filename);
+                    finish();
+                } catch (err) {
                     console.error(err);
-                    restore();
+                    finish();
                     alert('Hubo un error generando el PDF. Probá de nuevo.');
-                });
-            }, 100);
+                }
+            }, 150);
         });
 
         // Initial render with defaults
