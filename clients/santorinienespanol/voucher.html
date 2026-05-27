@@ -101,7 +101,7 @@
         .amount-row .value { font-family: var(--font-display); font-size: 1.8rem; font-weight: 600; color: var(--color-accent); }
         .amount-row.hidden { display: none; }
 
-        .voucher-footer { background: var(--color-bg-cream); padding: 28px 50px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; }
+        .voucher-footer { background: var(--color-bg-cream); padding: 28px 50px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; border-top: 1px solid #e5e1d8; }
         .footer-contact { font-size: 0.8rem; color: var(--color-text-muted); line-height: 1.6; }
         .footer-contact strong { color: var(--color-primary); display: block; font-size: 0.85rem; margin-bottom: 4px; }
         .footer-stamp { text-align: right; }
@@ -364,20 +364,40 @@
             btn.textContent = 'Generando…';
 
             const voucher = document.getElementById('voucher');
-            html2pdf().set({
-                margin: 0,
-                filename: filename,
-                image: { type: 'jpeg', quality: 0.98 },
-                html2canvas: { scale: 2, useCORS: true, backgroundColor: '#ffffff' },
-                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-            }).from(voucher).save().then(() => {
-                btn.disabled = false;
-                btn.textContent = original;
-            }).catch(err => {
-                console.error(err);
-                btn.disabled = false;
-                btn.textContent = original;
-                alert('Hubo un error generando el PDF. Probá de nuevo.');
+            const wrap = document.querySelector('.voucher-wrap');
+
+            voucher.style.width = '720px';
+            voucher.style.maxWidth = 'none';
+            voucher.style.borderRadius = '0';
+            wrap.style.overflow = 'hidden';
+            wrap.style.position = 'relative';
+
+            requestAnimationFrame(() => {
+                html2pdf().set({
+                    margin: [10, 0, 10, 0],
+                    filename: filename,
+                    image: { type: 'jpeg', quality: 0.98 },
+                    html2canvas: { scale: 2, useCORS: true, backgroundColor: '#ffffff', width: 720, windowWidth: 720 },
+                    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+                }).from(voucher).save().then(() => {
+                    voucher.style.width = '';
+                    voucher.style.maxWidth = '';
+                    voucher.style.borderRadius = '';
+                    wrap.style.overflow = '';
+                    wrap.style.position = '';
+                    btn.disabled = false;
+                    btn.textContent = original;
+                }).catch(err => {
+                    console.error(err);
+                    voucher.style.width = '';
+                    voucher.style.maxWidth = '';
+                    voucher.style.borderRadius = '';
+                    wrap.style.overflow = '';
+                    wrap.style.position = '';
+                    btn.disabled = false;
+                    btn.textContent = original;
+                    alert('Hubo un error generando el PDF. Probá de nuevo.');
+                });
             });
         });
 
