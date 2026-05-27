@@ -143,14 +143,18 @@
                     <label for="f-numero">N° de voucher</label>
                     <input type="text" id="f-numero" placeholder="SV-2026-0001">
                 </div>
+                <div class="field">
+                    <label for="f-fecha-tour">Fecha del tour</label>
+                    <input type="date" id="f-fecha-tour" required>
+                </div>
                 <div class="field-row">
                     <div class="field">
-                        <label for="f-llegada">Llegada</label>
-                        <input type="date" id="f-llegada" required>
+                        <label for="f-hora-inicio">Horario de inicio</label>
+                        <input type="time" id="f-hora-inicio" required>
                     </div>
                     <div class="field">
-                        <label for="f-fin">Fin</label>
-                        <input type="date" id="f-fin" required>
+                        <label for="f-hora-fin">Horario de finalización</label>
+                        <input type="time" id="f-hora-fin" required>
                     </div>
                 </div>
                 <div class="field-row">
@@ -198,16 +202,16 @@
 
                     <div class="voucher-grid">
                         <div class="vfield">
-                            <div class="label">Fecha de llegada</div>
-                            <div class="value" id="v-llegada">—</div>
+                            <div class="label">Fecha del tour</div>
+                            <div class="value" id="v-fecha-tour">—</div>
                         </div>
                         <div class="vfield">
-                            <div class="label">Fecha de fin</div>
-                            <div class="value" id="v-fin">—</div>
+                            <div class="label">Horario</div>
+                            <div class="value" id="v-horario">—</div>
                         </div>
                         <div class="vfield">
                             <div class="label">Pasajeros</div>
-                            <div class="value" id="v-personas">— <small id="v-noches"></small></div>
+                            <div class="value" id="v-personas">—</div>
                         </div>
                     </div>
 
@@ -243,12 +247,11 @@
             return `${d} de ${MESES[m - 1]} de ${y}`;
         }
 
-        function diffNights(start, end) {
-            if (!start || !end) return null;
-            const a = new Date(start), b = new Date(end);
-            const ms = b - a;
-            if (isNaN(ms) || ms <= 0) return null;
-            return Math.round(ms / (1000 * 60 * 60 * 24));
+        function formatTime(value) {
+            if (!value) return '—';
+            const [h, m] = value.split(':').map(Number);
+            if (isNaN(h) || isNaN(m)) return '—';
+            return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')} hs`;
         }
 
         function todayLong() {
@@ -259,8 +262,9 @@
         const inputs = {
             nombre: document.getElementById('f-nombre'),
             numero: document.getElementById('f-numero'),
-            llegada: document.getElementById('f-llegada'),
-            fin: document.getElementById('f-fin'),
+            fechaTour: document.getElementById('f-fecha-tour'),
+            horaInicio: document.getElementById('f-hora-inicio'),
+            horaFin: document.getElementById('f-hora-fin'),
             personas: document.getElementById('f-personas'),
             monto: document.getElementById('f-monto'),
         };
@@ -268,10 +272,9 @@
         const out = {
             nombre: document.getElementById('v-nombre'),
             numero: document.getElementById('v-numero'),
-            llegada: document.getElementById('v-llegada'),
-            fin: document.getElementById('v-fin'),
+            fechaTour: document.getElementById('v-fecha-tour'),
+            horario: document.getElementById('v-horario'),
             personas: document.getElementById('v-personas'),
-            noches: document.getElementById('v-noches'),
             monto: document.getElementById('v-monto'),
             amountRow: document.getElementById('v-amount-row'),
             emitido: document.getElementById('v-emitido'),
@@ -280,13 +283,21 @@
         function render() {
             out.nombre.textContent = inputs.nombre.value.trim() || '—';
             out.numero.textContent = inputs.numero.value.trim() || '—';
-            out.llegada.textContent = formatDate(inputs.llegada.value);
-            out.fin.textContent = formatDate(inputs.fin.value);
+            out.fechaTour.textContent = formatDate(inputs.fechaTour.value);
+
+            const hi = formatTime(inputs.horaInicio.value);
+            const hf = formatTime(inputs.horaFin.value);
+            if (hi !== '—' && hf !== '—') {
+                out.horario.textContent = `${hi} a ${hf}`;
+            } else if (hi !== '—') {
+                out.horario.textContent = hi;
+            } else {
+                out.horario.textContent = '—';
+            }
 
             const personas = parseInt(inputs.personas.value, 10);
             const personasTxt = personas > 0 ? `${personas} ${personas === 1 ? 'persona' : 'personas'}` : '—';
-            const noches = diffNights(inputs.llegada.value, inputs.fin.value);
-            out.personas.innerHTML = personasTxt + (noches ? ` <small>${noches} ${noches === 1 ? 'noche' : 'noches'}</small>` : '');
+            out.personas.textContent = personasTxt;
 
             const monto = inputs.monto.value.trim();
             if (monto) {
@@ -304,8 +315,8 @@
 
         document.getElementById('btn-pdf').addEventListener('click', () => {
             const nombre = inputs.nombre.value.trim();
-            if (!nombre || !inputs.llegada.value || !inputs.fin.value) {
-                alert('Por favor completá nombre, fecha de llegada y fecha de fin.');
+            if (!nombre || !inputs.fechaTour.value || !inputs.horaInicio.value) {
+                alert('Por favor completá nombre, fecha del tour y horario de inicio.');
                 return;
             }
             const safeName = nombre.toLowerCase().replace(/[^a-z0-9]+/gi, '-').replace(/^-|-$/g, '');
