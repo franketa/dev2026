@@ -96,12 +96,13 @@
         .vfield .value { font-family: var(--font-display); font-size: 1.3rem; font-weight: 600; color: var(--color-primary); line-height: 1.2; }
         .vfield .value small { display: block; font-family: var(--font-body); font-size: 0.75rem; font-weight: 400; color: var(--color-text-muted); margin-top: 4px; letter-spacing: 0.5px; text-transform: none; }
 
-        .amount-row { background: var(--color-bg-cream); border-radius: 12px; padding: 16px 28px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+        .amount-row { background: var(--color-bg-cream); border-radius: 12px; padding: 14px 28px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+        .amount-row:last-child { margin-bottom: 0; }
         .amount-row .label { font-size: 0.85rem; font-weight: 500; color: var(--color-primary); text-transform: uppercase; letter-spacing: 2px; }
         .amount-row .value { font-family: var(--font-display); font-size: 1.8rem; font-weight: 600; color: var(--color-accent); }
         .amount-row.hidden { display: none; }
 
-        .voucher-footer { background: var(--color-bg-cream); padding: 22px 50px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; border-top: 1px solid #e5e1d8; }
+        .voucher-footer { background: var(--color-bg-cream); padding: 18px 50px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; border-top: 1px solid #e5e1d8; }
         .footer-contact { font-size: 0.8rem; color: var(--color-text-muted); line-height: 1.6; }
         .footer-contact strong { color: var(--color-primary); display: block; font-size: 0.85rem; margin-bottom: 4px; }
         .footer-stamp { text-align: right; }
@@ -398,7 +399,7 @@
 
             setTimeout(() => {
                 html2pdf().set({
-                    margin: 0,
+                    margin: [10, 15, 10, 15],
                     filename: filename,
                     image: { type: 'jpeg', quality: 0.98 },
                     html2canvas: { scale: 2, useCORS: true, backgroundColor: '#ffffff' },
