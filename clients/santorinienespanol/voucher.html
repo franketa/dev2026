@@ -192,14 +192,18 @@
                         <input type="time" id="f-hora-fin" required>
                     </div>
                 </div>
+                <div class="field">
+                    <label for="f-personas">Personas</label>
+                    <input type="number" id="f-personas" min="1" value="2" required>
+                </div>
                 <div class="field-row">
                     <div class="field">
-                        <label for="f-personas">Personas</label>
-                        <input type="number" id="f-personas" min="1" value="2" required>
+                        <label for="f-monto-pagado">Monto pagado</label>
+                        <input type="number" id="f-monto-pagado" placeholder="250" min="0" step="any">
                     </div>
                     <div class="field">
-                        <label for="f-monto">Monto pagado</label>
-                        <input type="text" id="f-monto" placeholder="€ 250">
+                        <label for="f-monto-pagar">Monto a pagar</label>
+                        <input type="number" id="f-monto-pagar" placeholder="100" min="0" step="any">
                     </div>
                 </div>
                 <button type="button" class="btn" id="btn-pdf">Descargar PDF</button>
@@ -250,9 +254,13 @@
                         </div>
                     </div>
 
-                    <div class="amount-row hidden" id="v-amount-row">
+                    <div class="amount-row hidden" id="v-pagado-row">
                         <div class="label">Monto pagado</div>
-                        <div class="value" id="v-monto">—</div>
+                        <div class="value" id="v-monto-pagado">—</div>
+                    </div>
+                    <div class="amount-row hidden" id="v-pagar-row">
+                        <div class="label">Monto a pagar</div>
+                        <div class="value" id="v-monto-pagar">—</div>
                     </div>
                 </div>
 
@@ -301,7 +309,8 @@
             horaInicio: document.getElementById('f-hora-inicio'),
             horaFin: document.getElementById('f-hora-fin'),
             personas: document.getElementById('f-personas'),
-            monto: document.getElementById('f-monto'),
+            montoPagado: document.getElementById('f-monto-pagado'),
+            montoPagar: document.getElementById('f-monto-pagar'),
         };
 
         const out = {
@@ -310,8 +319,10 @@
             fechaTour: document.getElementById('v-fecha-tour'),
             horario: document.getElementById('v-horario'),
             personas: document.getElementById('v-personas'),
-            monto: document.getElementById('v-monto'),
-            amountRow: document.getElementById('v-amount-row'),
+            montoPagado: document.getElementById('v-monto-pagado'),
+            pagadoRow: document.getElementById('v-pagado-row'),
+            montoPagar: document.getElementById('v-monto-pagar'),
+            pagarRow: document.getElementById('v-pagar-row'),
             emitido: document.getElementById('v-emitido'),
         };
 
@@ -334,12 +345,20 @@
             const personasTxt = personas > 0 ? `${personas} ${personas === 1 ? 'persona' : 'personas'}` : '—';
             out.personas.textContent = personasTxt;
 
-            const monto = inputs.monto.value.trim();
-            if (monto) {
-                out.monto.textContent = monto;
-                out.amountRow.classList.remove('hidden');
+            const pagado = inputs.montoPagado.value.trim();
+            if (pagado) {
+                out.montoPagado.textContent = '€ ' + pagado;
+                out.pagadoRow.classList.remove('hidden');
             } else {
-                out.amountRow.classList.add('hidden');
+                out.pagadoRow.classList.add('hidden');
+            }
+
+            const pagar = inputs.montoPagar.value.trim();
+            if (pagar) {
+                out.montoPagar.textContent = '€ ' + pagar;
+                out.pagarRow.classList.remove('hidden');
+            } else {
+                out.pagarRow.classList.add('hidden');
             }
 
             out.emitido.textContent = todayLong();
