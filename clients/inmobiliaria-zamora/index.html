@@ -61,16 +61,19 @@
     <!-- Hero -->
     <section id="inicio" class="hero">
       <div class="hero__bg">
-        <img src="assets/images/hero-bg.jpg" alt="" fetchpriority="high" decoding="async">
+        <!-- Video de fondo (mismo de Di Iorio hasta tener uno propio de Zamora) -->
+        <div class="hero__video" id="heroVideo"></div>
+        <!-- Imagen poster: se ve mientras carga el video y como fallback -->
+        <img src="assets/images/hero-bg.jpg" alt="" class="hero__poster" fetchpriority="high" decoding="async">
       </div>
 
       <div class="hero__content container">
-        <span class="hero__eyebrow animate-fade-in-up">Operador inmobiliario</span>
+        <span class="hero__eyebrow animate-fade-in-up">Martillero y Corredor Público</span>
         <h1 class="hero__title animate-fade-in-up" style="animation-delay: 80ms">
-          Tu próxima propiedad, <em>encontrada</em>.
+          Te guiamos al lugar que <em>impulsa tus proyectos</em>.
         </h1>
         <p class="hero__subtitle animate-fade-in-up" style="animation-delay: 160ms">
-          Casas, departamentos, locales y terrenos seleccionados con criterio. Te acompañamos en cada paso, desde la búsqueda hasta la firma.
+          Casas, departamentos, locales y terrenos seleccionados con criterio. Te acompañamos en cada paso, desde la búsqueda hasta la firma. 🚀
         </p>
 
         <!-- Search Box -->
@@ -431,8 +434,8 @@
 
         <div class="contact__grid">
           <div class="contact__info reveal">
-            <h3>Inmobiliaria Zamora</h3>
-            <p>Asesoramiento profesional en venta, alquiler y tasación de propiedades. Confiá en nosotros para tu próximo hogar o inversión.</p>
+            <h3>Imanol Zamora</h3>
+            <p>Martillero y Corredor Público · Matrícula N° 4124 C.M.C.P.D.J. Asesoramiento profesional en venta, alquiler y tasación de propiedades. Te guiamos al lugar que impulsa tus proyectos.</p>
 
             <div class="contact__details">
               <div class="contact__item">
@@ -456,20 +459,21 @@
                 </div>
                 <div class="contact__item-text">
                   <strong>Teléfono</strong>
-                  [+54 ...]
+                  <a href="tel:+542346541708" style="color:inherit">2346-541708</a> / <a href="tel:+542346410789" style="color:inherit">2346-410789</a>
                 </div>
               </div>
 
               <div class="contact__item">
                 <div class="contact__item-icon">
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
-                    <polyline points="22,6 12,13 2,6"></polyline>
+                    <path d="M12 15a4 4 0 1 0 0-8 4 4 0 0 0 0 8z"></path>
+                    <path d="M8.5 14.5 5 21l3.5-1.5L10 23l2-5"></path>
+                    <path d="M15.5 14.5 19 21l-3.5-1.5L14 23l-2-5"></path>
                   </svg>
                 </div>
                 <div class="contact__item-text">
-                  <strong>Email</strong>
-                  [contacto@zamora.com]
+                  <strong>Matrícula</strong>
+                  N° 4124 C.M.C.P.D.J.
                 </div>
               </div>
 
@@ -544,6 +548,7 @@
             </div>
           </a>
           <p class="footer__desc">
+            Mart. y Corr. Público Imanol Zamora · Mat. N° 4124 C.M.C.P.D.J.<br>
             Tu socio de confianza en el mercado inmobiliario. Ayudamos a familias e inversores a encontrar su lugar.
           </p>
         </div>
@@ -584,7 +589,7 @@
                 <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
               </svg>
             </a>
-            <a href="https://wa.me/5490000000000" class="footer__social-link" aria-label="WhatsApp" target="_blank" rel="noopener">
+            <a href="https://wa.me/5492346541708" class="footer__social-link" aria-label="WhatsApp" target="_blank" rel="noopener">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
               </svg>
@@ -601,8 +606,8 @@
     </div>
   </footer>
 
-  <!-- WhatsApp Floating Button (placeholder number) -->
-  <a href="https://wa.me/5490000000000?text=Hola,%20me%20interesa%20consultar%20por%20una%20propiedad"
+  <!-- WhatsApp Floating Button -->
+  <a href="https://wa.me/5492346541708?text=Hola,%20me%20interesa%20consultar%20por%20una%20propiedad"
      class="whatsapp-float"
      target="_blank"
      rel="noopener noreferrer"
@@ -616,5 +621,58 @@
   <script src="assets/js/api.js"></script>
   <script src="assets/js/properties-data.js"></script>
   <script src="assets/js/app.js"></script>
+
+  <!-- Hero video background (YouTube). Reemplazar por video/imagen propia de Zamora cuando esté. -->
+  <script>
+    (function () {
+      var tag = document.createElement('script');
+      tag.src = "https://www.youtube.com/iframe_api";
+      var firstScriptTag = document.getElementsByTagName('script')[0];
+      firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+    })();
+
+    var heroPlayer;
+    var videoStartTime = 120; // 2:00
+    var videoEndTime = 300;   // 5:00
+    var loopCheckInterval;
+
+    function onYouTubeIframeAPIReady() {
+      heroPlayer = new YT.Player('heroVideo', {
+        videoId: 'Wio2J4fZpoM',
+        playerVars: {
+          autoplay: 1, mute: 1, controls: 0, showinfo: 0, rel: 0,
+          start: videoStartTime, modestbranding: 1, playsinline: 1,
+          loop: 0, disablekb: 1, fs: 0, iv_load_policy: 3
+        },
+        events: {
+          onReady: onHeroPlayerReady,
+          onStateChange: onHeroPlayerStateChange
+        }
+      });
+    }
+
+    function onHeroPlayerReady(event) {
+      event.target.seekTo(videoStartTime);
+      event.target.playVideo();
+      document.querySelector('.hero')?.classList.add('hero--video-ready');
+      loopCheckInterval = setInterval(checkVideoLoop, 500);
+    }
+
+    function checkVideoLoop() {
+      if (heroPlayer && heroPlayer.getCurrentTime) {
+        var currentTime = heroPlayer.getCurrentTime();
+        if (currentTime >= videoEndTime || currentTime < videoStartTime) {
+          heroPlayer.seekTo(videoStartTime);
+        }
+      }
+    }
+
+    function onHeroPlayerStateChange(event) {
+      if (event.data === YT.PlayerState.ENDED || event.data === YT.PlayerState.PAUSED) {
+        heroPlayer.seekTo(videoStartTime);
+        heroPlayer.playVideo();
+      }
+    }
+  </script>
 </body>
 </html>

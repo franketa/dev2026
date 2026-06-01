@@ -7,8 +7,8 @@
 // Site Configuration  (placeholder — reemplazar por el WhatsApp real de Zamora)
 // ==========================================================================
 const SITE = {
-  // Formato internacional sin signos (ej: 5492320000000)
-  whatsapp: '5490000000000'
+  // Formato internacional sin signos
+  whatsapp: '5492346541708'
 };
 
 // ==========================================================================
