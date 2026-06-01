@@ -635,6 +635,7 @@
     var videoStartTime = 120; // 2:00
     var videoEndTime = 300;   // 5:00
     var loopCheckInterval;
+    var videoFailed = false;  // si el video no puede embeberse, nos quedamos con la imagen
 
     function onYouTubeIframeAPIReady() {
       heroPlayer = new YT.Player('heroVideo', {
@@ -646,15 +647,16 @@
         },
         events: {
           onReady: onHeroPlayerReady,
-          onStateChange: onHeroPlayerStateChange
+          onStateChange: onHeroPlayerStateChange,
+          onError: onHeroPlayerError
         }
       });
     }
 
     function onHeroPlayerReady(event) {
+      // No revelamos el video todavía: solo cuando confirmamos que reproduce.
       event.target.seekTo(videoStartTime);
       event.target.playVideo();
-      document.querySelector('.hero')?.classList.add('hero--video-ready');
       loopCheckInterval = setInterval(checkVideoLoop, 500);
     }
 
@@ -668,10 +670,24 @@
     }
 
     function onHeroPlayerStateChange(event) {
+      if (videoFailed) return;
+      // Recién cuando empieza a reproducir, mostramos el video (evita el flash del error).
+      if (event.data === YT.PlayerState.PLAYING) {
+        document.querySelector('.hero')?.classList.add('hero--video-ready');
+      }
       if (event.data === YT.PlayerState.ENDED || event.data === YT.PlayerState.PAUSED) {
         heroPlayer.seekTo(videoStartTime);
         heroPlayer.playVideo();
       }
+    }
+
+    // El video no puede embeberse (ej: Error 150/153) → nos quedamos con la imagen del hero.
+    function onHeroPlayerError() {
+      videoFailed = true;
+      if (loopCheckInterval) clearInterval(loopCheckInterval);
+      var hero = document.querySelector('.hero');
+      hero?.classList.remove('hero--video-ready');
+      hero?.classList.add('hero--video-failed');
     }
   </script>
 </body>
