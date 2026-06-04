@@ -138,8 +138,6 @@ De forma opcional, ofrecemos planes mensuales de **producción y gestión de con
 - Los planes superiores incluyen la **producción en el lugar**: un equipo de 2 personas se acerca a la concesionaria (o donde se requiera) a grabar el contenido.
 - Todo el contenido se realiza alineado a la identidad visual de la marca.
 
-> Los planes de contenido son un servicio independiente del desarrollo y el mantenimiento del sitio, y pueden contratarse por separado.
-
 ---
 
 💬
