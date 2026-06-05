@@ -7,7 +7,7 @@ export function Footer() {
         <p>Presto Chivilcoy — Empanadas, Pizzas y Tartas artesanales</p>
         <p className="mt-1">Pedí online, retirá en el local</p>
         <a
-          href="https://venturebyte.com.ar"
+          href="https://www.venturebyte.com.ar"
           target="_blank"
           rel="noopener noreferrer"
           aria-label="Desarrollado por VentureByte"
