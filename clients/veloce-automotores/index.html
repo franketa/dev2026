@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="es-AR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Veloce Automotores | Concesionaria en Rosario</title>
+  <meta name="description" content="Veloce Automotores — Concesionaria multimarca en Rosario. Vehículos 0km y usados, financiación en el día.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700;800&family=Barlow+Condensed:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+
+  <nav class="nav" id="nav">
+    <div class="nav__container">
+      <a href="#" class="nav__logo">VELOCE<span>.</span></a>
+      <button class="nav__toggle" id="navToggle" aria-label="Menú"><span></span><span></span><span></span></button>
+      <ul class="nav__menu" id="navMenu">
+        <li><a href="#inicio" class="nav__link">Inicio</a></li>
+        <li><a href="#stock" class="nav__link">Stock</a></li>
+        <li><a href="#financiacion" class="nav__link">Financiación</a></li>
+        <li><a href="#servicios" class="nav__link">Servicios</a></li>
+        <li><a href="#contacto" class="nav__link nav__link--cta">Contacto</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section class="hero" id="inicio">
+    <div class="hero__bg"></div>
+    <div class="hero__overlay"></div>
+    <div class="hero__content">
+      <div class="hero__badge">Desde 1998 &bull; +5.000 vehículos vendidos</div>
+      <h1 class="hero__title">Tu próximo auto<br>está acá</h1>
+      <p class="hero__subtitle">Stock disponible, financiación en el día</p>
+      <div class="hero__ctas">
+        <a href="#stock" class="btn btn--primary">Ver stock</a>
+        <a href="https://wa.me/5493415559876?text=Hola%2C%20quiero%20consultar%20por%20un%20veh%C3%ADculo" class="btn btn--outline" target="_blank">WhatsApp</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Stock -->
+  <section class="stock" id="stock">
+    <div class="container">
+      <h2 class="section__title reveal">Stock disponible</h2>
+      <div class="filtros reveal">
+        <select id="filtroTipo">
+          <option value="">Todos los tipos</option>
+          <option value="Pickup">Pickup</option>
+          <option value="SUV">SUV</option>
+          <option value="Sedan">Sedán</option>
+          <option value="Hatchback">Hatchback</option>
+        </select>
+        <select id="filtroMarca">
+          <option value="">Todas las marcas</option>
+          <option value="Ford">Ford</option>
+          <option value="Toyota">Toyota</option>
+          <option value="VW">VW</option>
+          <option value="Chevrolet">Chevrolet</option>
+          <option value="Fiat">Fiat</option>
+          <option value="Peugeot">Peugeot</option>
+          <option value="Renault">Renault</option>
+        </select>
+        <select id="filtroPrecio">
+          <option value="">Precio máximo</option>
+          <option value="12000000">Hasta $12.000.000</option>
+          <option value="15000000">Hasta $15.000.000</option>
+          <option value="20000000">Hasta $20.000.000</option>
+          <option value="30000000">Hasta $30.000.000</option>
+        </select>
+        <button id="filtroLimpiar" class="filtros__clear">Limpiar</button>
+      </div>
+      <div class="stock__grid" id="stockGrid"></div>
+      <p class="stock__empty" id="stockEmpty" style="display:none">No se encontraron vehículos con esos filtros.</p>
+    </div>
+  </section>
+
+  <!-- Financiación -->
+  <section class="financiacion" id="financiacion">
+    <div class="container">
+      <h2 class="section__title reveal">Simulá tu cuota</h2>
+      <p class="section__subtitle reveal">Manejá tu auto nuevo desde el primer día.</p>
+      <div class="calc reveal">
+        <div class="calc__inputs">
+          <div class="calc__field">
+            <label for="calcPrecio">Precio del vehículo ($)</label>
+            <input type="number" id="calcPrecio" placeholder="Ej: 15000000" value="15000000">
+          </div>
+          <div class="calc__field">
+            <label for="calcPlazo">Plazo</label>
+            <select id="calcPlazo">
+              <option value="12">12 meses</option>
+              <option value="24">24 meses</option>
+              <option value="36" selected>36 meses</option>
+              <option value="48">48 meses</option>
+            </select>
+          </div>
+          <button class="btn btn--primary" id="calcBtn">Calcular cuota</button>
+        </div>
+        <div class="calc__result" id="calcResult">
+          <span class="calc__label">Cuota estimada mensual</span>
+          <span class="calc__amount" id="calcAmount">$0</span>
+          <p class="calc__disclaimer">*Tasa 4% mensual. Sujeta a aprobación crediticia.</p>
+        </div>
+      </div>
+      <div class="bancos reveal">
+        <p>Trabajamos con:</p>
+        <div class="bancos__grid">
+          <div class="banco" style="background:#003087">Santander</div>
+          <div class="banco" style="background:#1a5276">BBVA</div>
+          <div class="banco" style="background:#0066cc">Galicia</div>
+          <div class="banco" style="background:#e74c3c">HSBC</div>
+          <div class="banco" style="background:#2ecc71">Credicoop</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Servicios -->
+  <section class="servicios" id="servicios">
+    <div class="container">
+      <h2 class="section__title reveal">Nuestros servicios</h2>
+      <div class="servicios__grid">
+        <div class="servicio reveal"><span class="servicio__icon">📋</span><h3>Plan de ahorro</h3><p>Accedé a tu 0km con cuotas accesibles</p></div>
+        <div class="servicio reveal"><span class="servicio__icon">💳</span><h3>Financiación propia</h3><p>Aprobación en el día, requisitos mínimos</p></div>
+        <div class="servicio reveal"><span class="servicio__icon">🔄</span><h3>Parte de pago</h3><p>Recibimos tu auto como parte de pago</p></div>
+        <div class="servicio reveal"><span class="servicio__icon">📝</span><h3>Patentamiento</h3><p>Gestión completa de papeles y patentes</p></div>
+        <div class="servicio reveal"><span class="servicio__icon">🛡️</span><h3>Seguro automotor</h3><p>Las mejores coberturas del mercado</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Stats -->
+  <section class="elegir">
+    <div class="container">
+      <div class="elegir__grid reveal">
+        <div class="elegir__stat"><span class="elegir__number" data-target="25">0</span><span>Años en el mercado</span></div>
+        <div class="elegir__stat"><span class="elegir__number" data-target="5000">0</span><span>Vehículos vendidos</span></div>
+        <div class="elegir__stat"><span class="elegir__number">24hs</span><span>Financiación express</span></div>
+        <div class="elegir__stat"><span class="elegir__number">✓</span><span>Parte de pago</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonios -->
+  <section class="testimonios">
+    <div class="container">
+      <h2 class="section__title reveal">Clientes satisfechos</h2>
+      <div class="testimonios__grid">
+        <div class="testimonio reveal">
+          <div class="testimonio__stars">★★★★★</div>
+          <p>"Compré mi Ranger acá. Excelente atención y financiación rápida."</p>
+          <strong>Lucas P.</strong><span>Ford Ranger XLS 2023</span>
+        </div>
+        <div class="testimonio reveal">
+          <div class="testimonio__stars">★★★★★</div>
+          <p>"Me financiaron en 48 horas. El auto estaba impecable."</p>
+          <strong>Daniela M.</strong><span>Chevrolet Cruze LTZ 2023</span>
+        </div>
+        <div class="testimonio reveal">
+          <div class="testimonio__stars">★★★★★</div>
+          <p>"Me dieron un valor justo por mi auto en parte de pago."</p>
+          <strong>Martín G.</strong><span>Toyota Hilux SRV 2022</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Equipo -->
+  <section class="equipo">
+    <div class="container">
+      <h2 class="section__title reveal">Equipo de ventas</h2>
+      <div class="equipo__grid">
+        <div class="asesor reveal">
+          <div class="asesor__photo">JP</div>
+          <h3>Juan Pérez</h3><span>Especialista en 0km</span>
+          <a href="https://wa.me/5493415550001?text=Hola%20Juan" class="btn btn--outline btn--sm" target="_blank">WhatsApp</a>
+        </div>
+        <div class="asesor reveal">
+          <div class="asesor__photo">MG</div>
+          <h3>María González</h3><span>Especialista en Usados</span>
+          <a href="https://wa.me/5493415550002?text=Hola%20Mar%C3%ADa" class="btn btn--outline btn--sm" target="_blank">WhatsApp</a>
+        </div>
+        <div class="asesor reveal">
+          <div class="asesor__photo">CL</div>
+          <h3>Carlos López</h3><span>Vehículos Comerciales</span>
+          <a href="https://wa.me/5493415550003?text=Hola%20Carlos" class="btn btn--outline btn--sm" target="_blank">WhatsApp</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contacto -->
+  <section class="contacto" id="contacto">
+    <div class="container">
+      <div class="contacto__grid">
+        <div class="contacto__info reveal">
+          <h2 class="section__title section__title--left">Visitanos</h2>
+          <div class="contacto__dato"><span>📍</span><div><strong>Dirección</strong><p>Av. Pellegrini 3456, Rosario</p></div></div>
+          <div class="contacto__dato"><span>🕐</span><div><strong>Horarios</strong><p>Lun-Vie 9:00–19:00 · Sáb 9:00–13:00</p></div></div>
+          <div class="contacto__dato"><span>📱</span><div><strong>WhatsApp</strong><p><a href="https://wa.me/5493415559876">+54 341 555-9876</a></p></div></div>
+        </div>
+        <div class="contacto__mapa reveal"><div class="mapa-placeholder"><p>📍 Av. Pellegrini 3456<br>Rosario, Santa Fe</p></div></div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="container">
+      <p>&copy; 2026 Veloce Automotores — Rosario, Santa Fe</p>
+      <a class="footer__vb-credit" href="#" aria-label="Desarrollado por VentureByte">Desarrollado por VentureByte <img src="assets/images/venturebyte-white.png" alt="VentureByte"></a>
+    </div>
+  </footer>
+
+  <a href="https://wa.me/5493415559876" class="whatsapp-float" target="_blank" aria-label="WhatsApp">
+    <svg viewBox="0 0 24 24" width="28" height="28" fill="#fff"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+  </a>
+
+  <script src="assets/js/main.js"></script>
+</body>
+</html>

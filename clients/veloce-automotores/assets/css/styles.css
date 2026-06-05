@@ -1,0 +1,189 @@
+/* ==========================================
+   Veloce Automotores — Bold Automotive
+   ========================================== */
+:root {
+  --primario: #1B3A5C;
+  --secundario: #E8520A;
+  --acento: #F5F5F5;
+  --texto: #1C1C1C;
+  --bg-dark: #0F1923;
+  --bg-card: #fff;
+  --transition: .3s cubic-bezier(.4,0,.2,1);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { font-family: 'Barlow', sans-serif; color: var(--texto); line-height: 1.6; overflow-x: hidden; }
+.container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+
+h1, h2, h3 { font-family: 'Barlow Condensed', sans-serif; font-weight: 700; line-height: 1.1; }
+.section__title { font-size: clamp(1.8rem, 4vw, 2.5rem); text-align: center; margin-bottom: 16px; color: var(--primario); }
+.section__title--left { text-align: left; }
+.section__subtitle { text-align: center; color: #666; margin-bottom: 40px; }
+section { padding: 80px 0; }
+
+/* Buttons */
+.btn {
+  display: inline-block; padding: 14px 32px; font-family: 'Barlow Condensed', sans-serif;
+  font-size: .9rem; font-weight: 700; text-decoration: none; text-transform: uppercase;
+  letter-spacing: 2px; border-radius: 4px; transition: var(--transition); cursor: pointer; border: none;
+}
+.btn--primary { background: var(--secundario); color: #fff; }
+.btn--primary:hover { background: #c44508; transform: translateY(-2px); box-shadow: 0 8px 24px rgba(232,82,10,.3); }
+.btn--outline { background: transparent; color: var(--secundario); border: 2px solid var(--secundario); }
+.btn--outline:hover { background: var(--secundario); color: #fff; }
+.btn--sm { padding: 8px 20px; font-size: .75rem; }
+
+/* Nav */
+.nav { position: fixed; top: 0; left: 0; right: 0; z-index: 1000; padding: 16px 0; transition: var(--transition); }
+.nav--scrolled { background: rgba(15,25,35,.95); backdrop-filter: blur(10px); padding: 10px 0; }
+.nav__container { max-width: 1200px; margin: 0 auto; padding: 0 24px; display: flex; align-items: center; justify-content: space-between; }
+.nav__logo { font-family: 'Barlow Condensed', sans-serif; font-size: 1.5rem; color: #fff; text-decoration: none; font-weight: 800; letter-spacing: 3px; }
+.nav__logo span { color: var(--secundario); }
+.nav__menu { list-style: none; display: flex; gap: 28px; align-items: center; }
+.nav__link { color: #fff; text-decoration: none; font-size: .8rem; text-transform: uppercase; letter-spacing: 2px; font-weight: 600; transition: color .3s; }
+.nav__link:hover { color: var(--secundario); }
+.nav__link--cta { background: var(--secundario); color: #fff !important; padding: 8px 20px; border-radius: 4px; }
+.nav__toggle { display: none; flex-direction: column; gap: 5px; background: none; border: none; cursor: pointer; }
+.nav__toggle span { width: 24px; height: 2px; background: #fff; transition: var(--transition); }
+
+/* Hero */
+.hero { position: relative; height: 100vh; min-height: 600px; display: flex; align-items: center; justify-content: center; text-align: center; overflow: hidden; }
+.hero__bg { position: absolute; inset: 0; background: url('https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=1600') center/cover; }
+.hero__overlay { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(15,25,35,.75), rgba(27,58,92,.9)); }
+.hero__content { position: relative; z-index: 2; max-width: 700px; padding: 0 24px; }
+.hero__badge { display: inline-block; font-size: .75rem; letter-spacing: 3px; text-transform: uppercase; color: var(--secundario); margin-bottom: 20px; font-weight: 600; background: rgba(232,82,10,.1); padding: 6px 16px; border: 1px solid rgba(232,82,10,.3); border-radius: 4px; }
+.hero__title { font-size: clamp(2.5rem, 7vw, 4.5rem); color: #fff; margin-bottom: 16px; text-transform: uppercase; letter-spacing: 3px; }
+.hero__subtitle { color: rgba(255,255,255,.7); font-size: 1.1rem; margin-bottom: 32px; }
+.hero__ctas { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+.hero__ctas .btn--outline { color: #fff; border-color: #fff; }
+.hero__ctas .btn--outline:hover { background: #fff; color: var(--primario); }
+
+/* Filtros */
+.filtros { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; margin-bottom: 32px; }
+.filtros select, .filtros input { padding: 10px 16px; border: 2px solid #e0e0e0; border-radius: 4px; font-family: 'Barlow', sans-serif; font-size: .85rem; background: #fff; min-width: 160px; }
+.filtros select:focus, .filtros input:focus { border-color: var(--secundario); outline: none; }
+.filtros__clear { background: none; border: 2px solid #ccc; padding: 10px 20px; border-radius: 4px; cursor: pointer; font-family: 'Barlow', sans-serif; font-weight: 600; color: #666; transition: var(--transition); }
+.filtros__clear:hover { border-color: var(--secundario); color: var(--secundario); }
+
+/* Stock grid */
+.stock { background: var(--acento); }
+.stock__grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; }
+.stock__empty { text-align: center; color: #999; padding: 40px; font-size: 1rem; }
+
+.vehicle-card { background: #fff; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 12px rgba(0,0,0,.08); transition: var(--transition); }
+.vehicle-card:hover { transform: translateY(-6px); box-shadow: 0 12px 40px rgba(0,0,0,.12); }
+.vehicle-card__img { height: 200px; display: flex; align-items: flex-start; justify-content: flex-end; padding: 12px; position: relative; }
+.vehicle-card__badge { background: #27ae60; color: #fff; padding: 4px 12px; border-radius: 4px; font-size: .7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
+.vehicle-card__body { padding: 20px; }
+.vehicle-card__name { font-size: 1.1rem; margin-bottom: 8px; color: var(--primario); }
+.vehicle-card__specs { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 12px; }
+.vehicle-card__spec { font-size: .75rem; color: #666; background: #f5f5f5; padding: 4px 8px; border-radius: 4px; }
+.vehicle-card__price { font-family: 'Barlow Condensed', sans-serif; font-size: 1.5rem; font-weight: 800; color: var(--secundario); margin-bottom: 4px; }
+.vehicle-card__cuota { font-size: .8rem; color: #888; margin-bottom: 16px; }
+.vehicle-card__cta { display: flex; gap: 8px; }
+
+/* Financiación */
+.calc { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; max-width: 800px; margin: 0 auto 40px; background: #fff; border-radius: 12px; padding: 32px; box-shadow: 0 4px 20px rgba(0,0,0,.08); }
+.calc__inputs { display: flex; flex-direction: column; gap: 16px; }
+.calc__field label { display: block; font-size: .8rem; font-weight: 600; color: #666; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
+.calc__field input, .calc__field select { width: 100%; padding: 12px 16px; border: 2px solid #e0e0e0; border-radius: 6px; font-family: 'Barlow', sans-serif; font-size: 1rem; }
+.calc__field input:focus, .calc__field select:focus { border-color: var(--secundario); outline: none; }
+.calc__result { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; background: var(--primario); border-radius: 8px; padding: 24px; color: #fff; }
+.calc__label { font-size: .75rem; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 8px; opacity: .7; }
+.calc__amount { font-family: 'Barlow Condensed', sans-serif; font-size: 2.5rem; font-weight: 800; color: var(--secundario); }
+.calc__disclaimer { font-size: .7rem; margin-top: 8px; opacity: .5; }
+
+.bancos { text-align: center; }
+.bancos p { font-size: .85rem; color: #888; margin-bottom: 16px; }
+.bancos__grid { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+.banco { color: #fff; padding: 8px 20px; border-radius: 6px; font-size: .75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
+
+/* Servicios */
+.servicios__grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 20px; }
+.servicio { text-align: center; padding: 24px 16px; background: #fff; border-radius: 12px; box-shadow: 0 2px 12px rgba(0,0,0,.06); transition: var(--transition); }
+.servicio:hover { transform: translateY(-4px); box-shadow: 0 8px 24px rgba(0,0,0,.1); }
+.servicio__icon { font-size: 2rem; display: block; margin-bottom: 12px; }
+.servicio h3 { font-size: .9rem; margin-bottom: 8px; color: var(--primario); }
+.servicio p { font-size: .8rem; color: #666; }
+
+/* Stats */
+.elegir { background: var(--primario); padding: 60px 0; }
+.elegir__grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 32px; text-align: center; }
+.elegir__number { display: block; font-family: 'Barlow Condensed', sans-serif; font-size: 3rem; font-weight: 800; color: var(--secundario); }
+.elegir__stat span:last-child { font-size: .8rem; color: rgba(255,255,255,.7); text-transform: uppercase; letter-spacing: 1px; }
+
+/* Testimonios */
+.testimonios__grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+.testimonio { background: #fff; padding: 28px; border-radius: 12px; box-shadow: 0 2px 12px rgba(0,0,0,.06); }
+.testimonio__stars { color: #f39c12; font-size: 1rem; margin-bottom: 12px; }
+.testimonio p { font-size: .9rem; color: #555; margin-bottom: 16px; font-style: italic; }
+.testimonio strong { display: block; color: var(--primario); }
+.testimonio span { font-size: .8rem; color: var(--secundario); }
+
+/* Equipo */
+.equipo { background: var(--acento); }
+.equipo__grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+.asesor { background: #fff; padding: 32px; border-radius: 12px; text-align: center; box-shadow: 0 2px 12px rgba(0,0,0,.06); }
+.asesor__photo { width: 80px; height: 80px; background: var(--primario); color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; font-family: 'Barlow Condensed', sans-serif; font-size: 1.3rem; font-weight: 700; }
+.asesor h3 { color: var(--primario); margin-bottom: 4px; }
+.asesor span { display: block; font-size: .8rem; color: #888; margin-bottom: 16px; }
+
+/* Contacto */
+.contacto__grid { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: center; }
+.contacto__dato { display: flex; gap: 16px; margin-bottom: 20px; }
+.contacto__dato span:first-child { font-size: 1.3rem; }
+.contacto__dato strong { display: block; color: var(--primario); font-size: .8rem; text-transform: uppercase; letter-spacing: 1px; }
+.contacto__dato a { color: var(--secundario); text-decoration: none; }
+.mapa-placeholder { width: 100%; height: 350px; background: #e0e0e0; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: #999; }
+
+/* Footer */
+.footer { background: var(--bg-dark); color: rgba(255,255,255,.5); padding: 32px 0; text-align: center; font-size: .8rem; }
+
+/* WhatsApp Float */
+.whatsapp-float { position: fixed; bottom: 24px; right: 24px; width: 56px; height: 56px; background: #25D366; border-radius: 50%; display: flex; align-items: center; justify-content: center; z-index: 999; box-shadow: 0 4px 20px rgba(37,211,102,.4); transition: var(--transition); animation: waPulse 2s infinite; }
+.whatsapp-float:hover { transform: scale(1.1); }
+@keyframes waPulse { 0%,100%{box-shadow:0 4px 20px rgba(37,211,102,.4)} 50%{box-shadow:0 4px 40px rgba(37,211,102,.6)} }
+
+/* Reveal */
+.reveal { opacity: 0; transform: translateY(24px); transition: opacity .6s, transform .6s; }
+.reveal--visible { opacity: 1; transform: translateY(0); }
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .stock__grid { grid-template-columns: repeat(2, 1fr); }
+  .servicios__grid { grid-template-columns: repeat(3, 1fr); }
+  .elegir__grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 768px) {
+  section { padding: 60px 0; }
+  .nav__menu { position: fixed; top: 0; right: -100%; width: 260px; height: 100vh; background: rgba(15,25,35,.98); flex-direction: column; justify-content: center; gap: 24px; transition: right .4s; }
+  .nav__menu--open { right: 0; }
+  .nav__toggle { display: flex; }
+  .stock__grid { grid-template-columns: 1fr; }
+  .calc { grid-template-columns: 1fr; }
+  .servicios__grid { grid-template-columns: 1fr; }
+  .testimonios__grid { grid-template-columns: 1fr; }
+  .equipo__grid { grid-template-columns: 1fr; }
+  .contacto__grid { grid-template-columns: 1fr; }
+}
+/* --- VentureByte credit --- */
+.footer__vb-credit {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 16px;
+  font-size: .72rem;
+  color: rgba(255, 255, 255, .45);
+  text-decoration: none;
+  transition: opacity .3s ease;
+}
+.footer__vb-credit img {
+  height: 20px;
+  width: auto;
+  opacity: .7;
+  transition: opacity .3s ease;
+}
+.footer__vb-credit:hover { color: rgba(255, 255, 255, .7); }
+.footer__vb-credit:hover img { opacity: 1; }
