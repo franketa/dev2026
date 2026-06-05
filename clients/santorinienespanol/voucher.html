@@ -103,6 +103,10 @@
         .amount-row.hidden { display: none; }
 
         .voucher-footer { background: var(--color-bg-cream); padding: 16px 35px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; border-top: 1px solid #e5e1d8; }
+        .footer__vb-credit { width: 100%; display: inline-flex; align-items: center; justify-content: center; gap: 8px; margin-top: 16px; font-size: .72rem; color: rgba(0,0,0,.45); text-decoration: none; transition: opacity .3s ease; }
+        .footer__vb-credit img { height: 20px; width: auto; opacity: .7; transition: opacity .3s ease; }
+        .footer__vb-credit:hover { color: rgba(0,0,0,.7); }
+        .footer__vb-credit:hover img { opacity: 1; }
         .footer-contact { font-size: 0.7rem; color: var(--color-text-muted); line-height: 1.5; }
         .footer-contact strong { color: var(--color-primary); display: block; font-size: 0.75rem; margin-bottom: 2px; }
         .footer-stamp { text-align: right; }
@@ -275,6 +279,7 @@
                         <div class="signature">Santorini En Español</div>
                         <div class="issued">Emitido el <span id="v-emitido">—</span></div>
                     </div>
+                    <a class="footer__vb-credit" href="#" aria-label="Desarrollado por VentureByte">Desarrollado por VentureByte <img src="resources/images/venturebyte-black.png" alt="VentureByte"></a>
                 </footer>
             </article>
         </div>

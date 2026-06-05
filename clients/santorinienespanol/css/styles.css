@@ -168,6 +168,10 @@ body.normal-scroll .normal-content { display: block; }
 .footer-contact-item { display: flex; align-items: center; gap: 12px; margin-bottom: 15px; opacity: 0.8; }
 .footer-contact-item svg { width: 20px; height: 20px; color: var(--color-accent); }
 .footer-bottom { max-width: 1400px; margin: 0 auto; padding-top: 30px; border-top: 1px solid rgba(255, 255, 255, 0.1); display: flex; justify-content: space-between; font-size: 0.9rem; opacity: 0.7; }
+.footer__vb-credit { display: inline-flex; align-items: center; justify-content: center; gap: 8px; margin-top: 16px; font-size: .72rem; color: rgba(255,255,255,.45); text-decoration: none; transition: opacity .3s ease; }
+.footer__vb-credit img { height: 20px; width: auto; opacity: .7; transition: opacity .3s ease; }
+.footer__vb-credit:hover { color: rgba(255,255,255,.7); }
+.footer__vb-credit:hover img { opacity: 1; }
 
 .whatsapp-float { position: fixed; bottom: 30px; right: 30px; width: 65px; height: 65px; background: #25D366; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 5px 25px rgba(37, 211, 102, 0.4); z-index: 999; transition: all 0.4s; }
 .whatsapp-float:hover { transform: scale(1.1); }

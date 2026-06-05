@@ -805,4 +805,24 @@ button {
         width: 54px;
         height: 54px;
     }
+}/* --- VentureByte credit --- */
+.footer__vb-credit {
+  flex-basis: 100%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 16px;
+  font-size: .72rem;
+  color: rgba(255, 255, 255, .45);
+  text-decoration: none;
+  transition: opacity .3s ease;
 }
+.footer__vb-credit img {
+  height: 20px;
+  width: auto;
+  opacity: .7;
+  transition: opacity .3s ease;
+}
+.footer__vb-credit:hover { color: rgba(255, 255, 255, .7); }
+.footer__vb-credit:hover img { opacity: 1; }

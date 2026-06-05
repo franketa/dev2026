@@ -1010,6 +1010,30 @@ a.contact-method-value:hover {
     text-decoration: underline;
 }
 
+.footer__vb-credit {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 16px;
+    font-size: .72rem;
+    color: rgba(255, 255, 255, .45);
+    text-decoration: none;
+    transition: opacity .3s ease;
+}
+.footer__vb-credit img {
+    height: 20px;
+    width: auto;
+    opacity: .7;
+    transition: opacity .3s ease;
+}
+.footer__vb-credit:hover {
+    color: rgba(255, 255, 255, .7);
+}
+.footer__vb-credit:hover img {
+    opacity: 1;
+}
+
 /* ==================== WhatsApp Floating Button ==================== */
 .whatsapp-float {
     position: fixed;
