@@ -48,22 +48,6 @@ body {
 img { display: block; max-width: 100%; }
 a { color: inherit; }
 
-/* ------------------------------ INTRO ----------------------------------- */
-.intro {
-  position: fixed; inset: 0; z-index: 2000;
-  background: var(--cream);
-  display: flex; align-items: center; justify-content: center;
-  transition: opacity .8s ease, visibility .8s ease;
-}
-.intro--hidden { opacity: 0; visibility: hidden; }
-.intro__monogram {
-  font-family: var(--ff-logo);
-  font-size: clamp(9rem, 24vw, 20rem);
-  color: var(--wine); line-height: 1;
-  animation: introPulse 1.5s ease both;
-}
-@keyframes introPulse { 0%{opacity:0;transform:scale(.92)} 45%{opacity:1;transform:scale(1)} 100%{opacity:1} }
-
 /* ------------------------------ HEADER ---------------------------------- */
 .site-header {
   position: fixed; top: 0; left: 0; right: 0; z-index: 1000;

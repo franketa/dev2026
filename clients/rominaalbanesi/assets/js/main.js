@@ -2,16 +2,6 @@
 (function () {
   'use strict';
 
-  /* ---- Intro / monograma: se oculta al cargar ---- */
-  var intro = document.getElementById('intro');
-  if (intro) {
-    window.addEventListener('load', function () {
-      setTimeout(function () { intro.classList.add('intro--hidden'); }, 1500);
-    });
-    // fallback por si load ya pasó
-    setTimeout(function () { intro.classList.add('intro--hidden'); }, 3000);
-  }
-
   /* ---- Header: fondo sólido al scrollear fuera del hero ---- */
   var header = document.querySelector('.site-header');
   var hero = document.querySelector('.hero');
