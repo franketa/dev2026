@@ -5,38 +5,23 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Romina Albanesi | Poesía</title>
   <meta name="description" content="Portafolio poético de Romina Albanesi. Álbum, biografía, colaboraciones, libros y redes. Una habitación de su casa poética.">
-
-  <!-- ============================================================
-       TIPOGRAFÍAS — PLACEHOLDER
-       Estas son fuentes "lo más parecidas posibles" de Google Fonts.
-       Cuando Romina pase los nombres reales del Canva, se reemplazan
-       acá y en las variables --ff-* del CSS. (Swap instantáneo.)
-         · Logo "ROMINA ALBANESI" → retro/setentosa  (temp: Bagel Fat One)
-         · Poemas y etiquetas script → cursiva        (temp: Dancing Script)
-         · Párrafos / nav → serif elegante            (temp: Cormorant Garamond + EB Garamond)
-       ============================================================ -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Bagel+Fat+One&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Dancing+Script:wght@500;600;700&display=swap" rel="stylesheet">
-
+  <link rel="preload" href="assets/fonts/ra-logo.woff" as="font" type="font/woff" crossorigin>
+  <link rel="preload" href="assets/fonts/ra-serif.woff" as="font" type="font/woff" crossorigin>
+  <link rel="preload" href="assets/fonts/ra-script.woff" as="font" type="font/woff" crossorigin>
   <link rel="stylesheet" href="assets/css/styles.css">
 </head>
 <body>
 
-  <!-- ============================ INTRO / MONOGRAMA ============================ -->
-  <div class="intro" id="intro" aria-hidden="true">
-    <span class="intro__monogram">R</span>
-  </div>
+  <!-- INTRO / MONOGRAMA -->
+  <div class="intro" id="intro" aria-hidden="true"><span class="intro__monogram">R</span></div>
 
-  <!-- ============================ HEADER ============================ -->
+  <!-- HEADER -->
   <header class="site-header" id="top">
     <div class="site-header__inner">
       <a href="#top" class="site-header__logo">Romina Albanesi</a>
-
       <button class="site-header__toggle" id="navToggle" aria-label="Abrir menú" aria-expanded="false">
         <span></span><span></span><span></span>
       </button>
-
       <nav class="site-nav" id="siteNav">
         <a href="#album" class="site-nav__link">Álbum</a>
         <a href="#biografia" class="site-nav__link">Biografía</a>
@@ -44,36 +29,28 @@
         <a href="#contacto" class="site-nav__link">Contacto</a>
         <a href="#libros" class="site-nav__link">Libros</a>
         <a href="#redes" class="site-nav__link">Redes</a>
+        <span class="site-header__search" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="21" y2="21"/></svg>
+        </span>
       </nav>
     </div>
   </header>
 
-  <!-- ============================ HERO ============================ -->
+  <!-- HERO -->
   <section class="hero" id="inicio">
-    <div class="img-ph hero__bg" data-img="hero-picnic.jpg">
-      <span class="img-ph__tag">hero-picnic.jpg — foto del picnic (libro, fresas, copa, pan, croissant). Horizontal, alta resolución.</span>
-    </div>
+    <div class="hero__bg" style="background-image:url('assets/images/hero-picnic.png')"></div>
   </section>
 
-  <!-- ============================ POEMA 1 ============================ -->
+  <!-- POEMA 1 -->
   <section class="poem">
-    <div class="img-ph poem__bg" data-img="sobre-carta.jpg">
-      <span class="img-ph__tag">sobre-carta.jpg — fondo de sobre de carta crema (se reutiliza en todos los poemas)</span>
-    </div>
-    <blockquote class="poem__text">
-      para escribirte<br>
-      empleo todo mi tiempo<br>
-      y la obra nunca termina<br>
-      como el regreso a casa
-    </blockquote>
+    <div class="poem__bg" style="background-image:url('assets/images/sobre.png')"></div>
+    <blockquote class="poem__text">para escribirte<br>empleo todo mi tiempo<br>y la obra nunca termina<br>como el regreso a casa</blockquote>
     <p class="poem__cite">Fragmento de un poema de <em>Veintinueve soles y un mar</em> (2021)</p>
   </section>
 
-  <!-- ============================ ÁLBUM ============================ -->
+  <!-- ÁLBUM -->
   <section class="section-intro section-intro--label-right" id="album">
-    <div class="section-intro__panel img-ph" data-img="grabado-album.png">
-      <span class="img-ph__tag">grabado-album.png — grabado floral (linograbado blanco sobre panel bordó)</span>
-    </div>
+    <div class="section-intro__panel" style="background-image:url('assets/images/grabado-album.png')"></div>
     <div class="section-intro__text">
       <p>mis registros y los regalos que he recibido. tiempos, lugares, lecturas, amores, compañías, sentires, escrituras, momentos, cosas, evidencias, mesas, autores, libros, mares, bibliotecas, eventos, presentaciones, encuentros deseo, trabajos, placer, recuerdos.</p>
     </div>
@@ -81,73 +58,78 @@
   </section>
 
   <div class="album">
-    <!-- La galería se completa con las polaroids reales. Cada .polaroid es un placeholder. -->
-    <div class="album__row">
-      <figure class="polaroid img-ph" data-img="album-01.jpg"><span class="img-ph__tag">album-01.jpg</span></figure>
-      <figure class="polaroid img-ph" data-img="album-02.jpg"><span class="img-ph__tag">album-02.jpg</span></figure>
-      <figure class="polaroid img-ph" data-img="album-03.jpg"><span class="img-ph__tag">album-03.jpg</span></figure>
-    </div>
-    <div class="album__divider" aria-hidden="true">♥ ♥ ♥</div>
-    <div class="album__row album__row--six">
-      <figure class="polaroid polaroid--wide img-ph" data-img="album-04.jpg"><span class="img-ph__tag">album-04.jpg</span></figure>
-      <figure class="polaroid polaroid--wide img-ph" data-img="album-05.jpg"><span class="img-ph__tag">album-05.jpg</span></figure>
-      <figure class="polaroid polaroid--wide img-ph" data-img="album-06.jpg"><span class="img-ph__tag">album-06.jpg</span></figure>
-      <figure class="polaroid polaroid--wide img-ph" data-img="album-07.jpg"><span class="img-ph__tag">album-07.jpg</span></figure>
-      <figure class="polaroid polaroid--wide img-ph" data-img="album-08.jpg"><span class="img-ph__tag">album-08.jpg</span></figure>
-      <figure class="polaroid polaroid--wide img-ph" data-img="album-09.jpg"><span class="img-ph__tag">album-09.jpg</span></figure>
-    </div>
-    <div class="album__divider" aria-hidden="true">♥ ♥ ♥</div>
-    <div class="album__row">
-      <figure class="polaroid img-ph" data-img="album-10.jpg"><span class="img-ph__tag">album-10.jpg</span></figure>
-      <figure class="polaroid img-ph" data-img="album-11.jpg"><span class="img-ph__tag">album-11.jpg</span></figure>
-      <figure class="polaroid img-ph" data-img="album-12.jpg"><span class="img-ph__tag">album-12.jpg</span></figure>
+    <div class="album__grid">
+      <figure class="polaroid"><img src="assets/images/album-01.jpg" alt="Romina Albanesi" loading="lazy"></figure>
+      <figure class="polaroid"><img src="assets/images/album-02.jpg" alt="Romina Albanesi" loading="lazy"></figure>
+      <figure class="polaroid"><img src="assets/images/album-03.jpg" alt="Romina Albanesi" loading="lazy"></figure>
+      <figure class="polaroid"><img src="assets/images/album-04.jpg" alt="Romina Albanesi" loading="lazy"></figure>
+      <figure class="polaroid"><img src="assets/images/album-05.jpg" alt="Romina Albanesi" loading="lazy"></figure>
+      <figure class="polaroid"><img src="assets/images/album-06.jpg" alt="Romina Albanesi" loading="lazy"></figure>
+      <figure class="polaroid"><img src="assets/images/album-07.jpg" alt="Romina Albanesi" loading="lazy"></figure>
+      <figure class="polaroid"><img src="assets/images/album-08.jpg" alt="Romina Albanesi" loading="lazy"></figure>
+      <div class="album__divider" aria-hidden="true">♥ ♥ ♥</div>
+      <figure class="polaroid"><img src="assets/images/album-09.jpg" alt="Romina Albanesi" loading="lazy"></figure>
+      <figure class="polaroid"><img src="assets/images/album-10.jpg" alt="Romina Albanesi" loading="lazy"></figure>
+      <figure class="polaroid"><img src="assets/images/album-11.jpg" alt="Romina Albanesi" loading="lazy"></figure>
+      <figure class="polaroid"><img src="assets/images/album-12.jpg" alt="Romina Albanesi" loading="lazy"></figure>
+      <figure class="polaroid"><img src="assets/images/album-13.jpg" alt="Romina Albanesi" loading="lazy"></figure>
+      <figure class="polaroid"><img src="assets/images/album-14.jpg" alt="Romina Albanesi" loading="lazy"></figure>
+      <figure class="polaroid"><img src="assets/images/album-15.jpg" alt="Romina Albanesi" loading="lazy"></figure>
+      <figure class="polaroid"><img src="assets/images/album-16.jpg" alt="Romina Albanesi" loading="lazy"></figure>
+      <div class="album__divider" aria-hidden="true">♥ ♥ ♥</div>
+      <figure class="polaroid"><img src="assets/images/album-17.jpg" alt="Romina Albanesi" loading="lazy"></figure>
+      <figure class="polaroid"><img src="assets/images/album-18.jpg" alt="Romina Albanesi" loading="lazy"></figure>
+      <figure class="polaroid"><img src="assets/images/album-19.jpg" alt="Romina Albanesi" loading="lazy"></figure>
+      <figure class="polaroid"><img src="assets/images/album-20.jpg" alt="Romina Albanesi" loading="lazy"></figure>
+      <figure class="polaroid"><img src="assets/images/album-21.jpg" alt="Romina Albanesi" loading="lazy"></figure>
+      <figure class="polaroid"><img src="assets/images/album-22.jpg" alt="Romina Albanesi" loading="lazy"></figure>
+      <figure class="polaroid"><img src="assets/images/album-23.jpg" alt="Romina Albanesi" loading="lazy"></figure>
+      <figure class="polaroid"><img src="assets/images/album-24.jpg" alt="Romina Albanesi" loading="lazy"></figure>
+      <div class="album__divider" aria-hidden="true">♥ ♥ ♥</div>
+      <figure class="polaroid"><img src="assets/images/album-25.jpg" alt="Romina Albanesi" loading="lazy"></figure>
+      <figure class="polaroid"><img src="assets/images/album-26.jpg" alt="Romina Albanesi" loading="lazy"></figure>
+      <figure class="polaroid"><img src="assets/images/album-27.jpg" alt="Romina Albanesi" loading="lazy"></figure>
+      <figure class="polaroid"><img src="assets/images/album-28.jpg" alt="Romina Albanesi" loading="lazy"></figure>
+      <figure class="polaroid"><img src="assets/images/album-29.jpg" alt="Romina Albanesi" loading="lazy"></figure>
+      <figure class="polaroid"><img src="assets/images/album-30.jpg" alt="Romina Albanesi" loading="lazy"></figure>
+      <figure class="polaroid"><img src="assets/images/album-31.jpg" alt="Romina Albanesi" loading="lazy"></figure>
+      <figure class="polaroid"><img src="assets/images/album-32.jpg" alt="Romina Albanesi" loading="lazy"></figure>
     </div>
   </div>
 
-  <!-- ============================ POEMA 2 ============================ -->
+  <!-- POEMA 2 -->
   <section class="poem">
-    <div class="img-ph poem__bg" data-img="sobre-carta.jpg"><span class="img-ph__tag">sobre-carta.jpg</span></div>
-    <blockquote class="poem__text">
-      ¿hubieses puesto en mi boca<br>
-      la flor que nació en la tuya<br>
-      cuando te pedí que te quedaras?
-    </blockquote>
+    <div class="poem__bg" style="background-image:url('assets/images/sobre.png')"></div>
+    <blockquote class="poem__text">¿hubieses puesto en mi boca<br>la flor que nació en la tuya<br>cuando te pedí que te quedaras?</blockquote>
     <p class="poem__cite">Fragmento de un poema de <em>Aunque la poesía no lo entienda</em> (2025)</p>
   </section>
 
-  <!-- ============================ BIOGRAFÍA ============================ -->
+  <!-- BIOGRAFÍA -->
   <section class="section-intro section-intro--label-left" id="biografia">
     <div class="section-intro__text">
       <p>mi historia y las versiones que han ido naciendo de ella. infancia, libros, experiencias, aulas, mudanzas, lecturas, recuerdos, tiempos, urgencias, preguntas, vínculos, lugares, intuiciones, pasiones, hechos, felicidad, dolores, elecciones, dudas, obsesiones, temores.</p>
     </div>
-    <div class="section-intro__panel img-ph" data-img="grabado-biografia.png">
-      <span class="img-ph__tag">grabado-biografia.png — grabado floral (tallos altos sobre panel bordó)</span>
-    </div>
+    <div class="section-intro__panel" style="background-image:url('assets/images/grabado-biografia.png')"></div>
     <span class="section-intro__label">biografía</span>
   </section>
 
   <div class="bio">
-    <figure class="polaroid polaroid--portrait img-ph" data-img="bio-retrato.jpg">
-      <span class="img-ph__tag">bio-retrato.jpg — retrato (foto con corazones de fondo). Vertical.</span>
-      <figcaption class="polaroid__caption">Biografía</figcaption>
+    <figure class="bio__polaroid">
+      <img class="bio__photo" src="assets/images/bio-retrato.jpg" alt="Romina Albanesi" loading="lazy">
+      <img class="bio__caption" src="assets/images/bio-caption.png" alt="Biografía" loading="lazy">
     </figure>
   </div>
 
-  <!-- ============================ POEMA 3 ============================ -->
+  <!-- POEMA 3 -->
   <section class="poem">
-    <div class="img-ph poem__bg" data-img="sobre-carta.jpg"><span class="img-ph__tag">sobre-carta.jpg</span></div>
-    <blockquote class="poem__text">
-      y tu labio inferior exiliado, reanimando tu cuerpo<br>
-      próximo al abismo, al orgasmo, a la muerte
-    </blockquote>
+    <div class="poem__bg" style="background-image:url('assets/images/sobre.png')"></div>
+    <blockquote class="poem__text">y tu labio inferior exiliado, reanimando tu cuerpo<br>próximo al abismo, al orgasmo, a la muerte</blockquote>
     <p class="poem__cite">Fragmento de un poema de <em>Vademécum</em> (2021)</p>
   </section>
 
-  <!-- ============================ COLABORACIONES ============================ -->
+  <!-- COLABORACIONES -->
   <section class="section-intro section-intro--label-right" id="colaboraciones">
-    <div class="section-intro__panel img-ph" data-img="grabado-colaboraciones.png">
-      <span class="img-ph__tag">grabado-colaboraciones.png — grabado floral sobre panel bordó</span>
-    </div>
+    <div class="section-intro__panel" style="background-image:url('assets/images/grabado-colaboraciones.png')"></div>
     <div class="section-intro__text">
       <p>escritura para otros a partir de y con otros. proyectos, ideas, conversaciones, acuerdos, silencios, aprendizajes, escucha, acompañamiento, pedidos, intercambios, voces, antologías, manuscritos, sinergias, compañía.</p>
     </div>
@@ -162,54 +144,40 @@
     <p class="collab__text">Columnista literaria y de poesía en <em>Revista Horizonte Independiente</em> desde diciembre de 2024.</p>
   </div>
 
-  <!-- ============================ POEMA 4 ============================ -->
+  <!-- POEMA 4 -->
   <section class="poem">
-    <div class="img-ph poem__bg" data-img="sobre-carta.jpg"><span class="img-ph__tag">sobre-carta.jpg</span></div>
-    <blockquote class="poem__text">
-      yo la sigo mirando<br>
-      y leo su vuelo que<br>
-      arde de libertad hasta que muere
-    </blockquote>
+    <div class="poem__bg" style="background-image:url('assets/images/sobre.png')"></div>
+    <blockquote class="poem__text">yo la sigo mirando<br>y leo su vuelo que<br>arde de libertad hasta que muere</blockquote>
     <p class="poem__cite">Fragmento de un poema de <em>Hagamos fuego</em> (2020)</p>
   </section>
 
-  <!-- ============================ CONTACTO ============================ -->
+  <!-- CONTACTO -->
   <section class="section-intro section-intro--label-left" id="contacto">
     <div class="section-intro__text">
       <p>hacer tiempo para seguir tejiendo relaciones. mensajes, proyectos, invitaciones, ideas, preguntas, recomendaciones, encuentros, correspondencias, cruces, avisos.</p>
     </div>
-    <div class="section-intro__panel img-ph" data-img="grabado-contacto.png">
-      <span class="img-ph__tag">grabado-contacto.png — grabado floral (amapolas) sobre panel bordó</span>
-    </div>
+    <div class="section-intro__panel" style="background-image:url('assets/images/grabado-contacto.png')"></div>
     <span class="section-intro__label">contacto</span>
   </section>
 
   <div class="contact">
-    <div class="img-ph contact__bg" data-img="contacto-flores.jpg">
-      <span class="img-ph__tag">contacto-flores.jpg — fondo de flores (begonias)</span>
-    </div>
+    <div class="contact__bg" style="background-image:url('assets/images/contacto-flores.jpg')"></div>
     <div class="contact__note">
       <p class="contact__title">¿Querés contactarme?</p>
       <p class="contact__body">Escribime a <a href="mailto:rominaalbanesi.poesia@gmail.com">rominaalbanesi.poesia@gmail.com</a> o a cualquiera de mis <strong>redes sociales</strong> para que conversemos/compartamos/colaboremos.</p>
     </div>
   </div>
 
-  <!-- ============================ POEMA 5 ============================ -->
+  <!-- POEMA 5 -->
   <section class="poem">
-    <div class="img-ph poem__bg" data-img="sobre-carta.jpg"><span class="img-ph__tag">sobre-carta.jpg</span></div>
-    <blockquote class="poem__text">
-      un temblor humano<br>
-      un laberinto de almas<br>
-      la cáscara eterna de una pintura triste
-    </blockquote>
+    <div class="poem__bg" style="background-image:url('assets/images/sobre.png')"></div>
+    <blockquote class="poem__text">un temblor humano<br>un laberinto de almas<br>la cáscara eterna de una pintura triste</blockquote>
     <p class="poem__cite">Fragmento de un poema de <em>El origen de las especies</em> (2020)</p>
   </section>
 
-  <!-- ============================ LIBROS ============================ -->
+  <!-- LIBROS -->
   <section class="section-intro section-intro--label-right" id="libros">
-    <div class="section-intro__panel img-ph" data-img="grabado-libros.png">
-      <span class="img-ph__tag">grabado-libros.png — grabado floral sobre panel bordó</span>
-    </div>
+    <div class="section-intro__panel" style="background-image:url('assets/images/grabado-libros.png')"></div>
     <div class="section-intro__text">
       <p>palabras que quedaron impresas en tinta. poemarios, antologías, participaciones, prólogos, presencia, manuscritos, ideas, publicaciones, papel, emociones, archivos, páginas, anotaciones.</p>
     </div>
@@ -217,25 +185,23 @@
   </section>
 
   <div class="books">
-    <!-- Vitrina de 3 libros -->
     <div class="books__showcase">
       <figure class="book-card">
-        <div class="img-ph book-card__img" data-img="libro-aunque.jpg"><span class="img-ph__tag">libro-aunque.jpg</span></div>
+        <img src="assets/images/libro-aunque.png" alt="Aunque no lo entienda la poesía" loading="lazy">
         <figcaption>Aunque no lo entienda la poesía</figcaption>
       </figure>
       <figure class="book-card">
-        <div class="img-ph book-card__img" data-img="libro-horizonte.jpg"><span class="img-ph__tag">libro-horizonte.jpg</span></div>
+        <img src="assets/images/libro-horizonte.png" alt="Un horizonte en llamas — Vademécum" loading="lazy">
         <figcaption>Un horizonte en llamas<br>-Vademécum-</figcaption>
       </figure>
       <figure class="book-card">
-        <div class="img-ph book-card__img" data-img="libro-veintinueve.jpg"><span class="img-ph__tag">libro-veintinueve.jpg</span></div>
+        <img src="assets/images/libro-veintinueve.png" alt="Veintinueve soles y un mar" loading="lazy">
         <figcaption>Veintinueve soles y un mar</figcaption>
       </figure>
     </div>
 
-    <!-- Detalle libro 1 -->
     <article class="book-detail">
-      <div class="img-ph book-detail__img" data-img="libro-aunque.jpg"><span class="img-ph__tag">libro-aunque.jpg</span></div>
+      <img src="assets/images/libro-aunque.png" alt="Aunque no lo entienda la poesía" loading="lazy">
       <div class="book-detail__text">
         <h3 class="book-detail__title">Aunque no lo entienda la poesía</h3>
         <p>Este libro acompaña la larga conversación entre <em>el amor</em> y <em>el olvido</em>.</p>
@@ -245,9 +211,8 @@
       </div>
     </article>
 
-    <!-- Detalle libro 2 -->
     <article class="book-detail book-detail--reverse">
-      <div class="img-ph book-detail__img" data-img="libro-horizonte.jpg"><span class="img-ph__tag">libro-horizonte.jpg</span></div>
+      <img src="assets/images/libro-horizonte.png" alt="Un horizonte en llamas — Vademécum" loading="lazy">
       <div class="book-detail__text">
         <h3 class="book-detail__title">Vademécum</h3>
         <p>Este libro es un <em>inventario afectivo</em>. Amores, cenizas, nostalgias, memorias, pérdidas, madrugadas, casas, domingos, bibliotecas, cicatrices, ternuras, despedidas.</p>
@@ -255,9 +220,8 @@
       </div>
     </article>
 
-    <!-- Detalle libro 3 -->
     <article class="book-detail">
-      <div class="img-ph book-detail__img" data-img="libro-veintinueve.jpg"><span class="img-ph__tag">libro-veintinueve.jpg</span></div>
+      <img src="assets/images/libro-veintinueve.png" alt="Veintinueve soles y un mar" loading="lazy">
       <div class="book-detail__text">
         <h3 class="book-detail__title">Veintinueve soles y un mar</h3>
         <p>Este libro invoca a la <em>magia</em> y desea la <em>permanencia</em>.</p>
@@ -267,90 +231,72 @@
     </article>
   </div>
 
-  <!-- ============================ POEMA 6 ============================ -->
+  <!-- POEMA 6 -->
   <section class="poem">
-    <div class="img-ph poem__bg" data-img="sobre-carta.jpg"><span class="img-ph__tag">sobre-carta.jpg</span></div>
-    <blockquote class="poem__text">
-      tus ojos me enseñan a preservar las flores<br>
-      a besarlas con el corazón de mis dedos<br>
-      tus ojos me llevan a un tiempo<br>
-      que no sabe tener lo que tenemos
-    </blockquote>
+    <div class="poem__bg" style="background-image:url('assets/images/sobre.png')"></div>
+    <blockquote class="poem__text">tus ojos me enseñan a preservar las flores<br>a besarlas con el corazón de mis dedos<br>tus ojos me llevan a un tiempo<br>que no sabe tener lo que tenemos</blockquote>
     <p class="poem__cite">Fragmento de un poema de <em>Vademécum</em> (2021)</p>
   </section>
 
-  <!-- ============================ REDES ============================ -->
+  <!-- REDES -->
   <section class="section-intro section-intro--label-left" id="redes">
     <div class="section-intro__text">
       <p>mis registros y los que me han regalado. tiempos, lugares, lecturas, amores, compañías, sentires, escrituras, momentos, cosas. evidencias, mesas, autores, libros, mares, bibliotecas, eventos, presentaciones, deseo, trabajo.</p>
     </div>
-    <div class="section-intro__panel img-ph" data-img="grabado-redes.png">
-      <span class="img-ph__tag">grabado-redes.png — grabado floral sobre panel bordó</span>
-    </div>
+    <div class="section-intro__panel" style="background-image:url('assets/images/grabado-redes.png')"></div>
     <span class="section-intro__label">redes</span>
   </section>
 
   <div class="social">
-    <!-- Instagram -->
     <div class="social-grid">
       <h3 class="social-grid__title"><span class="social-grid__title-pre">Romina</span> <span class="social-grid__title-script">en Instagram</span></h3>
       <div class="social-grid__items">
-        <a class="social-grid__cell social-grid__cell--placeholder" href="#">Publicación de IG<br><small>(pendiente: link)</small></a>
-        <a class="social-grid__cell social-grid__cell--placeholder" href="#">Publicación de IG<br><small>(pendiente: link)</small></a>
-        <a class="social-grid__cell social-grid__cell--placeholder" href="#">Publicación de IG<br><small>(pendiente: link)</small></a>
-        <a class="social-grid__cell social-grid__cell--placeholder" href="#">Publicación de IG<br><small>(pendiente: link)</small></a>
-        <a class="social-grid__cell social-grid__cell--placeholder" href="#">Publicación de IG<br><small>(pendiente: link)</small></a>
-        <a class="social-grid__cell social-grid__cell--placeholder" href="#">Publicación de IG<br><small>(pendiente: link)</small></a>
-        <a class="social-grid__cell social-grid__cell--placeholder" href="#">Publicación de IG<br><small>(pendiente: link)</small></a>
-        <a class="social-grid__cell social-grid__cell--placeholder" href="#">Publicación de IG<br><small>(pendiente: link)</small></a>
+        <a class="social-grid__cell" href="#">Publicación de IG<br><small>(pendiente: link)</small></a>
+        <a class="social-grid__cell" href="#">Publicación de IG<br><small>(pendiente: link)</small></a>
+        <a class="social-grid__cell" href="#">Publicación de IG<br><small>(pendiente: link)</small></a>
+        <a class="social-grid__cell" href="#">Publicación de IG<br><small>(pendiente: link)</small></a>
+        <a class="social-grid__cell" href="#">Publicación de IG<br><small>(pendiente: link)</small></a>
+        <a class="social-grid__cell" href="#">Publicación de IG<br><small>(pendiente: link)</small></a>
+        <a class="social-grid__cell" href="#">Publicación de IG<br><small>(pendiente: link)</small></a>
+        <a class="social-grid__cell" href="#">Publicación de IG<br><small>(pendiente: link)</small></a>
       </div>
     </div>
-    <!-- TikTok -->
     <div class="social-grid">
       <h3 class="social-grid__title"><span class="social-grid__title-pre">Romina</span> <span class="social-grid__title-script">en TikTok</span></h3>
       <div class="social-grid__items">
-        <a class="social-grid__cell social-grid__cell--placeholder" href="#">Publicación de TikTok<br><small>(pendiente: link)</small></a>
-        <a class="social-grid__cell social-grid__cell--placeholder" href="#">Publicación de TikTok<br><small>(pendiente: link)</small></a>
-        <a class="social-grid__cell social-grid__cell--placeholder" href="#">Publicación de TikTok<br><small>(pendiente: link)</small></a>
-        <a class="social-grid__cell social-grid__cell--placeholder" href="#">Publicación de TikTok<br><small>(pendiente: link)</small></a>
-        <a class="social-grid__cell social-grid__cell--placeholder" href="#">Publicación de TikTok<br><small>(pendiente: link)</small></a>
-        <a class="social-grid__cell social-grid__cell--placeholder" href="#">Publicación de TikTok<br><small>(pendiente: link)</small></a>
-        <a class="social-grid__cell social-grid__cell--placeholder" href="#">Publicación de TikTok<br><small>(pendiente: link)</small></a>
-        <a class="social-grid__cell social-grid__cell--placeholder" href="#">Publicación de TikTok<br><small>(pendiente: link)</small></a>
+        <a class="social-grid__cell" href="#">Publicación de TikTok<br><small>(pendiente: link)</small></a>
+        <a class="social-grid__cell" href="#">Publicación de TikTok<br><small>(pendiente: link)</small></a>
+        <a class="social-grid__cell" href="#">Publicación de TikTok<br><small>(pendiente: link)</small></a>
+        <a class="social-grid__cell" href="#">Publicación de TikTok<br><small>(pendiente: link)</small></a>
+        <a class="social-grid__cell" href="#">Publicación de TikTok<br><small>(pendiente: link)</small></a>
+        <a class="social-grid__cell" href="#">Publicación de TikTok<br><small>(pendiente: link)</small></a>
+        <a class="social-grid__cell" href="#">Publicación de TikTok<br><small>(pendiente: link)</small></a>
+        <a class="social-grid__cell" href="#">Publicación de TikTok<br><small>(pendiente: link)</small></a>
       </div>
     </div>
-    <!-- LinkedIn -->
     <div class="social-grid">
       <h3 class="social-grid__title"><span class="social-grid__title-pre">Romina</span> <span class="social-grid__title-script">en LinkedIn</span></h3>
       <div class="social-grid__items">
-        <a class="social-grid__cell social-grid__cell--placeholder" href="#">Publicación de LinkedIn<br><small>(pendiente: link)</small></a>
-        <a class="social-grid__cell social-grid__cell--placeholder" href="#">Publicación de LinkedIn<br><small>(pendiente: link)</small></a>
-        <a class="social-grid__cell social-grid__cell--placeholder" href="#">Publicación de LinkedIn<br><small>(pendiente: link)</small></a>
-        <a class="social-grid__cell social-grid__cell--placeholder" href="#">Publicación de LinkedIn<br><small>(pendiente: link)</small></a>
-        <a class="social-grid__cell social-grid__cell--placeholder" href="#">Publicación de LinkedIn<br><small>(pendiente: link)</small></a>
-        <a class="social-grid__cell social-grid__cell--placeholder" href="#">Publicación de LinkedIn<br><small>(pendiente: link)</small></a>
-        <a class="social-grid__cell social-grid__cell--placeholder" href="#">Publicación de LinkedIn<br><small>(pendiente: link)</small></a>
-        <a class="social-grid__cell social-grid__cell--placeholder" href="#">Publicación de LinkedIn<br><small>(pendiente: link)</small></a>
+        <a class="social-grid__cell" href="#">Publicación de LinkedIn<br><small>(pendiente: link)</small></a>
+        <a class="social-grid__cell" href="#">Publicación de LinkedIn<br><small>(pendiente: link)</small></a>
+        <a class="social-grid__cell" href="#">Publicación de LinkedIn<br><small>(pendiente: link)</small></a>
+        <a class="social-grid__cell" href="#">Publicación de LinkedIn<br><small>(pendiente: link)</small></a>
+        <a class="social-grid__cell" href="#">Publicación de LinkedIn<br><small>(pendiente: link)</small></a>
+        <a class="social-grid__cell" href="#">Publicación de LinkedIn<br><small>(pendiente: link)</small></a>
+        <a class="social-grid__cell" href="#">Publicación de LinkedIn<br><small>(pendiente: link)</small></a>
+        <a class="social-grid__cell" href="#">Publicación de LinkedIn<br><small>(pendiente: link)</small></a>
       </div>
     </div>
   </div>
 
-  <!-- ============================ CIERRE ============================ -->
-  <section class="closing closing--lined">
+  <!-- CIERRE -->
+  <section class="closing">
     <p class="closing__text">Gracias por recorrer una habitación de mi casa poética.</p>
   </section>
 
-  <section class="closing closing--heart">
-    <div class="doily-heart">
-      <p class="doily-heart__text">Gracias por recorrer<br>una habitación<br>de mi casa poética.</p>
-    </div>
-  </section>
-
-  <!-- ============================ FOOTER ============================ -->
+  <!-- FOOTER -->
   <footer class="site-footer">
-    <div class="img-ph site-footer__bg" data-img="footer-escritorio.jpg">
-      <span class="img-ph__tag">footer-escritorio.jpg — escritorio vintage (lámpara, posters "Côte Sauvage" / "Fleurs du Mois")</span>
-    </div>
+    <div class="site-footer__bg" style="background-image:url('assets/images/footer-escritorio.png')"></div>
     <div class="site-footer__inner">
       <div class="site-footer__top">
         <a href="#top" class="site-footer__logo">Romina Albanesi</a>
