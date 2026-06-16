@@ -9,9 +9,10 @@
   <link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png">
   <link rel="icon" type="image/png" sizes="48x48" href="favicon-48.png">
   <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+  <!-- Hero primero: el background-image del CSS no lo ve el preload-scanner, así que lo forzamos aquí para que arranque de inmediato -->
+  <link rel="preload" as="image" href="assets/images/hero-picnic.webp" fetchpriority="high">
+  <!-- Solo el font del logo es above-the-fold; serif y script cargan on-demand (todos tienen font-display:swap) -->
   <link rel="preload" href="assets/fonts/ra-logo.woff" as="font" type="font/woff" crossorigin>
-  <link rel="preload" href="assets/fonts/ra-serif.woff" as="font" type="font/woff" crossorigin>
-  <link rel="preload" href="assets/fonts/ra-script.woff" as="font" type="font/woff" crossorigin>
   <link rel="stylesheet" href="assets/css/styles.css">
 </head>
 <body>
