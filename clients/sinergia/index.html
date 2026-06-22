@@ -21,7 +21,7 @@
       --navy: #2d247b;
       --navy-soft: #6f6aa0;
       --green: #c3db3f;
-      --bg: #f0f3f7;
+      --bg: #f4f6f9;
       --card: #ffffff;
     }
 
@@ -33,28 +33,35 @@
       font-family: 'Quicksand', system-ui, sans-serif;
       color: var(--navy);
       background-color: var(--bg);
+      /* real paper texture extracted from the design */
+      background-image: url('assets/img/paper.webp');
+      background-size: cover;
+      background-position: top center;
+      background-repeat: no-repeat;
       min-height: 100vh;
       position: relative;
       overflow-x: hidden;
-      /* very subtle paper grain */
-      background-image:
-        radial-gradient(circle at 20% 10%, rgba(255,255,255,.6), transparent 40%),
-        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");
     }
 
-    /* ---- Decorative green blobs ---- */
+    /* ---- Decorative green blobs (real shapes from the design) ---- */
     .blobs {
       position: absolute;
-      inset: 0;
+      top: 0; bottom: 0; left: 0; right: 0;
+      width: 100%;
+      max-width: 600px;
+      margin: 0 auto;
       overflow: hidden;
       z-index: 0;
       pointer-events: none;
     }
-    .blob {
-      position: absolute;
-      background: var(--green);
-      filter: saturate(1.05);
-    }
+    .blob { position: absolute; height: auto; display: block; }
+    /* positions/sizes mirror the original PDF composition */
+    .blob0 { width: 26.9%; left: 1%;    top: 0.6%; }
+    .blob1 { width: 16.2%; left: 1%;    top: 25.4%; }
+    .blob2 { width: 56.4%; left: 15.5%; top: 29.6%; }
+    .blob3 { width: 56.4%; left: 28%;   top: 53.8%; }
+    .blob4 { width: 15.7%; left: 83.2%; top: 60.2%; }
+    .blob5 { width: 27.4%; left: 71.4%; top: 87%; }
 
     /* ---- Layout ---- */
     .page {
@@ -167,7 +174,14 @@
   </style>
 </head>
 <body>
-  <div class="blobs" id="blobs" aria-hidden="true"></div>
+  <div class="blobs" aria-hidden="true">
+    <img class="blob blob0" src="assets/img/blob0.webp" alt="" />
+    <img class="blob blob1" src="assets/img/blob1.webp" alt="" />
+    <img class="blob blob2" src="assets/img/blob2.webp" alt="" />
+    <img class="blob blob3" src="assets/img/blob3.webp" alt="" />
+    <img class="blob blob4" src="assets/img/blob4.webp" alt="" />
+    <img class="blob blob5" src="assets/img/blob5.webp" alt="" />
+  </div>
 
   <main class="page">
     <img class="logo" src="assets/img/logo-sinergia.webp" alt="Sinergia · Salud y Bienestar"
@@ -200,31 +214,6 @@
   </main>
 
   <script>
-    // ---- Decorative blobs: organic lime shapes peeking from the edges ----
-    (function () {
-      const defs = [
-        { top: '4%',  side: 'left',  off: '-70px', size: 150, r: '42% 58% 63% 37% / 45% 38% 62% 55%', rot: -12 },
-        { top: '16%', side: 'right', off: '-90px', size: 180, r: '58% 42% 38% 62% / 55% 60% 40% 45%', rot: 18 },
-        { top: '33%', side: 'left',  off: '-100px',size: 200, r: '63% 37% 52% 48% / 42% 56% 44% 58%', rot: 8 },
-        { top: '48%', side: 'right', off: '-80px', size: 165, r: '47% 53% 60% 40% / 58% 42% 58% 42%', rot: -16 },
-        { top: '63%', side: 'left',  off: '-95px', size: 185, r: '55% 45% 40% 60% / 48% 60% 40% 52%', rot: 14 },
-        { top: '78%', side: 'right', off: '-100px',size: 175, r: '40% 60% 55% 45% / 60% 45% 55% 40%', rot: -8 },
-        { top: '90%', side: 'left',  off: '-75px', size: 150, r: '60% 40% 45% 55% / 50% 55% 45% 50%', rot: 20 }
-      ];
-      const wrap = document.getElementById('blobs');
-      defs.forEach(d => {
-        const b = document.createElement('div');
-        b.className = 'blob';
-        b.style.top = d.top;
-        b.style[d.side] = d.off;
-        b.style.width = d.size + 'px';
-        b.style.height = d.size + 'px';
-        b.style.borderRadius = d.r;
-        b.style.transform = 'rotate(' + d.rot + 'deg)';
-        wrap.appendChild(b);
-      });
-    })();
-
     // ---- Build WhatsApp / custom link for a contact ----
     function hrefFor(c) {
       if (c.link) return c.link;
