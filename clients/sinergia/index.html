@@ -166,6 +166,23 @@
     }
     .social a:hover { transform: scale(1.08); }
 
+    /* ---- Crédito VentureByte ---- */
+    .footer__vb-credit {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 26px;
+      font-size: .72rem;
+      font-weight: 600;
+      color: rgba(45, 36, 123, .5);
+      text-decoration: none;
+      transition: color .2s ease;
+    }
+    .footer__vb-credit img { height: 18px; width: auto; opacity: .8; transition: opacity .2s ease; }
+    .footer__vb-credit:hover { color: rgba(45, 36, 123, .85); }
+    .footer__vb-credit:hover img { opacity: 1; }
+
     .state {
       margin-top: 28px;
       text-align: center;
@@ -218,6 +235,8 @@
         </svg>
       </a>
     </div>
+
+    <a class="footer__vb-credit" href="https://www.venturebyte.com.ar" target="_blank" rel="noopener" aria-label="Desarrollado por VentureByte">Desarrollado por VentureByte <img src="assets/img/venturebyte-black.webp" alt="VentureByte" /></a>
   </main>
 
   <script>
