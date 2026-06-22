@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="es-AR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sinergia · Panel</title>
+  <meta name="robots" content="noindex, nofollow" />
+  <link rel="icon" type="image/png" href="assets/img/favicon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --navy: #2d247b;
+      --navy-soft: #6f6aa0;
+      --green: #c3db3f;
+      --green-dark: #93a82a;
+      --bg: #f0f3f7;
+      --line: #e2e3ee;
+      --danger: #e05566;
+      --danger-bg: #fdecee;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Quicksand', system-ui, sans-serif;
+      color: var(--navy);
+      background: var(--bg);
+      min-height: 100vh;
+    }
+    button { font-family: inherit; cursor: pointer; }
+    input, textarea { font-family: inherit; }
+
+    /* ---------- Login ---------- */
+    .login {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+    .login__card {
+      width: 100%;
+      max-width: 360px;
+      background: #fff;
+      border-radius: 20px;
+      padding: 34px 28px;
+      box-shadow: 0 12px 40px rgba(45,36,123,.12);
+      text-align: center;
+    }
+    .login__logo { width: 200px; margin: 0 auto 18px; display: block; }
+    .login__title { font-weight: 600; font-size: 1.05rem; margin-bottom: 20px; color: var(--navy-soft); }
+
+    .field { text-align: left; margin-bottom: 16px; }
+    .field label { display: block; font-weight: 600; font-size: .9rem; margin-bottom: 6px; }
+    .field input, .field textarea {
+      width: 100%;
+      padding: 12px 14px;
+      border: 1.5px solid var(--line);
+      border-radius: 12px;
+      font-size: 1rem;
+      color: var(--navy);
+      background: #fbfbfe;
+      transition: border-color .15s;
+    }
+    .field input:focus, .field textarea:focus { outline: none; border-color: var(--green); }
+    .field textarea { resize: vertical; min-height: 64px; }
+    .field--check { display: flex; align-items: center; gap: 9px; }
+    .field--check input { width: auto; }
+    .field--check label { margin: 0; }
+    .hint { font-size: .82rem; color: var(--navy-soft); margin-top: 5px; }
+
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 7px;
+      border: none; border-radius: 999px; padding: 12px 22px;
+      font-weight: 700; font-size: .98rem; color: #fff;
+      background: var(--navy);
+      transition: filter .15s, transform .1s;
+    }
+    .btn:hover { filter: brightness(1.12); }
+    .btn:active { transform: translateY(1px); }
+    .btn--block { width: 100%; }
+    .btn--green { background: var(--green-dark); }
+    .btn--ghost { background: transparent; color: var(--navy); border: 1.5px solid var(--line); }
+    .btn--ghost:hover { background: #fff; filter: none; }
+    .btn--danger { background: var(--danger); }
+    .btn--sm { padding: 8px 14px; font-size: .85rem; }
+    .btn--icon { padding: 8px 11px; }
+
+    .msg { font-size: .9rem; font-weight: 600; margin-top: 12px; min-height: 18px; }
+    .msg--err { color: var(--danger); }
+    .msg--ok { color: var(--green-dark); }
+
+    /* ---------- App ---------- */
+    .app { display: none; max-width: 760px; margin: 0 auto; padding: 22px 18px 80px; }
+    .topbar {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 12px; margin-bottom: 8px; flex-wrap: wrap;
+    }
+    .topbar img { height: 38px; }
+    .topbar__actions { display: flex; gap: 8px; }
+    .subtitle { color: var(--navy-soft); font-weight: 500; margin-bottom: 22px; }
+
+    .toolbar { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 16px; flex-wrap: wrap; }
+    .toolbar h2 { font-size: 1.15rem; }
+
+    .contact {
+      background: #fff; border: 1.5px solid var(--line); border-radius: 16px;
+      padding: 14px 16px; margin-bottom: 12px;
+      display: flex; align-items: center; gap: 14px;
+    }
+    .contact--hidden { opacity: .55; }
+    .contact__order { display: flex; flex-direction: column; gap: 3px; }
+    .contact__order button {
+      border: none; background: #eef0f7; color: var(--navy); border-radius: 7px;
+      width: 28px; height: 22px; font-size: .8rem; line-height: 1;
+    }
+    .contact__order button:disabled { opacity: .35; cursor: default; }
+    .contact__body { flex: 1; min-width: 0; }
+    .contact__name { font-weight: 700; }
+    .contact__meta { font-size: .88rem; color: var(--navy-soft); margin-top: 2px; word-break: break-word; }
+    .badge { display: inline-block; font-size: .72rem; font-weight: 700; padding: 2px 8px; border-radius: 999px; margin-left: 8px; vertical-align: middle; }
+    .badge--hidden { background: #ffe9c7; color: #9a6b00; }
+    .contact__actions { display: flex; gap: 6px; flex-shrink: 0; }
+
+    /* ---------- Modal ---------- */
+    .overlay {
+      display: none; position: fixed; inset: 0; background: rgba(31,28,70,.45);
+      align-items: flex-start; justify-content: center; padding: 24px 16px; overflow-y: auto; z-index: 50;
+    }
+    .overlay.open { display: flex; }
+    .modal { width: 100%; max-width: 440px; background: #fff; border-radius: 20px; padding: 26px 24px; margin: auto; }
+    .modal h3 { margin-bottom: 18px; }
+    .modal__foot { display: flex; gap: 10px; margin-top: 20px; }
+    .modal__foot .btn { flex: 1; }
+
+    details.pwd { margin-top: 34px; border-top: 1.5px solid var(--line); padding-top: 18px; }
+    details.pwd summary { font-weight: 700; cursor: pointer; color: var(--navy-soft); }
+    details.pwd .field { margin-top: 14px; max-width: 360px; }
+
+    .icon { width: 17px; height: 17px; }
+  </style>
+</head>
+<body>
+  <!-- ============ LOGIN ============ -->
+  <section class="login" id="loginView">
+    <form class="login__card" id="loginForm">
+      <img class="login__logo" src="assets/img/logo-sinergia.webp" alt="Sinergia"
+           onerror="this.onerror=null;this.src='assets/img/logo-sinergia.png'" />
+      <div class="login__title">Panel de administración</div>
+      <div class="field">
+        <label for="password">Contraseña</label>
+        <input type="password" id="password" autocomplete="current-password" required />
+      </div>
+      <button class="btn btn--block" type="submit">Ingresar</button>
+      <div class="msg msg--err" id="loginMsg"></div>
+    </form>
+  </section>
+
+  <!-- ============ APP ============ -->
+  <section class="app" id="app">
+    <div class="topbar">
+      <img src="assets/img/logo-sinergia.webp" alt="Sinergia"
+           onerror="this.onerror=null;this.src='assets/img/logo-sinergia.png'" />
+      <div class="topbar__actions">
+        <a class="btn btn--ghost btn--sm" href="index.html" target="_blank" rel="noopener">Ver sitio</a>
+        <button class="btn btn--ghost btn--sm" id="logoutBtn">Salir</button>
+      </div>
+    </div>
+    <p class="subtitle">Gestioná los profesionales que aparecen en la landing.</p>
+
+    <div class="toolbar">
+      <h2>Profesionales</h2>
+      <button class="btn btn--green" id="addBtn">+ Agregar contacto</button>
+    </div>
+
+    <div id="list"></div>
+    <div class="msg" id="listMsg"></div>
+
+    <details class="pwd">
+      <summary>Cambiar contraseña</summary>
+      <form id="pwdForm">
+        <div class="field">
+          <label for="curPwd">Contraseña actual</label>
+          <input type="password" id="curPwd" autocomplete="current-password" />
+        </div>
+        <div class="field">
+          <label for="newPwd">Nueva contraseña</label>
+          <input type="password" id="newPwd" autocomplete="new-password" />
+        </div>
+        <button class="btn btn--sm" type="submit">Actualizar contraseña</button>
+        <div class="msg" id="pwdMsg"></div>
+      </form>
+    </details>
+  </section>
+
+  <!-- ============ MODAL (crear / editar) ============ -->
+  <div class="overlay" id="overlay">
+    <form class="modal" id="contactForm">
+      <h3 id="modalTitle">Nuevo contacto</h3>
+      <input type="hidden" id="cId" />
+      <div class="field">
+        <label for="cName">Nombre *</label>
+        <input type="text" id="cName" placeholder="Lic. Fernanda Di Pace" required />
+      </div>
+      <div class="field">
+        <label for="cSpecialty">Especialidad</label>
+        <input type="text" id="cSpecialty" placeholder="Kinesiología" />
+      </div>
+      <div class="field">
+        <label for="cPhone">Teléfono de WhatsApp</label>
+        <input type="text" id="cPhone" placeholder="2345 512467" />
+        <div class="hint" id="waHint">Se abrirá un chat de WhatsApp con este número.</div>
+      </div>
+      <div class="field">
+        <label for="cMessage">Mensaje inicial (opcional)</label>
+        <input type="text" id="cMessage" placeholder="¡Hola! Quería reservar un turno." />
+      </div>
+      <div class="field">
+        <label for="cLink">Link personalizado (opcional)</label>
+        <input type="text" id="cLink" placeholder="https://..." />
+        <div class="hint">Si lo completás, el botón abre este link en vez de WhatsApp.</div>
+      </div>
+      <div class="field field--check">
+        <input type="checkbox" id="cActive" checked />
+        <label for="cActive">Visible en la landing</label>
+      </div>
+      <div class="msg msg--err" id="formMsg"></div>
+      <div class="modal__foot">
+        <button type="button" class="btn btn--ghost" id="cancelBtn">Cancelar</button>
+        <button type="submit" class="btn">Guardar</button>
+      </div>
+    </form>
+  </div>
+
+  <script>
+    const TOKEN_KEY = 'sinergia_admin_token';
+    let token = localStorage.getItem(TOKEN_KEY) || '';
+    let contacts = [];
+
+    const $ = id => document.getElementById(id);
+
+    function authHeaders() {
+      return { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token };
+    }
+
+    async function api(path, opts = {}) {
+      const res = await fetch('/api/' + path, opts);
+      if (res.status === 401) { logout(); throw new Error('No autorizado'); }
+      const data = res.status === 204 ? null : await res.json().catch(() => null);
+      if (!res.ok) throw new Error((data && data.error) || 'Error');
+      return data;
+    }
+
+    /* ---------- Auth ---------- */
+    $('loginForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      $('loginMsg').textContent = '';
+      try {
+        const data = await api('auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ password: $('password').value })
+        });
+        token = data.token;
+        localStorage.setItem(TOKEN_KEY, token);
+        showApp();
+      } catch (err) {
+        $('loginMsg').textContent = err.message;
+      }
+    });
+
+    $('logoutBtn').addEventListener('click', logout);
+    function logout() {
+      token = '';
+      localStorage.removeItem(TOKEN_KEY);
+      $('app').style.display = 'none';
+      $('loginView').style.display = 'flex';
+    }
+
+    function showApp() {
+      $('loginView').style.display = 'none';
+      $('app').style.display = 'block';
+      loadContacts();
+    }
+
+    /* ---------- Contacts ---------- */
+    async function loadContacts() {
+      $('listMsg').textContent = '';
+      try {
+        contacts = await api('contacts/all', { headers: authHeaders() });
+        renderList();
+      } catch (err) {
+        $('listMsg').textContent = err.message;
+      }
+    }
+
+    function escapeHtml(s) {
+      return (s || '').replace(/[&<>"']/g, m => (
+        { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m]
+      ));
+    }
+
+    function renderList() {
+      const list = $('list');
+      list.innerHTML = '';
+      if (!contacts.length) {
+        list.innerHTML = '<p class="subtitle">Todavía no hay contactos. Agregá el primero.</p>';
+        return;
+      }
+      contacts.forEach((c, i) => {
+        const row = document.createElement('div');
+        row.className = 'contact' + (c.active ? '' : ' contact--hidden');
+        const target = c.link ? c.link : (c.whatsapp ? 'wa.me/' + c.whatsapp : '—');
+        const hidden = c.active ? '' : '<span class="badge badge--hidden">Oculto</span>';
+        row.innerHTML =
+          '<div class="contact__order">' +
+            '<button data-up="' + i + '" ' + (i === 0 ? 'disabled' : '') + ' aria-label="Subir">▲</button>' +
+            '<button data-down="' + i + '" ' + (i === contacts.length - 1 ? 'disabled' : '') + ' aria-label="Bajar">▼</button>' +
+          '</div>' +
+          '<div class="contact__body">' +
+            '<div class="contact__name">' + escapeHtml(c.name) + hidden + '</div>' +
+            '<div class="contact__meta">' +
+              (c.specialty ? escapeHtml(c.specialty) + ' · ' : '') + escapeHtml(target) +
+            '</div>' +
+          '</div>' +
+          '<div class="contact__actions">' +
+            '<button class="btn btn--ghost btn--sm" data-edit="' + c.id + '">Editar</button>' +
+            '<button class="btn btn--danger btn--sm" data-del="' + c.id + '">Borrar</button>' +
+          '</div>';
+        list.appendChild(row);
+      });
+    }
+
+    $('list').addEventListener('click', async (e) => {
+      const t = e.target;
+      if (t.dataset.edit) return openModal(contacts.find(c => c.id == t.dataset.edit));
+      if (t.dataset.del) return removeContact(t.dataset.del);
+      if (t.dataset.up !== undefined) return move(+t.dataset.up, -1);
+      if (t.dataset.down !== undefined) return move(+t.dataset.down, 1);
+    });
+
+    async function move(index, dir) {
+      const j = index + dir;
+      if (j < 0 || j >= contacts.length) return;
+      [contacts[index], contacts[j]] = [contacts[j], contacts[index]];
+      renderList();
+      try {
+        await api('contacts/order/reorder', {
+          method: 'PUT',
+          headers: authHeaders(),
+          body: JSON.stringify({ order: contacts.map(c => c.id) })
+        });
+      } catch (err) {
+        $('listMsg').textContent = err.message;
+        loadContacts();
+      }
+    }
+
+    async function removeContact(id) {
+      const c = contacts.find(x => x.id == id);
+      if (!confirm('¿Eliminar a "' + (c ? c.name : 'este contacto') + '"?')) return;
+      try {
+        await api('contacts/' + id, { method: 'DELETE', headers: authHeaders() });
+        loadContacts();
+      } catch (err) {
+        $('listMsg').textContent = err.message;
+      }
+    }
+
+    /* ---------- Modal ---------- */
+    function openModal(c) {
+      $('formMsg').textContent = '';
+      $('cId').value = c ? c.id : '';
+      $('cName').value = c ? c.name : '';
+      $('cSpecialty').value = c ? c.specialty : '';
+      $('cPhone').value = c ? c.phone : '';
+      $('cMessage').value = c ? c.message : '';
+      $('cLink').value = c ? c.link : '';
+      $('cActive').checked = c ? c.active : true;
+      $('modalTitle').textContent = c ? 'Editar contacto' : 'Nuevo contacto';
+      $('overlay').classList.add('open');
+      $('cName').focus();
+    }
+    function closeModal() { $('overlay').classList.remove('open'); }
+
+    $('addBtn').addEventListener('click', () => openModal(null));
+    $('cancelBtn').addEventListener('click', closeModal);
+    $('overlay').addEventListener('click', (e) => { if (e.target === $('overlay')) closeModal(); });
+
+    $('contactForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      $('formMsg').textContent = '';
+      const id = $('cId').value;
+      const payload = {
+        name: $('cName').value,
+        specialty: $('cSpecialty').value,
+        phone: $('cPhone').value,
+        message: $('cMessage').value,
+        link: $('cLink').value,
+        active: $('cActive').checked
+      };
+      try {
+        if (id) {
+          await api('contacts/' + id, { method: 'PUT', headers: authHeaders(), body: JSON.stringify(payload) });
+        } else {
+          await api('contacts', { method: 'POST', headers: authHeaders(), body: JSON.stringify(payload) });
+        }
+        closeModal();
+        loadContacts();
+      } catch (err) {
+        $('formMsg').textContent = err.message;
+      }
+    });
+
+    /* ---------- Change password ---------- */
+    $('pwdForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const m = $('pwdMsg');
+      m.className = 'msg';
+      m.textContent = '';
+      try {
+        await api('auth/password', {
+          method: 'POST',
+          headers: authHeaders(),
+          body: JSON.stringify({ current: $('curPwd').value, next: $('newPwd').value })
+        });
+        m.className = 'msg msg--ok';
+        m.textContent = 'Contraseña actualizada.';
+        $('curPwd').value = ''; $('newPwd').value = '';
+      } catch (err) {
+        m.className = 'msg msg--err';
+        m.textContent = err.message;
+      }
+    });
+
+    /* ---------- Boot ---------- */
+    (async function init() {
+      if (!token) return;
+      try {
+        await api('auth/verify', { headers: authHeaders() });
+        showApp();
+      } catch (_) { /* token invalid -> stay on login */ }
+    })();
+  </script>
+</body>
+</html>

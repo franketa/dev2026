@@ -1,0 +1,12 @@
+{
+  "contacts": [
+    { "name": "Lic. Fernanda Di Pace", "specialty": "Kinesiología", "phone": "2345 512467" },
+    { "name": "Lic. María Jorgelina Peralta", "specialty": "Osteopatía", "phone": "11 5995 4896" },
+    { "name": "Lic. Lucila Saliola", "specialty": "R.P.G. – Rehab. Vestibular", "phone": "2345 481829" },
+    { "name": "Prof. Ed. Física Lucas Vignau", "specialty": "Readaptación y Movimiento", "phone": "2345 446227" },
+    { "name": "Lic. Milagros Pelosso", "specialty": "Nutrición", "phone": "2345 499031" },
+    { "name": "Lic. Abril Cryan", "specialty": "Psicología", "phone": "2345 681453" },
+    { "name": "Lic. Victoria Scatorchio", "specialty": "Psicología", "phone": "2345 442850" },
+    { "name": "Lic. Camila Moreno", "specialty": "Psicología", "phone": "2344 505304" }
+  ]
+}

@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="es-AR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sinergia · Salud y Bienestar</title>
+  <meta name="description" content="Accedé a nuestros profesionales de Sinergia y reservá tu turno por WhatsApp." />
+  <link rel="icon" type="image/png" href="assets/img/favicon.png" />
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="Sinergia · Salud y Bienestar" />
+  <meta property="og:description" content="Accedé a nuestros profesionales y reservá tu turno haciendo click." />
+  <meta property="og:type" content="website" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --navy: #2d247b;
+      --navy-soft: #6f6aa0;
+      --green: #c3db3f;
+      --bg: #f0f3f7;
+      --card: #ffffff;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Quicksand', system-ui, sans-serif;
+      color: var(--navy);
+      background-color: var(--bg);
+      min-height: 100vh;
+      position: relative;
+      overflow-x: hidden;
+      /* very subtle paper grain */
+      background-image:
+        radial-gradient(circle at 20% 10%, rgba(255,255,255,.6), transparent 40%),
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");
+    }
+
+    /* ---- Decorative green blobs ---- */
+    .blobs {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      z-index: 0;
+      pointer-events: none;
+    }
+    .blob {
+      position: absolute;
+      background: var(--green);
+      filter: saturate(1.05);
+    }
+
+    /* ---- Layout ---- */
+    .page {
+      position: relative;
+      z-index: 1;
+      max-width: 460px;
+      margin: 0 auto;
+      padding: 46px 22px 64px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .logo {
+      width: min(72%, 290px);
+      height: auto;
+      display: block;
+    }
+
+    .divider {
+      width: 78%;
+      height: 1px;
+      margin: 22px 0 20px;
+      background: linear-gradient(90deg, transparent, rgba(45,36,123,.35), transparent);
+    }
+
+    .intro {
+      text-align: center;
+      line-height: 1.32;
+      margin-bottom: 30px;
+    }
+    .intro__hi {
+      font-weight: 700;
+      font-size: 1.35rem;
+      letter-spacing: .2px;
+    }
+    .intro__text {
+      font-weight: 500;
+      font-size: 1.12rem;
+      margin-top: 2px;
+    }
+
+    /* ---- Contact buttons ---- */
+    .list {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    .card {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      gap: 6px;
+      width: 100%;
+      min-height: 60px;
+      padding: 13px 22px;
+      text-decoration: none;
+      color: var(--navy);
+      border-radius: 999px;
+      border: 2px solid transparent;
+      background:
+        linear-gradient(var(--card), var(--card)) padding-box,
+        linear-gradient(95deg, #f98f4d 0%, #f47ba0 38%, #e8a3c2 60%, #c3db3f 100%) border-box;
+      box-shadow: 0 6px 16px rgba(45, 36, 123, .07);
+      transition: transform .16s ease, box-shadow .16s ease;
+    }
+    .card:hover,
+    .card:focus-visible {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 22px rgba(45, 36, 123, .13);
+      outline: none;
+    }
+    .card:active { transform: translateY(0); }
+
+    .card__text {
+      font-size: 1.04rem;
+      line-height: 1.25;
+    }
+    .card__name { font-weight: 700; }
+    .card__sep { font-weight: 500; color: var(--navy-soft); }
+    .card__specialty { font-weight: 500; color: var(--navy-soft); }
+
+    /* ---- Instagram ---- */
+    .social {
+      margin-top: 38px;
+      display: flex;
+      justify-content: center;
+    }
+    .social a {
+      display: inline-flex;
+      transition: transform .16s ease;
+    }
+    .social a:hover { transform: scale(1.08); }
+
+    .state {
+      margin-top: 28px;
+      text-align: center;
+      color: var(--navy-soft);
+      font-weight: 500;
+    }
+
+    @media (max-width: 380px) {
+      .intro__hi { font-size: 1.25rem; }
+      .intro__text { font-size: 1.02rem; }
+      .card__text { font-size: .97rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="blobs" id="blobs" aria-hidden="true"></div>
+
+  <main class="page">
+    <img class="logo" src="assets/img/logo-sinergia.webp" alt="Sinergia · Salud y Bienestar"
+         onerror="this.onerror=null;this.src='assets/img/logo-sinergia.png'" />
+
+    <div class="divider"></div>
+
+    <div class="intro">
+      <div class="intro__hi">¡Bienvenido!</div>
+      <div class="intro__text">Accedé a nuestros profesionales<br />y reservá tu turno haciendo <strong>¡click!</strong></div>
+    </div>
+
+    <nav class="list" id="list" aria-label="Profesionales"></nav>
+
+    <div class="social">
+      <a href="https://www.instagram.com/" target="_blank" rel="noopener" aria-label="Instagram de Sinergia">
+        <svg width="34" height="34" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="ig" x1="2" y1="22" x2="22" y2="2" gradientUnits="userSpaceOnUse">
+              <stop stop-color="#f98f4d" />
+              <stop offset="1" stop-color="#f47ba0" />
+            </linearGradient>
+          </defs>
+          <rect x="2.5" y="2.5" width="19" height="19" rx="5.5" stroke="url(#ig)" stroke-width="2" />
+          <circle cx="12" cy="12" r="4.2" stroke="url(#ig)" stroke-width="2" />
+          <circle cx="17.2" cy="6.8" r="1.25" fill="url(#ig)" />
+        </svg>
+      </a>
+    </div>
+  </main>
+
+  <script>
+    // ---- Decorative blobs: organic lime shapes peeking from the edges ----
+    (function () {
+      const defs = [
+        { top: '4%',  side: 'left',  off: '-70px', size: 150, r: '42% 58% 63% 37% / 45% 38% 62% 55%', rot: -12 },
+        { top: '16%', side: 'right', off: '-90px', size: 180, r: '58% 42% 38% 62% / 55% 60% 40% 45%', rot: 18 },
+        { top: '33%', side: 'left',  off: '-100px',size: 200, r: '63% 37% 52% 48% / 42% 56% 44% 58%', rot: 8 },
+        { top: '48%', side: 'right', off: '-80px', size: 165, r: '47% 53% 60% 40% / 58% 42% 58% 42%', rot: -16 },
+        { top: '63%', side: 'left',  off: '-95px', size: 185, r: '55% 45% 40% 60% / 48% 60% 40% 52%', rot: 14 },
+        { top: '78%', side: 'right', off: '-100px',size: 175, r: '40% 60% 55% 45% / 60% 45% 55% 40%', rot: -8 },
+        { top: '90%', side: 'left',  off: '-75px', size: 150, r: '60% 40% 45% 55% / 50% 55% 45% 50%', rot: 20 }
+      ];
+      const wrap = document.getElementById('blobs');
+      defs.forEach(d => {
+        const b = document.createElement('div');
+        b.className = 'blob';
+        b.style.top = d.top;
+        b.style[d.side] = d.off;
+        b.style.width = d.size + 'px';
+        b.style.height = d.size + 'px';
+        b.style.borderRadius = d.r;
+        b.style.transform = 'rotate(' + d.rot + 'deg)';
+        wrap.appendChild(b);
+      });
+    })();
+
+    // ---- Build WhatsApp / custom link for a contact ----
+    function hrefFor(c) {
+      if (c.link) return c.link;
+      if (c.whatsapp) {
+        const msg = c.message && c.message.trim()
+          ? c.message
+          : '¡Hola! Quería reservar un turno.';
+        return 'https://wa.me/' + c.whatsapp + '?text=' + encodeURIComponent(msg);
+      }
+      return '#';
+    }
+
+    function escapeHtml(s) {
+      return (s || '').replace(/[&<>"']/g, m => (
+        { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m]
+      ));
+    }
+
+    function render(contacts) {
+      const list = document.getElementById('list');
+      list.innerHTML = '';
+      if (!contacts.length) {
+        list.innerHTML = '<p class="state">Pronto vas a poder ver a nuestros profesionales aquí.</p>';
+        return;
+      }
+      contacts.forEach(c => {
+        const a = document.createElement('a');
+        a.className = 'card';
+        a.href = hrefFor(c);
+        if (!c.link) {
+          // WhatsApp / external — open in new tab
+        }
+        a.target = '_blank';
+        a.rel = 'noopener';
+        const spec = c.specialty
+          ? '<span class="card__sep"> - </span><span class="card__specialty">' + escapeHtml(c.specialty) + '</span>'
+          : '';
+        a.innerHTML = '<span class="card__text"><span class="card__name">' +
+          escapeHtml(c.name) + '</span>' + spec + '</span>';
+        list.appendChild(a);
+      });
+    }
+
+    fetch('/api/contacts')
+      .then(r => r.json())
+      .then(render)
+      .catch(() => {
+        document.getElementById('list').innerHTML =
+          '<p class="state">No pudimos cargar los profesionales. Actualizá la página.</p>';
+      });
+  </script>
+</body>
+</html>
