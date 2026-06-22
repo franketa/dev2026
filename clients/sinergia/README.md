@@ -75,5 +75,6 @@ contactos ni la contraseña entre deploys.
 
 ## Notas
 
-- El link de Instagram (ícono al pie de la landing) apunta a `instagram.com`;
-  actualizar la URL en `index.html` con el perfil real de Sinergia.
+- El link de Instagram (ícono al pie de la landing) apunta al perfil real
+  `@sinergia.25` (https://www.instagram.com/sinergia.25). Para cambiarlo,
+  editar el `href` en `index.html`.
