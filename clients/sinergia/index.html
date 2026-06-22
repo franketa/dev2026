@@ -54,7 +54,14 @@
       z-index: 0;
       pointer-events: none;
     }
-    .blob { position: absolute; height: auto; display: block; }
+    .blob {
+      position: absolute;
+      height: auto;
+      display: block;
+      /* soft, feathered diffusion like the original design */
+      filter: blur(11px) saturate(.92);
+      opacity: .82;
+    }
     /* positions/sizes mirror the original PDF composition */
     .blob0 { width: 26.9%; left: 1%;    top: 0.6%; }
     .blob1 { width: 16.2%; left: 1%;    top: 25.4%; }
