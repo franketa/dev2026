@@ -14,7 +14,11 @@
       "WebFetch(domain:imginn.com)",
       "Skill(superpowers:brainstorming)",
       "WebFetch(domain:www.onfit.com.ar)",
-      "WebSearch"
+      "WebSearch",
+      "WebFetch(domain:valentinbressaninmobiliaria.com.ar)",
+      "PowerShell(Get-NetTCPConnection *)",
+      "Bash(cp \"/c/Users/marti/.claude/image-cache/0922fc18-c6bf-4624-84e3-7da9e1d3736d/1.png\" \"/c/Users/marti/OneDrive/Desktop/dev2026/clients/bressan-inmobiliaria/assets/images/logos/vairo-logo.png\")",
+      "Read(//c/Users/marti/OneDrive/Desktop/dev2026/clients/bressan-inmobiliaria/assets/images/logos//**)"
     ]
   }
 }
