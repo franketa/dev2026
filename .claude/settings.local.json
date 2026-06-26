@@ -18,7 +18,10 @@
       "WebFetch(domain:valentinbressaninmobiliaria.com.ar)",
       "PowerShell(Get-NetTCPConnection *)",
       "Bash(cp \"/c/Users/marti/.claude/image-cache/0922fc18-c6bf-4624-84e3-7da9e1d3736d/1.png\" \"/c/Users/marti/OneDrive/Desktop/dev2026/clients/bressan-inmobiliaria/assets/images/logos/vairo-logo.png\")",
-      "Read(//c/Users/marti/OneDrive/Desktop/dev2026/clients/bressan-inmobiliaria/assets/images/logos//**)"
+      "Read(//c/Users/marti/OneDrive/Desktop/dev2026/clients/bressan-inmobiliaria/assets/images/logos//**)",
+      "Bash(cp \"C:/Users/martix/.claude/image-cache/bdacff4a-48ab-4f4f-8ff9-b23629b73aea/1.png\" \"probador-01.png\")",
+      "Bash(cp \"C:/Users/martix/.claude/image-cache/bdacff4a-48ab-4f4f-8ff9-b23629b73aea/2.png\" \"probador-02.png\")",
+      "Bash(cp \"C:/Users/martix/.claude/image-cache/bdacff4a-48ab-4f4f-8ff9-b23629b73aea/3.png\" \"probador-03.png\")"
     ]
   }
 }
