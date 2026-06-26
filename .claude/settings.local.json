@@ -21,7 +21,8 @@
       "Read(//c/Users/marti/OneDrive/Desktop/dev2026/clients/bressan-inmobiliaria/assets/images/logos//**)",
       "Bash(cp \"C:/Users/martix/.claude/image-cache/bdacff4a-48ab-4f4f-8ff9-b23629b73aea/1.png\" \"probador-01.png\")",
       "Bash(cp \"C:/Users/martix/.claude/image-cache/bdacff4a-48ab-4f4f-8ff9-b23629b73aea/2.png\" \"probador-02.png\")",
-      "Bash(cp \"C:/Users/martix/.claude/image-cache/bdacff4a-48ab-4f4f-8ff9-b23629b73aea/3.png\" \"probador-03.png\")"
+      "Bash(cp \"C:/Users/martix/.claude/image-cache/bdacff4a-48ab-4f4f-8ff9-b23629b73aea/3.png\" \"probador-03.png\")",
+      "Bash(git push *)"
     ]
   }
 }
