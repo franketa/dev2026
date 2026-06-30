@@ -313,35 +313,54 @@ a { color: inherit; }
 .closing {
   display: flex; align-items: center; justify-content: center; text-align: center;
   padding: clamp(5rem, 12vw, 9rem) clamp(1.5rem, 6vw, 6rem);
+}
+/* cierre de sección: papel de cuaderno con renglones */
+.closing--room {
   background:
     repeating-linear-gradient(to bottom, transparent 0 70px, rgba(130,15,21,.22) 70px 71px),
     var(--cream-light);
 }
 .closing__text { font-family: var(--ff-script); color: var(--wine); font-size: clamp(1.7rem, 3.4vw, 3rem); }
+/* cierre del inicio: corazón de puntilla sobre vino */
+.closing--home { background: var(--wine); padding: clamp(3.5rem, 8vw, 7rem) 1.5rem; }
+.closing__heart { width: min(520px, 86vw); height: auto; }
 
 /* ------------------------------- FOOTER --------------------------------- */
-.site-footer {
-  position: relative; color: #f3efe6; overflow: hidden;
-  padding: clamp(2.5rem, 5vw, 4rem) 0; background: #1a1410;
+/* Fiel al Canva: banda crema (logo + mail / redes + íconos) y debajo la foto
+   del escritorio con el copyright. */
+.site-footer { background: var(--cream); color: var(--ink); }
+.site-footer__head {
+  max-width: var(--maxw); margin: 0 auto;
+  padding: clamp(2rem, 4vw, 3.2rem) clamp(1.5rem, 6vw, 4rem);
+  display: flex; align-items: flex-start; justify-content: space-between;
+  gap: 1.5rem; flex-wrap: wrap;
 }
-.site-footer__bg { position: absolute; inset: 0; background-size: cover; background-position: center; }
-.site-footer__bg::after { content: ''; position: absolute; inset: 0; background: rgba(20,12,8,.5); }
-.site-footer__inner {
-  position: relative; z-index: 1; max-width: var(--maxw); margin: 0 auto;
-  padding: 0 clamp(1.5rem, 6vw, 4rem);
+.site-footer__logo { font-family: var(--ff-logo); font-size: clamp(1.5rem, 2.7vw, 2.3rem); color: var(--wine); text-decoration: none; }
+.site-footer__mail { margin-top: .5rem; font-family: var(--ff-serif); font-size: clamp(.95rem, 1.3vw, 1.1rem); color: var(--ink); }
+.site-footer__mail a { color: var(--ink); text-decoration: none; font-weight: 700; }
+.site-footer__mail a:hover { color: var(--wine); }
+.site-footer__social { text-align: right; }
+.site-footer__social-label { font-family: var(--ff-serif); font-style: italic; font-size: clamp(1rem, 1.5vw, 1.25rem); color: var(--ink); }
+.site-footer__icons { display: flex; gap: .6rem; justify-content: flex-end; margin-top: .7rem; }
+.site-footer__icon {
+  width: 40px; height: 40px; border-radius: 50%;
+  background: var(--ink); color: var(--cream);
+  display: flex; align-items: center; justify-content: center;
+  transition: transform .3s ease, background .3s ease;
 }
-.site-footer__top { display: flex; align-items: flex-start; justify-content: space-between; gap: 1.5rem; flex-wrap: wrap; }
-.site-footer__logo { font-family: var(--ff-logo); font-size: clamp(1.4rem, 2.4vw, 2rem); color: var(--wine); text-decoration: none; }
-.site-footer__social { text-align: right; font-family: var(--ff-serif); }
-.site-footer__social > span { font-style: italic; letter-spacing: .04em; }
-.site-footer__icons { display: flex; gap: .7rem; justify-content: flex-end; margin-top: .6rem; }
-.site-footer__icon { color: #f3efe6; opacity: .85; transition: opacity .3s ease, transform .3s ease; }
-.site-footer__icon:hover { opacity: 1; transform: translateY(-2px); }
-.site-footer__mail { margin-top: 1.1rem; font-family: var(--ff-serif); font-size: .98rem; }
-.site-footer__mail a { color: var(--wine); text-decoration: none; }
-.site-footer__copy { margin-top: 1.4rem; font-family: var(--ff-serif); font-size: .85rem; opacity: .88; text-align: right; }
-.site-footer__copy a { color: var(--wine); text-decoration: none; }
-.site-footer__copy a:hover { text-decoration: underline; }
+.site-footer__icon:hover { transform: translateY(-2px); background: var(--wine); }
+.site-footer__photo {
+  position: relative; min-height: clamp(220px, 32vw, 360px);
+  background-size: cover; background-position: center;
+  display: flex; align-items: flex-end;
+}
+.site-footer__photo::after { content: ''; position: absolute; inset: 0; background: rgba(20,12,8,.42); }
+.site-footer__copy {
+  position: relative; z-index: 1; margin-left: auto; text-align: right;
+  padding: clamp(1.5rem, 4vw, 3rem); color: #f3efe6;
+  font-family: var(--ff-serif); font-size: clamp(.85rem, 1.2vw, 1rem); line-height: 1.6;
+}
+.site-footer__copy a { color: #f3efe6; text-decoration: underline; }
 
 /* ============================ RESPONSIVE ================================= */
 @media (max-width: 860px) {
@@ -380,10 +399,10 @@ a { color: inherit; }
 
   .social-grid__items { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 
-  .site-footer__top { flex-direction: column; }
+  .site-footer__head { flex-direction: column; }
   .site-footer__social { text-align: left; }
   .site-footer__icons { justify-content: flex-start; }
-  .site-footer__copy { text-align: left; }
+  .site-footer__copy { margin-left: 0; text-align: left; width: 100%; }
 
   .polaroid { width: clamp(140px, 40vw, 200px); }
 }
@@ -399,3 +418,46 @@ a { color: inherit; }
   * { animation: none !important; transition: none !important; }
   .reveal { opacity: 1; transform: none; }
 }
+
+/* =================== CASA CON HABITACIONES (multi-página) =============== */
+/* Header de páginas interiores: siempre sólido (franja de pasto), sin hero detrás */
+.page-interior .site-header {
+  background: linear-gradient(rgba(0,0,0,.20), rgba(0,0,0,.20)),
+              url('../images/header-grass.webp') center/cover no-repeat;
+  box-shadow: 0 2px 18px rgba(0,0,0,.18);
+  height: 76px;
+}
+/* Marcar la sección activa en el nav */
+.site-nav__link[aria-current="page"]::after { width: 100%; }
+
+/* ---- Saludo de inicio: "casa virtual de palabras" ---- */
+.welcome {
+  position: relative; min-height: 92vh;
+  display: flex; align-items: center; justify-content: center;
+  padding: 6rem clamp(1.5rem, 6vw, 6rem); overflow: hidden;
+}
+.welcome__bg { position: absolute; inset: 0; background-size: cover; background-position: center; }
+.welcome__bg::after { content: ''; position: absolute; inset: 0; background: linear-gradient(rgba(20,12,8,.10), rgba(20,12,8,.04)); }
+.welcome__note {
+  position: relative; z-index: 1; max-width: 600px; text-align: center;
+  background: #f4efe6;
+  padding: clamp(2.4rem, 5vw, 3.6rem) clamp(2rem, 5vw, 3.6rem) clamp(2.4rem, 5vw, 3.6rem) clamp(2.6rem, 6vw, 4.2rem);
+  box-shadow: 0 22px 48px rgba(0,0,0,.28);
+  border-left: 2px dotted rgba(130,15,21,.5); /* perforación tipo cuaderno */
+}
+.welcome__greet { font-family: var(--ff-serif); font-size: clamp(1.1rem, 1.9vw, 1.45rem); color: var(--ink); }
+.welcome__lead { font-family: var(--ff-serif); font-weight: 700; font-style: italic; color: var(--ink); font-size: clamp(1.35rem, 2.6vw, 2.05rem); margin: .25rem 0 .8rem; }
+.welcome__body { font-family: var(--ff-serif); font-size: clamp(1.05rem, 1.8vw, 1.4rem); line-height: 1.6; color: var(--ink); }
+
+/* ---- Portadas del inicio: cada una abre su habitación (link) ---- */
+.rooms { display: block; }
+.room { text-decoration: none; color: inherit; cursor: pointer; }
+.room .section-intro__panel,
+.room .section-intro__label { transition: transform .4s ease, filter .4s ease; }
+.room:hover .section-intro__panel { transform: translateY(-8px); filter: drop-shadow(0 22px 44px rgba(111,20,26,.30)); }
+.room:hover .section-intro__label { filter: brightness(1.04); }
+
+/* ---- Celdas de redes (icono/plataforma + nº de publicación) ---- */
+.social-grid__cell { flex-direction: column; gap: .15rem; }
+.social-grid__cell-k { font-style: italic; color: var(--cite); font-size: .82em; }
+.social-grid__cell-n { color: var(--wine); font-size: 1.02em; }

@@ -2,16 +2,19 @@
 (function () {
   'use strict';
 
-  /* ---- Header: fondo sólido al scrollear fuera del hero ---- */
+  /* ---- Header: en el inicio, fondo sólido al scrollear fuera del hero.
+         En páginas interiores el header ya es sólido por CSS (.page-interior). ---- */
   var header = document.querySelector('.site-header');
   var hero = document.querySelector('.hero');
-  function onScroll() {
-    var threshold = hero ? hero.offsetHeight - 120 : 80;
-    if (window.scrollY > threshold) header.classList.add('site-header--solid');
-    else header.classList.remove('site-header--solid');
+  if (header && hero) {
+    var onScroll = function () {
+      var threshold = hero.offsetHeight - 120;
+      if (window.scrollY > threshold) header.classList.add('site-header--solid');
+      else header.classList.remove('site-header--solid');
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
   }
-  window.addEventListener('scroll', onScroll, { passive: true });
-  onScroll();
 
   /* ---- Menú mobile ---- */
   var toggle = document.getElementById('navToggle');
