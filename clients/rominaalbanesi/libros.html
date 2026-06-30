@@ -46,50 +46,53 @@
     </section>
 
     <div class="books">
-      <div class="books__showcase">
-        <figure class="book-card">
-          <img src="assets/images/libro-aunque.webp" alt="Aunque no lo entienda la poesía" loading="lazy">
-          <figcaption>Aunque no lo entienda la poesía</figcaption>
-        </figure>
-        <figure class="book-card">
-          <img src="assets/images/libro-horizonte.webp" alt="Un horizonte en llamas — Vademécum" loading="lazy">
-          <figcaption>Un horizonte en llamas<br>-Vademécum-</figcaption>
-        </figure>
-        <figure class="book-card">
-          <img src="assets/images/libro-veintinueve.webp" alt="Veintinueve soles y un mar" loading="lazy">
-          <figcaption>Veintinueve soles y un mar</figcaption>
-        </figure>
+      <p class="books__hint">Tocá un libro para leer su detalle.</p>
+      <div class="books__catalog">
+        <button type="button" class="book-card" data-book="aunque" aria-expanded="false" aria-controls="book-aunque">
+          <span class="book-card__media"><img src="assets/images/foto-aunque.webp" alt="Aunque no lo entienda la poesía" loading="lazy"></span>
+          <span class="book-card__title">Aunque no lo entienda la <em>poesía</em></span>
+        </button>
+        <button type="button" class="book-card" data-book="horizonte" aria-expanded="false" aria-controls="book-horizonte">
+          <span class="book-card__media"><img src="assets/images/foto-horizonte.webp" alt="Un horizonte en llamas — Vademécum" loading="lazy"></span>
+          <span class="book-card__title">Un <em>horizonte</em> en llamas<br>—Vademécum—</span>
+        </button>
+        <button type="button" class="book-card" data-book="veintinueve" aria-expanded="false" aria-controls="book-veintinueve">
+          <span class="book-card__media"><img src="assets/images/foto-veintinueve.webp" alt="Veintinueve soles y un mar" loading="lazy"></span>
+          <span class="book-card__title">Veintinueve <em>soles</em> y un <em>mar</em></span>
+        </button>
       </div>
 
-      <article class="book-detail">
-        <img src="assets/images/libro-aunque.webp" alt="Aunque no lo entienda la poesía" loading="lazy">
-        <div class="book-detail__text">
-          <h3 class="book-detail__title">Aunque no lo entienda la poesía</h3>
-          <p>Este libro acompaña la larga conversación entre <em>el amor</em> y <em>el olvido</em>.</p>
-          <p>Amaneceres, cartas, duelos, estaciones de tren, ausencias, heridas, cuerpos, sombras, lluvias, relojes, silencios, habitaciones vacías.</p>
-          <p>Los títulos organizados en el <em>índice</em> también constituyen un poema.</p>
-          <p>Editado en diciembre de 2025, <em>Aunque no lo entienda la poesía</em> forma parte de la tercera colección del Taller Flotante de Chivilcoy, coordinado por Daniel Casas Salicone.</p>
-        </div>
-      </article>
+      <div class="books__details">
+        <article class="book-detail" id="book-aunque" hidden>
+          <img src="assets/images/foto-aunque.webp" alt="Aunque no lo entienda la poesía" loading="lazy">
+          <div class="book-detail__text">
+            <h3 class="book-detail__title">Aunque no lo entienda la poesía</h3>
+            <p>Este libro acompaña la larga conversación entre <em>el amor</em> y <em>el olvido</em>.</p>
+            <p>Amaneceres, cartas, duelos, estaciones de tren, ausencias, heridas, cuerpos, sombras, lluvias, relojes, silencios, habitaciones vacías.</p>
+            <p>Los títulos organizados en el <em>índice</em> también constituyen un poema.</p>
+            <p>Editado en diciembre de 2025, <em>Aunque no lo entienda la poesía</em> forma parte de la tercera colección del Taller Flotante de Chivilcoy, coordinado por Daniel Casas Salicone.</p>
+          </div>
+        </article>
 
-      <article class="book-detail book-detail--reverse">
-        <img src="assets/images/libro-horizonte.webp" alt="Un horizonte en llamas — Vademécum" loading="lazy">
-        <div class="book-detail__text">
-          <h3 class="book-detail__title">Vademécum</h3>
-          <p>Este libro es un <em>inventario afectivo</em>. Amores, cenizas, nostalgias, memorias, pérdidas, madrugadas, casas, domingos, bibliotecas, cicatrices, ternuras, despedidas.</p>
-          <p>Editado en noviembre de 2021, <em>Un horizonte en llamas</em> reúne <em>Vademécum</em> y tres poemarios más de otras poetas, una obra propuesta por el exsecretario de Cultura de la Municipalidad de Chivilcoy.</p>
-        </div>
-      </article>
+        <article class="book-detail book-detail--reverse" id="book-horizonte" hidden>
+          <img src="assets/images/foto-horizonte.webp" alt="Un horizonte en llamas — Vademécum" loading="lazy">
+          <div class="book-detail__text">
+            <h3 class="book-detail__title">Vademécum</h3>
+            <p>Este libro es un <em>inventario afectivo</em>. Amores, cenizas, nostalgias, memorias, pérdidas, madrugadas, casas, domingos, bibliotecas, cicatrices, ternuras, despedidas.</p>
+            <p>Editado en noviembre de 2021, <em>Un horizonte en llamas</em> reúne <em>Vademécum</em> y tres poemarios más de otras poetas, una obra propuesta por el exsecretario de Cultura de la Municipalidad de Chivilcoy.</p>
+          </div>
+        </article>
 
-      <article class="book-detail">
-        <img src="assets/images/libro-veintinueve.webp" alt="Veintinueve soles y un mar" loading="lazy">
-        <div class="book-detail__text">
-          <h3 class="book-detail__title">Veintinueve soles y un mar</h3>
-          <p>Este libro invoca a la <em>magia</em> y desea la <em>permanencia</em>.</p>
-          <p>Sueños, derivas, vientos, cantos, lunas, flores, refugios, pájaros, bares, sombras, orgullos, neblinas.</p>
-          <p>Editado en agosto de 2021, <em>Veintinueve soles y un mar</em> forma parte de la segunda colección del Taller Flotante de Chivilcoy, coordinado por Daniel Casas Salicone.</p>
-        </div>
-      </article>
+        <article class="book-detail" id="book-veintinueve" hidden>
+          <img src="assets/images/foto-veintinueve.webp" alt="Veintinueve soles y un mar" loading="lazy">
+          <div class="book-detail__text">
+            <h3 class="book-detail__title">Veintinueve soles y un mar</h3>
+            <p>Este libro invoca a la <em>magia</em> y desea la <em>permanencia</em>.</p>
+            <p>Sueños, derivas, vientos, cantos, lunas, flores, refugios, pájaros, bares, sombras, orgullos, neblinas.</p>
+            <p>Editado en agosto de 2021, <em>Veintinueve soles y un mar</em> forma parte de la segunda colección del Taller Flotante de Chivilcoy, coordinado por Daniel Casas Salicone.</p>
+          </div>
+        </article>
+      </div>
     </div>
 
     <section class="closing closing--room">

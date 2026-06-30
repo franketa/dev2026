@@ -44,4 +44,26 @@
   } else {
     revealEls.forEach(function (el) { el.classList.add('is-visible'); });
   }
+
+  /* ---- Libros: abrir el detalle al hacer click en el libro ---- */
+  var bookCards = document.querySelectorAll('.book-card');
+  if (bookCards.length) {
+    var details = document.querySelectorAll('.book-detail');
+    var closeAllBooks = function () {
+      bookCards.forEach(function (c) { c.setAttribute('aria-expanded', 'false'); });
+      details.forEach(function (d) { d.hidden = true; });
+    };
+    bookCards.forEach(function (card) {
+      card.addEventListener('click', function () {
+        var panel = document.getElementById(card.getAttribute('aria-controls'));
+        var wasOpen = card.getAttribute('aria-expanded') === 'true';
+        closeAllBooks();
+        if (!wasOpen && panel) {
+          card.setAttribute('aria-expanded', 'true');
+          panel.hidden = false;
+          panel.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      });
+    });
+  }
 })();
