@@ -165,24 +165,26 @@ a { color: inherit; }
   padding: 0 clamp(1.5rem, 6vw, 6rem) clamp(3rem, 7vw, 6rem);
 }
 .album__grid {
-  display: flex; flex-wrap: wrap; justify-content: center;
+  display: flex; flex-wrap: wrap; justify-content: center; align-items: flex-start;
   gap: clamp(1rem, 2.4vw, 2rem);
 }
 .album__divider {
   flex-basis: 100%; text-align: center; color: var(--wine);
   letter-spacing: .7em; font-size: 1rem; margin: .8rem 0;
 }
+/* Polaroids: se respeta la orientación real de cada foto (sin recorte). */
 .polaroid {
   background: #fff; padding: 10px 10px 30px;
   box-shadow: 0 10px 24px rgba(0,0,0,.14);
-  width: clamp(150px, 19vw, 230px);
+  width: clamp(150px, 21vw, 240px);
   transition: transform .4s ease, box-shadow .4s ease;
 }
+.polaroid--wide { width: clamp(230px, 32vw, 360px); }
 .polaroid:nth-child(3n+1) { transform: rotate(-1.8deg); }
 .polaroid:nth-child(3n+2) { transform: rotate(1.4deg); }
 .polaroid:nth-child(3n)   { transform: rotate(.6deg); }
 .polaroid:hover { transform: rotate(0) translateY(-6px); box-shadow: 0 18px 38px rgba(0,0,0,.2); z-index: 2; }
-.polaroid img { width: 100%; aspect-ratio: 4/5; object-fit: cover; }
+.polaroid img { width: 100%; height: auto; display: block; }
 
 /* ----------------------------- BIOGRAFÍA -------------------------------- */
 .bio {
@@ -405,10 +407,12 @@ a { color: inherit; }
   .site-footer__copy { margin-left: 0; text-align: left; width: 100%; }
 
   .polaroid { width: clamp(140px, 40vw, 200px); }
+  .polaroid--wide { width: clamp(200px, 62vw, 300px); }
 }
 @media (max-width: 480px) {
   .poem { min-height: 76vh; }
   .polaroid { width: min(70vw, 240px); }
+  .polaroid--wide { width: min(86vw, 320px); }
 }
 
 /* ----------------------- ANIMACIONES DE SCROLL -------------------------- */
