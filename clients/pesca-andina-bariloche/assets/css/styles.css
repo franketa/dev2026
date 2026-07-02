@@ -100,9 +100,8 @@ a { color: inherit; }
 /* ── Línea de mosca (firma) ──────────────────────────────── */
 .fly-line {
   position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
+  top: 0;
+  left: 0;
   z-index: 1;
   pointer-events: none;
 }
@@ -567,6 +566,7 @@ a { color: inherit; }
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   grid-auto-rows: 250px;
+  grid-auto-flow: dense;
   gap: 14px;
 }
 .galeria__item {
@@ -585,9 +585,12 @@ a { color: inherit; }
 .galeria__item:hover img { transform: scale(1.05); }
 .galeria__item:focus-visible { outline: 2px solid var(--c-glaciar); outline-offset: 2px; }
 .galeria__item:nth-child(1) { grid-column: span 2; grid-row: span 2; }
+.galeria__item:nth-child(1) img { object-position: center 80%; }
+.galeria__item:nth-child(4) { grid-column: span 2; }
 .galeria__item:nth-child(6) { grid-row: span 2; }
 .galeria__item:nth-child(7) { grid-column: span 2; }
 .galeria__item:nth-child(9) { grid-row: span 2; }
+.galeria__item:nth-child(11) { grid-column: span 2; }
 
 /* ── Cierre / CTA ────────────────────────────────────────── */
 .cierre {
@@ -606,9 +609,9 @@ a { color: inherit; }
 .cierre__velo {
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg, var(--c-agua) 0%, rgba(13,31,31,0.45) 30%, rgba(13,31,31,0.55) 70%, var(--c-abismo) 100%);
+  background: linear-gradient(180deg, var(--c-agua) 0%, rgba(13,31,31,0.62) 30%, rgba(13,31,31,0.7) 70%, var(--c-abismo) 100%);
 }
-.cierre__contenido { position: relative; z-index: 2; }
+.cierre__contenido { position: relative; z-index: 2; text-shadow: 0 2px 24px rgba(8, 20, 20, 0.55); }
 .cierre__titulo {
   font-family: var(--f-display);
   font-weight: 700;
@@ -659,6 +662,7 @@ a { color: inherit; }
 .pie__credito a { color: var(--c-glaciar); text-decoration: none; }
 
 /* ── Lightbox ────────────────────────────────────────────── */
+.lightbox[hidden] { display: none; }
 .lightbox {
   position: fixed;
   inset: 0;
@@ -704,7 +708,6 @@ a { color: inherit; }
   .videos__fila { grid-template-columns: repeat(2, 1fr); }
   .testimonios__grid { grid-template-columns: 1fr; }
   .galeria__grid { grid-template-columns: repeat(2, 1fr); grid-auto-rows: 210px; }
-  .galeria__item:nth-child(7) { grid-column: span 1; }
   .datos__inner { grid-template-columns: repeat(2, 1fr); }
   .temporada__meses { grid-template-columns: repeat(6, 1fr); }
 }
