@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="es-AR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pesca Andina Bariloche — Pesca con mosca en la Patagonia Argentina</title>
+  <meta name="description" content="Emiliano Santiago, pescador y creador de contenido en Bariloche. Truchas arcoíris, marrones y fontinalis en los lagos y ríos de la Patagonia. Aprendé a pescar con mosca.">
+  <meta property="og:title" content="Pesca Andina Bariloche — Truchas salvajes de la Patagonia">
+  <meta property="og:description" content="Pesca con mosca y spinning en Bariloche: Nahuel Huapi, Mascardi, Alicurá y Río Manso. Tutoriales, especies y guía de spots por Emiliano Santiago.">
+  <meta property="og:image" content="assets/img/og-image.jpg">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="es_AR">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M22 3v10c0 4.4-3.6 8-8 8s-8-3.6-8-8h4c0 2.2 1.8 4 4 4s4-1.8 4-4V3z' fill='%23C8502E'/%3E%3Ccircle cx='22' cy='5' r='4' fill='%237FB5AE'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Instrument+Sans:ital,wght@0,400..700;1,400&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/styles.css">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "name": "Emiliano Santiago",
+    "alternateName": "Pesca Andina Bariloche",
+    "description": "Pescador deportivo y creador de contenido de pesca con mosca en Bariloche, Patagonia Argentina.",
+    "address": { "@type": "PostalAddress", "addressLocality": "San Carlos de Bariloche", "addressRegion": "Río Negro", "addressCountry": "AR" },
+    "sameAs": [
+      "https://www.instagram.com/pesca.andina.bariloche/",
+      "https://www.youtube.com/@pesca.andina.bariloche",
+      "https://www.tiktok.com/@pesca.andina"
+    ]
+  }
+  </script>
+</head>
+<body>
+
+  <!-- Línea de mosca (firma visual, se dibuja con el scroll) -->
+  <svg class="fly-line" aria-hidden="true">
+    <path class="fly-line__path" d="" fill="none"/>
+  </svg>
+
+  <header class="nav" id="top">
+    <div class="nav__inner">
+      <a class="nav__logo" href="#top">
+        <span class="nav__logo-marca">Pesca Andina</span>
+        <span class="nav__logo-geo">Bariloche · 41°S</span>
+      </a>
+      <nav class="nav__links" id="navLinks" aria-label="Secciones">
+        <a href="#pescador">El pescador</a>
+        <a href="#especies">Especies</a>
+        <a href="#aprende">Aprendé</a>
+        <a href="#videos">Videos</a>
+        <a href="#galeria">Galería</a>
+      </nav>
+      <a class="nav__cta" href="https://www.instagram.com/pesca.andina.bariloche/" target="_blank" rel="noopener">Instagram</a>
+      <button class="nav__toggle" id="navToggle" aria-label="Abrir menú" aria-expanded="false">
+        <span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+  <!-- ══════════════ HERO ══════════════ -->
+  <section class="hero">
+    <video class="hero__video" autoplay muted loop playsinline preload="metadata" poster="assets/video/hero-poster.jpg">
+      <source src="assets/video/hero.mp4" type="video/mp4">
+    </video>
+    <div class="hero__velo"></div>
+    <div class="hero__contenido">
+      <p class="hero__geo mono">41°08′ S — 71°18′ O · Patagonia Argentina</p>
+      <h1 class="hero__titulo">Truchas salvajes,<br><em>aguas andinas.</em></h1>
+      <p class="hero__bajada">Soy Emiliano, pescador argentino y de La Patagonia. Pesco, filmo y enseño a pescar en los lagos y ríos de Bariloche.</p>
+      <div class="hero__acciones">
+        <a class="boton boton--lenga" href="#aprende">Aprendé a pescar</a>
+        <a class="boton boton--fantasma" href="#videos">Ver videos</a>
+      </div>
+    </div>
+    <a class="hero__scroll mono" href="#datos" aria-label="Bajar al contenido">
+      <span>El agua espera</span>
+      <svg width="14" height="22" viewBox="0 0 14 22" fill="none"><path d="M7 1v18m0 0l5-5m-5 5l-5-5" stroke="currentColor" stroke-width="1.5"/></svg>
+    </a>
+  </section>
+
+  <!-- ══════════════ DATOS DE CAMPO ══════════════ -->
+  <section class="datos" id="datos">
+    <div class="datos__inner mono">
+      <div class="dato"><strong data-contador="2000">0</strong><span>pescadores en la comunidad</span></div>
+      <div class="dato"><strong data-contador="180000">0</strong><span>reproducciones de sus videos</span></div>
+      <div class="dato"><strong data-contador="4">0</strong><span>especies patagónicas</span></div>
+      <div class="dato"><strong class="dato__cr">C&amp;R</strong><span>pesca con devolución</span></div>
+    </div>
+  </section>
+
+  <!-- ══════════════ EL PESCADOR ══════════════ -->
+  <section class="pescador seccion" id="pescador">
+    <div class="contenedor pescador__grid">
+      <div class="pescador__fotos revela">
+        <figure class="pescador__foto-principal">
+          <img src="assets/img/sobre-emiliano.webp" alt="Emiliano Santiago en su kayak en un lago de Bariloche" loading="lazy">
+          <figcaption class="mono">Emiliano · embalse Alicurá</figcaption>
+        </figure>
+        <figure class="pescador__foto-secundaria">
+          <img src="assets/img/sobre-camp.webp" alt="Campamento de pesca bajo los árboles con su perro" loading="lazy">
+        </figure>
+      </div>
+      <div class="pescador__texto">
+        <p class="eyebrow mono revela">El pescador</p>
+        <h2 class="titulo-seccion revela">La pesca como forma<br>de estar en el mundo</h2>
+        <div class="revela">
+          <p>Detrás de <strong>@pesca.andina.bariloche</strong> hay un pescador que creció leyendo el agua: Emiliano Santiago. Con mosca o con spinning, de orilla, vadeando o desde el kayak, recorre los lagos y ríos que rodean Bariloche registrando cada jornada — las truchas, las lengas rojas del otoño, el fuego del campamento y los perros que siempre lo acompañan.</p>
+          <p>Su cuenta es a la vez bitácora y escuela: tutoriales para dar los primeros pasos, técnicas para quienes ya pescan y el paisaje patagónico como telón de fondo de todo.</p>
+        </div>
+        <blockquote class="pescador__cita revela">
+          <p>“Cuidemos los ríos, los lagos, las playas. Nosotros los pescadores, más que nadie, deberíamos cuidar el recurso y los espacios.”</p>
+          <cite class="mono">— Emiliano, desde el agua</cite>
+        </blockquote>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════ TEMPORADA ══════════════ -->
+  <section class="temporada" aria-label="Temporada de pesca">
+    <div class="contenedor temporada__inner">
+      <p class="temporada__label mono">Temporada de pesca continental · Patagonia</p>
+      <ol class="temporada__meses mono">
+        <li class="on">Nov</li><li class="on">Dic</li><li class="on baja">Ene</li><li class="on baja">Feb</li><li class="on pico">Mar</li><li class="on pico">Abr</li><li class="cierre">May</li><li>Jun</li><li>Jul</li><li>Ago</li><li>Sep</li><li>Oct</li>
+      </ol>
+      <p class="temporada__nota mono">■ temporada abierta &nbsp;·&nbsp; ■ otoño, los grandes salen a la superficie &nbsp;·&nbsp; cierra el 1 de mayo — el embalse se pesca todo el año</p>
+    </div>
+  </section>
+
+  <!-- ══════════════ ESPECIES ══════════════ -->
+  <section class="especies seccion" id="especies">
+    <div class="contenedor">
+      <p class="eyebrow mono revela">Guía de especies</p>
+      <h2 class="titulo-seccion revela">Los tres tesoros<br>de estas aguas</h2>
+      <div class="especies__grid">
+        <article class="ficha revela">
+          <div class="ficha__media"><img src="assets/img/especie-arcoiris.webp" alt="Gran trucha arcoíris sostenida sobre agua cristalina" loading="lazy"></div>
+          <div class="ficha__cuerpo">
+            <h3>Trucha Arcoíris</h3>
+            <p class="ficha__cientifico mono">Oncorhynchus mykiss</p>
+            <p>La primera, la de siempre. Plateada, inteligente y peleadora: una pesca que exige leer el agua y no perdona el apuro.</p>
+            <dl class="ficha__datos mono">
+              <div><dt>Dónde</dt><dd>Nahuel Huapi · Alicurá</dd></div>
+              <div><dt>Cómo</dt><dd>Ninfa e indicador de pique</dd></div>
+            </dl>
+          </div>
+        </article>
+        <article class="ficha revela">
+          <div class="ficha__media"><img src="assets/img/especie-marron.webp" alt="Trucha marrón dorada pescada en el Río Manso" loading="lazy"></div>
+          <div class="ficha__cuerpo">
+            <h3>Trucha Marrón</h3>
+            <p class="ficha__cientifico mono">Salmo trutta</p>
+            <p>El oro del Manso. Desconfiada y territorial, espera el bocado justo. Cuando toma el streamer, no hay dudas: es ella.</p>
+            <dl class="ficha__datos mono">
+              <div><dt>Dónde</dt><dd>Río Manso · Mascardi</dd></div>
+              <div><dt>Cómo</dt><dd>Streamers, Woolly Bugger oliva</dd></div>
+            </dl>
+          </div>
+        </article>
+        <article class="ficha revela">
+          <div class="ficha__media"><img src="assets/img/especie-fontinalis.webp" alt="Trucha fontinalis con sus colores naranjas de otoño" loading="lazy"></div>
+          <div class="ficha__cuerpo">
+            <h3>Trucha Fontinalis</h3>
+            <p class="ficha__cientifico mono">Salvelinus fontinalis</p>
+            <p>El fuego del otoño patagónico. Cuando las lengas se ponen rojas, las fonti se acercan a los arroyos vestidas de naranja.</p>
+            <dl class="ficha__datos mono">
+              <div><dt>Dónde</dt><dd>Guillelmo · arroyos del Mascardi</dd></div>
+              <div><dt>Cómo</dt><dd>Mosca, en otoño</dd></div>
+            </dl>
+          </div>
+        </article>
+        <article class="ficha ficha--modalidad revela">
+          <div class="ficha__media"><img src="assets/img/modalidad-urbana.webp" alt="Pesca bajo un puente, modalidad de pesca urbana" loading="lazy"></div>
+          <div class="ficha__cuerpo">
+            <p class="ficha__tag mono">Modalidad</p>
+            <h3>Pesca Urbana</h3>
+            <p>No hace falta irse lejos: puentes, costaneras y desembocaduras a minutos de la ciudad también guardan truchas. La pesca empieza donde estés.</p>
+            <dl class="ficha__datos mono">
+              <div><dt>Dónde</dt><dd>A minutos del centro</dd></div>
+              <div><dt>Cómo</dt><dd>Spinning y mosca</dd></div>
+            </dl>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════ APRENDÉ ══════════════ -->
+  <section class="aprende seccion" id="aprende">
+    <div class="contenedor aprende__grid">
+      <div class="aprende__texto">
+        <p class="eyebrow mono revela">Serie · Aprendé a pescar en Bariloche</p>
+        <h2 class="titulo-seccion revela">Tu primera trucha<br>está más cerca de lo que creés</h2>
+        <p class="revela">En sus videos, Emiliano explica desde cero las técnicas que usa todas las semanas en los lagos de Bariloche. Sin vueltas, con el equipo justo y en los mismos spots donde después vas a pescar.</p>
+        <ul class="aprende__tecnicas revela">
+          <li><span class="mono">01</span><div><strong>Boya y mosca en deriva</strong><p>La técnica más simple para arrancar: la mosca deriva hasta que la boya se hunde. Ahí, tirón y pez enganchado.</p></div></li>
+          <li><span class="mono">02</span><div><strong>Ninfa e indicador de pique</strong><p>La carta ganadora para las arcoíris del embalse, en cualquier época del año.</p></div></li>
+          <li><span class="mono">03</span><div><strong>Streamers y línea de hundimiento</strong><p>Para buscar a las marrones y a los peces grandes que comen abajo.</p></div></li>
+        </ul>
+        <div class="aprende__acciones revela">
+          <a class="boton boton--lenga" href="https://www.youtube.com/@pesca.andina.bariloche" target="_blank" rel="noopener">Ver la serie en YouTube</a>
+        </div>
+      </div>
+      <div class="aprende__video revela">
+        <div class="reel reel--destacado" data-reel>
+          <video src="assets/video/reel-tecnica.mp4" poster="assets/img/poster-tecnica.webp" preload="none" playsinline></video>
+          <button class="reel__play" aria-label="Reproducir video">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+          </button>
+          <p class="reel__caption mono">Parte 1 · embalse de Alicurá</p>
+        </div>
+      </div>
+    </div>
+    <div class="contenedor spots revela">
+      <p class="spots__label mono">Aguas que pesca</p>
+      <ul class="spots__lista mono">
+        <li>Lago Nahuel Huapi <span>ninfa</span></li>
+        <li>Lago Mascardi <span>streamers</span></li>
+        <li>Embalse Alicurá <span>todo el año</span></li>
+        <li>Río Manso <span>marrones</span></li>
+        <li>Lago Guillelmo <span>fontinalis</span></li>
+        <li>Lago Moreno <span>de orilla</span></li>
+        <li>Lago Steffen <span>río abajo</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ══════════════ VIDEOS ══════════════ -->
+  <section class="videos seccion" id="videos">
+    <div class="contenedor">
+      <p class="eyebrow mono revela">Desde el agua</p>
+      <h2 class="titulo-seccion revela">Jornadas que se cuentan solas</h2>
+      <div class="videos__fila">
+        <figure class="reel revela" data-reel>
+          <video src="assets/video/hero.mp4" poster="assets/video/hero-poster.jpg" preload="none" playsinline muted loop></video>
+          <button class="reel__play" aria-label="Reproducir video"><svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></button>
+          <figcaption class="reel__caption mono">El otoño es rojo · 39K vistas</figcaption>
+        </figure>
+        <figure class="reel revela" data-reel>
+          <video src="assets/video/reel-temporada.mp4" poster="assets/img/poster-temporada.webp" preload="none" playsinline></video>
+          <button class="reel__play" aria-label="Reproducir video"><svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></button>
+          <figcaption class="reel__caption mono">La temporada, explicada · 11K vistas</figcaption>
+        </figure>
+        <figure class="reel revela" data-reel>
+          <video src="assets/video/reel-streamers.mp4" poster="assets/img/poster-streamers.webp" preload="none" playsinline></video>
+          <button class="reel__play" aria-label="Reproducir video"><svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></button>
+          <figcaption class="reel__caption mono">Hundimiento con streamers · 10K vistas</figcaption>
+        </figure>
+        <figure class="reel revela" data-reel>
+          <video src="assets/video/reel-marron.mp4" poster="assets/img/poster-marron.webp" preload="none" playsinline></video>
+          <button class="reel__play" aria-label="Reproducir video"><svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></button>
+          <figcaption class="reel__caption mono">Otra marrón en el Manso · 8K vistas</figcaption>
+        </figure>
+      </div>
+      <p class="videos__mas revela"><a class="enlace-mono mono" href="https://www.instagram.com/pesca.andina.bariloche/reels/" target="_blank" rel="noopener">Todos los reels en Instagram →</a></p>
+    </div>
+  </section>
+
+  <!-- ══════════════ TESTIMONIOS ══════════════ -->
+  <section class="testimonios seccion">
+    <div class="contenedor testimonios__grid">
+      <article class="testimonio revela">
+        <img src="assets/img/testimonio-1.webp" alt="Pescador principiante con su primera trucha, guiado por Emiliano" loading="lazy">
+        <blockquote>
+          <p>“Excelente guía de pesca y aventura. Gracias por hacerme pescar mi primera trucha.”</p>
+          <cite class="mono">— Pescador invitado, embalse Alicurá</cite>
+        </blockquote>
+      </article>
+      <article class="testimonio revela">
+        <img src="assets/img/testimonio-2.webp" alt="Visitante mostrando una trucha arcoíris pescada en Bariloche" loading="lazy">
+        <blockquote>
+          <p>“Me traje un amigo y gran persona de la Patagonia: un guía con todas las letras y con mucho conocimiento. Prometo volver.”</p>
+          <cite class="mono">— Visitante, arcoíris de Bariloche</cite>
+        </blockquote>
+      </article>
+    </div>
+  </section>
+
+  <!-- ══════════════ GALERÍA ══════════════ -->
+  <section class="galeria seccion" id="galeria">
+    <div class="contenedor">
+      <p class="eyebrow mono revela">Bitácora visual</p>
+      <h2 class="titulo-seccion revela">Postales del agua</h2>
+    </div>
+    <div class="galeria__grid contenedor--ancho">
+      <button class="galeria__item revela" data-full="assets/img/gal-01.webp"><img src="assets/img/gal-01.webp" alt="Trucha arcoíris gigante sobre aguas cristalinas" loading="lazy"></button>
+      <button class="galeria__item revela" data-full="assets/img/gal-02.webp"><img src="assets/img/gal-02.webp" alt="Emiliano con una arcoíris plateada del Nahuel Huapi" loading="lazy"></button>
+      <button class="galeria__item revela" data-full="assets/img/gal-03.webp"><img src="assets/img/gal-03.webp" alt="Trucha marrón junto al puente del Río Manso" loading="lazy"></button>
+      <button class="galeria__item revela" data-full="assets/img/gal-04.webp"><img src="assets/img/gal-04.webp" alt="Fontinalis del Mascardi entre montañas" loading="lazy"></button>
+      <button class="galeria__item revela" data-full="assets/img/gal-05.webp"><img src="assets/img/gal-05.webp" alt="Gran arcoíris pescada desde el flotador" loading="lazy"></button>
+      <button class="galeria__item revela" data-full="assets/img/gal-06.webp"><img src="assets/img/gal-06.webp" alt="Trucha de lago en El Calafate con los Andes de fondo" loading="lazy"></button>
+      <button class="galeria__item revela" data-full="assets/img/gal-07.webp"><img src="assets/img/gal-07.webp" alt="Perro corriendo por la orilla al atardecer" loading="lazy"></button>
+      <button class="galeria__item revela" data-full="assets/img/gal-08.webp"><img src="assets/img/gal-08.webp" alt="Pastizal y cielo patagónico camino al lago" loading="lazy"></button>
+      <button class="galeria__item revela" data-full="assets/img/gal-09.webp"><img src="assets/img/gal-09.webp" alt="Salmón Chinook en Torres del Paine" loading="lazy"></button>
+      <button class="galeria__item revela" data-full="assets/img/gal-10.webp"><img src="assets/img/gal-10.webp" alt="Arcoíris cromada de invierno" loading="lazy"></button>
+      <button class="galeria__item revela" data-full="assets/img/gal-11.webp"><img src="assets/img/gal-11.webp" alt="Fontinalis de colores encendidos en mano" loading="lazy"></button>
+      <button class="galeria__item revela" data-full="assets/img/gal-12.webp"><img src="assets/img/gal-12.webp" alt="Arcoíris del embalse con las bardas de fondo" loading="lazy"></button>
+    </div>
+  </section>
+
+  <!-- ══════════════ CTA FINAL ══════════════ -->
+  <section class="cierre" id="contacto">
+    <img class="cierre__fondo" src="assets/img/cta-atardecer.webp" alt="" loading="lazy">
+    <div class="cierre__velo"></div>
+    <div class="cierre__contenido contenedor">
+      <p class="eyebrow mono revela">El anzuelo está tirado</p>
+      <h2 class="cierre__titulo revela">¿Pescamos?</h2>
+      <p class="cierre__bajada revela">Escribile por Instagram para coordinar una salida, preguntarle por técnicas y equipos, o simplemente seguir sus aventuras por la Patagonia.</p>
+      <div class="cierre__acciones revela">
+        <a class="boton boton--lenga" href="https://ig.me/m/pesca.andina.bariloche" target="_blank" rel="noopener">Enviar mensaje</a>
+        <a class="boton boton--fantasma" href="https://www.instagram.com/pesca.andina.bariloche/" target="_blank" rel="noopener">@pesca.andina.bariloche</a>
+      </div>
+    </div>
+  </section>
+
+  <footer class="pie">
+    <div class="contenedor pie__inner">
+      <div class="pie__marca">
+        <p class="pie__logo">Pesca Andina</p>
+        <p class="mono">San Carlos de Bariloche · Río Negro · Argentina</p>
+      </div>
+      <ul class="pie__redes mono">
+        <li><a href="https://www.instagram.com/pesca.andina.bariloche/" target="_blank" rel="noopener">Instagram</a></li>
+        <li><a href="https://www.youtube.com/@pesca.andina.bariloche" target="_blank" rel="noopener">YouTube</a></li>
+        <li><a href="https://www.tiktok.com/@pesca.andina" target="_blank" rel="noopener">TikTok</a></li>
+        <li><a href="https://www.instagram.com/casiunperro" target="_blank" rel="noopener">IG personal</a></li>
+      </ul>
+      <p class="pie__credito mono">© 2026 Pesca Andina Bariloche · Desarrollado por <a href="#" rel="noopener">VentureByte</a></p>
+    </div>
+  </footer>
+
+  <!-- Lightbox -->
+  <div class="lightbox" id="lightbox" hidden>
+    <button class="lightbox__cerrar" aria-label="Cerrar imagen">✕</button>
+    <img src="" alt="Foto ampliada de la galería">
+  </div>
+
+  <script src="assets/js/main.js"></script>
+</body>
+</html>
