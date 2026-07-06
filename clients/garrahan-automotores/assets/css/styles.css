@@ -316,6 +316,7 @@ h1, h2, h3 { font-family: 'Oswald', sans-serif; font-weight: 600; line-height: 1
 /* ==========================================================
    Ficha de vehículo (vehiculo.html)
    ========================================================== */
+[hidden] { display: none !important; }
 .nav--solid { background: rgba(10,10,11,.92); backdrop-filter: blur(14px); border-bottom: 1px solid var(--line); padding: 12px 0; }
 .page-ficha { background: var(--bg); }
 

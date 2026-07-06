@@ -6,66 +6,42 @@
   const wa = (num, txt) => 'https://wa.me/' + num + '?text=' + encodeURIComponent(txt);
   const WA_FELIPE = '5492345428151';
 
-  // ===== Vehículos (datos de muestra basados en el stock de la concesionaria) =====
-  // precio en ARS; null => "Consultar precio"
-  const vehiculos = [
-    // --- 0KM ---
-    { marca: 'Chery', modelo: 'Tiggo 4 Hybrid', version: 'Comfort', anio: 2025, km: 0, motor: '1.5T Híbrido', transmision: 'Automática', tipo: 'SUV', condicion: '0km', precio: null,
-      img: 'https://images.unsplash.com/photo-1605559424843-9e4c228bf1c2?w=800&q=80' },
-    { marca: 'Chery', modelo: 'Tiggo 7 Pro Hybrid', version: 'Luxury', anio: 2025, km: 0, motor: '1.5T Híbrido', transmision: 'Automática', tipo: 'SUV', condicion: '0km', precio: null,
-      img: 'https://images.unsplash.com/photo-1568844293986-8d0400bd4745?w=800&q=80' },
-    { marca: 'Fiat', modelo: 'Titano', version: 'Ranch 4x4', anio: 2025, km: 0, motor: '2.2 Turbodiésel', transmision: 'Automática', tipo: 'Pickup', condicion: '0km', precio: null,
-      img: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=80' },
-    { marca: 'Fiat', modelo: 'Strada', version: 'Volcano CD', anio: 2025, km: 0, motor: '1.3 Nafta', transmision: 'Manual', tipo: 'Pickup', condicion: '0km', precio: null,
-      img: 'https://images.unsplash.com/photo-1559416523-140ddc3d238c?w=800&q=80' },
-
-    // --- USADOS ---
-    { marca: 'Toyota', modelo: 'Corolla Cross', version: 'XEI', anio: 2023, km: 38000, motor: '2.0 Nafta', transmision: 'Automática CVT', tipo: 'SUV', condicion: 'usado', precio: 32500000,
-      img: 'https://images.unsplash.com/photo-1619767886558-efdc259cde1a?w=800&q=80' },
-    { marca: 'Renault', modelo: 'Alaskan', version: 'Intens 4x4', anio: 2022, km: 61000, motor: '2.3 Biturbo Diésel', transmision: 'Automática', tipo: 'Pickup', condicion: 'usado', precio: 38900000,
-      img: 'https://images.unsplash.com/photo-1599912027806-cfec9f5944b6?w=800&q=80' },
-    { marca: 'Volkswagen', modelo: 'Voyage', version: 'Comfortline', anio: 2019, km: 78000, motor: '1.6 Nafta', transmision: 'Manual', tipo: 'Sedán', condicion: 'usado', precio: 14500000,
-      img: 'https://images.unsplash.com/photo-1549399542-7e3f8b79c341?w=800&q=80' },
-    { marca: 'Volkswagen', modelo: 'Suran', version: 'Highline', anio: 2018, km: 95000, motor: '1.6 Nafta', transmision: 'Manual', tipo: 'Hatchback', condicion: 'usado', precio: 12800000,
-      img: 'https://images.unsplash.com/photo-1471444928139-48c5bf5173f8?w=800&q=80' },
-    { marca: 'Volkswagen', modelo: 'Fox', version: 'Trendline', anio: 2017, km: 102000, motor: '1.6 Nafta', transmision: 'Manual', tipo: 'Hatchback', condicion: 'usado', precio: 11200000,
-      img: 'https://images.unsplash.com/photo-1502877338535-766e1452684a?w=800&q=80' },
-    { marca: 'Citroën', modelo: 'C4', version: 'Pack Look', anio: 2016, km: 110000, motor: '1.6 Nafta', transmision: 'Manual', tipo: 'Hatchback', condicion: 'usado', precio: 10500000,
-      img: 'https://images.unsplash.com/photo-1494976388531-d1058494cdd8?w=800&q=80' },
-    { marca: 'DS', modelo: 'DS3', version: 'So Chic', anio: 2017, km: 88000, motor: '1.6 THP Nafta', transmision: 'Manual', tipo: 'Hatchback', condicion: 'usado', precio: 13900000,
-      img: 'https://images.unsplash.com/photo-1542362567-b07e54358753?w=800&q=80' }
-  ];
+  // ===== Vehículos (desde la API — se cargan en el panel de administración) =====
+  const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  let vehiculos = [];
 
   // ===== Render de vehículos =====
   const grid = document.getElementById('stockGrid');
   const empty = document.getElementById('stockEmpty');
 
+  function precioLabel(v) {
+    if (!v.mostrarPrecio || !v.precio) return 'Consultar precio<small>Financiación disponible</small>';
+    return (v.moneda === 'USD' ? 'US$' : '$') + fmt(v.precio) + '<small>Precio de lista</small>';
+  }
+
   function tarjeta(v) {
-    const badge = v.condicion === '0km'
+    let badge = v.condicion === '0km'
       ? '<span class="card__badge card__badge--0km">0KM</span>'
       : '<span class="card__badge card__badge--usado">Usado</span>';
-    const precio = v.precio
-      ? '$' + fmt(v.precio) + '<small>Precio de lista</small>'
-      : 'Consultar precio<small>Financiación disponible</small>';
+    if (v.estado === 'reservado') badge += '<span class="card__badge card__badge--reservado" style="left:auto;right:14px">Reservado</span>';
     const km = v.condicion === '0km' ? '0 km' : fmt(v.km) + ' km';
-    const msg = 'Hola, me interesa el ' + v.marca + ' ' + v.modelo + ' ' + v.version + ' ' + v.anio + '. ¿Sigue disponible?';
     return '' +
-      '<article class="card">' +
+      '<article class="card card--click" data-id="' + v.id + '">' +
         '<div class="card__media">' + badge +
-          '<img src="' + v.img + '" alt="' + v.marca + ' ' + v.modelo + '" loading="lazy">' +
+          '<img src="' + esc(v.coverImage || 'assets/img/logo.jpg') + '" alt="' + esc(v.marca + ' ' + v.modelo) + '" loading="lazy">' +
         '</div>' +
         '<div class="card__body">' +
-          '<span class="card__brand">' + v.marca + '</span>' +
-          '<h3 class="card__name">' + v.modelo + ' ' + v.version + '</h3>' +
+          '<span class="card__brand">' + esc(v.marca) + '</span>' +
+          '<h3 class="card__name">' + esc(v.modelo) + ' ' + esc(v.version) + '</h3>' +
           '<div class="card__specs">' +
             '<span class="card__spec">📅 <b>' + v.anio + '</b></span>' +
             '<span class="card__spec">🛣️ <b>' + km + '</b></span>' +
-            '<span class="card__spec">⚙️ <b>' + v.transmision + '</b></span>' +
-            '<span class="card__spec">🔧 <b>' + v.motor + '</b></span>' +
+            '<span class="card__spec">⚙️ <b>' + esc(v.transmision) + '</b></span>' +
+            '<span class="card__spec">🔧 <b>' + esc(v.motor) + '</b></span>' +
           '</div>' +
           '<div class="card__foot">' +
-            '<div class="card__price">' + precio + '</div>' +
-            '<a href="' + wa(WA_FELIPE, msg) + '" class="btn btn--primary btn--sm card__cta" target="_blank" rel="noopener">Consultar</a>' +
+            '<div class="card__price">' + precioLabel(v) + '</div>' +
+            '<a href="vehiculo.html?id=' + v.id + '" class="btn btn--primary btn--sm card__cta">Ver ficha</a>' +
           '</div>' +
         '</div>' +
       '</article>';
@@ -76,12 +52,24 @@
     empty.hidden = true;
     grid.innerHTML = lista.map(tarjeta).join('');
   }
-  render(vehiculos);
+
+  // Tarjeta entera clickeable hacia la ficha
+  grid.addEventListener('click', e => {
+    const card = e.target.closest('.card--click');
+    if (card && !e.target.closest('a')) location.href = 'vehiculo.html?id=' + card.dataset.id;
+  });
 
   // ===== Filtros =====
   const fCond = document.getElementById('filtroCondicion');
   const fMarca = document.getElementById('filtroMarca');
   const fTipo = document.getElementById('filtroTipo');
+
+  function opciones(select, values, labelTodos) {
+    const current = select.value;
+    select.innerHTML = '<option value="">' + labelTodos + '</option>' +
+      values.map(v => '<option value="' + esc(v) + '">' + esc(v) + '</option>').join('');
+    select.value = current;
+  }
 
   function filtrar() {
     let r = vehiculos;
@@ -95,6 +83,21 @@
     fCond.value = ''; fMarca.value = ''; fTipo.value = '';
     render(vehiculos);
   });
+
+  // Carga inicial desde la API
+  fetch('/api/vehicles')
+    .then(r => r.json())
+    .then(data => {
+      // Los vendidos no se muestran en la grilla pública
+      vehiculos = data.vehicles.filter(v => v.estado !== 'vendido');
+      opciones(fMarca, [...new Set(vehiculos.map(v => v.marca))].sort((a, b) => a.localeCompare(b, 'es')), 'Todas las marcas');
+      opciones(fTipo, [...new Set(vehiculos.map(v => v.tipo))].sort((a, b) => a.localeCompare(b, 'es')), 'Todos los tipos');
+      filtrar();
+    })
+    .catch(() => {
+      empty.hidden = false;
+      empty.textContent = 'No pudimos cargar el stock en este momento. Escribinos por WhatsApp y te pasamos las unidades disponibles.';
+    });
 
   // ===== Calculadora de financiación =====
   const TASA = 0.055; // tasa mensual estimada
