@@ -1,41 +1,75 @@
 # Garrahan Automotores
 
-Sitio web (landing) para **M. Garrahan — Negocio de Automotores**, concesionaria multimarca de vehículos 0km y usados en Chivilcoy, Buenos Aires.
+Sitio web para **M. Garrahan — Negocio de Automotores**, concesionaria multimarca de vehículos 0km y usados en Chivilcoy, Buenos Aires. Incluye **panel de administración** para cargar, editar y eliminar vehículos con fotos.
 
-> **Estado:** Frontend de demostración (propuesta comercial). Sin backend.
+> **Estado:** Sitio + backend + panel admin funcionales. Falta reemplazar fotos de muestra por fotos reales.
 
 ## Stack
-Sitio estático: `index.html` + `assets/css/styles.css` + `assets/js/main.js`. Sin build step.
 
-## Preview
+- **Frontend público:** HTML + CSS + JS vanilla (`index.html`, `vehiculo.html`)
+- **Panel admin:** `admin.html` (login con JWT)
+- **Backend:** Node.js + Express + SQLite (`better-sqlite3`) + Multer para subida de imágenes
+- **Deploy:** Dockerfile (Coolify) — ver "Deploy" abajo
+
+## Desarrollo
+
 ```bash
 cd clients/garrahan-automotores
-npx serve .
+npm install
+npm run dev      # servidor con reload en http://localhost:3000
 ```
-O abrir `index.html` directamente en el navegador.
 
-## Secciones
-- **Hero** dark con slogan e identidad de marca.
-- **Marcas** que comercializa (Fiat, Chery, VW, Renault, Toyota, Citroën, DS).
-- **Vehículos** — grilla de stock con filtros (condición / marca / tipo). Datos en `assets/js/main.js` → array `vehiculos`.
-- **Financiación** — calculadora de cuota orientativa + beneficios (parte de pago, planes bancarios/propios, gestoría).
-- **Galería** del local y entregas.
-- **Equipo** — contacto directo con Felipe y Miguel + línea fija.
-- **Contacto** — formulario, datos, horarios y mapa de Google Maps embebido.
-- **WhatsApp flotante**.
+El servidor sirve el sitio estático, la API y las imágenes subidas. En el primer arranque crea `data/db.sqlite`, siembra el stock de muestra (`data/vehicles.json`) y el usuario admin.
+
+## Panel de administración
+
+- URL: `/admin.html`
+- Usuario inicial: `admin@garrahan.com` / `garrahan2026` → **cambiar la contraseña desde el propio panel** ("Cambiar contraseña") al entregar.
+- Funciones: alta/edición/borrado de vehículos, búsqueda y filtros, **foto de portada** (se ve en la home) + **galería de hasta 10 fotos** (se ven en la ficha), equipamiento por chips, destacados, estados (disponible/reservado/vendido).
+
+## API
+
+| Método | Ruta | Auth | Descripción |
+|---|---|---|---|
+| GET | `/api/vehicles` | — | Lista de vehículos + catálogos |
+| GET | `/api/vehicles/:id` | — | Detalle de un vehículo |
+| POST | `/api/vehicles` | JWT | Crear vehículo |
+| PUT | `/api/vehicles/:id` | JWT | Editar vehículo |
+| DELETE | `/api/vehicles/:id` | JWT | Eliminar vehículo (borra sus fotos) |
+| POST | `/api/vehicles/:id/cover` | JWT | Subir/reemplazar portada (campo `cover`) |
+| DELETE | `/api/vehicles/:id/cover` | JWT | Quitar portada |
+| POST | `/api/vehicles/:id/images` | JWT | Subir fotos de galería (campo `images`, máx. 10 en total) |
+| DELETE | `/api/vehicles/:id/images/:filename` | JWT | Quitar una foto de galería |
+| POST | `/api/auth/login` | — | Login → token |
+| POST | `/api/auth/change-password` | JWT | Cambiar contraseña |
+
+## Deploy (Coolify)
+
+1. Apuntar la app al subdirectorio `clients/garrahan-automotores` (build por Dockerfile).
+2. **Variables de entorno:** `JWT_SECRET` (obligatoria en producción), opcional `ADMIN_EMAIL` / `ADMIN_PASSWORD` para el seed inicial.
+3. **Volúmenes persistentes:** montar `/app/data` (base SQLite) y `/app/uploads` (fotos). Sin esto, se pierden los datos en cada deploy.
+
+## Secciones del sitio público
+
+- **Hero** dark con identidad de marca.
+- **Vehículos** — grilla desde la API con filtros (condición / marca / tipo, dinámicos según stock). Vendidos no se muestran.
+- **Ficha individual** (`vehiculo.html?id=N`) — galería con miniaturas y lightbox, precio, ficha técnica, equipamiento, simulador de cuota, vehículos relacionados y CTA de WhatsApp por unidad.
+- **Financiación** — calculadora de cuota orientativa.
+- **Galería / Equipo / Contacto** — igual que la landing original.
 
 ## Datos del negocio
+
 - **Dirección:** Avenida Urquiza 126, Chivilcoy, Buenos Aires (CP 6620)
 - **WhatsApp:** Felipe 2345 42-8151 · Miguel 2345 65-3379
 - **Fijo:** 43-5837
 - **Email:** Mgarrahanautomotores@hotmail.com
 - **Instagram:** [@garrahanautomotores](https://instagram.com/garrahanautomotores)
 
-## Pendientes para producción (cuando el cliente confirme)
-- Reemplazar fotos de stock (Unsplash) por **fotos reales** de cada unidad.
-- Reemplazar imágenes de galería por **fotos reales** del local y entregas.
-- Cargar **precios reales** y stock actualizado en el array `vehiculos`.
-- El formulario usa **FormSubmit** (`formsubmit.co`). Requiere **activación única**: la primera vez que se envía, llega un email de confirmación a `Mgarrahanautomotores@hotmail.com` que hay que aceptar.
-- Confirmar el **código de área** de los celulares (se usó +54 9 2345...) y la línea fija.
-- Validar la **tasa de financiación** real (actualmente 5,5% mensual, solo orientativa).
-- Verificar el pin exacto del mapa.
+## Pendientes para producción
+
+- Reemplazar las fotos de muestra (Unsplash) cargando **fotos reales por vehículo desde el panel**.
+- Reemplazar imágenes de la galería del local por fotos reales.
+- Cambiar la contraseña del admin y setear `JWT_SECRET` en Coolify.
+- El formulario de contacto usa **FormSubmit** — requiere activación única por email.
+- Validar la **tasa de financiación** real (5,5% mensual orientativa).
+- Confirmar código de área de los celulares y el pin del mapa.
