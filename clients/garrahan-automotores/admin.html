@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="es-AR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Panel de Administración | Garrahan Automotores</title>
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#0c0c0d">
+  <link rel="icon" type="image/jpeg" href="assets/img/logo.jpg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Oswald:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/admin.css">
+</head>
+<body>
+
+  <!-- ===== LOGIN ===== -->
+  <section class="login" id="viewLogin" hidden>
+    <form class="login__card" id="loginForm">
+      <img src="assets/img/logo.jpg" alt="Garrahan Automotores" class="login__logo">
+      <h1 class="login__title">Panel de<br>administración</h1>
+      <p class="login__sub">Garrahan Automotores</p>
+      <div class="field">
+        <label for="loginEmail">Email</label>
+        <input type="email" id="loginEmail" autocomplete="username" required placeholder="admin@garrahan.com">
+      </div>
+      <div class="field">
+        <label for="loginPass">Contraseña</label>
+        <input type="password" id="loginPass" autocomplete="current-password" required placeholder="••••••••">
+      </div>
+      <p class="login__error" id="loginError" hidden></p>
+      <button type="submit" class="btn btn--primary login__submit" id="loginSubmit">Ingresar</button>
+      <a href="index.html" class="login__back">← Volver al sitio</a>
+    </form>
+  </section>
+
+  <!-- ===== DASHBOARD ===== -->
+  <div id="viewDashboard" hidden>
+    <header class="topbar">
+      <div class="topbar__inner">
+        <a href="index.html" class="topbar__brand">
+          <img src="assets/img/logo.jpg" alt="Garrahan Automotores">
+          <span>GARRAHAN<small>PANEL DE ADMINISTRACIÓN</small></span>
+        </a>
+        <div class="topbar__actions">
+          <span class="topbar__user" id="topbarUser"></span>
+          <button class="btn btn--ghost btn--sm" id="btnChangePass" type="button">Cambiar contraseña</button>
+          <button class="btn btn--ghost btn--sm" id="btnLogout" type="button">Salir</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="panel">
+      <div class="stats" id="statsRow">
+        <div class="stats__card"><strong id="statTotal">0</strong><span>Vehículos cargados</span></div>
+        <div class="stats__card stats__card--ok"><strong id="statDisp">0</strong><span>Disponibles</span></div>
+        <div class="stats__card stats__card--warn"><strong id="statRes">0</strong><span>Reservados</span></div>
+        <div class="stats__card stats__card--off"><strong id="statVend">0</strong><span>Vendidos</span></div>
+      </div>
+
+      <div class="toolbar">
+        <input type="search" id="searchInput" class="toolbar__search" placeholder="Buscar por marca, modelo, versión...">
+        <select id="filterCondicion" class="toolbar__select">
+          <option value="">Todas las condiciones</option>
+          <option value="0km">0KM</option>
+          <option value="usado">Usados</option>
+        </select>
+        <select id="filterEstado" class="toolbar__select">
+          <option value="">Todos los estados</option>
+          <option value="disponible">Disponibles</option>
+          <option value="reservado">Reservados</option>
+          <option value="vendido">Vendidos</option>
+        </select>
+        <button class="btn btn--primary" id="btnNew" type="button">+ Nuevo vehículo</button>
+      </div>
+
+      <div class="vlist" id="vehicleList"></div>
+      <p class="vlist__empty" id="vehicleEmpty" hidden>No hay vehículos que coincidan con la búsqueda.</p>
+    </main>
+  </div>
+
+  <!-- ===== EDITOR ===== -->
+  <div id="viewEditor" hidden>
+    <header class="topbar">
+      <div class="topbar__inner">
+        <button class="topbar__back" id="btnBack" type="button">← Volver al listado</button>
+        <h1 class="topbar__title" id="editorTitle">Nuevo vehículo</h1>
+        <div class="topbar__actions">
+          <button class="btn btn--primary" id="btnSave" type="button">Guardar</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="panel">
+      <form class="editor" id="editorForm" novalidate>
+
+        <!-- FOTOS -->
+        <section class="editor__section">
+          <h2 class="editor__heading">Fotos</h2>
+          <div class="fotos">
+            <div class="fotos__col">
+              <h3 class="fotos__label">Foto de portada <small>Se muestra en la página principal</small></h3>
+              <div class="cover" id="coverZone">
+                <div class="cover__empty" id="coverEmpty">
+                  <span class="cover__icon">🖼️</span>
+                  <p>Arrastrá una imagen o hacé clic para elegir la <strong>portada</strong></p>
+                  <span class="cover__hint">JPG, PNG o WebP · máx. 10 MB</span>
+                </div>
+                <div class="cover__preview" id="coverPreview" hidden>
+                  <img id="coverImg" alt="Portada">
+                  <div class="cover__actions">
+                    <button type="button" class="chipbtn" id="btnCoverReplace">Reemplazar</button>
+                    <button type="button" class="chipbtn chipbtn--danger" id="btnCoverRemove">Quitar</button>
+                  </div>
+                </div>
+                <input type="file" id="coverInput" accept="image/jpeg,image/png,image/webp" hidden>
+              </div>
+            </div>
+            <div class="fotos__col">
+              <h3 class="fotos__label">Galería <small>Hasta 10 fotos · se ven en la ficha del vehículo</small></h3>
+              <div class="gallery" id="galleryZone">
+                <div class="gallery__grid" id="galleryGrid"></div>
+                <button type="button" class="gallery__add" id="btnGalleryAdd">
+                  <span>+</span> Agregar fotos <small id="galleryCount">0 / 10</small>
+                </button>
+                <input type="file" id="galleryInput" accept="image/jpeg,image/png,image/webp" multiple hidden>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- DATOS PRINCIPALES -->
+        <section class="editor__section">
+          <h2 class="editor__heading">Datos principales</h2>
+          <div class="grid">
+            <div class="field">
+              <label for="fCondicion">Condición *</label>
+              <select id="fCondicion">
+                <option value="usado">Usado</option>
+                <option value="0km">0KM</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="fMarca">Marca *</label>
+              <input type="text" id="fMarca" list="marcasList" required placeholder="Ej: Toyota">
+              <datalist id="marcasList"></datalist>
+            </div>
+            <div class="field">
+              <label for="fModelo">Modelo *</label>
+              <input type="text" id="fModelo" required placeholder="Ej: Corolla Cross">
+            </div>
+            <div class="field">
+              <label for="fVersion">Versión</label>
+              <input type="text" id="fVersion" placeholder="Ej: XEI 2.0 CVT">
+            </div>
+            <div class="field">
+              <label for="fAnio">Año *</label>
+              <input type="number" id="fAnio" min="1950" max="2035" required placeholder="Ej: 2023">
+            </div>
+            <div class="field" id="fieldKm">
+              <label for="fKm">Kilometraje</label>
+              <input type="number" id="fKm" min="0" step="1000" placeholder="Ej: 45000">
+            </div>
+            <div class="field">
+              <label for="fTipo">Tipo de vehículo</label>
+              <select id="fTipo"></select>
+            </div>
+            <div class="field">
+              <label for="fColor">Color</label>
+              <input type="text" id="fColor" placeholder="Ej: Gris plata">
+            </div>
+            <div class="field">
+              <label for="fPuertas">Puertas</label>
+              <select id="fPuertas">
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5" selected>5</option>
+              </select>
+            </div>
+          </div>
+        </section>
+
+        <!-- MOTOR Y MECÁNICA -->
+        <section class="editor__section">
+          <h2 class="editor__heading">Motor y mecánica</h2>
+          <div class="grid">
+            <div class="field">
+              <label for="fMotor">Motor</label>
+              <input type="text" id="fMotor" placeholder="Ej: 2.0 16v">
+            </div>
+            <div class="field">
+              <label for="fCombustible">Combustible</label>
+              <select id="fCombustible"></select>
+            </div>
+            <div class="field">
+              <label for="fTransmision">Transmisión</label>
+              <select id="fTransmision"></select>
+            </div>
+            <div class="field">
+              <label for="fTraccion">Tracción</label>
+              <select id="fTraccion"></select>
+            </div>
+          </div>
+        </section>
+
+        <!-- PRECIO Y VENTA -->
+        <section class="editor__section">
+          <h2 class="editor__heading">Precio y venta</h2>
+          <div class="grid">
+            <div class="field">
+              <label for="fPrecio">Precio</label>
+              <input type="number" id="fPrecio" min="0" step="100000" placeholder="Ej: 25000000">
+            </div>
+            <div class="field">
+              <label for="fMoneda">Moneda</label>
+              <select id="fMoneda">
+                <option value="ARS">ARS (pesos)</option>
+                <option value="USD">USD (dólares)</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="fEstado">Estado</label>
+              <select id="fEstado">
+                <option value="disponible">Disponible</option>
+                <option value="reservado">Reservado</option>
+                <option value="vendido">Vendido</option>
+              </select>
+            </div>
+          </div>
+          <div class="checks">
+            <label class="check"><input type="checkbox" id="fMostrarPrecio" checked><span>Mostrar precio en la web <small>Si está desactivado se muestra "Consultar precio"</small></span></label>
+            <label class="check"><input type="checkbox" id="fFinanciacion" checked><span>Ofrece financiación</span></label>
+            <label class="check"><input type="checkbox" id="fPermuta" checked><span>Acepta permuta / parte de pago</span></label>
+            <label class="check"><input type="checkbox" id="fDestacado"><span>Destacado <small>Aparece primero en el listado</small></span></label>
+          </div>
+        </section>
+
+        <!-- EQUIPAMIENTO -->
+        <section class="editor__section">
+          <h2 class="editor__heading">Equipamiento y destacados</h2>
+          <div class="tags" id="tagsBox">
+            <div class="tags__list" id="tagsList"></div>
+            <input type="text" id="tagsInput" class="tags__input" placeholder="Escribí y presioná Enter (Ej: Cámara de retroceso)">
+          </div>
+          <div class="tags__suggested" id="tagsSuggested"></div>
+        </section>
+
+        <!-- DESCRIPCIÓN -->
+        <section class="editor__section">
+          <h2 class="editor__heading">Descripción</h2>
+          <div class="field">
+            <textarea id="fDescripcion" rows="5" placeholder="Contá el estado del vehículo, services, detalles, papeles, etc."></textarea>
+          </div>
+        </section>
+
+        <div class="editor__footer">
+          <button type="button" class="btn btn--ghost" id="btnCancel">Cancelar</button>
+          <button type="submit" class="btn btn--primary" id="btnSaveBottom">Guardar vehículo</button>
+        </div>
+      </form>
+    </main>
+  </div>
+
+  <!-- ===== CAMBIAR CONTRASEÑA ===== -->
+  <dialog class="dialog" id="passDialog">
+    <form class="dialog__card" id="passForm" method="dialog">
+      <h2>Cambiar contraseña</h2>
+      <div class="field">
+        <label for="passCurrent">Contraseña actual</label>
+        <input type="password" id="passCurrent" autocomplete="current-password" required>
+      </div>
+      <div class="field">
+        <label for="passNew">Nueva contraseña <small>(mín. 8 caracteres)</small></label>
+        <input type="password" id="passNew" autocomplete="new-password" minlength="8" required>
+      </div>
+      <p class="login__error" id="passError" hidden></p>
+      <div class="dialog__actions">
+        <button type="button" class="btn btn--ghost btn--sm" id="passCancel">Cancelar</button>
+        <button type="submit" class="btn btn--primary btn--sm" id="passSubmit">Guardar</button>
+      </div>
+    </form>
+  </dialog>
+
+  <div class="toast" id="toast" hidden></div>
+
+  <script src="assets/js/admin.js"></script>
+</body>
+</html>
