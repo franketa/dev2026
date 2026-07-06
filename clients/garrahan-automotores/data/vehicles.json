@@ -1,0 +1,114 @@
+{
+  "vehicles": [
+    {
+      "marca": "Chery", "modelo": "Tiggo 4 Hybrid", "version": "Comfort", "anio": 2025, "km": 0,
+      "condicion": "0km", "tipo": "SUV", "combustible": "Híbrido", "transmision": "Automática",
+      "motor": "1.5T Híbrido", "puertas": 5, "color": "", "traccion": "4x2",
+      "precio": 0, "moneda": "ARS", "mostrarPrecio": false, "financiacion": true, "permuta": true,
+      "equipamiento": ["Pantalla multimedia", "Cámara de retroceso", "Control crucero", "Climatizador automático", "Llantas de aleación"],
+      "descripcion": "Unidad 0km entrega inmediata. SUV híbrida con garantía oficial de fábrica.",
+      "destacado": true, "estado": "disponible",
+      "coverImage": "https://images.unsplash.com/photo-1605559424843-9e4c228bf1c2?w=1200&q=80"
+    },
+    {
+      "marca": "Chery", "modelo": "Tiggo 7 Pro Hybrid", "version": "Luxury", "anio": 2025, "km": 0,
+      "condicion": "0km", "tipo": "SUV", "combustible": "Híbrido", "transmision": "Automática",
+      "motor": "1.5T Híbrido", "puertas": 5, "color": "", "traccion": "4x2",
+      "precio": 0, "moneda": "ARS", "mostrarPrecio": false, "financiacion": true, "permuta": true,
+      "equipamiento": ["Techo panorámico", "Tapizado de cuero", "Pantalla dual", "Cámara 360°", "Sensores de estacionamiento"],
+      "descripcion": "Tope de gama híbrida con equipamiento full. Garantía oficial de fábrica.",
+      "destacado": false, "estado": "disponible",
+      "coverImage": "https://images.unsplash.com/photo-1568844293986-8d0400bd4745?w=1200&q=80"
+    },
+    {
+      "marca": "Fiat", "modelo": "Titano", "version": "Ranch 4x4", "anio": 2025, "km": 0,
+      "condicion": "0km", "tipo": "Pickup", "combustible": "Diésel", "transmision": "Automática",
+      "motor": "2.2 Turbodiésel", "puertas": 4, "color": "", "traccion": "4x4",
+      "precio": 0, "moneda": "ARS", "mostrarPrecio": false, "financiacion": true, "permuta": true,
+      "equipamiento": ["4x4 con reductora", "Pantalla multimedia", "Cámara de retroceso", "Control de descenso", "Cobertor de caja"],
+      "descripcion": "Pickup 0km lista para el trabajo y la aventura. Entrega inmediata.",
+      "destacado": false, "estado": "disponible",
+      "coverImage": "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1200&q=80"
+    },
+    {
+      "marca": "Fiat", "modelo": "Strada", "version": "Volcano CD", "anio": 2025, "km": 0,
+      "condicion": "0km", "tipo": "Pickup", "combustible": "Nafta", "transmision": "Manual",
+      "motor": "1.3 Nafta", "puertas": 4, "color": "", "traccion": "4x2",
+      "precio": 0, "moneda": "ARS", "mostrarPrecio": false, "financiacion": true, "permuta": true,
+      "equipamiento": ["Pantalla multimedia", "Cámara de retroceso", "Sensores de estacionamiento", "Llantas de aleación"],
+      "descripcion": "La pickup compacta más vendida del país, cabina doble full.",
+      "destacado": false, "estado": "disponible",
+      "coverImage": "https://images.unsplash.com/photo-1559416523-140ddc3d238c?w=1200&q=80"
+    },
+    {
+      "marca": "Toyota", "modelo": "Corolla Cross", "version": "XEI", "anio": 2023, "km": 38000,
+      "condicion": "usado", "tipo": "SUV", "combustible": "Nafta", "transmision": "Automática CVT",
+      "motor": "2.0 Nafta", "puertas": 5, "color": "Blanco perlado", "traccion": "4x2",
+      "precio": 32500000, "moneda": "ARS", "mostrarPrecio": true, "financiacion": true, "permuta": true,
+      "equipamiento": ["Único dueño", "Service oficial", "Pantalla multimedia", "Control crucero adaptativo", "Cámara de retroceso", "Climatizador bizona"],
+      "descripcion": "Impecable estado, único dueño con services oficiales al día. Cubiertas nuevas.",
+      "destacado": true, "estado": "disponible",
+      "coverImage": "https://images.unsplash.com/photo-1619767886558-efdc259cde1a?w=1200&q=80"
+    },
+    {
+      "marca": "Renault", "modelo": "Alaskan", "version": "Intens 4x4", "anio": 2022, "km": 61000,
+      "condicion": "usado", "tipo": "Pickup", "combustible": "Diésel", "transmision": "Automática",
+      "motor": "2.3 Biturbo Diésel", "puertas": 4, "color": "Gris acero", "traccion": "4x4",
+      "precio": 38900000, "moneda": "ARS", "mostrarPrecio": true, "financiacion": true, "permuta": true,
+      "equipamiento": ["4x4", "Cuero", "Cámara 360°", "Sensores de estacionamiento", "Barra antivuelco", "Cobertor de caja"],
+      "descripcion": "Full full, muy cuidada. Ideal trabajo y familia. Papeles al día, lista para transferir.",
+      "destacado": true, "estado": "disponible",
+      "coverImage": "https://images.unsplash.com/photo-1599912027806-cfec9f5944b6?w=1200&q=80"
+    },
+    {
+      "marca": "Volkswagen", "modelo": "Voyage", "version": "Comfortline", "anio": 2019, "km": 78000,
+      "condicion": "usado", "tipo": "Sedán", "combustible": "Nafta", "transmision": "Manual",
+      "motor": "1.6 Nafta", "puertas": 4, "color": "Gris plata", "traccion": "4x2",
+      "precio": 14500000, "moneda": "ARS", "mostrarPrecio": true, "financiacion": true, "permuta": true,
+      "equipamiento": ["Aire acondicionado", "Dirección asistida", "Levantavidrios eléctricos", "Bluetooth", "ABS + Airbags"],
+      "descripcion": "Muy buen estado general, motor 1.6 económico y confiable.",
+      "destacado": false, "estado": "disponible",
+      "coverImage": "https://images.unsplash.com/photo-1549399542-7e3f8b79c341?w=1200&q=80"
+    },
+    {
+      "marca": "Volkswagen", "modelo": "Suran", "version": "Highline", "anio": 2018, "km": 95000,
+      "condicion": "usado", "tipo": "Rural", "combustible": "Nafta", "transmision": "Manual",
+      "motor": "1.6 Nafta", "puertas": 5, "color": "Rojo tornado", "traccion": "4x2",
+      "precio": 12800000, "moneda": "ARS", "mostrarPrecio": true, "financiacion": true, "permuta": true,
+      "equipamiento": ["Aire acondicionado", "Sensores de estacionamiento", "Llantas de aleación", "Bluetooth"],
+      "descripcion": "Familiar, espaciosa y económica. Muy buen mantenimiento.",
+      "destacado": false, "estado": "disponible",
+      "coverImage": "https://images.unsplash.com/photo-1471444928139-48c5bf5173f8?w=1200&q=80"
+    },
+    {
+      "marca": "Volkswagen", "modelo": "Fox", "version": "Trendline", "anio": 2017, "km": 102000,
+      "condicion": "usado", "tipo": "Hatchback", "combustible": "Nafta", "transmision": "Manual",
+      "motor": "1.6 Nafta", "puertas": 5, "color": "Blanco", "traccion": "4x2",
+      "precio": 11200000, "moneda": "ARS", "mostrarPrecio": true, "financiacion": true, "permuta": true,
+      "equipamiento": ["Aire acondicionado", "Dirección asistida", "Levantavidrios eléctricos"],
+      "descripcion": "Ideal primer auto. Mecánica sana, mantenimiento al día.",
+      "destacado": false, "estado": "disponible",
+      "coverImage": "https://images.unsplash.com/photo-1502877338535-766e1452684a?w=1200&q=80"
+    },
+    {
+      "marca": "Citroën", "modelo": "C4", "version": "Pack Look", "anio": 2016, "km": 110000,
+      "condicion": "usado", "tipo": "Hatchback", "combustible": "Nafta", "transmision": "Manual",
+      "motor": "1.6 Nafta", "puertas": 5, "color": "Gris grafito", "traccion": "4x2",
+      "precio": 10500000, "moneda": "ARS", "mostrarPrecio": true, "financiacion": true, "permuta": true,
+      "equipamiento": ["Aire acondicionado", "Control crucero", "Faros antiniebla"],
+      "descripcion": "Muy confortable, gran espacio interior. Excelente relación precio-calidad.",
+      "destacado": false, "estado": "disponible",
+      "coverImage": "https://images.unsplash.com/photo-1494976388531-d1058494cdd8?w=1200&q=80"
+    },
+    {
+      "marca": "DS", "modelo": "DS3", "version": "So Chic", "anio": 2017, "km": 88000,
+      "condicion": "usado", "tipo": "Hatchback", "combustible": "Nafta", "transmision": "Manual",
+      "motor": "1.6 THP Nafta", "puertas": 3, "color": "Negro perla", "traccion": "4x2",
+      "precio": 13900000, "moneda": "ARS", "mostrarPrecio": true, "financiacion": true, "permuta": true,
+      "equipamiento": ["Tapizado de cuero", "Techo bitono", "Climatizador", "Llantas de aleación", "Faros LED"],
+      "descripcion": "Motor THP con muy buena respuesta. Un usado distinto, con diseño premium.",
+      "destacado": false, "estado": "disponible",
+      "coverImage": "https://images.unsplash.com/photo-1542362567-b07e54358753?w=1200&q=80"
+    }
+  ]
+}
