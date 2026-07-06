@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="es-AR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vehículo | Garrahan Automotores</title>
+  <meta name="description" content="Ficha del vehículo — Garrahan Automotores, concesionaria 0km y usados multimarcas en Chivilcoy.">
+  <meta name="theme-color" content="#0c0c0d">
+  <link rel="icon" type="image/jpeg" href="assets/img/logo.jpg">
+  <link rel="apple-touch-icon" href="assets/img/logo.jpg">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Oswald:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body class="page-ficha">
+
+  <!-- ===== NAV ===== -->
+  <nav class="nav nav--solid" id="nav">
+    <div class="nav__container">
+      <a href="index.html" class="nav__logo">
+        <img src="assets/img/logo.jpg" alt="Garrahan Automotores" class="nav__logo-mark">
+        <span class="nav__logo-text">GARRAHAN<small>AUTOMOTORES</small></span>
+      </a>
+      <button class="nav__toggle" id="navToggle" aria-label="Abrir menú"><span></span><span></span><span></span></button>
+      <ul class="nav__menu" id="navMenu">
+        <li><a href="index.html" class="nav__link">Inicio</a></li>
+        <li><a href="index.html#stock" class="nav__link">Vehículos</a></li>
+        <li><a href="index.html#financiacion" class="nav__link">Financiación</a></li>
+        <li><a href="index.html#galeria" class="nav__link">Galería</a></li>
+        <li><a href="index.html#contacto" class="nav__link nav__link--cta">Contacto</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <main class="ficha" id="fichaMain" hidden>
+    <div class="container">
+
+      <!-- Breadcrumb -->
+      <nav class="ficha__breadcrumb" aria-label="Ruta">
+        <a href="index.html">Inicio</a><span>/</span><a href="index.html#stock">Vehículos</a><span>/</span><strong id="bcName">—</strong>
+      </nav>
+
+      <div class="ficha__banner" id="fichaBanner" hidden></div>
+
+      <!-- Galería + Panel -->
+      <div class="ficha__top">
+        <!-- Galería -->
+        <section class="fgal" aria-label="Fotos del vehículo">
+          <div class="fgal__main" id="fgalMain">
+            <div class="fgal__badges" id="fgalBadges"></div>
+            <img id="fgalImg" alt="Foto del vehículo">
+            <button class="fgal__arrow fgal__arrow--prev" id="fgalPrev" aria-label="Foto anterior" hidden>‹</button>
+            <button class="fgal__arrow fgal__arrow--next" id="fgalNext" aria-label="Foto siguiente" hidden>›</button>
+            <span class="fgal__counter" id="fgalCounter" hidden></span>
+            <span class="fgal__expand" aria-hidden="true">⤢ Ampliar</span>
+          </div>
+          <div class="fgal__thumbs" id="fgalThumbs" hidden></div>
+        </section>
+
+        <!-- Panel de info -->
+        <aside class="fpanel">
+          <span class="fpanel__brand" id="fpBrand">—</span>
+          <h1 class="fpanel__title" id="fpTitle">—</h1>
+          <p class="fpanel__version" id="fpVersion"></p>
+
+          <div class="fpanel__price">
+            <span class="fpanel__price-label" id="fpPriceLabel">Precio</span>
+            <span class="fpanel__price-value" id="fpPrice">—</span>
+            <div class="fpanel__perks" id="fpPerks"></div>
+          </div>
+
+          <ul class="fpanel__quick" id="fpQuick"></ul>
+
+          <div class="fpanel__ctas">
+            <a href="#" class="btn btn--primary fpanel__wa" id="fpWhatsApp" target="_blank" rel="noopener">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" style="margin-right:8px"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+              Consultar por WhatsApp
+            </a>
+            <div class="fpanel__ctas-row">
+              <a href="tel:435837" class="btn btn--ghost">Llamar al local</a>
+              <button type="button" class="btn btn--ghost" id="fpShare">Compartir</button>
+            </div>
+          </div>
+
+          <p class="fpanel__local">📍 Av. Urquiza 126, Chivilcoy · Lun a Vie 09:00–12:30 / 15:30–20:00 · Sáb 09:00–12:30</p>
+        </aside>
+      </div>
+
+      <!-- Ficha técnica -->
+      <section class="fspecs">
+        <h2 class="fspecs__title">Ficha técnica</h2>
+        <div class="fspecs__grid" id="fspecsGrid"></div>
+      </section>
+
+      <!-- Equipamiento -->
+      <section class="fequip" id="fequipSection" hidden>
+        <h2 class="fspecs__title">Equipamiento y destacados</h2>
+        <ul class="fequip__list" id="fequipList"></ul>
+      </section>
+
+      <!-- Descripción -->
+      <section class="fdesc" id="fdescSection" hidden>
+        <h2 class="fspecs__title">Descripción</h2>
+        <p id="fdescText"></p>
+      </section>
+
+      <!-- Simulador -->
+      <section class="fsim" id="fsimSection" hidden>
+        <h2 class="fspecs__title">Simulá tu cuota</h2>
+        <div class="calc">
+          <div class="calc__inputs">
+            <div class="calc__field">
+              <label for="calcPrecio">Monto a financiar (ARS)</label>
+              <input type="number" id="calcPrecio" min="0" step="100000">
+            </div>
+            <div class="calc__field">
+              <label for="calcPlazo">Plazo</label>
+              <select id="calcPlazo">
+                <option value="12">12 cuotas</option>
+                <option value="18">18 cuotas</option>
+                <option value="24" selected>24 cuotas</option>
+                <option value="36">36 cuotas</option>
+                <option value="48">48 cuotas</option>
+              </select>
+            </div>
+            <a href="#" class="btn btn--primary calc__cta" id="fsimWA" target="_blank" rel="noopener">Consultar financiación</a>
+          </div>
+          <div class="calc__result">
+            <span class="calc__label">Cuota mensual estimada</span>
+            <span class="calc__amount" id="calcAmount">$0</span>
+            <span class="calc__sub" id="calcTotal"></span>
+            <p class="calc__disclaimer">*Cálculo orientativo (tasa estimada). El valor final depende de la entidad y la aprobación crediticia.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Relacionados -->
+      <section class="frel" id="frelSection" hidden>
+        <h2 class="fspecs__title">También te puede interesar</h2>
+        <div class="stock__grid" id="frelGrid"></div>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- Estado de carga / error -->
+  <div class="ficha__loading" id="fichaLoading">
+    <div class="container">
+      <p>Cargando vehículo…</p>
+    </div>
+  </div>
+  <div class="ficha__loading" id="fichaError" hidden>
+    <div class="container">
+      <h1 style="font-size:1.6rem;margin-bottom:12px">No encontramos ese vehículo</h1>
+      <p style="color:var(--texto-2);margin-bottom:24px">Puede que ya no esté disponible o que el enlace sea incorrecto.</p>
+      <a href="index.html#stock" class="btn btn--primary">Ver stock disponible</a>
+    </div>
+  </div>
+
+  <!-- Lightbox -->
+  <div class="lightbox" id="lightbox" hidden>
+    <button class="lightbox__close" id="lbClose" aria-label="Cerrar">✕</button>
+    <button class="lightbox__arrow lightbox__arrow--prev" id="lbPrev" aria-label="Anterior">‹</button>
+    <img class="lightbox__img" id="lbImg" alt="Foto ampliada">
+    <button class="lightbox__arrow lightbox__arrow--next" id="lbNext" aria-label="Siguiente">›</button>
+    <span class="lightbox__counter" id="lbCounter"></span>
+  </div>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="footer">
+    <div class="container footer__grid">
+      <div>
+        <a href="index.html" class="nav__logo">
+          <span class="nav__logo-mark">G</span>
+          <span class="nav__logo-text">GARRAHAN<small>AUTOMOTORES</small></span>
+        </a>
+        <p class="footer__desc">M. Garrahan — Negocio de Automotores.<br>Comercializamos vehículos 0km y usados multimarcas.</p>
+      </div>
+      <div class="footer__links">
+        <a href="index.html#stock">Vehículos</a>
+        <a href="index.html#financiacion">Financiación</a>
+        <a href="index.html#galeria">Galería</a>
+        <a href="index.html#contacto">Contacto</a>
+      </div>
+      <div class="footer__contact">
+        <p>📍 Av. Urquiza 126, Chivilcoy</p>
+        <p>✉️ Mgarrahanautomotores@hotmail.com</p>
+        <p>📸 @garrahanautomotores</p>
+      </div>
+    </div>
+    <div class="footer__bottom">
+      <p>&copy; 2026 Garrahan Automotores · Chivilcoy, Buenos Aires · Todos los derechos reservados</p>
+      <a class="footer__vb-credit" href="https://www.venturebyte.com.ar" target="_blank" rel="noopener" aria-label="Desarrollado por VentureByte">Desarrollado por VentureByte <img src="assets/img/venturebyte-white.png" alt="VentureByte"></a>
+    </div>
+  </footer>
+
+  <script src="assets/js/vehiculo.js"></script>
+</body>
+</html>
