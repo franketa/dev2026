@@ -35,5 +35,5 @@ app.use((err, req, res, next) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`Garrahan Automotores server running on port ${PORT}`);
+  console.log(`Garrahan — Negocio de Automotores server running on port ${PORT}`);
 });

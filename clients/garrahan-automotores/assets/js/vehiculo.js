@@ -1,4 +1,4 @@
-// Garrahan Automotores — Ficha de vehículo
+// Garrahan — Negocio de Automotores · Ficha de vehículo
 (function () {
   'use strict';
 
@@ -43,7 +43,7 @@
     photos = [v.coverImage, ...(v.images || [])].filter(Boolean);
     photos = [...new Set(photos)];
     if (!photos.length) {
-      photos = ['assets/img/logo.jpg'];
+      photos = ['assets/img/logo.png'];
       $('fgalMain').style.cursor = 'default';
     }
 
@@ -84,7 +84,7 @@
   // ===== Lightbox =====
   const lightbox = $('lightbox');
   function openLightbox() {
-    if (photos.length === 1 && photos[0].includes('logo.jpg')) return;
+    if (photos.length === 1 && photos[0].includes('logo.png')) return;
     lightbox.hidden = false;
     document.body.style.overflow = 'hidden';
     updateLightbox();
@@ -111,7 +111,7 @@
 
   // ===== Render =====
   function render(v, all) {
-    document.title = `${nombre(v)} ${v.anio} | Garrahan Automotores`;
+    document.title = `${nombre(v)} ${v.anio} | Garrahan — Negocio de Automotores`;
     $('bcName').textContent = `${v.marca} ${v.modelo}`;
 
     // Banner de estado
@@ -139,7 +139,12 @@
     $('fpVersion').textContent = [v.version, v.anio].filter(Boolean).join(' · ');
 
     const precio = precioLabel(v);
-    if (precio) {
+    if (precio && v.precioDescuento) {
+      const sym = v.moneda === 'USD' ? 'US$ ' : '$ ';
+      $('fpPriceLabel').textContent = 'Precio con descuento';
+      $('fpPrice').innerHTML =
+        `<s class="fpanel__price-old">${precio}</s><span class="fpanel__price-desc">${sym}${fmt(v.precioDescuento)}</span>`;
+    } else if (precio) {
       $('fpPriceLabel').textContent = 'Precio de lista';
       $('fpPrice').textContent = precio;
     } else {
@@ -165,7 +170,7 @@
     $('fpWhatsApp').href = wa(WA_FELIPE, msg + '\n' + location.href);
 
     $('fpShare').addEventListener('click', async () => {
-      const shareData = { title: document.title, text: `${nombre(v)} ${v.anio} — Garrahan Automotores`, url: location.href };
+      const shareData = { title: document.title, text: `${nombre(v)} ${v.anio} — Garrahan, Negocio de Automotores`, url: location.href };
       try {
         if (navigator.share) {
           await navigator.share(shareData);
@@ -213,7 +218,7 @@
     if (v.financiacion && v.estado !== 'vendido') {
       $('fsimSection').hidden = false;
       const TASA = 0.055;
-      const precioARS = (v.mostrarPrecio && v.precio && v.moneda === 'ARS') ? v.precio : 8000000;
+      const precioARS = (v.mostrarPrecio && v.precio && v.moneda === 'ARS') ? (v.precioDescuento || v.precio) : 8000000;
       $('calcPrecio').value = precioARS;
       const calcular = () => {
         const monto = parseInt($('calcPrecio').value) || 0;
@@ -253,14 +258,18 @@
     const badge = v.condicion === '0km'
       ? '<span class="card__badge card__badge--0km">0KM</span>'
       : '<span class="card__badge card__badge--usado">Usado</span>';
-    const precio = precioLabel(v)
-      ? precioLabel(v) + '<small>Precio de lista</small>'
-      : 'Consultar precio<small>Financiación disponible</small>';
+    let precio = 'Consultar precio<small>Financiación disponible</small>';
+    if (precioLabel(v) && v.precioDescuento) {
+      const sym = v.moneda === 'USD' ? 'US$ ' : '$ ';
+      precio = `<s class="card__price-old">${precioLabel(v)}</s><span class="card__price-desc">${sym}${fmt(v.precioDescuento)}</span><small>Precio con descuento</small>`;
+    } else if (precioLabel(v)) {
+      precio = precioLabel(v) + '<small>Precio de lista</small>';
+    }
     const km = v.condicion === '0km' ? '0 km' : fmt(v.km) + ' km';
     return `
       <article class="card card--click" data-id="${v.id}">
         <div class="card__media">${badge}
-          <img src="${esc(v.coverImage || 'assets/img/logo.jpg')}" alt="${esc(v.marca + ' ' + v.modelo)}" loading="lazy">
+          <img src="${esc(v.coverImage || 'assets/img/logo.png')}" alt="${esc(v.marca + ' ' + v.modelo)}" loading="lazy">
         </div>
         <div class="card__body">
           <span class="card__brand">${esc(v.marca)}</span>

@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Panel de Administración | Garrahan Automotores</title>
+  <title>Panel de Administración | Garrahan — Negocio de Automotores</title>
   <meta name="robots" content="noindex, nofollow">
   <meta name="theme-color" content="#0c0c0d">
-  <link rel="icon" type="image/jpeg" href="assets/img/logo.jpg">
+  <link rel="icon" type="image/png" href="assets/img/logo.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Oswald:wght@500;600;700&display=swap" rel="stylesheet">
@@ -17,9 +17,9 @@
   <!-- ===== LOGIN ===== -->
   <section class="login" id="viewLogin" hidden>
     <form class="login__card" id="loginForm">
-      <img src="assets/img/logo.jpg" alt="Garrahan Automotores" class="login__logo">
+      <img src="assets/img/logo.png" alt="Garrahan — Negocio de Automotores" class="login__logo">
       <h1 class="login__title">Panel de<br>administración</h1>
-      <p class="login__sub">Garrahan Automotores</p>
+      <p class="login__sub">Garrahan — Negocio de Automotores</p>
       <div class="field">
         <label for="loginEmail">Email</label>
         <input type="email" id="loginEmail" autocomplete="username" required placeholder="admin@garrahan.com">
@@ -39,7 +39,7 @@
     <header class="topbar">
       <div class="topbar__inner">
         <a href="index.html" class="topbar__brand">
-          <img src="assets/img/logo.jpg" alt="Garrahan Automotores">
+          <img src="assets/img/logo.png" alt="Garrahan — Negocio de Automotores">
           <span>GARRAHAN<small>PANEL DE ADMINISTRACIÓN</small></span>
         </a>
         <div class="topbar__actions">
@@ -209,8 +209,12 @@
           <h2 class="editor__heading">Precio y venta</h2>
           <div class="grid">
             <div class="field">
-              <label for="fPrecio">Precio</label>
+              <label for="fPrecio">Precio de lista</label>
               <input type="number" id="fPrecio" min="0" step="100000" placeholder="Ej: 25000000">
+            </div>
+            <div class="field">
+              <label for="fPrecioDescuento">Precio con descuento <small>(opcional)</small></label>
+              <input type="number" id="fPrecioDescuento" min="0" step="100000" placeholder="Ej: 22000000">
             </div>
             <div class="field">
               <label for="fMoneda">Moneda</label>
@@ -229,7 +233,7 @@
             </div>
           </div>
           <div class="checks">
-            <label class="check"><input type="checkbox" id="fMostrarPrecio" checked><span>Mostrar precio en la web <small>Si está desactivado se muestra "Consultar precio"</small></span></label>
+            <label class="check"><input type="checkbox" id="fMostrarPrecio" checked><span>Mostrar precio en la web <small>Si está desactivado se muestra "Consultar precio". Si cargás un precio con descuento, el de lista se muestra tachado y el nuevo en rojo.</small></span></label>
             <label class="check"><input type="checkbox" id="fFinanciacion" checked><span>Ofrece financiación</span></label>
             <label class="check"><input type="checkbox" id="fPermuta" checked><span>Acepta permuta / parte de pago</span></label>
             <label class="check"><input type="checkbox" id="fDestacado"><span>Destacado <small>Aparece primero en el listado</small></span></label>

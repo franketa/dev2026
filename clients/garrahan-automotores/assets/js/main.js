@@ -1,4 +1,4 @@
-// Garrahan Automotores — Main JS
+// Garrahan — Negocio de Automotores · Main JS
 (function () {
   'use strict';
 
@@ -16,7 +16,13 @@
 
   function precioLabel(v) {
     if (!v.mostrarPrecio || !v.precio) return 'Consultar precio<small>Financiación disponible</small>';
-    return (v.moneda === 'USD' ? 'US$' : '$') + fmt(v.precio) + '<small>Precio de lista</small>';
+    const sym = v.moneda === 'USD' ? 'US$' : '$';
+    if (v.precioDescuento) {
+      return '<s class="card__price-old">' + sym + fmt(v.precio) + '</s>' +
+        '<span class="card__price-desc">' + sym + fmt(v.precioDescuento) + '</span>' +
+        '<small>Precio con descuento</small>';
+    }
+    return sym + fmt(v.precio) + '<small>Precio de lista</small>';
   }
 
   function tarjeta(v) {
@@ -28,7 +34,7 @@
     return '' +
       '<article class="card card--click" data-id="' + v.id + '">' +
         '<div class="card__media">' + badge +
-          '<img src="' + esc(v.coverImage || 'assets/img/logo.jpg') + '" alt="' + esc(v.marca + ' ' + v.modelo) + '" loading="lazy">' +
+          '<img src="' + esc(v.coverImage || 'assets/img/logo.png') + '" alt="' + esc(v.marca + ' ' + v.modelo) + '" loading="lazy">' +
         '</div>' +
         '<div class="card__body">' +
           '<span class="card__brand">' + esc(v.marca) + '</span>' +
@@ -118,7 +124,7 @@
 
   // ===== Galería (placeholders profesionales) =====
   const galImgs = [
-    { src: 'https://images.unsplash.com/photo-1486006920555-c77dcf18193c?w=800&q=80', cls: 'galeria__item--wide', alt: 'Local Garrahan Automotores' },
+    { src: 'https://images.unsplash.com/photo-1486006920555-c77dcf18193c?w=800&q=80', cls: 'galeria__item--wide', alt: 'Local de Garrahan — Negocio de Automotores' },
     { src: 'https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=600&q=80', cls: '', alt: 'Vehículo en exhibición' },
     { src: 'https://images.unsplash.com/photo-1493238792000-8113da705763?w=600&q=80', cls: '', alt: 'Entrega de unidad' },
     { src: 'https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=600&q=80', cls: 'galeria__item--tall', alt: 'Vehículo deportivo' },

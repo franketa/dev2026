@@ -1,4 +1,4 @@
-// Garrahan Automotores — Panel de Administración
+// Garrahan — Negocio de Automotores · Panel de Administración
 (function () {
   'use strict';
 
@@ -116,7 +116,11 @@
 
   function precioLabel(v) {
     if (!v.mostrarPrecio || !v.precio) return 'Consultar precio';
-    return (v.moneda === 'USD' ? 'US$ ' : '$ ') + fmt(v.precio);
+    const sym = v.moneda === 'USD' ? 'US$ ' : '$ ';
+    if (v.precioDescuento) {
+      return `<span class="vrow__price-desc">${sym}${fmt(v.precioDescuento)}</span> <s>${sym}${fmt(v.precio)}</s>`;
+    }
+    return sym + fmt(v.precio);
   }
 
   function renderList() {
@@ -238,6 +242,7 @@
     $('fPuertas').value = String(v?.puertas || 5);
     $('fMotor').value = v?.motor || '';
     $('fPrecio').value = v?.precio || '';
+    $('fPrecioDescuento').value = v?.precioDescuento || '';
     $('fMoneda').value = v?.moneda || 'ARS';
     $('fEstado').value = v?.estado || 'disponible';
     $('fMostrarPrecio').checked = v ? v.mostrarPrecio : true;
@@ -417,6 +422,7 @@
       color: $('fColor').value.trim(),
       traccion: $('fTraccion').value,
       precio: parseInt($('fPrecio').value) || 0,
+      precioDescuento: parseInt($('fPrecioDescuento').value) || 0,
       moneda: $('fMoneda').value,
       mostrarPrecio: $('fMostrarPrecio').checked,
       financiacion: $('fFinanciacion').checked,

@@ -94,9 +94,9 @@ router.post('/', authMiddleware, (req, res) => {
   const db = getDB();
   const result = db.prepare(`
     INSERT INTO vehicles (marca, modelo, version, anio, km, condicion, tipo, combustible, transmision,
-      motor, puertas, color, traccion, precio, moneda, mostrar_precio, financiacion, permuta,
+      motor, puertas, color, traccion, precio, precio_descuento, moneda, mostrar_precio, financiacion, permuta,
       equipamiento, descripcion, destacado, estado)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `).run(
     v.marca,
     v.modelo,
@@ -112,6 +112,7 @@ router.post('/', authMiddleware, (req, res) => {
     v.color || '',
     v.traccion || '4x2',
     v.precio || 0,
+    v.precioDescuento || 0,
     v.moneda || 'ARS',
     v.mostrarPrecio !== false ? 1 : 0,
     v.financiacion !== false ? 1 : 0,
@@ -138,7 +139,7 @@ router.put('/:id', authMiddleware, (req, res) => {
 
   db.prepare(`
     UPDATE vehicles SET marca=?, modelo=?, version=?, anio=?, km=?, condicion=?, tipo=?, combustible=?,
-      transmision=?, motor=?, puertas=?, color=?, traccion=?, precio=?, moneda=?, mostrar_precio=?,
+      transmision=?, motor=?, puertas=?, color=?, traccion=?, precio=?, precio_descuento=?, moneda=?, mostrar_precio=?,
       financiacion=?, permuta=?, equipamiento=?, descripcion=?, destacado=?, estado=?
     WHERE id=?
   `).run(
@@ -156,6 +157,7 @@ router.put('/:id', authMiddleware, (req, res) => {
     v.color ?? existing.color,
     v.traccion ?? existing.traccion,
     v.precio ?? existing.precio,
+    v.precioDescuento ?? existing.precio_descuento,
     v.moneda ?? existing.moneda,
     v.mostrarPrecio !== undefined ? (v.mostrarPrecio ? 1 : 0) : existing.mostrar_precio,
     v.financiacion !== undefined ? (v.financiacion ? 1 : 0) : existing.financiacion,

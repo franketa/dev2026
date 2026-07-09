@@ -1,6 +1,6 @@
-# Garrahan Automotores
+# Garrahan — Negocio de Automotores
 
-Sitio web para **M. Garrahan — Negocio de Automotores**, concesionaria multimarca de vehículos 0km y usados en Chivilcoy, Buenos Aires. Incluye **panel de administración** para cargar, editar y eliminar vehículos con fotos.
+Sitio web para **Garrahan — Negocio de Automotores**, concesionaria multimarca de vehículos 0km y usados en Chivilcoy, Buenos Aires. Incluye **panel de administración** para cargar, editar y eliminar vehículos con fotos.
 
 > **Estado:** Sitio + backend + panel admin funcionales. Falta reemplazar fotos de muestra por fotos reales.
 
@@ -26,6 +26,7 @@ El servidor sirve el sitio estático, la API y las imágenes subidas. En el prim
 - URL: `/admin.html`
 - Usuario inicial: `admin@garrahan.com` / `garrahan2026` → **cambiar la contraseña desde el propio panel** ("Cambiar contraseña") al entregar.
 - Funciones: alta/edición/borrado de vehículos, búsqueda y filtros, **foto de portada** (se ve en la home) + **galería de hasta 10 fotos** (se ven en la ficha), equipamiento por chips, destacados, estados (disponible/reservado/vendido).
+- **Precio con descuento** (opcional): si se completa, el sitio muestra el precio de lista tachado y el precio con descuento en rojo (tarjetas, ficha y listado del admin). El simulador de cuota usa el precio con descuento como base.
 
 ## API
 
@@ -61,7 +62,6 @@ El servidor sirve el sitio estático, la API y las imágenes subidas. En el prim
 
 - **Dirección:** Avenida Urquiza 126, Chivilcoy, Buenos Aires (CP 6620)
 - **WhatsApp:** Felipe 2345 42-8151 · Miguel 2345 65-3379
-- **Fijo:** 43-5837
 - **Email:** Mgarrahanautomotores@hotmail.com
 - **Instagram:** [@garrahanautomotores](https://instagram.com/garrahanautomotores)
 

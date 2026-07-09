@@ -48,6 +48,7 @@ function initDB() {
       color TEXT DEFAULT '',
       traccion TEXT DEFAULT '4x2',
       precio INTEGER DEFAULT 0,
+      precio_descuento INTEGER DEFAULT 0,
       moneda TEXT DEFAULT 'ARS',
       mostrar_precio INTEGER DEFAULT 1,
       financiacion INTEGER DEFAULT 1,
@@ -67,6 +68,13 @@ function initDB() {
       password_hash TEXT NOT NULL
     );
   `);
+
+  // Migración: bases creadas antes de que existiera precio_descuento
+  const columns = db.prepare('PRAGMA table_info(vehicles)').all().map(c => c.name);
+  if (!columns.includes('precio_descuento')) {
+    db.exec('ALTER TABLE vehicles ADD COLUMN precio_descuento INTEGER DEFAULT 0');
+    console.log('Migration: added precio_descuento column to vehicles');
+  }
 
   // Seed default admin if none exists
   const adminCount = db.prepare('SELECT COUNT(*) as count FROM admin_users').get();
@@ -94,9 +102,9 @@ function seedVehicles(db) {
   const data = JSON.parse(fs.readFileSync(jsonPath, 'utf8'));
   const insert = db.prepare(`
     INSERT INTO vehicles (marca, modelo, version, anio, km, condicion, tipo, combustible, transmision,
-      motor, puertas, color, traccion, precio, moneda, mostrar_precio, financiacion, permuta,
+      motor, puertas, color, traccion, precio, precio_descuento, moneda, mostrar_precio, financiacion, permuta,
       equipamiento, descripcion, destacado, estado, cover_image, images)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `);
 
   const insertMany = db.transaction((vehicles) => {
@@ -116,6 +124,7 @@ function seedVehicles(db) {
         v.color || '',
         v.traccion || '4x2',
         v.precio || 0,
+        v.precioDescuento || 0,
         v.moneda || 'ARS',
         v.mostrarPrecio !== false ? 1 : 0,
         v.financiacion !== false ? 1 : 0,
@@ -152,6 +161,7 @@ function rowToVehicle(row) {
     color: row.color,
     traccion: row.traccion,
     precio: row.precio,
+    precioDescuento: row.precio_descuento || 0,
     moneda: row.moneda,
     mostrarPrecio: row.mostrar_precio === 1,
     financiacion: row.financiacion === 1,
