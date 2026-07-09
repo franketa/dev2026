@@ -18,7 +18,7 @@
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400..600&family=Instrument+Sans:ital,wght@0,400..700;1,400..700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 
   <!-- Stylesheet -->
   <link rel="stylesheet" href="assets/css/styles.css">
@@ -37,8 +37,8 @@
 
       <div class="nav__links">
         <a href="#inicio" class="nav__link nav__link--active">Inicio</a>
-        <a href="quienes-somos.html" class="nav__link">Cuál es nuestra historia</a>
-        <a href="que-hacemos.html" class="nav__link">A qué nos dedicamos</a>
+        <a href="quienes-somos.html" class="nav__link">Nuestra historia</a>
+        <a href="que-hacemos.html" class="nav__link">Nuestro trabajo</a>
         <a href="solicitud.html" class="btn btn--primary nav__cta">Solicitar mi landing</a>
       </div>
 
@@ -53,8 +53,8 @@
   <!-- Mobile Menu -->
   <div class="mobile-menu" aria-hidden="true">
     <a href="#inicio" class="mobile-menu__link mobile-menu__link--active">Inicio</a>
-    <a href="quienes-somos.html" class="mobile-menu__link">Cuál es nuestra historia</a>
-    <a href="que-hacemos.html" class="mobile-menu__link">A qué nos dedicamos</a>
+    <a href="quienes-somos.html" class="mobile-menu__link">Nuestra historia</a>
+    <a href="que-hacemos.html" class="mobile-menu__link">Nuestro trabajo</a>
     <a href="solicitud.html" class="mobile-menu__link">Solicitar mi landing</a>
   </div>
 
@@ -88,20 +88,28 @@
   <!-- ====================================================
        PARTNERS
        ==================================================== -->
-  <section class="section section--charcoal partners" id="alianzas">
+  <section class="section section--dark partners" id="alianzas">
     <div class="container">
       <div class="section__header reveal">
         <span class="eyebrow eyebrow--light">Ecosistema de trabajo</span>
         <h2>Partners tecnológicos</h2>
         <p>Trabajamos con herramientas, equipos y experiencia que potencian lo que hacemos.</p>
       </div>
-      <div class="partners__grid reveal reveal--delay-1">
+    </div>
+    <div class="partners__marquee reveal reveal--delay-1">
+      <div class="partners__track">
         <div class="partners__item"><img src="assets/images/partners/aws (1).png" alt="AWS"></div>
         <div class="partners__item"><img src="assets/images/partners/google.png" alt="Google"></div>
         <div class="partners__item"><img src="assets/images/partners/microsoft (1).png" alt="Microsoft"></div>
         <div class="partners__item"><img src="assets/images/partners/salesforce (1).png" alt="Salesforce"></div>
         <div class="partners__item"><img src="assets/images/partners/databricks (1).png" alt="Databricks"></div>
         <div class="partners__item"><img src="assets/images/partners/sap (1).png" alt="SAP"></div>
+        <div class="partners__item" data-dup aria-hidden="true"><img src="assets/images/partners/aws (1).png" alt=""></div>
+        <div class="partners__item" data-dup aria-hidden="true"><img src="assets/images/partners/google.png" alt=""></div>
+        <div class="partners__item" data-dup aria-hidden="true"><img src="assets/images/partners/microsoft (1).png" alt=""></div>
+        <div class="partners__item" data-dup aria-hidden="true"><img src="assets/images/partners/salesforce (1).png" alt=""></div>
+        <div class="partners__item" data-dup aria-hidden="true"><img src="assets/images/partners/databricks (1).png" alt=""></div>
+        <div class="partners__item" data-dup aria-hidden="true"><img src="assets/images/partners/sap (1).png" alt=""></div>
       </div>
     </div>
   </section>
@@ -141,14 +149,17 @@
   <section class="section section--dark" id="servicios">
     <div class="container">
       <div class="section__header reveal">
-        <span class="eyebrow eyebrow--light">A qué nos dedicamos</span>
-        <h2>Soluciones digitales pensadas para que tu negocio funcione mejor.</h2>
+        <span class="eyebrow eyebrow--light">Nuestro trabajo</span>
+        <h2>Soluciones digitales pensadas para que tu negocio funcione mejor</h2>
       </div>
       <div class="services__grid">
         <!-- Automatización -->
         <div class="service-card reveal">
-          <div class="service-card__icon">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 3v1.5M4.5 8.25H3m18 0h-1.5M4.5 12H3m18 0h-1.5m-15 3.75H3m18 0h-1.5M8.25 19.5V21M12 3v1.5m0 15V21m3.75-18v1.5m0 15V21m-9-1.5h10.5a2.25 2.25 0 0 0 2.25-2.25V6.75a2.25 2.25 0 0 0-2.25-2.25H6.75A2.25 2.25 0 0 0 4.5 6.75v10.5a2.25 2.25 0 0 0 2.25 2.25Zm.75-12h9v9h-9v-9Z"/></svg>
+          <div class="service-card__top">
+            <div class="service-card__icon">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 3v1.5M4.5 8.25H3m18 0h-1.5M4.5 12H3m18 0h-1.5m-15 3.75H3m18 0h-1.5M8.25 19.5V21M12 3v1.5m0 15V21m3.75-18v1.5m0 15V21m-9-1.5h10.5a2.25 2.25 0 0 0 2.25-2.25V6.75a2.25 2.25 0 0 0-2.25-2.25H6.75A2.25 2.25 0 0 0 4.5 6.75v10.5a2.25 2.25 0 0 0 2.25 2.25Zm.75-12h9v9h-9v-9Z"/></svg>
+            </div>
+            <span class="service-card__index">S·01</span>
           </div>
           <h3>Sistemas de automatización</h3>
           <p>Conectamos tus herramientas y eliminamos tareas que no deberían depender de vos.</p>
@@ -159,8 +170,11 @@
         </div>
         <!-- Desarrollo Web -->
         <div class="service-card reveal reveal--delay-1">
-          <div class="service-card__icon">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M17.25 6.75 22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3-4.5 16.5"/></svg>
+          <div class="service-card__top">
+            <div class="service-card__icon">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M17.25 6.75 22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3-4.5 16.5"/></svg>
+            </div>
+            <span class="service-card__index">S·02</span>
           </div>
           <h3>Desarrollo web y de apps</h3>
           <p>Desarrollamos plataformas a medida para acompañar el verdadero crecimiento de tu negocio.</p>
@@ -171,8 +185,11 @@
         </div>
         <!-- Optimización -->
         <div class="service-card reveal reveal--delay-2">
-          <div class="service-card__icon">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 3v11.25A2.25 2.25 0 0 0 6 16.5h2.25M3.75 3h-1.5m1.5 0h16.5m0 0h1.5m-1.5 0v11.25A2.25 2.25 0 0 1 18 16.5h-2.25m-7.5 0h7.5m-7.5 0-1 3m8.5-3 1 3m0 0 .5 1.5m-.5-1.5h-9.5m0 0-.5 1.5m.75-9 3-3 2.148 2.148A12.062 12.062 0 0 1 16.5 7.605"/></svg>
+          <div class="service-card__top">
+            <div class="service-card__icon">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 3v11.25A2.25 2.25 0 0 0 6 16.5h2.25M3.75 3h-1.5m1.5 0h16.5m0 0h1.5m-1.5 0v11.25A2.25 2.25 0 0 1 18 16.5h-2.25m-7.5 0h7.5m-7.5 0-1 3m8.5-3 1 3m0 0 .5 1.5m-.5-1.5h-9.5m0 0-.5 1.5m.75-9 3-3 2.148 2.148A12.062 12.062 0 0 1 16.5 7.605"/></svg>
+            </div>
+            <span class="service-card__index">S·03</span>
           </div>
           <h3>Optimización de procesos digitales</h3>
           <p>Detectamos dónde se pierde tiempo y lo convertimos en procesos más simples.</p>
@@ -192,12 +209,12 @@
     <div class="container">
       <div class="about__grid">
         <div class="about__text reveal reveal--left">
-          <span class="eyebrow">Quiénes Somos</span>
+          <span class="eyebrow">Quiénes somos</span>
           <h2>Impulsamos la innovación digital de empresas en crecimiento</h2>
-          <p>Somos una consultora de transformación digital formada por profesionales apasionados por la tecnología. Combinamos desarrollo de software y automatización para ayudar a empresas a operar de forma más inteligente y eficiente.</p>
+          <p>Somos una consultora de transformación digital formada por profesionales apasionados por la tecnología. Combinamos desarrollo de software y automatización para que las empresas operen de forma más inteligente y eficiente.</p>
           <p>Nuestro enfoque se centra en entender las necesidades reales de cada cliente y diseñar soluciones que generen impacto medible desde el primer día.</p>
           <a href="quienes-somos.html" class="btn btn--outline-dark">
-            Conocenos más
+            Conocé nuestra historia
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"/></svg>
           </a>
         </div>
@@ -208,15 +225,15 @@
       <div class="stats reveal reveal--delay-2">
         <div class="stat">
           <div class="stat__number" data-target="5">0</div>
-          <div class="stat__label">Años de Experiencia</div>
+          <div class="stat__label">Años de experiencia</div>
         </div>
         <div class="stat">
           <div class="stat__number" data-target="50">0</div>
-          <div class="stat__label">Clientes Activos</div>
+          <div class="stat__label">Clientes activos</div>
         </div>
         <div class="stat">
           <div class="stat__number" data-target="1000">0</div>
-          <div class="stat__label">Usuarios Activos</div>
+          <div class="stat__label">Usuarios activos</div>
         </div>
       </div>
     </div>
@@ -237,7 +254,7 @@
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z"/></svg>
           </div>
           <div>
-            <h3>Mayor Eficiencia</h3>
+            <h3>Mayor eficiencia</h3>
             <p>Automatizamos procesos clave para que tu equipo se enfoque en lo que realmente importa, reduciendo tiempos y costos operativos.</p>
           </div>
         </div>
@@ -246,7 +263,7 @@
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285Z"/></svg>
           </div>
           <div>
-            <h3>Seguridad Empresarial</h3>
+            <h3>Seguridad empresarial</h3>
             <p>Implementamos las mejores prácticas de seguridad en cada solución, protegiendo tus datos y los de tus clientes en cada etapa.</p>
           </div>
         </div>
@@ -255,7 +272,7 @@
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.59 14.37a6 6 0 0 1-5.84 7.38v-4.8m5.84-2.58a14.98 14.98 0 0 0 6.16-12.12A14.98 14.98 0 0 0 9.631 8.41m5.96 5.96a14.926 14.926 0 0 1-5.841 2.58m-.119-8.54a6 6 0 0 0-7.381 5.84h4.8m2.58-5.84a14.927 14.927 0 0 0-2.58 5.84m2.699 2.7c-.103.021-.207.041-.311.06a15.09 15.09 0 0 1-2.448-2.448 14.9 14.9 0 0 1 .06-.312m-2.24 2.39a4.493 4.493 0 0 0-1.757 4.306 4.493 4.493 0 0 0 4.306-1.758M16.5 9a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Z"/></svg>
           </div>
           <div>
-            <h3>Implementación Rápida</h3>
+            <h3>Implementación rápida</h3>
             <p>Metodología ágil con entregables incrementales. Empezás a ver resultados desde las primeras semanas de trabajo conjunto.</p>
           </div>
         </div>
@@ -270,43 +287,28 @@
     <div class="container">
       <div class="section__header reveal">
         <span class="eyebrow eyebrow--light">ADN VentureByte</span>
-        <h2>Nuestros Valores</h2>
+        <h2>Nuestros valores</h2>
       </div>
-      <div class="valores__grid">
-        <div class="valor-item reveal">
-          <div class="valor-item__icon">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M11.48 3.499a.562.562 0 0 1 1.04 0l2.125 5.111a.563.563 0 0 0 .475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 0 0-.182.557l1.285 5.385a.562.562 0 0 1-.84.61l-4.725-2.885a.562.562 0 0 0-.586 0L6.982 20.54a.562.562 0 0 1-.84-.61l1.285-5.386a.562.562 0 0 0-.182-.557l-4.204-3.602a.562.562 0 0 1 .321-.988l5.518-.442a.563.563 0 0 0 .475-.345L11.48 3.5Z"/></svg>
-          </div>
-          <h4>Calidad</h4>
-          <p>Cada línea de código refleja nuestro compromiso con la excelencia</p>
+      <div class="spec-list">
+        <div class="spec reveal">
+          <h4 class="spec__term">Calidad</h4>
+          <p class="spec__desc">Cada línea de código refleja nuestro compromiso con la excelencia.</p>
         </div>
-        <div class="valor-item reveal reveal--delay-1">
-          <div class="valor-item__icon">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.362 5.214A8.252 8.252 0 0 1 12 21 8.25 8.25 0 0 1 6.038 7.047 8.287 8.287 0 0 0 9 9.601a8.983 8.983 0 0 1 3.361-6.867 8.21 8.21 0 0 0 3 2.48Z"/><path stroke-linecap="round" stroke-linejoin="round" d="M12 18a3.75 3.75 0 0 0 .495-7.468 5.99 5.99 0 0 0-1.925 3.547 5.975 5.975 0 0 1-2.133-1.001A3.75 3.75 0 0 0 12 18Z"/></svg>
-          </div>
-          <h4>Compromiso</h4>
-          <p>Tu éxito es nuestro éxito, en cada proyecto nos involucramos al 100%</p>
+        <div class="spec reveal reveal--delay-1">
+          <h4 class="spec__term">Compromiso</h4>
+          <p class="spec__desc">Tu éxito es nuestro éxito: en cada proyecto nos involucramos al 100%.</p>
         </div>
-        <div class="valor-item reveal reveal--delay-2">
-          <div class="valor-item__icon">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 18v-5.25m0 0a6.01 6.01 0 0 0 1.5-.189m-1.5.189a6.01 6.01 0 0 1-1.5-.189m3.75 7.478a12.06 12.06 0 0 1-4.5 0m3.75 2.383a14.406 14.406 0 0 1-3 0M14.25 18v-.192c0-.983.658-1.823 1.508-2.316a7.5 7.5 0 1 0-7.517 0c.85.493 1.509 1.333 1.509 2.316V18"/></svg>
-          </div>
-          <h4>Proactividad</h4>
-          <p>Anticipamos desafíos y proponemos soluciones antes de que surjan</p>
+        <div class="spec reveal reveal--delay-2">
+          <h4 class="spec__term">Proactividad</h4>
+          <p class="spec__desc">Anticipamos desafíos y proponemos soluciones antes de que surjan.</p>
         </div>
-        <div class="valor-item reveal reveal--delay-3">
-          <div class="valor-item__icon">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M18 18.72a9.094 9.094 0 0 0 3.741-.479 3 3 0 0 0-4.682-2.72m.94 3.198.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0 1 12 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 0 1 6 18.719m12 0a5.971 5.971 0 0 0-.941-3.197m0 0A5.995 5.995 0 0 0 12 12.75a5.995 5.995 0 0 0-5.058 2.772m0 0a3 3 0 0 0-4.681 2.72 8.986 8.986 0 0 0 3.74.477m.94-3.197a5.971 5.971 0 0 0-.94 3.197M15 6.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm6 3a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Zm-13.5 0a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Z"/></svg>
-          </div>
-          <h4>Respeto</h4>
-          <p>Relaciones transparentes basadas en la confianza y la comunicación</p>
+        <div class="spec reveal reveal--delay-3">
+          <h4 class="spec__term">Respeto</h4>
+          <p class="spec__desc">Relaciones transparentes, basadas en la confianza y la comunicación.</p>
         </div>
-        <div class="valor-item reveal reveal--delay-4">
-          <div class="valor-item__icon">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 0 1-1.043 3.296 3.745 3.745 0 0 1-3.296 1.043A3.745 3.745 0 0 1 12 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 0 1-3.296-1.043 3.745 3.745 0 0 1-1.043-3.296A3.745 3.745 0 0 1 3 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 0 1 1.043-3.296 3.746 3.746 0 0 1 3.296-1.043A3.746 3.746 0 0 1 12 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 0 1 3.296 1.043 3.746 3.746 0 0 1 1.043 3.296A3.745 3.745 0 0 1 21 12Z"/></svg>
-          </div>
-          <h4>Buenas Prácticas</h4>
-          <p>Código limpio, documentado y siguiendo estándares de la industria</p>
+        <div class="spec reveal reveal--delay-4">
+          <h4 class="spec__term">Buenas prácticas</h4>
+          <p class="spec__desc">Código limpio, documentado y alineado a los estándares de la industria.</p>
         </div>
       </div>
     </div>
@@ -318,59 +320,38 @@
   <section class="section section--light" id="testimonios">
     <div class="container">
       <div class="section__header reveal">
-        <span class="eyebrow">Social Proof</span>
+        <span class="eyebrow">Clientes</span>
         <h2>Lo que opinan nuestros clientes</h2>
         <p>Empresas que confiaron en VentureByte para transformar sus operaciones.</p>
       </div>
       <div class="testimonials__grid">
         <div class="testimonial reveal">
-          <div class="testimonial__stars">
-            <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-            <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-            <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-            <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-            <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-          </div>
-          <p class="testimonial__text">"VentureByte transformó nuestra operación por completo. Automatizaron procesos que nos llevaban horas y ahora funcionan solos. El equipo es profesional, rápido y siempre disponible."</p>
+          <p class="testimonial__text">"VentureByte transformó nuestra operación por completo. Automatizaron procesos que nos llevaban horas y ahora funcionan solos. El equipo es profesional, rápido y siempre está disponible."</p>
           <div class="testimonial__author">
             <div class="testimonial__avatar">MG</div>
             <div>
               <div class="testimonial__name">Martín González</div>
-              <div class="testimonial__role">CEO, LogiTech Solutions</div>
+              <div class="testimonial__role">CEO · LogiTech Solutions</div>
             </div>
           </div>
         </div>
         <div class="testimonial reveal reveal--delay-1">
-          <div class="testimonial__stars">
-            <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-            <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-            <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-            <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-            <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-          </div>
-          <p class="testimonial__text">"Necesitábamos una plataforma web robusta y personalizada. El equipo de VentureByte no solo cumplió con creces, sino que nos propuso mejoras que no habíamos considerado. Excelente relación calidad-precio."</p>
+          <p class="testimonial__text">"Necesitábamos una plataforma web robusta y a medida. El equipo de VentureByte no solo cumplió con creces: nos propuso mejoras que no habíamos considerado. Excelente relación calidad-precio."</p>
           <div class="testimonial__author">
             <div class="testimonial__avatar">LP</div>
             <div>
               <div class="testimonial__name">Laura Pereyra</div>
-              <div class="testimonial__role">Directora de Operaciones, NovaPharma</div>
+              <div class="testimonial__role">Directora de Operaciones · NovaPharma</div>
             </div>
           </div>
         </div>
         <div class="testimonial reveal reveal--delay-2">
-          <div class="testimonial__stars">
-            <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-            <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-            <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-            <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-            <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-          </div>
-          <p class="testimonial__text">"La implementación de automatización en nuestros procesos de atención al cliente fue un game-changer. Redujimos los tiempos de respuesta en un 70% y la satisfacción de nuestros usuarios se disparó."</p>
+          <p class="testimonial__text">"Automatizar la atención al cliente marcó un antes y un después. Redujimos los tiempos de respuesta un 70% y la satisfacción de nuestros usuarios se disparó."</p>
           <div class="testimonial__author">
             <div class="testimonial__avatar">RC</div>
             <div>
               <div class="testimonial__name">Roberto Castillo</div>
-              <div class="testimonial__role">CTO, FinanceHub</div>
+              <div class="testimonial__role">CTO · FinanceHub</div>
             </div>
           </div>
         </div>
@@ -447,8 +428,8 @@
           <h4>Navegación</h4>
           <ul>
             <li><a href="#inicio">Inicio</a></li>
-            <li><a href="quienes-somos.html">Cuál es nuestra historia</a></li>
-            <li><a href="que-hacemos.html">A qué nos dedicamos</a></li>
+            <li><a href="quienes-somos.html">Nuestra historia</a></li>
+            <li><a href="que-hacemos.html">Nuestro trabajo</a></li>
             <li><a href="#contacto">Contacto</a></li>
           </ul>
         </div>
@@ -456,8 +437,8 @@
           <h4>Servicios</h4>
           <ul>
             <li><a href="que-hacemos.html">Automatización</a></li>
-            <li><a href="que-hacemos.html">Desarrollo Web</a></li>
-            <li><a href="que-hacemos.html">Optimización Digital</a></li>
+            <li><a href="que-hacemos.html">Desarrollo web</a></li>
+            <li><a href="que-hacemos.html">Optimización digital</a></li>
           </ul>
         </div>
         <div class="footer__col">
@@ -479,7 +460,7 @@
         </div>
       </div>
       <div class="footer__bottom">
-        &copy; 2025 VentureByte. Todos los derechos reservados.
+        &copy; 2026 VentureByte. Todos los derechos reservados.
       </div>
     </div>
   </footer>
