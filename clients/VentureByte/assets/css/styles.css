@@ -79,6 +79,10 @@
 html {
   scroll-behavior: smooth;
   -webkit-text-size-adjust: 100%;
+  /* clip: los .reveal--right (translateX 50px) no deben generar
+     scroll horizontal en mobile antes de revelarse */
+  overflow-x: hidden;
+  overflow-x: clip;
 }
 
 body {
@@ -88,6 +92,7 @@ body {
   color: var(--foreground);
   background: var(--deep-black-blue);
   overflow-x: hidden;
+  overflow-x: clip;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -664,13 +669,13 @@ p {
   align-items: center;
   justify-content: center;
   margin-right: clamp(3rem, 7vw, 5.5rem);
-  filter: grayscale(1) brightness(0) invert(1);
-  opacity: 0.4;
+  filter: grayscale(1) invert(1) brightness(1.6);
+  opacity: 0.55;
   transition: opacity var(--transition-base);
 }
 
 .partners__item:hover {
-  opacity: 0.9;
+  opacity: 0.95;
 }
 
 .partners__item img {
@@ -1836,9 +1841,14 @@ p {
     padding: 1.75rem 2rem 2rem;
   }
 
-  /* Services */
+  /* Services: 3 módulos en grilla de 2 — el último ocupa la fila entera
+     para no dejar una celda vacía visible */
   .services__grid {
     grid-template-columns: repeat(2, 1fr);
+  }
+
+  .service-card:last-child {
+    grid-column: 1 / -1;
   }
 
   /* About */
@@ -1964,6 +1974,10 @@ p {
   /* Services */
   .services__grid {
     grid-template-columns: repeat(3, 1fr);
+  }
+
+  .service-card:last-child {
+    grid-column: auto;
   }
 
   .service-card {

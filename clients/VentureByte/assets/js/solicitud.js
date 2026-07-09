@@ -55,8 +55,11 @@
       // 3) Forzar reflow para lockear el estado inicial antes de animar
       void newStep.offsetWidth;
 
-      // 4) Next frame: activamos y deja que la transición corra
-      requestAnimationFrame(() => {
+      // 4) Próximo tick: activamos y deja que la transición corra.
+      //    setTimeout (y no requestAnimationFrame): rAF no se ejecuta con la
+      //    pestaña oculta y el form quedaba congelado sin paso activo si el
+      //    usuario cambiaba de pestaña en medio de la transición.
+      setTimeout(() => {
         newStep.classList.remove('step--enter', 'step--enter-back');
         newStep.classList.add('step--active');
         currentIndex = newIndex;
@@ -67,7 +70,7 @@
         if (firstInput && !newStep.classList.contains('step--success')) {
           setTimeout(() => firstInput.focus({ preventScroll: true }), 150);
         }
-      });
+      }, 20);
     }, EXIT_MS);
   }
 
