@@ -1382,7 +1382,8 @@ p {
   pointer-events: none;
 }
 
-.whatsapp-float__tooltip--visible {
+.whatsapp-float__tooltip--visible,
+.whatsapp-float:hover .whatsapp-float__tooltip {
   opacity: 1;
   transform: translateX(0);
 }
