@@ -149,12 +149,14 @@ button {
 .btn--primary {
     background: var(--color-dark);
     color: var(--color-white);
+    z-index: 0;
 }
 
 .btn--primary::after {
     content: '';
     position: absolute;
     inset: 0;
+    z-index: -1;
     background: var(--color-gold);
     transform: translateY(101%);
     transition: transform var(--duration-fast) var(--ease-out-expo);
