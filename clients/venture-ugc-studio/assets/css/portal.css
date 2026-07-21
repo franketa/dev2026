@@ -606,12 +606,13 @@ body.portal { min-height: 100svh; display: flex; flex-direction: column; }
   font-family: "Barlow", sans-serif;
   overflow: hidden;
 }
-.tl-lienzo--gris { background: #171717; }
-.tl-lienzo--verde { background: #5BFA94; color: #0F0F0F; }
-.tl-lienzo--radial {
+/* Variantes con doble clase para ganar especificidad al selector base */
+.tl-lienzo.tl-lienzo--gris { background: #171717; }
+.tl-lienzo.tl-lienzo--verde { background: #5BFA94; color: #0F0F0F; }
+.tl-lienzo.tl-lienzo--radial {
   background: radial-gradient(circle at 32% 42%, #232323, #0d0d0d 70%);
 }
-.tl-lienzo--reel {
+.tl-lienzo.tl-lienzo--reel {
   background:
     radial-gradient(circle at 50% 34%, rgba(91, 250, 148, 0.10), transparent 55%),
     repeating-linear-gradient(45deg, #1a1a1a, #1a1a1a 26px, #131313 26px, #131313 52px);

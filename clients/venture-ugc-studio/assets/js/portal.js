@@ -68,6 +68,7 @@
     try { localStorage.removeItem(STORAGE_KEY); } catch (e) { /* nada */ }
     var url = new URL(window.location.href);
     url.search = "";
+    url.hash = "";
     window.location.href = url.toString();
   }
 
@@ -363,8 +364,14 @@
   }
 
   /* ---------- Arranque ---------- */
+  /* El código puede venir por query (?codigo=X) o por hash (#X).
+     El hash sobrevive a los redirects de servidores estáticos
+     que recortan la extensión .html. */
   var params = new URLSearchParams(window.location.search);
   var codigoUrl = normalizarCodigo(params.get("codigo"));
+  if (!codigoUrl && window.location.hash) {
+    codigoUrl = normalizarCodigo(decodeURIComponent(window.location.hash.replace(/^#(codigo=)?/, "")));
+  }
   var codigoGuardado = "";
   try { codigoGuardado = normalizarCodigo(localStorage.getItem(STORAGE_KEY)); } catch (e) { /* nada */ }
 
