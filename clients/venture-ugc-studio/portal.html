@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="es-AR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Portal de clientes — VENTURE. UGC Studio</title>
+  <meta name="description" content="Portal de entregas de Venture UGC Studio: tus piezas, copies listos y el calendario ideal del mes.">
+  <meta name="robots" content="noindex">
+  <link rel="icon" type="image/png" href="assets/img/favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <!-- Tipos de VENTURE. + tipos de las piezas de clientes (TILIFE: Anton/Oswald/Barlow) -->
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@300;400;500;600;700;800;900&family=Space+Mono:wght@400;700&family=Anton&family=Oswald:wght@400;500;600;700&family=Barlow:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/styles.css">
+  <link rel="stylesheet" href="assets/css/portal.css">
+</head>
+<body class="portal">
+
+  <!-- ================= GATE ================= -->
+  <main class="gate" id="gate">
+    <div class="gate__card">
+      <div class="gate__logo">VENTURE<i>.</i></div>
+      <div class="gate__sub mono">Portal de clientes</div>
+      <h1 class="gate__titulo">Tu contenido te espera.</h1>
+      <p class="gate__texto">Ingresá el código de acceso que te pasamos con tu entrega para ver tus piezas y el calendario del mes.</p>
+      <form id="gateForm" novalidate>
+        <label class="gate__label" for="gateInput">Código de acceso</label>
+        <input class="gate__input" id="gateInput" type="text" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="EJ: MIMARCA-2026">
+        <p class="gate__error" id="gateError" hidden>Ese código no existe. Revisalo o escribinos.</p>
+        <button class="btn btn--lima btn--block gate__btn" type="submit">Entrar</button>
+      </form>
+      <p class="gate__ayuda">¿No tenés código? <a href="https://wa.me/5492346564757?text=Hola%2C%20necesito%20mi%20c%C3%B3digo%20del%20portal" target="_blank" rel="noopener">Pedilo por WhatsApp</a> o mirá el <a href="portal.html?codigo=TILIFE-DEMO">portal de ejemplo</a>.</p>
+    </div>
+  </main>
+
+  <!-- ================= APP ================= -->
+  <div id="app" hidden>
+    <header class="p-header">
+      <div class="container p-header__inner">
+        <div class="p-header__marca">
+          <a class="p-header__logo" href="index.html">VENTURE<i>.</i></a>
+          <span class="p-header__cliente mono" id="appCliente"></span>
+        </div>
+        <button class="p-header__salir mono" id="appSalir" type="button">Salir</button>
+      </div>
+    </header>
+
+    <section class="p-hero">
+      <div class="container">
+        <div class="p-hero__fila">
+          <h1 class="h-display p-hero__titulo">Entrega — <span class="accent" id="appEntrega"></span></h1>
+          <span class="p-hero__estado mono" id="appEstado"></span>
+        </div>
+        <div class="p-hero__meta mono" id="appConteos"></div>
+        <p class="p-hero__nota" id="appNota"></p>
+      </div>
+    </section>
+
+    <section class="container">
+      <div class="p-controles" id="appFiltros" role="group" aria-label="Filtrar piezas"></div>
+      <div class="p-grid" id="appGrid"></div>
+    </section>
+
+    <section class="p-cal-seccion">
+      <div class="container">
+        <div class="p-cal-head">
+          <h2 class="h-display">Calendario <span class="accent">ideal</span>.</h2>
+          <div class="p-cal-leyenda mono">
+            <span><i class="ley-post"></i>Post</span>
+            <span><i class="ley-historia"></i>Historia</span>
+            <span><i class="ley-reel"></i>Reel</span>
+          </div>
+        </div>
+        <div class="cal" id="appCal"></div>
+        <div class="cal-lista" id="appCalLista"></div>
+        <div class="p-tips">
+          <div class="p-tip"><b>Horarios pico</b>Posts a las 18:30–19:00 y reels a las 20:00: es cuando tu audiencia suelta el trabajo y agarra el teléfono.</div>
+          <div class="p-tip"><b>Historias al mediodía</b>Las historias rinden mejor entre las 11:00 y las 13:00. Son consumo rápido: aprovechá la pausa del almuerzo.</div>
+          <div class="p-tip"><b>Constancia &gt; ráfagas</b>Mejor 3–4 publicaciones por semana sostenidas que 10 en dos días. El calendario ya está balanceado así.</div>
+        </div>
+      </div>
+    </section>
+
+    <footer class="p-footer">
+      <div class="container p-footer__inner mono">
+        <span>VENTURE. UGC Studio · Portal de clientes</span>
+        <span><a href="https://wa.me/5492346564757" target="_blank" rel="noopener">¿Ajustes? Escribinos</a></span>
+      </div>
+    </footer>
+  </div>
+
+  <!-- Contenedor offscreen para renderizar descargas en resolución real -->
+  <div class="descarga-offscreen" id="offscreen" aria-hidden="true"></div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="assets/js/portal-data.js"></script>
+  <script src="assets/js/portal.js"></script>
+</body>
+</html>
