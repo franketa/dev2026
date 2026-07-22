@@ -106,6 +106,7 @@
       font-variant-numeric: tabular-nums;
     }
     .timer__clock--on { color: var(--accent); }
+    .timer__clock--paused { color: var(--dim); }
     .timer__project { color: var(--dim-strong); font-size: 0.95rem; min-height: 1.3em; }
     .timer__form { text-align: left; max-width: 460px; margin: 1.4rem auto 0; }
     .timer__actions { display: flex; gap: 0.6rem; margin-top: 0.4rem; }
@@ -235,6 +236,8 @@
             </div>
             <div class="timer__actions">
               <button class="btn" id="btn-start">Iniciar</button>
+              <button class="btn btn--ghost hidden" id="btn-pause">Pausar</button>
+              <button class="btn hidden" id="btn-resume">Reanudar</button>
               <button class="btn btn--danger hidden" id="btn-stop">Detener</button>
               <button class="btn btn--ghost hidden" id="btn-cancel" title="Descarta el timer sin registrarlo">Descartar</button>
             </div>
@@ -378,7 +381,9 @@
       }
 
       const projectName = (id) => (state.projects.find((p) => p.id === id) || {}).name || '—';
-      const durationMs = (e) => new Date(e.end || Date.now()) - new Date(e.start);
+      const pausedMs = (e) => (e.pauses || []).reduce((a, p) => a + (new Date(p.end || e.end || Date.now()) - new Date(p.start)), 0);
+      const durationMs = (e) => new Date(e.end || Date.now()) - new Date(e.start) - pausedMs(e);
+      const isPaused = (e) => !!e && (e.pauses || []).some((p) => !p.end);
 
       function fmtDur(ms) {
         const mins = Math.round(ms / 60000);
@@ -449,7 +454,10 @@
         if (!$('m-date').value) $('m-date').value = dayKey(new Date());
 
         const running = state.running;
+        const paused = isPaused(running);
         $('btn-start').classList.toggle('hidden', !!running);
+        $('btn-pause').classList.toggle('hidden', !running || paused);
+        $('btn-resume').classList.toggle('hidden', !running || !paused);
         $('btn-stop').classList.toggle('hidden', !running);
         $('btn-cancel').classList.toggle('hidden', !running);
         $('btn-start').disabled = !state.projects.length;
@@ -462,15 +470,18 @@
         clearInterval(clockInterval);
         const clockEl = $('clock');
         if (running) {
-          $('clock-project').innerHTML = '<span class="pulse"></span>' + esc(projectName(running.projectId));
+          $('clock-project').innerHTML = paused
+            ? '❚❚ En pausa — ' + esc(projectName(running.projectId))
+            : '<span class="pulse"></span>' + esc(projectName(running.projectId));
           $('inp-memo').value = running.memo || '';
-          clockEl.classList.add('timer__clock--on');
+          clockEl.classList.toggle('timer__clock--on', !paused);
+          clockEl.classList.toggle('timer__clock--paused', paused);
           const tick = () => { clockEl.textContent = fmtClock(durationMs(running)); };
           tick();
           clockInterval = setInterval(tick, 1000);
         } else {
           clockEl.textContent = '00:00:00';
-          clockEl.classList.remove('timer__clock--on');
+          clockEl.classList.remove('timer__clock--on', 'timer__clock--paused');
           $('clock-project').textContent = 'Sin actividad';
           $('inp-memo').value = '';
         }
@@ -520,6 +531,22 @@
         try {
           await api('/cancel', { method: 'POST', body: '{}' });
           toast('Timer descartado');
+          await refresh();
+        } catch (e) { toast(e.message, true); }
+      });
+
+      $('btn-pause').addEventListener('click', async () => {
+        try {
+          await api('/pause', { method: 'POST', body: '{}' });
+          toast('Timer en pausa');
+          await refresh();
+        } catch (e) { toast(e.message, true); }
+      });
+
+      $('btn-resume').addEventListener('click', async () => {
+        try {
+          await api('/resume', { method: 'POST', body: '{}' });
+          toast('Timer reanudado');
           await refresh();
         } catch (e) { toast(e.message, true); }
       });
@@ -597,7 +624,7 @@
             <td>${esc(projectName(e.projectId))}</td>
             <td>${esc(e.memo) || '<span style="color:var(--dim)">—</span>'}</td>
             <td class="mono">${fmtTime(e.start)}–${e.end ? fmtTime(e.end) : '<span class="pulse"></span>ahora'}</td>
-            <td class="mono">${e.end ? fmtDur(durationMs(e)) : 'en curso'}</td>
+            <td class="mono">${e.end ? fmtDur(durationMs(e)) : (isPaused(e) ? 'en pausa' : 'en curso')}${pausedMs(e) >= 60000 ? `<div class="entry__time">${fmtDur(pausedMs(e))} pausa</div>` : ''}</td>
             <td><button class="btn btn--ghost btn--sm" data-del="${e.id}">Borrar</button></td>
           </tr>`).join('');
         $('records-empty').classList.toggle('hidden', rows.length > 0);

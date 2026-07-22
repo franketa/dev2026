@@ -160,10 +160,33 @@ app.post('/api/tracker/start', trackerAuth, (req, res) => {
     memo: String(memo || '').slice(0, 500),
     start: new Date().toISOString(),
     end: null,
+    pauses: [],
   };
   data.entries.push(entry);
   saveTracker(data);
   res.json({ running: entry });
+});
+
+// Pausar / reanudar el timer en curso
+app.post('/api/tracker/pause', trackerAuth, (req, res) => {
+  const data = loadTracker();
+  const running = data.entries.find((e) => !e.end);
+  if (!running) return res.status(409).json({ error: 'No hay ningún timer en curso' });
+  running.pauses = running.pauses || [];
+  if (running.pauses.some((p) => !p.end)) return res.status(409).json({ error: 'El timer ya está en pausa' });
+  running.pauses.push({ start: new Date().toISOString(), end: null });
+  saveTracker(data);
+  res.json({ running });
+});
+
+app.post('/api/tracker/resume', trackerAuth, (req, res) => {
+  const data = loadTracker();
+  const running = data.entries.find((e) => !e.end);
+  const open = running && (running.pauses || []).find((p) => !p.end);
+  if (!open) return res.status(409).json({ error: 'El timer no está en pausa' });
+  open.end = new Date().toISOString();
+  saveTracker(data);
+  res.json({ running });
 });
 
 app.post('/api/tracker/stop', trackerAuth, (req, res) => {
@@ -171,7 +194,10 @@ app.post('/api/tracker/stop', trackerAuth, (req, res) => {
   const running = data.entries.find((e) => !e.end);
   if (!running) return res.status(409).json({ error: 'No hay ningún timer en curso' });
   if (typeof req.body?.memo === 'string') running.memo = req.body.memo.slice(0, 500);
-  running.end = new Date().toISOString();
+  const now = new Date().toISOString();
+  const openPause = (running.pauses || []).find((p) => !p.end);
+  if (openPause) openPause.end = now;
+  running.end = now;
   saveTracker(data);
   res.json({ entry: running });
 });
