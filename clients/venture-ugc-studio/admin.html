@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="es-AR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Admin — VENTURE. UGC Studio</title>
+  <meta name="robots" content="noindex">
+  <link rel="icon" type="image/png" href="assets/img/favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/styles.css">
+  <style>
+    [hidden] { display: none !important; }
+    body { min-height: 100svh; }
+    .adm-wrap { max-width: 1080px; margin: 0 auto; padding: 0 24px 90px; }
+
+    /* Login */
+    .adm-login { min-height: 100svh; display: flex; align-items: center; justify-content: center; padding: 24px; }
+    .adm-login__card { width: 100%; max-width: 400px; background: var(--carbon); border: 1px solid var(--borde-2); border-radius: var(--radius); padding: 40px 34px; }
+
+    /* Header */
+    .adm-top { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 26px 0 22px; border-bottom: 1px solid var(--borde); margin-bottom: 34px; flex-wrap: wrap; }
+    .adm-top__logo { font-weight: 900; font-size: 22px; letter-spacing: -0.04em; }
+    .adm-top__logo i { color: var(--lima); font-style: normal; }
+    .adm-top__sub { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.3em; text-transform: uppercase; color: var(--texto-3); margin-left: 10px; }
+    .adm-top__acciones { display: flex; gap: 10px; }
+
+    /* Form controls */
+    .adm-label { display: block; font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--texto-3); margin: 16px 0 8px; }
+    .adm-input, .adm-textarea, .adm-select {
+      width: 100%; background: var(--tinta); border: 1px solid var(--borde-2); border-radius: var(--radius);
+      color: var(--papel); font-family: var(--font-display); font-size: 15px; padding: 13px 14px; outline: none;
+      transition: border-color 160ms var(--ease), box-shadow 160ms var(--ease);
+    }
+    .adm-input:focus, .adm-textarea:focus, .adm-select:focus { border-color: var(--lima); box-shadow: 0 0 0 3px rgba(204,255,0,.16); }
+    .adm-textarea { min-height: 86px; resize: vertical; line-height: 1.5; }
+    .adm-input--mono { font-family: var(--font-mono); text-transform: uppercase; letter-spacing: 0.12em; }
+    .adm-error { font-family: var(--font-mono); font-size: 12px; color: #ff6b5e; margin: 12px 0 0; }
+    .adm-ok { font-family: var(--font-mono); font-size: 12px; color: var(--lima); margin: 12px 0 0; }
+
+    .adm-btn-sm {
+      display: inline-flex; align-items: center; gap: 7px; padding: 9px 14px; border-radius: var(--radius);
+      border: 1px solid var(--borde-2); background: none; color: var(--papel);
+      font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase;
+      transition: color 160ms var(--ease), border-color 160ms var(--ease), background 160ms var(--ease);
+      text-decoration: none;
+    }
+    .adm-btn-sm:hover { border-color: var(--lima); color: var(--lima); }
+    .adm-btn-sm--lima { background: var(--lima); border-color: var(--lima); color: var(--tinta); font-weight: 700; }
+    .adm-btn-sm--lima:hover { background: var(--lima-hover); color: var(--tinta); }
+    .adm-btn-sm--rojo:hover { border-color: #ff6b5e; color: #ff6b5e; }
+    .adm-btn-sm:disabled { opacity: 0.5; pointer-events: none; }
+
+    /* Secciones */
+    .adm-sec { background: var(--carbon); border: 1px solid var(--borde); border-radius: var(--radius); padding: 26px; margin-bottom: 22px; }
+    .adm-sec__head { display: flex; align-items: center; justify-content: space-between; gap: 14px; flex-wrap: wrap; margin-bottom: 6px; }
+    .adm-sec__titulo { font-weight: 800; font-size: 19px; letter-spacing: -0.015em; margin: 0; }
+
+    /* Lista de clientes */
+    .adm-cliente { border: 1px solid var(--borde); border-radius: var(--radius); padding: 18px; margin-top: 14px; background: var(--tinta); }
+    .adm-cliente__fila { display: flex; align-items: center; justify-content: space-between; gap: 14px; flex-wrap: wrap; }
+    .adm-cliente__nombre { font-weight: 800; font-size: 17px; }
+    .adm-cliente__codigo { font-family: var(--font-mono); font-size: 11px; color: var(--lima); background: var(--lima-dim); border-radius: 20px; padding: 5px 11px; letter-spacing: 0.12em; }
+    .adm-cliente__meta { font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--texto-3); margin-top: 6px; }
+    .adm-cliente__acciones { display: flex; gap: 8px; flex-wrap: wrap; }
+    .adm-cliente--inactivo { opacity: 0.45; }
+
+    /* Material */
+    .adm-drop {
+      border: 2px dashed var(--borde-2); border-radius: var(--radius); padding: 34px 20px; text-align: center;
+      color: var(--texto-2); font-size: 14.5px; margin-top: 16px; cursor: pointer;
+      transition: border-color 160ms var(--ease), background 160ms var(--ease);
+    }
+    .adm-drop:hover, .adm-drop--sobre { border-color: var(--lima); background: rgba(204,255,0,.05); }
+    .adm-drop b { color: var(--lima); }
+    .adm-progreso { height: 8px; background: var(--tinta); border: 1px solid var(--borde); border-radius: 20px; overflow: hidden; margin-top: 14px; }
+    .adm-progreso i { display: block; height: 100%; width: 0; background: var(--lima); transition: width 200ms var(--ease); }
+    .adm-archivo { display: flex; align-items: center; gap: 14px; padding: 12px 4px; border-bottom: 1px solid var(--borde); }
+    .adm-archivo__icono { font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.1em; color: var(--lima); border: 1px solid rgba(204,255,0,.4); border-radius: 3px; padding: 4px 7px; flex: 0 0 auto; }
+    .adm-archivo__nombre { flex: 1; font-size: 14px; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .adm-archivo__peso { font-family: var(--font-mono); font-size: 11px; color: var(--texto-3); white-space: nowrap; }
+    .adm-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0 20px; }
+    @media (max-width: 640px) { .adm-grid-2 { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+
+  <!-- ============ LOGIN ============ -->
+  <div class="adm-login" id="vistaLogin">
+    <div class="adm-login__card">
+      <div class="adm-top__logo">VENTURE<i>.</i><span class="adm-top__sub mono">ADMIN</span></div>
+      <p style="color:var(--texto-2);font-size:14.5px;margin:22px 0 6px">Panel de entregas y material. Solo para el estudio.</p>
+      <form id="formLogin">
+        <label class="adm-label" for="loginEmail">Email</label>
+        <input class="adm-input" id="loginEmail" type="email" autocomplete="username" required>
+        <label class="adm-label" for="loginPass">Contraseña</label>
+        <input class="adm-input" id="loginPass" type="password" autocomplete="current-password" required>
+        <p class="adm-error" id="loginError" hidden></p>
+        <button class="btn btn--lima btn--block" type="submit" style="margin-top:20px">Entrar</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ============ PANEL ============ -->
+  <div class="adm-wrap" id="vistaPanel" hidden>
+    <div class="adm-top">
+      <div><span class="adm-top__logo">VENTURE<i>.</i></span><span class="adm-top__sub mono">Admin · Entregas</span></div>
+      <div class="adm-top__acciones">
+        <a class="adm-btn-sm" href="index.html">Ver sitio</a>
+        <button class="adm-btn-sm" id="btnPassword" type="button">Contraseña</button>
+        <button class="adm-btn-sm" id="btnSalir" type="button">Salir</button>
+      </div>
+    </div>
+
+    <!-- Cambiar contraseña -->
+    <div class="adm-sec" id="secPassword" hidden>
+      <div class="adm-sec__head"><h2 class="adm-sec__titulo">Cambiar contraseña</h2></div>
+      <form id="formPassword" class="adm-grid-2">
+        <div>
+          <label class="adm-label" for="passActual">Contraseña actual</label>
+          <input class="adm-input" id="passActual" type="password" autocomplete="current-password" required>
+        </div>
+        <div>
+          <label class="adm-label" for="passNueva">Nueva (mín. 8)</label>
+          <input class="adm-input" id="passNueva" type="password" autocomplete="new-password" minlength="8" required>
+        </div>
+        <div style="grid-column:1/-1">
+          <p class="adm-error" id="passError" hidden></p>
+          <p class="adm-ok" id="passOk" hidden>Contraseña actualizada.</p>
+          <button class="adm-btn-sm adm-btn-sm--lima" type="submit" style="margin-top:14px">Guardar</button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Alta / edición de cliente -->
+    <div class="adm-sec">
+      <div class="adm-sec__head">
+        <h2 class="adm-sec__titulo" id="formClienteTitulo">Nuevo cliente</h2>
+        <button class="adm-btn-sm" id="btnCancelarEdicion" type="button" hidden>Cancelar edición</button>
+      </div>
+      <form id="formCliente">
+        <div class="adm-grid-2">
+          <div>
+            <label class="adm-label" for="cCodigo">Código de acceso</label>
+            <input class="adm-input adm-input--mono" id="cCodigo" placeholder="MIMARCA-2026" required>
+          </div>
+          <div>
+            <label class="adm-label" for="cNombre">Nombre</label>
+            <input class="adm-input" id="cNombre" placeholder="Mi Marca" required>
+          </div>
+          <div>
+            <label class="adm-label" for="cRubro">Rubro</label>
+            <input class="adm-input" id="cRubro" placeholder="Suplementos deportivos">
+          </div>
+          <div>
+            <label class="adm-label" for="cEntrega">Entrega</label>
+            <input class="adm-input" id="cEntrega" placeholder="Septiembre 2026">
+          </div>
+          <div>
+            <label class="adm-label" for="cEstado">Estado</label>
+            <select class="adm-select" id="cEstado">
+              <option>En producción</option>
+              <option>Lista para publicar</option>
+              <option>Publicándose</option>
+              <option>Cerrada</option>
+            </select>
+          </div>
+          <div>
+            <label class="adm-label" for="cTema">Tema de piezas (opcional)</label>
+            <input class="adm-input adm-input--mono" id="cTema" placeholder="tema-tilife">
+          </div>
+        </div>
+        <label class="adm-label" for="cNota">Nota para el cliente</label>
+        <textarea class="adm-textarea" id="cNota" placeholder="Qué incluye la entrega, aclaraciones, etc."></textarea>
+        <p class="adm-error" id="clienteError" hidden></p>
+        <button class="adm-btn-sm adm-btn-sm--lima" type="submit" style="margin-top:16px" id="btnGuardarCliente">Crear cliente</button>
+      </form>
+    </div>
+
+    <!-- Lista de clientes -->
+    <div class="adm-sec">
+      <div class="adm-sec__head"><h2 class="adm-sec__titulo">Clientes</h2></div>
+      <div id="listaClientes"></div>
+    </div>
+
+    <!-- Material del cliente seleccionado -->
+    <div class="adm-sec" id="secMaterial" hidden>
+      <div class="adm-sec__head">
+        <h2 class="adm-sec__titulo">Material — <span id="matCliente" style="color:var(--lima)"></span></h2>
+        <button class="adm-btn-sm" id="btnCerrarMaterial" type="button">Cerrar</button>
+      </div>
+      <p style="color:var(--texto-2);font-size:14px;margin:4px 0 0">Videos de reels, exports en alta, packs. El cliente los ve y descarga desde su portal. Máx. 800 MB por archivo.</p>
+      <div class="adm-drop" id="dropZone">Arrastrá los archivos acá o <b>hacé clic para elegirlos</b></div>
+      <input type="file" id="inputArchivos" multiple hidden>
+      <div class="adm-progreso" id="progreso" hidden><i id="progresoBarra"></i></div>
+      <p class="adm-error" id="matError" hidden></p>
+      <div id="listaMaterial" style="margin-top:14px"></div>
+    </div>
+  </div>
+
+  <script src="assets/js/admin.js"></script>
+</body>
+</html>

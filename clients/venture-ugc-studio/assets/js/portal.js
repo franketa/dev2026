@@ -42,21 +42,55 @@
   }
 
   /* ---------- Gate ---------- */
+  /* El cliente vive en el servidor (API) y las piezas de diseño en
+     assets/js/portal-data.js. Si la API no está (preview estático),
+     se usa solo la data estática. */
+  function mostrarErrorGate() {
+    gateError.hidden = false;
+    gate.classList.remove("gate--error");
+    void gate.offsetWidth; /* reinicia la animación */
+    gate.classList.add("gate--error");
+  }
+
+  function entrar(codigo, cliente, material) {
+    try { localStorage.setItem(STORAGE_KEY, codigo); } catch (e) { /* modo privado */ }
+    var estatico = CLIENTES[codigo] || {};
+    clienteActual = {
+      codigo: codigo,
+      nombre: cliente.nombre,
+      rubro: cliente.rubro || estatico.rubro || "",
+      entrega: cliente.entrega || estatico.entrega || "",
+      estado: cliente.estado || estatico.estado || "",
+      nota: cliente.nota || estatico.nota || "",
+      tema: cliente.tema || estatico.tema || "",
+      piezas: estatico.piezas || [],
+      material: material || []
+    };
+    montarApp();
+  }
+
   function intentarEntrar(codigo, silencioso) {
-    var c = CLIENTES[codigo];
-    if (c) {
-      try { localStorage.setItem(STORAGE_KEY, codigo); } catch (e) { /* modo privado */ }
-      clienteActual = c;
-      montarApp();
-      return true;
+    if (!codigo) {
+      if (!silencioso) mostrarErrorGate();
+      return;
     }
-    if (!silencioso) {
-      gateError.hidden = false;
-      gate.classList.remove("gate--error");
-      void gate.offsetWidth; /* reinicia la animación */
-      gate.classList.add("gate--error");
-    }
-    return false;
+    fetch("/api/portal/" + encodeURIComponent(codigo))
+      .then(function (r) {
+        if (r.ok) return r.json();
+        var err = new Error("no-existe");
+        err.tipo = r.status === 404 ? "no-existe" : "red";
+        throw err;
+      })
+      .then(function (data) { entrar(codigo, data.cliente, data.material); })
+      .catch(function (err) {
+        /* Sin API (preview estático) → fallback a la data local */
+        if (err.tipo !== "no-existe" && CLIENTES[codigo]) {
+          entrar(codigo, CLIENTES[codigo], []);
+          return;
+        }
+        if (!silencioso) mostrarErrorGate();
+        else gateInput.focus();
+      });
   }
 
   gateForm.addEventListener("submit", function (e) {
@@ -80,23 +114,70 @@
     app.className = c.tema || "";
     document.title = "Portal — " + c.nombre + " · VENTURE. UGC Studio";
 
-    document.getElementById("appCliente").textContent = c.nombre + " · " + c.rubro;
+    document.getElementById("appCliente").textContent = c.rubro ? c.nombre + " · " + c.rubro : c.nombre;
     document.getElementById("appEntrega").textContent = c.entrega;
     document.getElementById("appEstado").textContent = c.estado;
     document.getElementById("appNota").textContent = c.nota || "";
 
     var conteos = { post: 0, historia: 0, reel: 0 };
     c.piezas.forEach(function (p) { conteos[p.tipo]++; });
-    document.getElementById("appConteos").innerHTML =
-      "<span><b>" + conteos.post + "</b> posts</span>" +
-      "<span><b>" + conteos.historia + "</b> historias</span>" +
-      "<span><b>" + conteos.reel + "</b> reels</span>" +
-      "<span><b>" + c.piezas.length + "</b> piezas en total</span>";
+    var partes = [];
+    if (c.piezas.length) {
+      partes.push("<span><b>" + conteos.post + "</b> posts</span>");
+      partes.push("<span><b>" + conteos.historia + "</b> historias</span>");
+      partes.push("<span><b>" + conteos.reel + "</b> reels</span>");
+    }
+    if (c.material.length) {
+      partes.push("<span><b>" + c.material.length + "</b> archivos de material</span>");
+    }
+    document.getElementById("appConteos").innerHTML = partes.join("");
 
-    montarFiltros(conteos);
-    renderPiezas();
-    renderCalendario();
+    var hayPiezas = c.piezas.length > 0;
+    document.getElementById("secPiezas").hidden = !hayPiezas;
+    document.getElementById("secCalendario").hidden = !hayPiezas;
+    if (hayPiezas) {
+      montarFiltros(conteos);
+      renderPiezas();
+      renderCalendario();
+    }
+    renderMaterial();
     document.getElementById("appSalir").addEventListener("click", salir);
+  }
+
+  /* ---------- Material subido (videos, packs, exports) ---------- */
+  function formatoPeso(bytes) {
+    if (!bytes) return "";
+    if (bytes < 1024 * 1024) return Math.round(bytes / 1024) + " KB";
+    if (bytes < 1024 * 1024 * 1024) return (bytes / (1024 * 1024)).toFixed(1) + " MB";
+    return (bytes / (1024 * 1024 * 1024)).toFixed(2) + " GB";
+  }
+
+  function renderMaterial() {
+    var sec = document.getElementById("secMaterialPortal");
+    var cont = document.getElementById("appMaterial");
+    var material = clienteActual.material || [];
+    if (!material.length) { sec.hidden = true; return; }
+    sec.hidden = false;
+    cont.innerHTML = material.map(function (m) {
+      var esVideo = (m.mime || "").indexOf("video/") === 0;
+      var esImagen = (m.mime || "").indexOf("image/") === 0;
+      var preview = "";
+      if (esVideo) {
+        preview = '<video class="mat-card__video" controls preload="metadata" src="' + m.url + '"></video>';
+      } else if (esImagen) {
+        preview = '<img class="mat-card__img" loading="lazy" src="' + m.url + '" alt="">';
+      } else {
+        preview = '<div class="mat-card__generico mono">' + escaparHtml((m.original.split(".").pop() || "archivo").toUpperCase()) + "</div>";
+      }
+      return '<article class="mat-card">' +
+        '<div class="mat-card__media">' + preview + "</div>" +
+        '<div class="mat-card__body">' +
+        '<div class="mat-card__nombre">' + escaparHtml(m.etiqueta || m.original) + "</div>" +
+        '<div class="mat-card__meta mono">' + (esVideo ? "Video" : esImagen ? "Imagen" : "Archivo") +
+        (m.size ? " · " + formatoPeso(m.size) : "") + "</div>" +
+        '<a class="p-accion p-accion--principal mono" href="' + m.url + '" download="' + escaparHtml(m.original) + '">Descargar</a>' +
+        "</div></article>";
+    }).join("");
   }
 
   function montarFiltros(conteos) {
