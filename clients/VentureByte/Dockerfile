@@ -7,9 +7,10 @@ RUN npm install --omit=dev --no-audit --no-fund
 
 COPY . .
 
-# Uploads se persisten aquí. Si querés que sobrevivan redeploys,
-# montá un volumen en Coolify a /app/uploads
-RUN mkdir -p /app/uploads
+# Uploads y datos del tracker se persisten aquí. Si querés que
+# sobrevivan redeploys, montá volúmenes en Coolify a /app/uploads
+# y /app/data
+RUN mkdir -p /app/uploads /app/data
 
 ENV NODE_ENV=production
 # PORT lo define Coolify en runtime (suele inyectar 80). Si no lo
