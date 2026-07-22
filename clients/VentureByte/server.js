@@ -176,6 +176,43 @@ app.post('/api/tracker/stop', trackerAuth, (req, res) => {
   res.json({ entry: running });
 });
 
+// Cambiar el trabajo del timer en curso
+app.post('/api/tracker/running', trackerAuth, (req, res) => {
+  const data = loadTracker();
+  const running = data.entries.find((e) => !e.end);
+  if (!running) return res.status(409).json({ error: 'No hay ningún timer en curso' });
+  const project = data.projects.find((p) => p.id === req.body?.projectId && p.active);
+  if (!project) return res.status(400).json({ error: 'Trabajo inválido o pausado' });
+  running.projectId = project.id;
+  saveTracker(data);
+  res.json({ running });
+});
+
+// Carga manual de tiempo (intervalo ya terminado)
+app.post('/api/tracker/manual', trackerAuth, (req, res) => {
+  const { projectId, memo, start, end } = req.body || {};
+  const data = loadTracker();
+  const project = data.projects.find((p) => p.id === projectId && p.active);
+  if (!project) return res.status(400).json({ error: 'Trabajo inválido o pausado' });
+  const s = new Date(start);
+  const e = new Date(end);
+  if (isNaN(s) || isNaN(e)) return res.status(400).json({ error: 'Fecha u horario inválidos' });
+  if (e <= s) return res.status(400).json({ error: 'La hora de fin debe ser posterior a la de inicio' });
+  if (e - s > 24 * 60 * 60 * 1000) return res.status(400).json({ error: 'El registro no puede superar 24 horas' });
+  if (s > new Date()) return res.status(400).json({ error: 'No se puede registrar tiempo en el futuro' });
+  const entry = {
+    id: crypto.randomBytes(8).toString('hex'),
+    projectId,
+    memo: String(memo || '').slice(0, 500),
+    start: s.toISOString(),
+    end: e.toISOString(),
+    manual: true,
+  };
+  data.entries.push(entry);
+  saveTracker(data);
+  res.json({ entry });
+});
+
 // Descartar el timer en curso sin registrarlo
 app.post('/api/tracker/cancel', trackerAuth, (req, res) => {
   const data = loadTracker();

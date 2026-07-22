@@ -75,7 +75,7 @@
       outline: none; transition: border-color 0.2s ease;
     }
     input:focus, select:focus, textarea:focus { border-color: var(--primary); }
-    input[type="date"] { color-scheme: dark; }
+    input[type="date"], input[type="time"] { color-scheme: dark; }
     .field { margin-bottom: 0.9rem; }
 
     .btn {
@@ -165,6 +165,10 @@
     .proj-add { display: flex; gap: 0.6rem; margin-bottom: 0.75rem; }
     .proj-add input { flex: 1; }
 
+    .manual-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem; margin-bottom: 0.9rem; }
+    @media (max-width: 560px) { .manual-grid { grid-template-columns: 1fr; } }
+    .tag-manual { font-family: var(--font-mono); font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--accent); }
+
     .badge { font-family: var(--font-mono); font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.1em; padding: 0.2rem 0.5rem; border-radius: 999px; border: 1px solid var(--line-strong); color: var(--dim); flex-shrink: 0; }
     .badge--on { color: #7ee2a8; border-color: rgba(126, 226, 168, 0.4); }
 
@@ -248,6 +252,35 @@
             <div class="stat__num" id="stat-week">0h 00m</div>
             <div class="stat__hint">Desde el lunes</div>
           </div>
+        </div>
+
+        <div class="card">
+          <div class="card__label">Agregar tiempo manual</div>
+          <form id="manual-form">
+            <div class="manual-grid">
+              <div>
+                <label for="m-date">Fecha</label>
+                <input type="date" id="m-date" required />
+              </div>
+              <div>
+                <label for="m-from">Desde</label>
+                <input type="time" id="m-from" required />
+              </div>
+              <div>
+                <label for="m-to">Hasta</label>
+                <input type="time" id="m-to" required />
+              </div>
+            </div>
+            <div class="field">
+              <label for="m-project">Trabajo</label>
+              <select id="m-project" required></select>
+            </div>
+            <div class="field">
+              <label for="m-memo">Memo</label>
+              <input type="text" id="m-memo" maxlength="500" placeholder="¿Qué hiciste en ese tiempo?" />
+            </div>
+            <button type="submit" class="btn">Agregar registro</button>
+          </form>
         </div>
 
         <div class="card">
@@ -403,17 +436,28 @@
 
       /* ---------- Empleado ---------- */
       function renderEmployee() {
-        const sel = $('sel-project');
-        sel.innerHTML = state.projects.length
+        const options = state.projects.length
           ? state.projects.map((p) => `<option value="${p.id}">${esc(p.name)}</option>`).join('')
           : '<option value="">— No hay trabajos cargados —</option>';
+        const sel = $('sel-project');
+        const prevSel = sel.value;
+        sel.innerHTML = options;
+        const mSel = $('m-project');
+        const prevManual = mSel.value;
+        mSel.innerHTML = options;
+        if (prevManual) mSel.value = prevManual;
+        if (!$('m-date').value) $('m-date').value = dayKey(new Date());
 
         const running = state.running;
         $('btn-start').classList.toggle('hidden', !!running);
         $('btn-stop').classList.toggle('hidden', !running);
         $('btn-cancel').classList.toggle('hidden', !running);
-        $('field-project').classList.toggle('hidden', !!running);
         $('btn-start').disabled = !state.projects.length;
+        if (running) {
+          sel.value = running.projectId;
+        } else if (prevSel) {
+          sel.value = prevSel;
+        }
 
         clearInterval(clockInterval);
         const clockEl = $('clock');
@@ -443,10 +487,10 @@
         $('stat-week').textContent = fmtDur(weekMs);
 
         $('today-list').innerHTML = todayEntries.length
-          ? todayEntries.slice().reverse().map((e) => `
+          ? todayEntries.slice().sort((a, b) => new Date(b.start) - new Date(a.start)).map((e) => `
               <div class="entry">
                 <div class="entry__main">
-                  <div class="entry__project">${esc(projectName(e.projectId))}</div>
+                  <div class="entry__project">${esc(projectName(e.projectId))} ${e.manual ? '<span class="tag-manual">manual</span>' : ''}</div>
                   ${e.memo ? `<div class="entry__memo">${esc(e.memo)}</div>` : ''}
                 </div>
                 <div class="entry__meta">
@@ -480,6 +524,39 @@
         } catch (e) { toast(e.message, true); }
       });
 
+      // Cambiar el trabajo mientras el timer está corriendo
+      $('sel-project').addEventListener('change', async () => {
+        if (!state.running) return;
+        try {
+          await api('/running', { method: 'POST', body: JSON.stringify({ projectId: $('sel-project').value }) });
+          toast('Trabajo cambiado');
+          await refresh();
+        } catch (e) {
+          toast(e.message, true);
+          $('sel-project').value = state.running.projectId;
+        }
+      });
+
+      $('manual-form').addEventListener('submit', async (ev) => {
+        ev.preventDefault();
+        const date = $('m-date').value;
+        const start = new Date(date + 'T' + $('m-from').value);
+        const end = new Date(date + 'T' + $('m-to').value);
+        try {
+          await api('/manual', { method: 'POST', body: JSON.stringify({
+            projectId: $('m-project').value,
+            memo: $('m-memo').value.trim(),
+            start: start.toISOString(),
+            end: end.toISOString(),
+          }) });
+          $('m-from').value = '';
+          $('m-to').value = '';
+          $('m-memo').value = '';
+          toast('Tiempo agregado');
+          await refresh();
+        } catch (e) { toast(e.message, true); }
+      });
+
       /* ---------- Admin ---------- */
       function renderAdmin() {
         const opts = '<option value="">Todos</option>' + state.projects.map((p) => `<option value="${p.id}">${esc(p.name)}</option>`).join('');
@@ -501,7 +578,7 @@
           if (to && d > to) return false;
           if (pid && e.projectId !== pid) return false;
           return true;
-        }).slice().reverse();
+        }).slice().sort((a, b) => new Date(b.start) - new Date(a.start));
 
         const finished = rows.filter((e) => e.end);
         const totalMs = finished.reduce((a, e) => a + durationMs(e), 0);
@@ -516,7 +593,7 @@
 
         $('records-body').innerHTML = rows.map((e) => `
           <tr>
-            <td class="mono">${fmtDate(e.start)}</td>
+            <td class="mono">${fmtDate(e.start)}${e.manual ? '<div class="tag-manual">manual</div>' : ''}</td>
             <td>${esc(projectName(e.projectId))}</td>
             <td>${esc(e.memo) || '<span style="color:var(--dim)">—</span>'}</td>
             <td class="mono">${fmtTime(e.start)}–${e.end ? fmtTime(e.end) : '<span class="pulse"></span>ahora'}</td>
