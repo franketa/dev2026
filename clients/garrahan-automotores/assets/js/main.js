@@ -15,7 +15,7 @@
   const empty = document.getElementById('stockEmpty');
 
   function precioLabel(v) {
-    if (!v.mostrarPrecio || !v.precio) return 'Consultar precio<small>Financiación disponible</small>';
+    if (!v.mostrarPrecio || !v.precio) return 'Consultar precio<small>Consultanos por WhatsApp</small>';
     const sym = v.moneda === 'USD' ? 'US$' : '$';
     if (v.precioDescuento) {
       return '<s class="card__price-old">' + sym + fmt(v.precio) + '</s>' +
@@ -122,15 +122,22 @@
   document.getElementById('calcPlazo').addEventListener('change', calcular);
   calcular();
 
-  // ===== Galería (placeholders profesionales) =====
+  // ===== Galería (fotos reales del local y entregas — todas verticales) =====
   const galImgs = [
-    { src: 'https://images.unsplash.com/photo-1486006920555-c77dcf18193c?w=800&q=80', cls: 'galeria__item--wide', alt: 'Local de Garrahan — Negocio de Automotores' },
-    { src: 'https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=600&q=80', cls: '', alt: 'Vehículo en exhibición' },
-    { src: 'https://images.unsplash.com/photo-1493238792000-8113da705763?w=600&q=80', cls: '', alt: 'Entrega de unidad' },
-    { src: 'https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=600&q=80', cls: 'galeria__item--tall', alt: 'Vehículo deportivo' },
-    { src: 'https://images.unsplash.com/photo-1583121274602-3e2820c69888?w=600&q=80', cls: '', alt: 'Auto usado seleccionado' },
-    { src: 'https://images.unsplash.com/photo-1542282088-72c9c27ed0cd?w=800&q=80', cls: 'galeria__item--wide', alt: 'Showroom' },
-    { src: 'https://images.unsplash.com/photo-1511919884226-fd3cad34687c?w=600&q=80', cls: '', alt: 'Entrega de llaves' }
+    { src: 'assets/img/galeria/galeria-01.jpg', cls: 'galeria__item--tall', alt: 'Entrega de unidad en Garrahan — Negocio de Automotores' },
+    { src: 'assets/img/galeria/galeria-02.jpg', cls: 'galeria__item--tall', alt: 'Entrega de unidad en Garrahan — Negocio de Automotores' },
+    { src: 'assets/img/galeria/galeria-03.jpg', cls: 'galeria__item--tall', alt: 'Entrega de unidad en Garrahan — Negocio de Automotores' },
+    { src: 'assets/img/galeria/galeria-04.jpg', cls: 'galeria__item--tall', alt: 'Entrega de unidad en Garrahan — Negocio de Automotores' },
+    { src: 'assets/img/galeria/galeria-05.jpg', cls: 'galeria__item--tall', alt: 'Entrega de unidad en Garrahan — Negocio de Automotores' },
+    { src: 'assets/img/galeria/galeria-06.jpg', cls: 'galeria__item--tall', alt: 'Entrega de unidad en Garrahan — Negocio de Automotores' },
+    { src: 'assets/img/galeria/galeria-07.jpg', cls: 'galeria__item--tall', alt: 'Entrega de unidad en Garrahan — Negocio de Automotores' },
+    { src: 'assets/img/galeria/galeria-08.jpg', cls: 'galeria__item--tall', alt: 'Entrega de unidad en Garrahan — Negocio de Automotores' },
+    { src: 'assets/img/galeria/galeria-09.jpg', cls: 'galeria__item--tall', alt: 'Entrega de unidad en Garrahan — Negocio de Automotores' },
+    { src: 'assets/img/galeria/galeria-10.jpg', cls: 'galeria__item--tall', alt: 'Entrega de unidad en Garrahan — Negocio de Automotores' },
+    { src: 'assets/img/galeria/galeria-11.jpg', cls: 'galeria__item--tall', alt: 'Entrega de unidad en Garrahan — Negocio de Automotores' },
+    { src: 'assets/img/galeria/galeria-12.jpg', cls: 'galeria__item--tall', alt: 'Entrega de unidad en Garrahan — Negocio de Automotores' },
+    { src: 'assets/img/galeria/galeria-13.jpg', cls: 'galeria__item--tall', alt: 'Entrega de unidad en Garrahan — Negocio de Automotores' },
+    { src: 'assets/img/galeria/galeria-14.jpg', cls: 'galeria__item--tall', alt: 'Entrega de unidad en Garrahan — Negocio de Automotores' }
   ];
   const galGrid = document.getElementById('galeriaGrid');
   if (galGrid) {

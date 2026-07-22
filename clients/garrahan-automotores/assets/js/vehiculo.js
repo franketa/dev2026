@@ -152,7 +152,8 @@
       $('fpPrice').textContent = 'Consultar';
     }
     const perks = [];
-    if (v.financiacion) perks.push('💳 Financiación disponible');
+    // Financiación oculta a pedido del cliente
+    // if (v.financiacion) perks.push('💳 Financiación disponible');
     if (v.permuta) perks.push('🔄 Recibimos tu usado');
     $('fpPerks').innerHTML = perks.map(p => `<span class="fpanel__perk">${p}</span>`).join('');
 
@@ -214,9 +215,9 @@
       $('fdescText').textContent = v.descripcion;
     }
 
-    // Simulador de cuota
+    // Simulador de cuota (oculto a pedido del cliente: la sección nunca se muestra)
     if (v.financiacion && v.estado !== 'vendido') {
-      $('fsimSection').hidden = false;
+      // $('fsimSection').hidden = false;
       const TASA = 0.055;
       const precioARS = (v.mostrarPrecio && v.precio && v.moneda === 'ARS') ? (v.precioDescuento || v.precio) : 8000000;
       $('calcPrecio').value = precioARS;
@@ -258,7 +259,7 @@
     const badge = v.condicion === '0km'
       ? '<span class="card__badge card__badge--0km">0KM</span>'
       : '<span class="card__badge card__badge--usado">Usado</span>';
-    let precio = 'Consultar precio<small>Financiación disponible</small>';
+    let precio = 'Consultar precio<small>Consultanos por WhatsApp</small>';
     if (precioLabel(v) && v.precioDescuento) {
       const sym = v.moneda === 'USD' ? 'US$ ' : '$ ';
       precio = `<s class="card__price-old">${precioLabel(v)}</s><span class="card__price-desc">${sym}${fmt(v.precioDescuento)}</span><small>Precio con descuento</small>`;

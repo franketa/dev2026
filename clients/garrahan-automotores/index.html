@@ -4,14 +4,14 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Garrahan — Negocio de Automotores | Concesionaria 0km y Usados en Chivilcoy</title>
-  <meta name="description" content="Garrahan — Negocio de Automotores. Comercializamos vehículos 0km y usados multimarcas en Chivilcoy, Buenos Aires. Financiación, parte de pago y atención personalizada.">
+  <meta name="description" content="Garrahan — Negocio de Automotores. Comercializamos vehículos 0km y usados multimarcas en Chivilcoy, Buenos Aires. Parte de pago y atención personalizada.">
   <meta name="theme-color" content="#0c0c0d">
   <link rel="icon" type="image/png" href="assets/img/logo.png">
   <link rel="apple-touch-icon" href="assets/img/logo.png">
 
   <!-- Open Graph -->
   <meta property="og:title" content="Garrahan — Negocio de Automotores | 0km y Usados en Chivilcoy">
-  <meta property="og:description" content="Comercializamos vehículos 0km y usados multimarcas. Financiación y parte de pago.">
+  <meta property="og:description" content="Comercializamos vehículos 0km y usados multimarcas. Parte de pago.">
   <meta property="og:type" content="website">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -32,7 +32,7 @@
       <ul class="nav__menu" id="navMenu">
         <li><a href="#inicio" class="nav__link">Inicio</a></li>
         <li><a href="#stock" class="nav__link">Vehículos</a></li>
-        <li><a href="#financiacion" class="nav__link">Financiación</a></li>
+        <li hidden><a href="#financiacion" class="nav__link">Financiación</a></li>
         <li><a href="#galeria" class="nav__link">Galería</a></li>
         <li><a href="#contacto" class="nav__link nav__link--cta">Contacto</a></li>
       </ul>
@@ -46,7 +46,7 @@
     <div class="hero__content">
       <span class="hero__badge">Garrahan · Negocio de Automotores</span>
       <h1 class="hero__title">Tu próximo auto<br><span>te espera acá</span></h1>
-      <p class="hero__subtitle">Comercializamos vehículos <strong>0km y usados multimarcas</strong> en Chivilcoy. Financiación, parte de pago y la atención de siempre.</p>
+      <p class="hero__subtitle">Comercializamos vehículos <strong>0km y usados multimarcas</strong> en Chivilcoy. Parte de pago y la atención de siempre.</p>
       <div class="hero__ctas">
         <a href="#stock" class="btn btn--primary">Ver vehículos</a>
         <a href="https://wa.me/5492345428151?text=Hola%2C%20quiero%20hacer%20una%20consulta%20sobre%20un%20veh%C3%ADculo." class="btn btn--ghost" target="_blank" rel="noopener">Consultar por WhatsApp</a>
@@ -54,7 +54,7 @@
       <ul class="hero__quick">
         <li><strong>0KM</strong><span>Fiat · Chery</span></li>
         <li><strong>Usados</strong><span>Todas las marcas</span></li>
-        <li><strong>Financiación</strong><span>Planes en usados</span></li>
+        <li hidden><strong>Financiación</strong><span>Planes en usados</span></li>
       </ul>
     </div>
     <a href="#stock" class="hero__scroll" aria-label="Bajar">▾</a>
@@ -76,7 +76,7 @@
       <div class="section__head reveal">
         <span class="section__kicker">Stock disponible</span>
         <h2 class="section__title">Vehículos en venta</h2>
-        <p class="section__subtitle">0km y usados seleccionados. Consultá disponibilidad y financiación por cada unidad.</p>
+        <p class="section__subtitle">0km y usados seleccionados. Consultá disponibilidad por cada unidad.</p>
       </div>
 
       <div class="filtros reveal">
@@ -112,8 +112,8 @@
     </div>
   </section>
 
-  <!-- ===== FINANCIACIÓN ===== -->
-  <section class="finan" id="financiacion">
+  <!-- ===== FINANCIACIÓN (oculta a pedido del cliente) ===== -->
+  <section class="finan" id="financiacion" hidden>
     <div class="container">
       <div class="section__head reveal">
         <span class="section__kicker">Financiación</span>
@@ -294,7 +294,7 @@
       </div>
       <div class="footer__links">
         <a href="#stock">Vehículos</a>
-        <a href="#financiacion">Financiación</a>
+        <a href="#financiacion" hidden>Financiación</a>
         <a href="#galeria">Galería</a>
         <a href="#contacto">Contacto</a>
       </div>
