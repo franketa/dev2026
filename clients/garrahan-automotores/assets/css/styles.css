@@ -116,6 +116,47 @@ h1, h2, h3 { font-family: 'Oswald', sans-serif; font-weight: 600; line-height: 1
 .marcas__grid span { font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 1.25rem; letter-spacing: 3px; color: var(--texto-3); transition: color .25s; }
 .marcas__grid span:hover { color: var(--texto); }
 
+/* ===== Novedad · marcas chinas ===== */
+.novedad { background: var(--bg); padding: 72px 0; }
+.novedad__card {
+  position: relative; overflow: hidden;
+  display: grid; grid-template-columns: 1.05fr .95fr; gap: 52px; align-items: center;
+  background: linear-gradient(135deg, var(--bg-2) 0%, var(--bg-3) 100%);
+  border: 1px solid var(--line); border-radius: var(--radius);
+  padding: 52px 56px;
+}
+.novedad__card::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background: var(--grad); }
+.novedad__badge {
+  display: inline-flex; align-items: center; gap: 9px; margin-bottom: 18px;
+  font-family: 'Oswald', sans-serif; font-size: .72rem; font-weight: 600;
+  letter-spacing: 3px; text-transform: uppercase; color: #fff;
+  background: var(--grad); border-radius: 999px; padding: 7px 17px;
+}
+.novedad__badge::before { content: ''; width: 7px; height: 7px; border-radius: 50%; background: #fff; animation: blink 1.8s infinite; }
+@keyframes blink { 0%, 100% { opacity: 1 } 50% { opacity: .25 } }
+.novedad__title { font-size: clamp(1.9rem, 4vw, 2.7rem); text-transform: uppercase; }
+.novedad__title span { background: var(--grad); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+.novedad__text { color: var(--texto-2); margin: 18px 0 28px; }
+.novedad__text strong { color: var(--texto); font-weight: 600; }
+.novedad__brands { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
+.novedad__brand {
+  flex: 0 0 calc(25% - 7.5px);
+  display: flex; align-items: center; justify-content: center; text-align: center;
+  font-family: 'Oswald', sans-serif; font-weight: 600; font-size: .88rem; letter-spacing: 2px;
+  color: var(--texto-2); background: rgba(255,255,255,.03);
+  border: 1px solid var(--line); border-radius: 10px; padding: 18px 6px; transition: var(--trans);
+}
+.novedad__brand:hover { color: var(--texto); border-color: var(--naranja); transform: translateY(-2px); }
+.novedad__brand--main { color: #fff; border-color: var(--naranja); background: rgba(226,58,63,.12); }
+.novedad__note { font-size: .8rem; color: var(--texto-3); text-align: center; margin-top: 16px; }
+@media (max-width: 900px) {
+  .novedad { padding: 56px 0; }
+  .novedad__card { grid-template-columns: 1fr; gap: 34px; padding: 38px 26px; }
+}
+@media (max-width: 480px) {
+  .novedad__brand { flex-basis: calc(50% - 5px); }
+}
+
 /* ===== Stock ===== */
 .stock { background: var(--bg); }
 .filtros { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; margin-bottom: 44px; }
