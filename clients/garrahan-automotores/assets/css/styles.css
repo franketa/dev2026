@@ -68,7 +68,15 @@ h1, h2, h3 { font-family: 'Oswald', sans-serif; font-weight: 600; line-height: 1
 
 /* ===== Nav ===== */
 .nav { position: fixed; inset: 0 0 auto 0; z-index: 1000; padding: 18px 0; transition: var(--trans); }
-.nav--scrolled { background: rgba(10,10,11,.9); backdrop-filter: blur(14px); padding: 12px 0; border-bottom: 1px solid var(--line); }
+/* El fondo con blur va en un ::before y NO en .nav: un backdrop-filter sobre
+   el nav lo convierte en containing block y deja al drawer mobile
+   (.nav__menu, position:fixed) encerrado en los 70px de alto del nav. */
+.nav--scrolled { padding: 12px 0; }
+.nav--scrolled::before, .nav--solid::before {
+  content: ''; position: absolute; inset: 0; z-index: -1;
+  background: rgba(10,10,11,.9); backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--line);
+}
 .nav__container { max-width: 1200px; margin: 0 auto; padding: 0 24px; display: flex; align-items: center; justify-content: space-between; }
 .nav__logo { display: flex; align-items: center; gap: 12px; text-decoration: none; }
 .nav__logo-mark {
@@ -332,14 +340,17 @@ h1, h2, h3 { font-family: 'Oswald', sans-serif; font-weight: 600; line-height: 1
   .galeria__grid { grid-template-columns: repeat(2, 1fr); }
   .footer__grid { grid-template-columns: 1fr 1fr; }
 }
-@media (max-width: 768px) {
-  section { padding: 72px 0; }
+/* El nav colapsa antes que el resto: con 5 items no entra en tablet */
+@media (max-width: 900px) {
   .nav__menu { position: fixed; inset: 0 -100% 0 auto; width: 280px; background: rgba(10,10,11,.98); backdrop-filter: blur(10px); flex-direction: column; justify-content: center; gap: 28px; transition: right .4s; border-left: 1px solid var(--line); }
   .nav__menu--open { right: 0; }
   .nav__toggle { display: flex; z-index: 1001; }
   .nav__toggle--open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
   .nav__toggle--open span:nth-child(2) { opacity: 0; }
   .nav__toggle--open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+}
+@media (max-width: 768px) {
+  section { padding: 72px 0; }
   .stock__grid { grid-template-columns: 1fr; }
   .calc { grid-template-columns: 1fr; }
   .finan__features { grid-template-columns: 1fr; }
@@ -366,7 +377,7 @@ h1, h2, h3 { font-family: 'Oswald', sans-serif; font-weight: 600; line-height: 1
    Ficha de vehículo (vehiculo.html)
    ========================================================== */
 [hidden] { display: none !important; }
-.nav--solid { background: rgba(10,10,11,.92); backdrop-filter: blur(14px); border-bottom: 1px solid var(--line); padding: 12px 0; }
+.nav--solid { padding: 12px 0; }
 .page-ficha { background: var(--bg); }
 
 .ficha { padding: 130px 0 90px; }

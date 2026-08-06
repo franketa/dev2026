@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="es-AR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Compramos tu auto en Chivilcoy | Garrahan — Negocio de Automotores</title>
+  <meta name="description" content="¿Querés vender tu auto o camioneta en Chivilcoy? Completá el formulario y recibí una cotización sin cargo en menos de 24 hs. Tomamos tu usado como parte de pago y nos ocupamos de toda la gestoría.">
+  <meta name="theme-color" content="#0c0c0d">
+  <link rel="icon" type="image/png" href="assets/img/logo.png">
+  <link rel="apple-touch-icon" href="assets/img/logo.png">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="Compramos tu auto | Garrahan — Negocio de Automotores">
+  <meta property="og:description" content="Cotizamos tu vehículo sin cargo en menos de 24 hs. Tomamos tu usado como parte de pago.">
+  <meta property="og:type" content="website">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Oswald:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/styles.css">
+  <link rel="stylesheet" href="assets/css/vender.css">
+</head>
+<body class="page-vender">
+
+  <!-- ===== NAV ===== -->
+  <nav class="nav nav--solid" id="nav">
+    <div class="nav__container">
+      <a href="index.html" class="nav__logo">
+        <img src="assets/img/logo.png" alt="Garrahan — Negocio de Automotores" class="nav__logo-mark">
+        <span class="nav__logo-text">GARRAHAN<small>NEGOCIO DE AUTOMOTORES</small></span>
+      </a>
+      <button class="nav__toggle" id="navToggle" aria-label="Abrir menú"><span></span><span></span><span></span></button>
+      <ul class="nav__menu" id="navMenu">
+        <li><a href="index.html" class="nav__link">Inicio</a></li>
+        <li><a href="index.html#stock" class="nav__link">Vehículos</a></li>
+        <li><a href="compramos-tu-auto.html" class="nav__link nav__link--active" aria-current="page">Vendé tu auto</a></li>
+        <li><a href="index.html#galeria" class="nav__link">Galería</a></li>
+        <li><a href="index.html#contacto" class="nav__link nav__link--cta">Contacto</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- ===== HERO + WIZARD ===== -->
+  <header class="vhero" id="cotizar">
+    <div class="vhero__bg"></div>
+    <div class="vhero__overlay"></div>
+    <div class="container vhero__container">
+      <div class="vhero__grid">
+
+        <!-- Copy -->
+        <div class="vhero__copy">
+          <span class="vhero__badge">Tasación sin cargo</span>
+          <h1 class="vhero__title">Compramos<br><span>tu auto</span></h1>
+          <p class="vhero__text">Contanos qué vehículo tenés y te pasamos una <strong>cotización en menos de 24 horas</strong>. Sin cargo, sin compromiso y con la opción de entregarlo como parte de pago de tu próximo auto.</p>
+          <ul class="vhero__checks">
+            <li>Tasación sin cargo y sin compromiso</li>
+            <li>Te respondemos en menos de 24 hs</li>
+            <li>Lo tomamos como parte de pago</li>
+            <li>Transferencia y gestoría a cargo nuestro</li>
+          </ul>
+          <p class="vhero__alt">¿Preferís hablar directo? <a href="https://wa.me/5492345428151?text=Hola%2C%20quiero%20vender%20mi%20veh%C3%ADculo." target="_blank" rel="noopener">Escribinos por WhatsApp</a></p>
+        </div>
+
+        <!-- Wizard -->
+        <div class="wz" id="wz">
+          <div class="wz__head">
+            <div class="wz__steps" role="list">
+              <div class="wz__step is-active" role="listitem" data-step="1"><span class="wz__dot">1</span><span class="wz__step-label">Vehículo</span></div>
+              <div class="wz__step" role="listitem" data-step="2"><span class="wz__dot">2</span><span class="wz__step-label">Detalles</span></div>
+              <div class="wz__step" role="listitem" data-step="3"><span class="wz__dot">3</span><span class="wz__step-label">Precio</span></div>
+              <div class="wz__step" role="listitem" data-step="4"><span class="wz__dot">4</span><span class="wz__step-label">Contacto</span></div>
+            </div>
+            <div class="wz__track"><span class="wz__bar" id="wzBar"></span></div>
+            <p class="wz__counter"><b id="wzCurrent">1</b> de 4</p>
+          </div>
+
+          <form class="wz__body" id="wzForm" novalidate>
+
+            <!-- ===== Paso 1 ===== -->
+            <section class="wz__panel is-active" data-panel="1">
+              <h2 class="wz__panel-title">¿Qué vehículo querés vender?</h2>
+              <div class="wz__grid">
+                <div class="wz__field wz__field--full">
+                  <label for="wzMarca">Marca <b>*</b></label>
+                  <div class="wz__select">
+                    <select id="wzMarca" data-req data-label="Marca">
+                      <option value="">Seleccioná una marca</option>
+                      <option>Alfa Romeo</option><option>Audi</option><option>BAIC</option><option>BMW</option>
+                      <option>BYD</option><option>Chery</option><option>Chevrolet</option><option>Chrysler</option>
+                      <option>Citroën</option><option>Dodge</option><option>Fiat</option><option>Ford</option>
+                      <option>Geely</option><option>Great Wall</option><option>Haval</option><option>Honda</option>
+                      <option>Hyundai</option><option>Isuzu</option><option>Iveco</option><option>JAC</option>
+                      <option>Jaguar</option><option>Jeep</option><option>Jetour</option><option>Kaiyi</option>
+                      <option>Kia</option><option>Land Rover</option><option>Lexus</option><option>Maxus</option>
+                      <option>Mercedes-Benz</option><option>Mini</option><option>Mitsubishi</option><option>Nissan</option>
+                      <option>Peugeot</option><option>Porsche</option><option>RAM</option><option>Renault</option>
+                      <option>Seat</option><option>Subaru</option><option>Suzuki</option><option>Toyota</option>
+                      <option>Volkswagen</option><option>Volvo</option>
+                      <option value="Otra">Otra marca</option>
+                    </select>
+                  </div>
+                  <p class="wz__error" hidden></p>
+                </div>
+
+                <div class="wz__field wz__field--full" id="wzMarcaOtraWrap" hidden>
+                  <label for="wzMarcaOtra">¿Cuál? <b>*</b></label>
+                  <input type="text" id="wzMarcaOtra" placeholder="Escribí la marca" autocomplete="off" data-label="Marca">
+                  <p class="wz__error" hidden></p>
+                </div>
+
+                <div class="wz__field">
+                  <label for="wzModelo">Modelo <b>*</b></label>
+                  <input type="text" id="wzModelo" placeholder="Ej: Cronos" autocomplete="off" data-req data-label="Modelo">
+                  <p class="wz__error" hidden></p>
+                </div>
+
+                <div class="wz__field">
+                  <label for="wzVersion">Versión <span class="wz__opt">opcional</span></label>
+                  <input type="text" id="wzVersion" placeholder="Ej: Drive 1.3" autocomplete="off" data-label="Versión">
+                </div>
+              </div>
+            </section>
+
+            <!-- ===== Paso 2 ===== -->
+            <section class="wz__panel" data-panel="2">
+              <h2 class="wz__panel-title">Contanos cómo está</h2>
+              <div class="wz__grid">
+                <div class="wz__field">
+                  <label for="wzAnio">Año <b>*</b></label>
+                  <div class="wz__select">
+                    <select id="wzAnio" data-req data-label="Año">
+                      <option value="">Seleccionar</option>
+                    </select>
+                  </div>
+                  <p class="wz__error" hidden></p>
+                </div>
+
+                <div class="wz__field">
+                  <label for="wzKm">Kilometraje <b>*</b></label>
+                  <div class="wz__input-suffix">
+                    <input type="text" id="wzKm" inputmode="numeric" placeholder="85.000" autocomplete="off" data-req data-num data-label="Kilometraje">
+                    <span>km</span>
+                  </div>
+                  <p class="wz__error" hidden></p>
+                </div>
+
+                <div class="wz__field">
+                  <label for="wzCombustible">Combustible <span class="wz__opt">opcional</span></label>
+                  <div class="wz__select">
+                    <select id="wzCombustible" data-label="Combustible">
+                      <option value="">Seleccionar</option>
+                      <option>Nafta</option>
+                      <option>Nafta + GNC</option>
+                      <option>Diésel</option>
+                      <option>Híbrido</option>
+                      <option>Eléctrico</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="wz__field">
+                  <span class="wz__label">Transmisión <span class="wz__opt">opcional</span></span>
+                  <div class="wz__pills wz__pills--2" data-label="Transmisión">
+                    <label class="wz__pill"><input type="radio" name="transmision" value="Manual"><span>Manual</span></label>
+                    <label class="wz__pill"><input type="radio" name="transmision" value="Automática"><span>Automática</span></label>
+                  </div>
+                </div>
+
+                <div class="wz__field wz__field--full">
+                  <span class="wz__label">Estado general <b>*</b></span>
+                  <div class="wz__pills wz__pills--4" data-label="Estado">
+                    <label class="wz__pill"><input type="radio" name="estado" value="Excelente" data-req-group><span>Excelente</span></label>
+                    <label class="wz__pill"><input type="radio" name="estado" value="Muy bueno"><span>Muy bueno</span></label>
+                    <label class="wz__pill"><input type="radio" name="estado" value="Bueno"><span>Bueno</span></label>
+                    <label class="wz__pill"><input type="radio" name="estado" value="A reparar"><span>A reparar</span></label>
+                  </div>
+                  <p class="wz__error" hidden></p>
+                </div>
+              </div>
+            </section>
+
+            <!-- ===== Paso 3 ===== -->
+            <section class="wz__panel" data-panel="3">
+              <h2 class="wz__panel-title">¿Cuánto esperás recibir?</h2>
+              <p class="wz__panel-note">Es orientativo: nos sirve para saber si estamos cerca antes de que vengas hasta el local.</p>
+              <div class="wz__grid">
+                <div class="wz__field wz__field--full">
+                  <span class="wz__label">Moneda</span>
+                  <div class="wz__pills wz__pills--2" data-label="Moneda">
+                    <label class="wz__pill"><input type="radio" name="moneda" value="ARS" checked><span>Pesos&nbsp;(ARS)</span></label>
+                    <label class="wz__pill"><input type="radio" name="moneda" value="USD"><span>Dólares&nbsp;(USD)</span></label>
+                  </div>
+                </div>
+
+                <div class="wz__field wz__field--full">
+                  <label for="wzPrecio">Precio pretendido <span class="wz__opt">opcional</span></label>
+                  <div class="wz__input-prefix">
+                    <span id="wzMonedaSym">$</span>
+                    <input type="text" id="wzPrecio" inputmode="numeric" placeholder="15.000.000" autocomplete="off" data-num data-label="Precio pretendido">
+                  </div>
+                  <p class="wz__hint">Si no sabés cuánto vale, dejalo vacío y lo tasamos nosotros.</p>
+                </div>
+
+                <div class="wz__field wz__field--full">
+                  <label class="wz__check">
+                    <input type="checkbox" id="wzParte">
+                    <span class="wz__check-box" aria-hidden="true"></span>
+                    <span class="wz__check-text">
+                      <strong>Lo quiero entregar como parte de pago</strong>
+                      Me interesa usarlo para llevarme otro vehículo de Garrahan.
+                    </span>
+                  </label>
+                </div>
+
+                <div class="wz__field wz__field--full" id="wzInteresWrap" hidden>
+                  <label for="wzInteres">¿Qué vehículo te interesa? <span class="wz__opt">opcional</span></label>
+                  <input type="text" id="wzInteres" placeholder="Ej: Chery Tiggo 4 0km" autocomplete="off" data-label="Vehículo de interés">
+                </div>
+              </div>
+            </section>
+
+            <!-- ===== Paso 4 ===== -->
+            <section class="wz__panel" data-panel="4">
+              <h2 class="wz__panel-title">¿Cómo te contactamos?</h2>
+              <div class="wz__grid">
+                <div class="wz__field wz__field--full">
+                  <label for="wzNombre">Nombre y apellido <b>*</b></label>
+                  <input type="text" id="wzNombre" placeholder="Tu nombre" autocomplete="name" data-req data-label="Nombre">
+                  <p class="wz__error" hidden></p>
+                </div>
+
+                <div class="wz__field">
+                  <label for="wzTel">Teléfono <b>*</b></label>
+                  <input type="tel" id="wzTel" placeholder="2345 42-8151" autocomplete="tel" data-req data-label="Teléfono">
+                  <p class="wz__error" hidden></p>
+                </div>
+
+                <div class="wz__field">
+                  <label for="wzLocalidad">Localidad <span class="wz__opt">opcional</span></label>
+                  <input type="text" id="wzLocalidad" placeholder="Ej: Chivilcoy" autocomplete="address-level2" data-label="Localidad">
+                </div>
+              </div>
+
+              <div class="wz__resumen" id="wzResumen">
+                <h3>Repasá los datos</h3>
+                <dl id="wzResumenList"></dl>
+              </div>
+
+              <p class="wz__legal">Al enviar se abre WhatsApp con el mensaje ya redactado para que solo tengas que tocar <b>enviar</b>. Después podés sumar las fotos del vehículo en el mismo chat.</p>
+            </section>
+
+            <!-- ===== Listo ===== -->
+            <section class="wz__panel wz__panel--done" data-panel="5">
+              <div class="wz__done-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="34" height="34" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+              </div>
+              <h2 class="wz__panel-title">¡Listo, abrimos WhatsApp!</h2>
+              <p class="wz__panel-note">Tocá <b>enviar</b> en el chat y te respondemos con la cotización en menos de 24 hs. Aprovechá para mandarnos fotos del vehículo.</p>
+              <a class="btn btn--primary wz__done-cta" id="wzDoneLink" href="#" target="_blank" rel="noopener">Abrir WhatsApp de nuevo</a>
+              <button type="button" class="wz__restart" id="wzRestart">Cargar otro vehículo</button>
+            </section>
+          </form>
+
+          <div class="wz__foot" id="wzFoot">
+            <button type="button" class="btn btn--ghost btn--sm wz__back" id="wzBack" hidden>← Atrás</button>
+            <button type="button" class="btn btn--primary wz__next" id="wzNext">Siguiente</button>
+            <a class="btn btn--primary wz__send" id="wzSend" href="#" target="_blank" rel="noopener" hidden>
+              <svg viewBox="0 0 24 24" width="17" height="17" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+              Enviar por WhatsApp
+            </a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </header>
+
+  <!-- ===== CÓMO FUNCIONA ===== -->
+  <section class="pasos" id="como-funciona">
+    <div class="container">
+      <div class="section__head reveal">
+        <span class="section__kicker">Cómo funciona</span>
+        <h2 class="section__title">Vender es así de simple</h2>
+        <p class="section__subtitle">Tres pasos, sin vueltas y sin que tengas que mover el auto hasta tener un número sobre la mesa.</p>
+      </div>
+      <ol class="pasos__grid">
+        <li class="paso reveal">
+          <span class="paso__num">01</span>
+          <h3>Cargás los datos</h3>
+          <p>Completás el formulario en menos de dos minutos. Marca, modelo, año, kilómetros y estado: nada más.</p>
+        </li>
+        <li class="paso reveal">
+          <span class="paso__num">02</span>
+          <h3>Tasamos tu vehículo</h3>
+          <p>Miramos cómo está el mercado y te escribimos por WhatsApp con una cotización orientativa en menos de 24 hs.</p>
+        </li>
+        <li class="paso reveal">
+          <span class="paso__num">03</span>
+          <h3>Cerramos la operación</h3>
+          <p>Coordinamos una revisión en el local. Si hay acuerdo, te pagamos en el momento o lo tomamos como parte de pago.</p>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- ===== POR QUÉ GARRAHAN ===== -->
+  <section class="porque">
+    <div class="container">
+      <div class="section__head reveal">
+        <span class="section__kicker">Por qué nosotros</span>
+        <h2 class="section__title">Por qué vendérnoslo a nosotros</h2>
+        <p class="section__subtitle">Somos de Chivilcoy y hace años que compramos, vendemos y entregamos autos acá mismo, en Avenida Urquiza 126.</p>
+      </div>
+      <div class="porque__grid">
+        <article class="benef reveal">
+          <span class="benef__icon">💵</span>
+          <h3>Pago inmediato</h3>
+          <p>Cerrada la operación y verificada la documentación, cobrás en el momento. Sin intermediarios ni esperas.</p>
+        </article>
+        <article class="benef reveal">
+          <span class="benef__icon">🔄</span>
+          <h3>Parte de pago</h3>
+          <p>Usá tu usado para llevarte tu próximo 0km o usado de nuestro stock, y pagás solo la diferencia.</p>
+        </article>
+        <article class="benef reveal">
+          <span class="benef__icon">📋</span>
+          <h3>Gestoría incluida</h3>
+          <p>Nos ocupamos de la transferencia, el formulario 08 y todos los trámites. Vos no hacés ninguna cola.</p>
+        </article>
+        <article class="benef reveal">
+          <span class="benef__icon">🤝</span>
+          <h3>Cara a cara</h3>
+          <p>Nos conocés y sabés dónde encontrarnos. Hablás siempre con Felipe o Miguel, nunca con un formulario.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FAQ ===== -->
+  <section class="faq" id="faq">
+    <div class="container">
+      <div class="section__head reveal">
+        <span class="section__kicker">Preguntas frecuentes</span>
+        <h2 class="section__title">Lo que más nos preguntan</h2>
+      </div>
+      <div class="faq__list reveal" id="faqList">
+        <div class="faq__item">
+          <button type="button" class="faq__q" aria-expanded="false">¿Cuánto tardan en responderme?<span class="faq__icon" aria-hidden="true"></span></button>
+          <div class="faq__a"><p>Menos de 24 horas hábiles. Felipe o Miguel te escriben por WhatsApp con una cotización orientativa y, si te interesa, coordinamos la revisión del vehículo.</p></div>
+        </div>
+        <div class="faq__item">
+          <button type="button" class="faq__q" aria-expanded="false">¿La tasación tiene algún costo?<span class="faq__icon" aria-hidden="true"></span></button>
+          <div class="faq__a"><p>No. La cotización es totalmente sin cargo y sin compromiso. Si el número no te cierra, no pasa absolutamente nada.</p></div>
+        </div>
+        <div class="faq__item">
+          <button type="button" class="faq__q" aria-expanded="false">¿Puedo entregarlo como parte de pago de otro auto?<span class="faq__icon" aria-hidden="true"></span></button>
+          <div class="faq__a"><p>Sí, y es lo que más hacemos. Tomamos tu usado y lo descontás de cualquier unidad de nuestro stock, sea 0km o usado. Marcá la opción en el paso 3 y contanos qué vehículo te interesa.</p></div>
+        </div>
+        <div class="faq__item">
+          <button type="button" class="faq__q" aria-expanded="false">¿Necesitan ver el auto antes de cerrar?<span class="faq__icon" aria-hidden="true"></span></button>
+          <div class="faq__a"><p>Sí. La cotización online es orientativa y sirve para saber si estamos cerca. El valor final se confirma después de una revisión en el local, en Avenida Urquiza 126, Chivilcoy.</p></div>
+        </div>
+        <div class="faq__item">
+          <button type="button" class="faq__q" aria-expanded="false">¿Qué documentación tengo que llevar?<span class="faq__icon" aria-hidden="true"></span></button>
+          <div class="faq__a"><p>Título del automotor, cédula verde, DNI del titular, VTV vigente si corresponde y libre deuda de patentes e infracciones. Si te falta algo, avisanos y vemos cómo resolverlo.</p></div>
+        </div>
+        <div class="faq__item">
+          <button type="button" class="faq__q" aria-expanded="false">¿Toman vehículos con prenda o deuda?<span class="faq__icon" aria-hidden="true"></span></button>
+          <div class="faq__a"><p>Lo evaluamos caso por caso. Contanos la situación al enviar la consulta y te decimos enseguida si podemos avanzar.</p></div>
+        </div>
+        <div class="faq__item">
+          <button type="button" class="faq__q" aria-expanded="false">¿Compran camionetas, utilitarios y 4x4?<span class="faq__icon" aria-hidden="true"></span></button>
+          <div class="faq__a"><p>Sí. Trabajamos autos, camionetas, SUV y utilitarios de todas las marcas, incluidas las marcas chinas que sumamos este año.</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== CTA FINAL ===== -->
+  <section class="vcta">
+    <div class="container">
+      <div class="vcta__card reveal">
+        <div>
+          <h2 class="vcta__title">¿Preferís hablarlo por teléfono?</h2>
+          <p class="vcta__text">Escribinos y lo charlamos. También podés acercarte al local de lunes a viernes de 09:00 a 12:30 y de 15:30 a 20:00, o los sábados de 09:00 a 12:30.</p>
+        </div>
+        <div class="vcta__btns">
+          <a href="https://wa.me/5492345428151?text=Hola%2C%20quiero%20vender%20mi%20veh%C3%ADculo." class="btn btn--primary" target="_blank" rel="noopener">WhatsApp Felipe</a>
+          <a href="#cotizar" class="btn btn--ghost">Volver al formulario</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="footer">
+    <div class="container footer__grid">
+      <div>
+        <a href="index.html" class="nav__logo">
+          <img src="assets/img/logo.png" alt="Garrahan — Negocio de Automotores" class="nav__logo-mark">
+          <span class="nav__logo-text">GARRAHAN<small>NEGOCIO DE AUTOMOTORES</small></span>
+        </a>
+        <p class="footer__desc">Garrahan — Negocio de Automotores.<br>Comercializamos vehículos 0km y usados multimarcas.</p>
+      </div>
+      <div class="footer__links">
+        <a href="index.html#stock">Vehículos</a>
+        <a href="compramos-tu-auto.html">Vendé tu auto</a>
+        <a href="index.html#galeria">Galería</a>
+        <a href="index.html#contacto">Contacto</a>
+      </div>
+      <div class="footer__contact">
+        <p>📍 Av. Urquiza 126, Chivilcoy</p>
+        <p>✉️ Mgarrahanautomotores@hotmail.com</p>
+        <p>📸 @garrahanautomotores</p>
+      </div>
+    </div>
+    <div class="footer__bottom">
+      <p>&copy; 2026 Garrahan — Negocio de Automotores · Chivilcoy, Buenos Aires · Todos los derechos reservados</p>
+      <a class="footer__vb-credit" href="https://www.venturebyte.com.ar" target="_blank" rel="noopener" aria-label="Desarrollado por VentureByte">Desarrollado por VentureByte <img src="assets/img/venturebyte-white.png" alt="VentureByte"></a>
+    </div>
+  </footer>
+
+  <!-- WhatsApp float -->
+  <a href="https://wa.me/5492345428151?text=Hola%2C%20quiero%20vender%20mi%20veh%C3%ADculo." class="whatsapp-float" target="_blank" rel="noopener" aria-label="Escribir por WhatsApp">
+    <svg viewBox="0 0 24 24" width="30" height="30" fill="#fff"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+  </a>
+
+  <script src="assets/js/vender.js"></script>
+</body>
+</html>
