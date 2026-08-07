@@ -76,6 +76,47 @@
 
       <div class="vlist" id="vehicleList"></div>
       <p class="vlist__empty" id="vehicleEmpty" hidden>No hay vehículos que coincidan con la búsqueda.</p>
+
+      <!-- ===== QR · Escaneos ===== -->
+      <section class="qr" id="qrSection">
+        <div class="qr__head">
+          <div>
+            <h2 class="qr__title">QR · Escaneos</h2>
+            <p class="qr__sub">Cuánta gente entra al sitio escaneando los códigos QR impresos.</p>
+          </div>
+          <button class="btn btn--ghost btn--sm" id="qrRefresh" type="button">Actualizar</button>
+        </div>
+
+        <div class="stats">
+          <div class="stats__card"><strong id="qrTotal">0</strong><span>Escaneos totales</span></div>
+          <div class="stats__card stats__card--ok"><strong id="qrHoy">0</strong><span>Hoy</span></div>
+          <div class="stats__card"><strong id="qr7">0</strong><span>Últimos 7 días</span></div>
+          <div class="stats__card stats__card--off"><strong id="qrPersonas">0</strong><span>Personas distintas</span></div>
+        </div>
+
+        <div class="qr__grid">
+          <div class="qr__box">
+            <h3 class="qr__box-title">Por código</h3>
+            <table class="qr__table">
+              <thead><tr><th>Código</th><th>Escaneos</th><th>Personas</th><th>Último</th></tr></thead>
+              <tbody id="qrPorCodigo"></tbody>
+            </table>
+            <p class="qr__empty" id="qrEmpty" hidden>Todavía no hay escaneos. Van a aparecer acá apenas alguien use el QR.</p>
+          </div>
+
+          <div class="qr__box">
+            <h3 class="qr__box-title">Desde qué dispositivo</h3>
+            <ul class="qr__devices" id="qrDispositivos"></ul>
+          </div>
+        </div>
+
+        <div class="qr__box">
+          <h3 class="qr__box-title">Últimos 30 días</h3>
+          <div class="qr__chart" id="qrChart"></div>
+        </div>
+
+        <p class="qr__note" id="qrNote"></p>
+      </section>
     </main>
   </div>
 

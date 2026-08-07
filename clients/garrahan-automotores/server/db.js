@@ -67,6 +67,22 @@ function initDB() {
       email TEXT UNIQUE NOT NULL,
       password_hash TEXT NOT NULL
     );
+
+    -- Escaneos de los QR impresos (camioneta, vidriera, folletos...).
+    -- Las fechas se guardan ya corridas a hora argentina (UTC-3) para que
+    -- "hoy" en el panel coincida con el dia real del local.
+    CREATE TABLE IF NOT EXISTS qr_scans (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      codigo TEXT NOT NULL,
+      scanned_at TEXT NOT NULL,
+      dia TEXT NOT NULL,
+      dispositivo TEXT DEFAULT 'Otro',
+      visitante TEXT,
+      bot INTEGER DEFAULT 0
+    );
+
+    CREATE INDEX IF NOT EXISTS idx_qr_scans_codigo ON qr_scans (codigo);
+    CREATE INDEX IF NOT EXISTS idx_qr_scans_dia ON qr_scans (dia);
   `);
 
   // Migración: bases creadas antes de que existiera precio_descuento

@@ -3,6 +3,7 @@ const path = require('path');
 const { initDB } = require('./db');
 const vehiclesRouter = require('./routes/vehicles');
 const authRouter = require('./routes/auth');
+const qrRouter = require('./routes/qr');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -16,6 +17,10 @@ app.use(express.json({ limit: '50mb' }));
 // Serve uploaded images
 app.use('/uploads', express.static(path.join(__dirname, '..', 'uploads')));
 
+// QR impresos: va antes del static para que /qr/<codigo> nunca lo resuelva
+// el servidor de archivos.
+app.use('/qr', qrRouter.publico);
+
 // Serve static files (HTML, CSS, JS, assets)
 app.use(express.static(path.join(__dirname, '..'), {
   index: 'index.html',
@@ -25,6 +30,7 @@ app.use(express.static(path.join(__dirname, '..'), {
 // API routes
 app.use('/api/vehicles', vehiclesRouter);
 app.use('/api/auth', authRouter);
+app.use('/api/qr', qrRouter.stats);
 
 // Multer / generic error handler
 app.use((err, req, res, next) => {

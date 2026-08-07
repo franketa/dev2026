@@ -112,7 +112,79 @@
     $('topbarUser').textContent = localStorage.getItem(EMAIL_KEY) || '';
     renderList();
     showView('dashboard');
+    // Las estadisticas del QR son secundarias: si fallan no queremos que
+    // se caiga la carga del listado de vehiculos.
+    loadQR().catch(() => {});
   }
+
+  // ===== QR · Escaneos =====
+  // (esc() ya está definida más abajo — es una function declaration, así que
+  // se puede usar acá arriba sin problema)
+
+  function fechaCorta(iso) {
+    if (!iso) return '—';
+    const [f, h] = String(iso).split(' ');
+    const [, m, d] = f.split('-');
+    return `${d}/${m}${h ? ' · ' + h.slice(0, 5) : ''}`;
+  }
+
+  async function loadQR() {
+    const btn = $('qrRefresh');
+    btn.disabled = true;
+    try {
+      const d = await api('/qr/stats');
+
+      $('qrTotal').textContent = fmt(d.resumen.total);
+      $('qrHoy').textContent = fmt(d.resumen.hoy);
+      $('qr7').textContent = fmt(d.resumen.ultimos7);
+      $('qrPersonas').textContent = fmt(d.resumen.personas);
+
+      // Por código
+      $('qrEmpty').hidden = d.porCodigo.length > 0;
+      $('qrPorCodigo').innerHTML = d.porCodigo.map(c => `
+        <tr>
+          <td><code>/qr/${esc(c.codigo)}</code></td>
+          <td><b>${fmt(c.total)}</b></td>
+          <td>${fmt(c.personas)}</td>
+          <td>${fechaCorta(c.ultimo)}</td>
+        </tr>`).join('');
+
+      // Dispositivos
+      const totalDisp = d.porDispositivo.reduce((a, x) => a + x.total, 0) || 1;
+      $('qrDispositivos').innerHTML = d.porDispositivo.length
+        ? d.porDispositivo.map(x => {
+            const pct = Math.round((x.total / totalDisp) * 100);
+            return `<li>
+              <span class="qr__device-name">${esc(x.dispositivo)}</span>
+              <span class="qr__device-bar"><i style="width:${pct}%"></i></span>
+              <span class="qr__device-val">${fmt(x.total)} · ${pct}%</span>
+            </li>`;
+          }).join('')
+        : '<li class="qr__device-none">Sin datos todavía.</li>';
+
+      // Gráfico de los últimos 30 días
+      const max = Math.max(1, ...d.porDia.map(x => x.total));
+      $('qrChart').innerHTML = d.porDia.map(x => {
+        const [, m, dd] = x.dia.split('-');
+        const alto = x.total ? Math.max(4, Math.round((x.total / max) * 100)) : 2;
+        return `<span class="qr__bar${x.total ? '' : ' qr__bar--cero'}"
+                      style="height:${alto}%"
+                      title="${dd}/${m}: ${x.total} escaneo${x.total === 1 ? '' : 's'}"></span>`;
+      }).join('');
+
+      $('qrNote').textContent = d.bots
+        ? d.bots === 1
+          ? 'No se cuenta 1 visita automática (vistas previas de WhatsApp, buscadores).'
+          : `No se cuentan ${fmt(d.bots)} visitas automáticas (vistas previas de WhatsApp, buscadores).`
+        : '';
+    } finally {
+      btn.disabled = false;
+    }
+  }
+
+  $('qrRefresh').addEventListener('click', () => {
+    loadQR().then(() => toast('Estadísticas actualizadas')).catch(e => toast(e.message, true));
+  });
 
   function precioLabel(v) {
     if (!v.mostrarPrecio || !v.precio) return 'Consultar precio';
