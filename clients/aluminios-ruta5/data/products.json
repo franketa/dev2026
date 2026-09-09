@@ -1,0 +1,401 @@
+{
+  "products": [
+    {
+      "nombre": "Marco corredizo Modena",
+      "categoria": "Perfiles",
+      "linea": "Modena",
+      "codigo": "MOD-1001",
+      "resumen": "Perfil de marco para ventana corrediza de dos hojas. El corazón de la línea Modena.",
+      "descripcion": "Perfil extruido en aleación 6063 T6 para marcos de ventanas y puertas corredizas de la línea Modena. Cámara europea, doble riel con canal para felpa y excelente rigidez para grandes paños. Se entrega en barras protegidas con film individual.",
+      "medidas": "Barra de 6,00 m",
+      "terminacion": "Anodizado natural",
+      "unidad": "barra",
+      "specs": [
+        { "k": "Aleación", "v": "6063 T6" },
+        { "k": "Espesor de pared", "v": "1,4 mm" },
+        { "k": "Peso aprox.", "v": "1,10 kg/m" },
+        { "k": "Largo", "v": "6,00 m" }
+      ],
+      "tags": ["corrediza", "marco", "ventana"],
+      "destacado": true,
+      "stock": "disponible",
+      "orden": 1
+    },
+    {
+      "nombre": "Hoja corrediza Modena",
+      "categoria": "Perfiles",
+      "linea": "Modena",
+      "codigo": "MOD-1002",
+      "resumen": "Perfil de hoja para corredizas Modena, con alojamiento para vidrio simple o DVH.",
+      "descripcion": "Hoja para ventanas corredizas línea Modena. Admite vidrio de 4 a 6 mm con contravidrio y DVH con el contravidrio correspondiente. Compatible con ruedas y cierres de la línea.",
+      "medidas": "Barra de 6,00 m",
+      "terminacion": "Blanco",
+      "unidad": "barra",
+      "specs": [
+        { "k": "Aleación", "v": "6063 T6" },
+        { "k": "Vidrio admitido", "v": "4 a 6 mm · DVH" },
+        { "k": "Largo", "v": "6,00 m" }
+      ],
+      "tags": ["corrediza", "hoja", "ventana"],
+      "destacado": false,
+      "stock": "disponible",
+      "orden": 2
+    },
+    {
+      "nombre": "Marco A30 New",
+      "categoria": "Perfiles",
+      "linea": "A30",
+      "codigo": "A30-2001",
+      "resumen": "Marco para corredizas A30 New. Robusto y económico para obra.",
+      "descripcion": "Perfil de marco para ventanas corredizas de la línea A30 New. Ideal para obras de gran volumen por su relación costo-prestación. Disponible en todas las terminaciones.",
+      "medidas": "Barra de 6,00 m",
+      "terminacion": "Anodizado natural",
+      "unidad": "barra",
+      "specs": [
+        { "k": "Aleación", "v": "6063 T6" },
+        { "k": "Espesor de pared", "v": "1,2 mm" },
+        { "k": "Largo", "v": "6,00 m" }
+      ],
+      "tags": ["corrediza", "marco", "obra"],
+      "destacado": true,
+      "stock": "disponible",
+      "orden": 3
+    },
+    {
+      "nombre": "Hoja A30 New",
+      "categoria": "Perfiles",
+      "linea": "A30",
+      "codigo": "A30-2002",
+      "resumen": "Hoja corrediza A30 New con contravidrio a presión.",
+      "descripcion": "Perfil de hoja para corredizas A30 New. Toma vidrio simple de 4 mm con contravidrio a presión. Compatible con toda la accesoriería de la línea.",
+      "medidas": "Barra de 6,00 m",
+      "terminacion": "Blanco",
+      "unidad": "barra",
+      "specs": [
+        { "k": "Vidrio admitido", "v": "4 mm" },
+        { "k": "Largo", "v": "6,00 m" }
+      ],
+      "tags": ["corrediza", "hoja"],
+      "destacado": false,
+      "stock": "disponible",
+      "orden": 4
+    },
+    {
+      "nombre": "Marco Herrero",
+      "categoria": "Perfiles",
+      "linea": "Herrero",
+      "codigo": "HER-3001",
+      "resumen": "Marco línea Herrero para ventanas de abrir, banderolas y paños fijos.",
+      "descripcion": "Perfil de marco de la línea Herrero, la más versátil para carpinterías tradicionales: ventanas de abrir, banderolas, paños fijos y puertas. Terminaciones anodizadas y pintadas.",
+      "medidas": "Barra de 6,00 m",
+      "terminacion": "Negro",
+      "unidad": "barra",
+      "specs": [
+        { "k": "Aleación", "v": "6063 T6" },
+        { "k": "Largo", "v": "6,00 m" }
+      ],
+      "tags": ["abrir", "banderola", "paño fijo"],
+      "destacado": false,
+      "stock": "disponible",
+      "orden": 5
+    },
+    {
+      "nombre": "Tubo estructural 40 × 40",
+      "categoria": "Perfiles",
+      "linea": "Universal",
+      "codigo": "EST-4040",
+      "resumen": "Tubo cuadrado de aluminio para estructuras, marcos y cerramientos.",
+      "descripcion": "Tubo cuadrado de aluminio extruido de 40 × 40 mm, pared de 1,5 mm. Liviano, no se oxida y se corta y suelda con facilidad. Ideal para estructuras livianas, portones, rejas y mobiliario.",
+      "medidas": "40 × 40 × 1,5 mm · 6,00 m",
+      "terminacion": "Anodizado natural",
+      "unidad": "barra",
+      "specs": [
+        { "k": "Sección", "v": "40 × 40 mm" },
+        { "k": "Espesor", "v": "1,5 mm" },
+        { "k": "Largo", "v": "6,00 m" }
+      ],
+      "tags": ["tubo", "estructural"],
+      "destacado": false,
+      "stock": "disponible",
+      "orden": 6
+    },
+    {
+      "nombre": "Ángulo 25 × 25",
+      "categoria": "Perfiles",
+      "linea": "Universal",
+      "codigo": "ANG-2525",
+      "resumen": "Perfil ángulo de aluminio para terminaciones, cantoneras y refuerzos.",
+      "descripcion": "Ángulo de aluminio de alas iguales 25 × 25 mm, espesor 2 mm. Uso general en terminaciones, guardacantos, refuerzos y estructuras livianas.",
+      "medidas": "25 × 25 × 2 mm · 6,00 m",
+      "terminacion": "Crudo",
+      "unidad": "barra",
+      "specs": [
+        { "k": "Sección", "v": "25 × 25 mm" },
+        { "k": "Espesor", "v": "2 mm" },
+        { "k": "Largo", "v": "6,00 m" }
+      ],
+      "tags": ["ángulo", "terminación"],
+      "destacado": false,
+      "stock": "disponible",
+      "orden": 7
+    },
+    {
+      "nombre": "Ventana corrediza 150 × 110",
+      "categoria": "Aberturas",
+      "linea": "Modena",
+      "codigo": "VEN-150110",
+      "resumen": "Ventana corrediza de dos hojas, línea Modena, con vidrio de 4 mm.",
+      "descripcion": "Ventana corrediza de dos hojas fabricada en línea Modena. Incluye vidrio float de 4 mm, felpas, ruedas de doble rodamiento y cierre de embutir. Opcional: DVH, mosquitero y persiana. Consultá por medidas a medida.",
+      "medidas": "1,50 × 1,10 m",
+      "terminacion": "Blanco",
+      "unidad": "unidad",
+      "specs": [
+        { "k": "Hojas", "v": "2 corredizas" },
+        { "k": "Vidrio", "v": "Float 4 mm (DVH opcional)" },
+        { "k": "Cierre", "v": "Embutir con llave" },
+        { "k": "Mosquitero", "v": "Opcional" }
+      ],
+      "tags": ["ventana", "corrediza", "a medida"],
+      "destacado": true,
+      "stock": "disponible",
+      "orden": 8
+    },
+    {
+      "nombre": "Puerta de abrir 90 × 200",
+      "categoria": "Aberturas",
+      "linea": "Herrero",
+      "codigo": "PTA-90200",
+      "resumen": "Puerta de aluminio línea Herrero con paño de vidrio y cerradura.",
+      "descripcion": "Puerta de abrir de una hoja en línea Herrero con paño de vidrio laminado 3+3 y zócalo ciego. Incluye cerradura de seguridad, manijón y bisagras reforzadas. Apertura izquierda o derecha.",
+      "medidas": "0,90 × 2,00 m",
+      "terminacion": "Negro",
+      "unidad": "unidad",
+      "specs": [
+        { "k": "Vidrio", "v": "Laminado 3+3" },
+        { "k": "Cerradura", "v": "De seguridad, 3 puntos" },
+        { "k": "Apertura", "v": "Izquierda o derecha" }
+      ],
+      "tags": ["puerta", "abrir", "entrada"],
+      "destacado": true,
+      "stock": "a-pedido",
+      "orden": 9
+    },
+    {
+      "nombre": "Paño fijo 100 × 100",
+      "categoria": "Aberturas",
+      "linea": "Herrero",
+      "codigo": "PF-100100",
+      "resumen": "Paño fijo de aluminio para iluminar sin apertura.",
+      "descripcion": "Paño fijo en línea Herrero con vidrio float de 4 mm. Ideal para escaleras, pasillos y ventanales combinados. Se fabrica a medida.",
+      "medidas": "1,00 × 1,00 m",
+      "terminacion": "Blanco",
+      "unidad": "unidad",
+      "specs": [
+        { "k": "Vidrio", "v": "Float 4 mm" },
+        { "k": "Fabricación", "v": "A medida" }
+      ],
+      "tags": ["paño fijo", "a medida"],
+      "destacado": false,
+      "stock": "a-pedido",
+      "orden": 10
+    },
+    {
+      "nombre": "Banderola 60 × 40",
+      "categoria": "Aberturas",
+      "linea": "Herrero",
+      "codigo": "BAN-6040",
+      "resumen": "Banderola de aluminio con brazo de empuje, ideal para baños.",
+      "descripcion": "Banderola de proyección en línea Herrero con brazo de empuje y cierre de palanca. Vidrio esmerilado opcional. Ventilación práctica para baños y cocinas.",
+      "medidas": "0,60 × 0,40 m",
+      "terminacion": "Blanco",
+      "unidad": "unidad",
+      "specs": [
+        { "k": "Apertura", "v": "Proyectante" },
+        { "k": "Vidrio", "v": "Float o esmerilado 4 mm" }
+      ],
+      "tags": ["banderola", "baño"],
+      "destacado": false,
+      "stock": "disponible",
+      "orden": 11
+    },
+    {
+      "nombre": "Puerta balcón corrediza 200 × 200",
+      "categoria": "Aberturas",
+      "linea": "Modena",
+      "codigo": "PB-200200",
+      "resumen": "Puerta balcón corrediza de dos hojas con DVH, línea Modena.",
+      "descripcion": "Puerta balcón corrediza de dos hojas en línea Modena con doble vidriado hermético (DVH) 4/9/4. Máximo confort térmico y acústico. Ruedas de alta carga y cierre multipunto.",
+      "medidas": "2,00 × 2,00 m",
+      "terminacion": "Anodizado natural",
+      "unidad": "unidad",
+      "specs": [
+        { "k": "Vidrio", "v": "DVH 4/9/4" },
+        { "k": "Cierre", "v": "Multipunto" },
+        { "k": "Ruedas", "v": "Alta carga" }
+      ],
+      "tags": ["puerta balcón", "DVH", "corrediza"],
+      "destacado": true,
+      "stock": "a-pedido",
+      "orden": 12
+    },
+    {
+      "nombre": "Wall panel Silver Brushed",
+      "categoria": "Wall Panels",
+      "linea": "",
+      "codigo": "WP-SILVER",
+      "resumen": "Panel compuesto de aluminio (ACM) cepillado para fachadas y revestimientos.",
+      "descripcion": "Panel compuesto de aluminio de 3 mm con núcleo de polietileno y terminación cepillada plata. Se corta, ranura y pliega para fachadas ventiladas, frentes de locales y cartelería. Superficie protegida con film removible.",
+      "medidas": "1,22 × 2,44 m · 3 mm",
+      "terminacion": "Gris",
+      "unidad": "unidad",
+      "specs": [
+        { "k": "Espesor total", "v": "3 mm" },
+        { "k": "Piel de aluminio", "v": "0,21 mm" },
+        { "k": "Medida", "v": "1220 × 2440 mm" },
+        { "k": "Protección", "v": "Film removible" }
+      ],
+      "tags": ["ACM", "fachada", "revestimiento"],
+      "destacado": true,
+      "stock": "disponible",
+      "orden": 13
+    },
+    {
+      "nombre": "Wall panel Negro Mate",
+      "categoria": "Wall Panels",
+      "linea": "",
+      "codigo": "WP-NEGRO",
+      "resumen": "Panel compuesto de aluminio negro mate. Elegancia total para frentes.",
+      "descripcion": "Panel ACM de 3 mm con terminación negro mate PVDF de alta durabilidad a la intemperie. Ideal para frentes comerciales y modernizar fachadas.",
+      "medidas": "1,22 × 2,44 m · 3 mm",
+      "terminacion": "Negro",
+      "unidad": "unidad",
+      "specs": [
+        { "k": "Espesor total", "v": "3 mm" },
+        { "k": "Pintura", "v": "PVDF" },
+        { "k": "Medida", "v": "1220 × 2440 mm" }
+      ],
+      "tags": ["ACM", "fachada"],
+      "destacado": false,
+      "stock": "disponible",
+      "orden": 14
+    },
+    {
+      "nombre": "Wall panel Símil Madera Roble",
+      "categoria": "Wall Panels",
+      "linea": "",
+      "codigo": "WP-ROBLE",
+      "resumen": "Panel de aluminio con textura de madera. Calidez sin mantenimiento.",
+      "descripcion": "Panel compuesto de aluminio con terminación símil madera roble. La estética de la madera con la durabilidad del aluminio: no se raja, no se destiñe ni necesita mantenimiento.",
+      "medidas": "1,22 × 2,44 m · 3 mm",
+      "terminacion": "Símil madera",
+      "unidad": "unidad",
+      "specs": [
+        { "k": "Espesor total", "v": "3 mm" },
+        { "k": "Medida", "v": "1220 × 2440 mm" }
+      ],
+      "tags": ["ACM", "madera", "fachada"],
+      "destacado": false,
+      "stock": "a-pedido",
+      "orden": 15
+    },
+    {
+      "nombre": "Felpa 6,7 × 5 mm",
+      "categoria": "Accesorios",
+      "linea": "Universal",
+      "codigo": "ACC-FELPA",
+      "resumen": "Felpa siliconada para corredizas. Rollo de 100 m.",
+      "descripcion": "Felpa con aleta central siliconada para hojas corredizas. Sella contra el polvo, el viento y el ruido. Compatible con Modena, A30 y Herrero.",
+      "medidas": "6,7 × 5 mm · rollo 100 m",
+      "terminacion": "Gris",
+      "unidad": "rollo",
+      "specs": [
+        { "k": "Base", "v": "6,7 mm" },
+        { "k": "Altura", "v": "5 mm" },
+        { "k": "Rollo", "v": "100 m" }
+      ],
+      "tags": ["felpa", "burlete", "corrediza"],
+      "destacado": false,
+      "stock": "disponible",
+      "orden": 16
+    },
+    {
+      "nombre": "Burlete de vidrio EPDM",
+      "categoria": "Accesorios",
+      "linea": "Modena",
+      "codigo": "ACC-BURL",
+      "resumen": "Burlete EPDM para fijar vidrio en hojas y paños fijos.",
+      "descripcion": "Burlete de caucho EPDM para vidrio de 4 mm en línea Modena. Excelente resistencia al sol y a la intemperie. Se vende por rollo.",
+      "medidas": "Rollo 100 m",
+      "terminacion": "Negro",
+      "unidad": "rollo",
+      "specs": [
+        { "k": "Material", "v": "EPDM" },
+        { "k": "Vidrio", "v": "4 mm" },
+        { "k": "Rollo", "v": "100 m" }
+      ],
+      "tags": ["burlete", "vidrio"],
+      "destacado": false,
+      "stock": "disponible",
+      "orden": 17
+    },
+    {
+      "nombre": "Rueda doble corrediza",
+      "categoria": "Herrajes",
+      "linea": "Modena",
+      "codigo": "HRJ-RUEDA",
+      "resumen": "Rueda de doble rodamiento regulable para hojas corredizas Modena.",
+      "descripcion": "Rueda con doble rodamiento blindado y regulación de altura. Soporta hojas pesadas con DVH. Bolsa por 10 unidades.",
+      "medidas": "Bolsa × 10",
+      "terminacion": "",
+      "unidad": "bolsa",
+      "specs": [
+        { "k": "Rodamiento", "v": "Doble, blindado" },
+        { "k": "Carga", "v": "Hasta 60 kg por hoja" },
+        { "k": "Presentación", "v": "Bolsa × 10" }
+      ],
+      "tags": ["rueda", "corrediza"],
+      "destacado": false,
+      "stock": "disponible",
+      "orden": 18
+    },
+    {
+      "nombre": "Cierre de embutir con llave",
+      "categoria": "Herrajes",
+      "linea": "Modena",
+      "codigo": "HRJ-CIERRE",
+      "resumen": "Cierre de embutir con llave para ventanas corredizas.",
+      "descripcion": "Cierre de embutir con cilindro y llave para hojas corredizas línea Modena. Cuerpo de zamak, acabado blanco o negro. Incluye tornillería.",
+      "medidas": "",
+      "terminacion": "Blanco",
+      "unidad": "unidad",
+      "specs": [
+        { "k": "Material", "v": "Zamak" },
+        { "k": "Incluye", "v": "Cilindro, llaves y tornillos" }
+      ],
+      "tags": ["cierre", "seguridad"],
+      "destacado": false,
+      "stock": "disponible",
+      "orden": 19
+    },
+    {
+      "nombre": "Manijón de puerta 30 cm",
+      "categoria": "Herrajes",
+      "linea": "Herrero",
+      "codigo": "HRJ-MANIJON",
+      "resumen": "Manijón recto de aluminio anodizado para puertas de entrada.",
+      "descripcion": "Manijón recto de 30 cm en aluminio anodizado. Diseño minimalista para puertas de abrir línea Herrero. Se vende por juego (interior + exterior).",
+      "medidas": "30 cm · juego",
+      "terminacion": "Anodizado natural",
+      "unidad": "juego",
+      "specs": [
+        { "k": "Largo", "v": "30 cm" },
+        { "k": "Material", "v": "Aluminio anodizado" },
+        { "k": "Presentación", "v": "Juego × 2" }
+      ],
+      "tags": ["manijón", "puerta"],
+      "destacado": false,
+      "stock": "disponible",
+      "orden": 20
+    }
+  ]
+}

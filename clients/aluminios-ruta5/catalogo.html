@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="es-AR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Catálogo · Aluminios Ruta 5</title>
+  <meta name="description" content="Catálogo de perfiles de aluminio Modena, A30 y Herrero, aberturas, wall panels, accesorios y herrajes. Stock en Chivilcoy.">
+  <meta name="theme-color" content="#ffffff">
+  <link rel="icon" type="image/svg+xml" href="/assets/img/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:ital,wdth,wght@0,62..125,100..900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/base.css">
+  <link rel="stylesheet" href="/assets/css/catalogo.css">
+</head>
+<body>
+
+  <header class="nav nav--solid" id="nav">
+    <div class="container nav__inner">
+      <a href="/" class="nav__logo" aria-label="Aluminios Ruta 5, inicio">
+        <img src="/assets/img/logo.svg" alt="" class="nav__logo-img nav__logo-img--dark" width="60" height="36">
+        <img src="/assets/img/logo-white.svg" alt="" class="nav__logo-img nav__logo-img--light" width="60" height="36">
+        <span class="nav__logo-word">Aluminios Ruta <b>5</b></span>
+      </a>
+      <nav class="nav__links" aria-label="Principal">
+        <a href="/#productos">Productos</a>
+        <a href="/catalogo" aria-current="page">Catálogo</a>
+        <a href="/#nave">Stock y nave</a>
+        <a href="/#envios">Envíos</a>
+        <a href="/#nosotros">Nosotros</a>
+        <a href="/#contacto">Contacto</a>
+      </nav>
+      <div class="nav__actions">
+        <a class="btn btn--primary btn--sm nav__cta" href="https://wa.me/5492346411139?text=Hola%20Aluminios%20Ruta%205%2C%20quiero%20hacer%20una%20consulta." target="_blank" rel="noopener">WhatsApp</a>
+        <button class="nav__toggle" aria-label="Abrir menú" aria-expanded="false" aria-controls="menu"><span></span><span></span><span></span></button>
+      </div>
+    </div>
+  </header>
+
+  <div class="menu" id="menu" aria-hidden="true">
+    <img src="/assets/img/logo-white.svg" alt="" class="menu__bg">
+    <nav class="menu__links" aria-label="Menú">
+      <a href="/#productos">Productos <small>01</small></a>
+      <a href="/catalogo">Catálogo <small>02</small></a>
+      <a href="/#nave">Stock y nave <small>03</small></a>
+      <a href="/#envios">Envíos <small>04</small></a>
+      <a href="/#nosotros">Nosotros <small>05</small></a>
+      <a href="/#contacto">Contacto <small>06</small></a>
+    </nav>
+    <div class="menu__footer">
+      <a class="btn btn--primary btn--block" href="https://wa.me/5492346411139?text=Hola%20Aluminios%20Ruta%205%2C%20quiero%20hacer%20una%20consulta." target="_blank" rel="noopener">Escribinos por WhatsApp</a>
+      <p class="menu__meta">Parque Industrial · Chivilcoy, Buenos Aires<br><a href="mailto:Aluminiosruta5@yahoo.com">Aluminiosruta5@yahoo.com</a> · <a href="tel:+542346411139">2346 41-1139</a></p>
+    </div>
+  </div>
+
+  <main>
+    <section class="cat-hero">
+      <div class="container cat-hero__inner">
+        <div>
+          <p class="eyebrow">Catálogo</p>
+          <h1 id="catTitle">Perfiles, aberturas y todo lo demás.</h1>
+        </div>
+        <p class="cat-hero__count"><strong id="catTotal">–</strong>productos en catálogo</p>
+      </div>
+    </section>
+
+    <div class="toolbar">
+      <div class="container toolbar__inner">
+        <div class="search">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+          <input type="search" id="searchInput" placeholder="Buscar perfil, medida, código…" autocomplete="off" aria-label="Buscar productos">
+          <button class="search__clear" id="searchClear" aria-label="Limpiar búsqueda" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+        </div>
+        <div class="chips chips--toolbar" id="chipsCategoria" role="group" aria-label="Categorías"></div>
+        <div class="select-wrap select-wrap--toolbar">
+          <select id="selectLinea" aria-label="Línea"><option value="">Todas las líneas</option></select>
+        </div>
+        <div class="select-wrap select-wrap--toolbar">
+          <select id="selectOrden" aria-label="Orden">
+            <option value="relevancia">Relevancia</option>
+            <option value="nombre">Nombre A–Z</option>
+            <option value="nuevos">Más nuevos</option>
+          </select>
+        </div>
+        <button class="toolbar__filters-btn" id="btnFilters" type="button" aria-haspopup="dialog">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M7 12h10M10 18h4"/></svg>
+          Filtros <span class="dot"></span>
+        </button>
+      </div>
+    </div>
+
+    <section class="catalog">
+      <div class="container">
+        <div class="catalog__meta">
+          <span id="resultsCount">Cargando…</span>
+          <div class="active-filters" id="activeFilters"></div>
+        </div>
+        <div class="grid" id="grid">
+          <div class="skeleton" style="height:340px"></div><div class="skeleton" style="height:340px"></div><div class="skeleton" style="height:340px"></div><div class="skeleton" style="height:340px"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="band">
+      <div class="container band__inner">
+        <div>
+          <h2>¿No encontrás lo que buscás?</h2>
+          <p>El catálogo web muestra una parte del stock. Escribinos con lo que necesitás y te confirmamos disponibilidad y precio.</p>
+        </div>
+        <a class="btn btn--primary" href="https://wa.me/5492346411139?text=Hola%2C%20estoy%20buscando%20un%20producto%20que%20no%20veo%20en%20el%20cat%C3%A1logo." target="_blank" rel="noopener">Consultar por WhatsApp</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__grid">
+        <div class="footer__brand">
+          <img src="/assets/img/logo-white.svg" alt="Aluminios Ruta 5">
+          <p>Distribuidora de perfiles, aberturas, wall panels y accesorios de aluminio en el Parque Industrial de Chivilcoy.</p>
+        </div>
+        <div>
+          <h4>Productos</h4>
+          <ul>
+            <li><a href="/catalogo?categoria=Perfiles">Perfiles</a></li>
+            <li><a href="/catalogo?categoria=Aberturas">Aberturas</a></li>
+            <li><a href="/catalogo?categoria=Wall%20Panels">Wall panels</a></li>
+            <li><a href="/catalogo?categoria=Accesorios">Accesorios</a></li>
+            <li><a href="/catalogo?categoria=Herrajes">Herrajes</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Empresa</h4>
+          <ul>
+            <li><a href="/#nave">Stock y nave</a></li>
+            <li><a href="/#envios">Envíos y embalaje</a></li>
+            <li><a href="/#aluminio">Por qué aluminio</a></li>
+            <li><a href="/#nosotros">Nosotros</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Contacto</h4>
+          <ul>
+            <li><a href="https://wa.me/5492346411139" target="_blank" rel="noopener">WhatsApp 2346 41-1139</a></li>
+            <li><a href="mailto:Aluminiosruta5@yahoo.com">Aluminiosruta5@yahoo.com</a></li>
+            <li><a href="https://www.instagram.com/aluminios.ruta5/" target="_blank" rel="noopener">Instagram</a></li>
+            <li><a href="/#contacto">Parque Industrial Chivilcoy</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer__bottom">
+        <span>© <span data-year>2026</span> Aluminios Ruta 5 · Chivilcoy, Buenos Aires</span>
+        <span>Sitio por <a href="https://venturebyte.com.ar" target="_blank" rel="noopener">VentureByte</a></span>
+      </div>
+    </div>
+    <span class="footer__word" aria-hidden="true">RUTA 5</span>
+  </footer>
+
+  <!-- Bottom sheet filtros (mobile) -->
+  <div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sheetTitle">
+    <div class="sheet__backdrop" data-close></div>
+    <div class="sheet__panel">
+      <div class="sheet__handle"></div>
+      <div class="sheet__title"><span id="sheetTitle">Filtros</span><button type="button" id="sheetReset">Limpiar</button></div>
+      <div class="sheet__group"><h4>Categoría</h4><div class="sheet__chips" id="sheetCategoria"></div></div>
+      <div class="sheet__group"><h4>Línea</h4><div class="sheet__chips" id="sheetLinea"></div></div>
+      <div class="sheet__group"><h4>Orden</h4><div class="sheet__chips" id="sheetOrden"></div></div>
+      <div class="sheet__actions">
+        <button class="btn btn--ghost" type="button" data-close>Cerrar</button>
+        <button class="btn btn--primary" type="button" id="sheetApply">Ver resultados</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="/assets/js/main.js"></script>
+  <script src="/assets/js/catalogo.js"></script>
+</body>
+</html>
