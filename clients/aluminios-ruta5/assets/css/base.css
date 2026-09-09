@@ -185,6 +185,7 @@ h1, h2, h3, h4 {
 .nav__logo-word {
   font-family: var(--font-display); font-weight: 700; font-size: .95rem;
   letter-spacing: .06em; text-transform: uppercase; line-height: 1;
+  white-space: nowrap;
 }
 .nav__logo-word b { color: var(--blue); }
 .nav__links { display: flex; align-items: center; gap: .25rem; }
@@ -200,7 +201,8 @@ h1, h2, h3, h4 {
 .nav__actions { display: flex; align-items: center; gap: .5rem; }
 .nav__toggle {
   display: none; width: 46px; height: 46px; border-radius: 50%;
-  align-items: center; justify-content: center;
+  flex-direction: column; align-items: center; justify-content: center;
+  flex: none;
   background: var(--alu-100);
 }
 .nav__toggle span { display: block; width: 20px; height: 2px; background: var(--ink); border-radius: 2px; transition: transform .35s var(--ease-out), opacity .2s; }
@@ -264,6 +266,11 @@ body.menu-open .nav__logo-img--light { display: block; }
 @media (max-width: 900px) {
   .nav__links, .nav__cta { display: none; }
   .nav__toggle { display: inline-flex; }
+  .nav__logo img { height: 30px; }
+  .nav__logo-word { font-size: .82rem; letter-spacing: .05em; }
+}
+@media (max-width: 360px) {
+  .nav__logo-word { display: none; }
 }
 
 /* ---------- Barra fija mobile ---------- */

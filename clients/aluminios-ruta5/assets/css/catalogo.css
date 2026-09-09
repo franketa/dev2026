@@ -111,6 +111,9 @@
   .pcard__price { font-size: .9rem; }
   .pcard__price--ask small { font-size: .68rem; white-space: nowrap; }
   .badge { font-size: .62rem; padding: .25rem .5rem; }
+  .pcard__badges { gap: .25rem; }
+  .grid .pcard__media { aspect-ratio: 1 / 1; }
+  .grid .pcard__media--placeholder img { padding: 30% 12% 12%; }
 }
 .empty { grid-column: 1 / -1; text-align: center; padding: 4rem 1rem; background: #fff; border-radius: var(--radius-lg); border: 1px dashed var(--alu-300); }
 .empty h3 { font-size: var(--text-xl); margin-bottom: .5rem; }
