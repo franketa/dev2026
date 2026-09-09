@@ -55,7 +55,7 @@ En el primer arranque crea `data/db.sqlite`, siembra los productos de `data/prod
 ## Deploy (Coolify)
 
 1. App con Build Pack **Dockerfile**, base dir `/clients/aluminios-ruta5`, puerto 3000.
-2. Variables: `JWT_SECRET` (obligatoria), opcional `ADMIN_EMAIL` / `ADMIN_PASSWORD` para el seed inicial. `NODE_ENV=production` ya viene en el Dockerfile (activa caché de estáticos).
+2. Variables: `JWT_SECRET` (obligatoria), opcional `ADMIN_EMAIL` / `ADMIN_PASSWORD` para el seed inicial. `NODE_ENV=production` ya viene en el Dockerfile (activa caché de estáticos). La imagen es `node:22-slim` porque better-sqlite3 12 no publica binarios para Node 20.
 3. Volúmenes persistentes: `/app/data` (SQLite) y `/app/uploads` (fotos). Sin esto se pierden los datos en cada deploy.
 
 ## Identidad
