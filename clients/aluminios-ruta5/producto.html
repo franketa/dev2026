@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="es-AR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Producto · Aluminios Ruta 5</title>
+  <meta name="description" content="Ficha de producto de Aluminios Ruta 5, distribuidora de aluminio en Chivilcoy.">
+  <meta name="theme-color" content="#ffffff">
+  <link rel="icon" type="image/svg+xml" href="/assets/img/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:ital,wdth,wght@0,62..125,100..900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/base.css">
+  <link rel="stylesheet" href="/assets/css/catalogo.css">
+</head>
+<body>
+
+  <header class="nav nav--solid" id="nav">
+    <div class="container nav__inner">
+      <a href="/" class="nav__logo" aria-label="Aluminios Ruta 5, inicio">
+        <img src="/assets/img/logo.svg" alt="" class="nav__logo-img nav__logo-img--dark" width="60" height="36">
+        <img src="/assets/img/logo-white.svg" alt="" class="nav__logo-img nav__logo-img--light" width="60" height="36">
+        <span class="nav__logo-word">Aluminios Ruta <b>5</b></span>
+      </a>
+      <nav class="nav__links" aria-label="Principal">
+        <a href="/#productos">Productos</a>
+        <a href="/catalogo" aria-current="page">Catálogo</a>
+        <a href="/#nave">Stock y nave</a>
+        <a href="/#envios">Envíos</a>
+        <a href="/#nosotros">Nosotros</a>
+        <a href="/#contacto">Contacto</a>
+      </nav>
+      <div class="nav__actions">
+        <a class="btn btn--primary btn--sm nav__cta" href="https://wa.me/5492346411139?text=Hola%20Aluminios%20Ruta%205%2C%20quiero%20hacer%20una%20consulta." target="_blank" rel="noopener">WhatsApp</a>
+        <button class="nav__toggle" aria-label="Abrir menú" aria-expanded="false" aria-controls="menu"><span></span><span></span><span></span></button>
+      </div>
+    </div>
+  </header>
+
+  <div class="menu" id="menu" aria-hidden="true">
+    <img src="/assets/img/logo-white.svg" alt="" class="menu__bg">
+    <nav class="menu__links" aria-label="Menú">
+      <a href="/#productos">Productos <small>01</small></a>
+      <a href="/catalogo">Catálogo <small>02</small></a>
+      <a href="/#nave">Stock y nave <small>03</small></a>
+      <a href="/#envios">Envíos <small>04</small></a>
+      <a href="/#nosotros">Nosotros <small>05</small></a>
+      <a href="/#contacto">Contacto <small>06</small></a>
+    </nav>
+    <div class="menu__footer">
+      <a class="btn btn--primary btn--block" href="https://wa.me/5492346411139?text=Hola%20Aluminios%20Ruta%205%2C%20quiero%20hacer%20una%20consulta." target="_blank" rel="noopener">Escribinos por WhatsApp</a>
+      <p class="menu__meta">Parque Industrial · Chivilcoy, Buenos Aires<br><a href="mailto:Aluminiosruta5@yahoo.com">Aluminiosruta5@yahoo.com</a> · <a href="tel:+542346411139">2346 41-1139</a></p>
+    </div>
+  </div>
+
+  <main>
+    <div class="product-loading" id="loading">Cargando producto…</div>
+    <section class="product" id="product" hidden>
+      <div class="container">
+        <nav class="crumbs" aria-label="Migas de pan">
+          <a href="/">Inicio</a>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m9 6 6 6-6 6"/></svg>
+          <a href="/catalogo">Catálogo</a>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m9 6 6 6-6 6"/></svg>
+          <a href="/catalogo" id="crumbCat">Categoría</a>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m9 6 6 6-6 6"/></svg>
+          <span id="crumbName">Producto</span>
+        </nav>
+
+        <div class="product__grid">
+          <div class="gallery" id="gallery"></div>
+          <div class="info" id="info"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="related" id="related" hidden>
+      <div class="container">
+        <h2>Otros productos de la categoría</h2>
+        <div class="grid" id="relatedGrid"></div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__grid">
+        <div class="footer__brand">
+          <img src="/assets/img/logo-white.svg" alt="Aluminios Ruta 5">
+          <p>Distribuidora de perfiles, aberturas, wall panels y accesorios de aluminio en el Parque Industrial de Chivilcoy.</p>
+        </div>
+        <div>
+          <h4>Productos</h4>
+          <ul>
+            <li><a href="/catalogo?categoria=Perfiles">Perfiles</a></li>
+            <li><a href="/catalogo?categoria=Aberturas">Aberturas</a></li>
+            <li><a href="/catalogo?categoria=Wall%20Panels">Wall panels</a></li>
+            <li><a href="/catalogo?categoria=Accesorios">Accesorios</a></li>
+            <li><a href="/catalogo?categoria=Herrajes">Herrajes</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Empresa</h4>
+          <ul>
+            <li><a href="/#nave">Stock y nave</a></li>
+            <li><a href="/#envios">Envíos y embalaje</a></li>
+            <li><a href="/#aluminio">Por qué aluminio</a></li>
+            <li><a href="/#nosotros">Nosotros</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Contacto</h4>
+          <ul>
+            <li><a href="https://wa.me/5492346411139" target="_blank" rel="noopener">WhatsApp 2346 41-1139</a></li>
+            <li><a href="mailto:Aluminiosruta5@yahoo.com">Aluminiosruta5@yahoo.com</a></li>
+            <li><a href="https://www.instagram.com/aluminios.ruta5/" target="_blank" rel="noopener">Instagram</a></li>
+            <li><a href="/#contacto">Parque Industrial Chivilcoy</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer__bottom">
+        <span>© <span data-year>2026</span> Aluminios Ruta 5 · Chivilcoy, Buenos Aires</span>
+        <span>Sitio por <a href="https://venturebyte.com.ar" target="_blank" rel="noopener">VentureByte</a></span>
+      </div>
+    </div>
+    <span class="footer__word" aria-hidden="true">RUTA 5</span>
+  </footer>
+
+  <div class="mobile-bar mobile-bar--visible" id="mobileBar">
+    <a href="/catalogo" class="btn btn--ghost">Catálogo</a>
+    <a href="#" class="btn btn--primary" id="mobileWa" target="_blank" rel="noopener">Consultar</a>
+  </div>
+
+  <div class="lightbox" id="lightbox" aria-hidden="true">
+    <button class="lightbox__close" id="lbClose" aria-label="Cerrar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    <button class="lightbox__nav lightbox__nav--prev" id="lbPrev" aria-label="Anterior"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 6-6 6 6 6"/></svg></button>
+    <img id="lbImg" alt="">
+    <button class="lightbox__nav lightbox__nav--next" id="lbNext" aria-label="Siguiente"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg></button>
+  </div>
+
+  <script src="/assets/js/main.js"></script>
+  <script src="/assets/js/producto.js"></script>
+</body>
+</html>
