@@ -109,6 +109,7 @@
   .pcard__meta { font-size: .78rem; }
   .pcard__foot { padding-top: .6rem; }
   .pcard__price { font-size: .9rem; }
+  .pcard__price--ask small { font-size: .68rem; white-space: nowrap; }
   .badge { font-size: .62rem; padding: .25rem .5rem; }
 }
 .empty { grid-column: 1 / -1; text-align: center; padding: 4rem 1rem; background: #fff; border-radius: var(--radius-lg); border: 1px dashed var(--alu-300); }

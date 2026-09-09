@@ -327,6 +327,7 @@ body.menu-open .nav__logo-img--light { display: block; }
 .pcard__foot { display: flex; align-items: center; justify-content: space-between; gap: .75rem; margin-top: auto; padding-top: .8rem; }
 .pcard__price { font-family: var(--font-display); font-weight: 700; font-size: 1.05rem; }
 .pcard__price small { font-weight: 500; font-size: .75rem; color: var(--alu-500); }
+.pcard__price--ask small { white-space: nowrap; }
 .pcard__cta { position: relative; z-index: 1; display: inline-flex; align-items: center; gap: .4rem; font-family: var(--font-display); font-weight: 600; font-size: .85rem; color: var(--ink); }
 .pcard__cta svg { width: 16px; height: 16px; transition: transform .3s var(--ease-out); }
 .pcard:hover .pcard__cta svg { transform: translateX(3px); }
