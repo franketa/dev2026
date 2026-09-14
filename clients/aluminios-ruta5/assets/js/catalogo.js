@@ -10,8 +10,7 @@
   const draft = { categoria: '', linea: '', orden: 'relevancia' }; // estado provisorio del sheet
 
   const TITLES = {
-    'Perfiles': 'Perfiles de aluminio, barra por barra.',
-    'Aberturas': 'Aberturas de todo tipo, a medida.',
+    'Perfiles': 'Perfiles de aluminio, línea por línea.',
     'Wall Panels': 'Wall panels para fachadas con carácter.',
     'Accesorios': 'Accesorios para que todo cierre bien.',
     'Herrajes': 'Herrajes que aguantan el uso diario.'
@@ -92,7 +91,7 @@
   function render() {
     const list = filtered();
     $('resultsCount').innerHTML = list.length === 1 ? '<strong>1</strong> producto' : `<strong>${list.length}</strong> productos`;
-    $('catTitle').textContent = TITLES[state.categoria] || 'Perfiles, aberturas y todo lo demás.';
+    $('catTitle').textContent = TITLES[state.categoria] || 'Perfiles, accesorios y todo lo demás.';
     document.title = (state.categoria ? state.categoria + ' · ' : '') + 'Catálogo · Aluminios Ruta 5';
     if (!list.length) {
       $('grid').innerHTML = `
@@ -106,12 +105,29 @@
         </div>`;
       $('btnReset').addEventListener('click', resetAll);
     } else {
-      $('grid').innerHTML = list.map((p, i) => R5.productCard(p)).join('');
-      [...$('grid').children].forEach((el, i) => { el.style.animationDelay = `${Math.min(i, 12) * 40}ms`; });
+      $('grid').innerHTML = grouped(list).map(([titulo, items]) => `
+        <div class="grid__head">
+          <h2>${e(titulo)}</h2>
+          ${items.some(p => p.codigo) ? `<span>${items.map(p => p.codigo).filter(Boolean).map(e).join(' · ')}</span>` : ''}
+        </div>` + items.map(p => R5.productCard(p)).join('')).join('');
+      [...$('grid').querySelectorAll('.pcard')].forEach((el, i) => { el.style.animationDelay = `${Math.min(i, 12) * 40}ms`; });
     }
     renderChips();
     renderActive();
     writeURL();
+  }
+
+  // Agrupa por línea (carátula "Línea Herrero" arriba de cada bloque, con sus códigos).
+  // Los productos sin línea se agrupan por categoría, al final.
+  function grouped(list) {
+    const groups = new Map();
+    list.forEach(p => {
+      const k = p.linea ? `Línea ${p.linea}` : (p.categoria || 'Otros');
+      if (!groups.has(k)) groups.set(k, []);
+      groups.get(k).push(p);
+    });
+    const rank = k => { const i = catalogos.lineas.indexOf(k.replace(/^Línea /, '')); return k.startsWith('Línea ') ? (i < 0 ? 900 : i) : 1000; };
+    return [...groups.entries()].sort((a, b) => rank(a[0]) - rank(b[0]));
   }
 
   function resetAll() {

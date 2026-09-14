@@ -85,7 +85,7 @@
   };
   R5.placeholderFor = function (categoria) {
     const map = {
-      'Perfiles': 'perfil', 'Aberturas': 'abertura', 'Wall Panels': 'panel',
+      'Perfiles': 'perfil', 'Wall Panels': 'panel',
       'Accesorios': 'accesorio', 'Herrajes': 'herraje'
     };
     return `/assets/img/ph/${map[categoria] || 'perfil'}.svg`;

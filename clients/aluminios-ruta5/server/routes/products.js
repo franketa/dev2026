@@ -13,10 +13,10 @@ const MAX_GALLERY = 8;
 const UPLOAD_ROOT = path.join(__dirname, '..', '..', 'uploads', 'products');
 
 const CATALOGOS = {
-  categorias: ['Perfiles', 'Aberturas', 'Wall Panels', 'Accesorios', 'Herrajes'],
+  categorias: ['Perfiles', 'Accesorios', 'Wall Panels', 'Herrajes'],
   lineas: ['Modena', 'A30', 'Herrero', 'Línea 20', 'Universal'],
   terminaciones: ['Anodizado natural', 'Blanco', 'Negro', 'Bronce', 'Gris', 'Símil madera', 'Crudo'],
-  unidades: ['unidad', 'barra', 'metro', 'm²', 'juego', 'bolsa', 'rollo', 'caja'],
+  unidades: ['unidad', 'perfil', 'metro', 'm²', 'juego', 'bolsa', 'rollo', 'caja'],
   stocks: [
     { value: 'disponible', label: 'En stock' },
     { value: 'a-pedido', label: 'A pedido' },

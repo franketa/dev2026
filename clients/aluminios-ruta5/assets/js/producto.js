@@ -67,6 +67,7 @@
     $('info').innerHTML = `
       <div class="info__cat">
         <a href="/catalogo?categoria=${encodeURIComponent(p.categoria)}">${e(p.categoria)}</a>
+        ${p.linea ? `<a href="/catalogo?linea=${encodeURIComponent(p.linea)}">Línea ${e(p.linea)}</a>` : ''}
         ${p.codigo ? `<span class="info__code">Cód. ${e(p.codigo)}</span>` : ''}
       </div>
       <h1>${e(p.nombre)}</h1>

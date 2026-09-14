@@ -84,6 +84,28 @@ function initDB() {
   if (db.prepare('SELECT COUNT(*) AS c FROM products').get().c === 0) {
     seedProducts(db);
   }
+
+  runMigrations(db);
+}
+
+// Ajustes puntuales sobre bases ya sembradas. Cada clave corre una sola vez.
+function runMigrations(db) {
+  db.exec('CREATE TABLE IF NOT EXISTS meta (key TEXT PRIMARY KEY, value TEXT)');
+  const done = key => !!db.prepare('SELECT 1 FROM meta WHERE key = ?').get(key);
+  const mark = key => db.prepare('INSERT OR REPLACE INTO meta (key, value) VALUES (?, ?)').run(key, new Date().toISOString());
+
+  // 2026-09: no fabrican aberturas → se ocultan (no se borran) los productos de esa categoría,
+  // y "barra" pasa a llamarse "perfil" en unidad y medidas.
+  if (!done('2026-09-sin-aberturas')) {
+    db.transaction(() => {
+      const ocultos = db.prepare("UPDATE products SET activo = 0, destacado = 0 WHERE categoria = 'Aberturas' AND activo = 1").run().changes;
+      db.prepare("UPDATE products SET unidad = 'perfil' WHERE unidad = 'barra'").run();
+      db.prepare("UPDATE products SET medidas = 'Largo ' || substr(medidas, 10) WHERE medidas LIKE 'Barra de %'").run();
+      db.prepare("UPDATE products SET descripcion = replace(descripcion, 'Se entrega en barras protegidas con film individual.', 'Se entrega con film protector individual.')").run();
+      mark('2026-09-sin-aberturas');
+      console.log(`Migración 2026-09-sin-aberturas aplicada (${ocultos} aberturas ocultas)`);
+    })();
+  }
 }
 
 const INSERT_SQL = `

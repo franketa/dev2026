@@ -1,6 +1,6 @@
 # Aluminios Ruta 5
 
-Sitio web + catálogo administrable para **Aluminios Ruta 5**, distribuidora de aluminio de Rubén Darío Meletto en el Parque Industrial de Chivilcoy. Perfiles (Modena, A30, Herrero), aberturas de todo tipo, wall panels, accesorios y herrajes.
+Sitio web + catálogo administrable para **Aluminios Ruta 5**, distribuidora de aluminio de Rubén Darío Meletto en el Parque Industrial de Chivilcoy. Perfiles (líneas Modena, A30 y Herrero), accesorios y wall panels. **No fabrican aberturas**: el sitio no debe mencionarlas.
 
 > **Estado:** sitio, catálogo, ficha de producto, backend y panel admin funcionales. Los 20 productos y las fotos de secciones son **placeholders** a reemplazar con material real del cliente.
 
@@ -66,7 +66,8 @@ En el primer arranque crea `data/db.sqlite`, siembra los productos de `data/prod
 
 ## Datos del negocio
 
-- **Dirección:** Parque Industrial, Chivilcoy, Buenos Aires
+- **Dirección:** Parque Industrial de Chivilcoy, galpón N° 111, Chivilcoy, Buenos Aires
+- **Horario:** lunes a viernes de 8 a 16 h
 - **WhatsApp / Tel.:** 2346 41-1139 (`+54 9 2346 41-1139`)
 - **Email:** Aluminiosruta5@yahoo.com
 - **Instagram:** [@aluminios.ruta5](https://www.instagram.com/aluminios.ruta5/)
@@ -75,6 +76,13 @@ En el primer arranque crea `data/db.sqlite`, siembra los productos de `data/prod
 
 - Reemplazar las fotos placeholder (Unsplash) de hero, nave, "por qué aluminio" por fotos reales; cargar fotos de productos desde el panel.
 - Validar el catálogo: nombres, líneas, medidas, terminaciones y qué productos se destacan.
-- Confirmar **horario de atención** (el sitio muestra Lun–Vie 8 a 17 h, Sáb 8 a 12 h como placeholder) y la dirección exacta dentro del parque industrial para el mapa.
+- **Líneas de perfiles pendientes de confirmar** con el cliente (las habla con su papá): Línea Herrero, Modena, Rotonda 640, A-30, A-40, ALB 4C, IBM, Baranda y Deco (tubo, ángulo, Wall Panel). Cuando estén confirmadas, cargarlas en `CATALOGOS.lineas` (`server/routes/products.js`) y en la barra celeste de la home.
+- Catálogo del cliente: cada hoja lleva arriba el nombre de la línea ("Línea Herrero") con sus códigos, y una carátula cada vez que cambia de línea. El catálogo web replica eso agrupando por línea con una cabecera por grupo.
+- Terminaciones: blanco y negro en stock; el resto (incluido el anodizado natural) es por pedido, en menos de 30 días.
+- Ajustar el pin del mapa al galpón 111 cuando se tenga la ubicación exacta.
 - Confirmar el testimonio de "Silmar Aberturas" (tomado de un comentario público en Instagram).
 - Setear `JWT_SECRET` en Coolify y cambiar la contraseña del admin.
+
+## Migraciones
+
+`server/db.js` corre ajustes únicos sobre bases ya sembradas (tabla `meta`). La migración `2026-09-sin-aberturas` oculta (no borra) los productos de la categoría Aberturas y renombra la unidad `barra` → `perfil`. Los productos ocultos siguen visibles en el panel admin para borrarlos a mano.

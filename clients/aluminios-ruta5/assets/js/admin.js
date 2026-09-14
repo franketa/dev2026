@@ -6,7 +6,7 @@
   const MAX_GALLERY = 8;
   const $ = id => document.getElementById(id);
   const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-  const PH = { 'Perfiles': 'perfil', 'Aberturas': 'abertura', 'Wall Panels': 'panel', 'Accesorios': 'accesorio', 'Herrajes': 'herraje' };
+  const PH = { 'Perfiles': 'perfil', 'Wall Panels': 'panel', 'Accesorios': 'accesorio', 'Herrajes': 'herraje' };
   const placeholder = c => `/assets/img/ph/${PH[c] || 'perfil'}.svg`;
 
   let products = [];
