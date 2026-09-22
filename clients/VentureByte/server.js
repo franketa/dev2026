@@ -93,7 +93,9 @@ if (!process.env.TRACKER_ADMIN_KEY || !process.env.TRACKER_EMPLOYEE_KEY) {
 
 // Usuarios con cuenta propia (email + clave). Se pueden sobreescribir con
 // TRACKER_USERS='[{"email":"...","password":"...","name":"...","role":"employee"}]'
+// Franco entra con la misma clave de admin (TRACKER_ADMIN_KEY).
 const DEFAULT_USERS = [
+  { email: 'franco@venturebyte.com.ar', password: ADMIN_KEY, name: 'Franco', role: 'admin' },
   { email: 'lucas@venturebyte.com.ar', password: '123456', name: 'Lucas', role: 'employee' },
 ];
 let USERS = DEFAULT_USERS;
