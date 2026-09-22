@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="robots" content="noindex, nofollow" />
-  <title>Panel de tiempo — VentureByte</title>
+  <title>Panel interno — VentureByte</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230A5CF5'/%3E%3Ctext x='16' y='23' text-anchor='middle' font-family='Georgia,serif' font-size='20' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -28,6 +28,7 @@
       --radius: 12px;
     }
     * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scrollbar-color: rgba(148, 170, 255, 0.28) transparent; }
     body {
       background: var(--bg);
       color: var(--text);
@@ -182,9 +183,144 @@
     .toast--show { opacity: 1; }
     .toast--err { border-color: var(--danger); }
 
+    .label-hint { text-transform: none; letter-spacing: 0; color: var(--dim); opacity: 0.8; }
+    .tab__count {
+      display: inline-block; min-width: 1.25rem; padding: 0 0.35rem; margin-left: 0.4rem;
+      border-radius: 999px; background: var(--primary); color: #fff; font-size: 0.62rem; line-height: 1.25rem; text-align: center;
+    }
+    .tab__count:empty { display: none; }
+
+    /* ---- Tablero de tareas ---- */
+    .wrap--wide { max-width: 1240px; }
+    .board-head { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; margin-bottom: 0.9rem; flex-wrap: wrap; }
+    .board-head__title { font-family: var(--font-display); font-size: 1.25rem; font-weight: 600; }
+    .board-head__hint { color: var(--dim); font-size: 0.82rem; }
+    .board {
+      display: flex; gap: 0.75rem; overflow-x: auto; scroll-snap-type: x mandatory;
+      margin: 0 -1rem; padding: 0 1rem 0.75rem; -webkit-overflow-scrolling: touch;
+      scrollbar-width: thin; scrollbar-color: var(--line-strong) transparent;
+    }
+    .col {
+      flex: 0 0 min(82vw, 320px); scroll-snap-align: start;
+      background: var(--card); border: 1px solid var(--line); border-radius: var(--radius);
+      display: flex; flex-direction: column; min-height: 220px; max-height: 72vh;
+    }
+    .col--todo { --col: #9fb3ff; }
+    .col--doing { --col: #4D8CF5; }
+    .col--review { --col: #f5b84d; }
+    .col--done { --col: #7ee2a8; }
+    .col__head { display: flex; align-items: center; gap: 0.5rem; padding: 0.8rem 0.85rem 0.6rem; border-bottom: 1px solid var(--line); }
+    .col__dot { width: 8px; height: 8px; border-radius: 50%; background: var(--col); flex-shrink: 0; }
+    .col__name { font-family: var(--font-mono); font-size: 0.66rem; text-transform: uppercase; letter-spacing: 0.14em; color: var(--dim-strong); flex: 1; }
+    .col__count { font-family: var(--font-mono); font-size: 0.7rem; color: var(--dim); font-variant-numeric: tabular-nums; }
+    .col__add {
+      background: transparent; border: 1px solid var(--line-strong); color: var(--dim-strong);
+      width: 26px; height: 26px; border-radius: 6px; cursor: pointer; font-size: 1rem; line-height: 1;
+      display: inline-flex; align-items: center; justify-content: center; transition: all 0.2s ease;
+    }
+    .col__add:hover { border-color: var(--primary); color: #fff; }
+    .col__quick { padding: 0.6rem 0.65rem 0; }
+    .col__quick input { padding: 0.5rem 0.65rem; font-size: 0.9rem; }
+    .col__body { padding: 0.65rem; overflow-y: auto; flex: 1; display: flex; flex-direction: column; gap: 0.5rem; }
+    .col__empty { color: var(--dim); font-size: 0.82rem; text-align: center; padding: 1.2rem 0.5rem; }
+    .col__more { color: var(--dim); font-family: var(--font-mono); font-size: 0.68rem; text-align: center; padding: 0.4rem 0; }
+
+    .task {
+      background: var(--ink); border: 1px solid var(--line); border-radius: 9px; padding: 0.7rem 0.75rem;
+      cursor: pointer; transition: border-color 0.2s ease, transform 0.15s ease; text-align: left; width: 100%;
+      color: var(--text); font-family: var(--font-body);
+    }
+    .task:hover { border-color: var(--line-strong); }
+    .task:active { transform: scale(0.99); }
+    .task--alta { border-left: 3px solid var(--danger); }
+    .task--baja { opacity: 0.85; }
+    .task--done .task__title { color: var(--dim); text-decoration: line-through; }
+    .task__title { font-weight: 600; font-size: 0.92rem; line-height: 1.35; overflow-wrap: anywhere; }
+    .task__meta { display: flex; flex-wrap: wrap; align-items: center; gap: 0.35rem 0.5rem; margin-top: 0.55rem; }
+    .task__meta:empty { display: none; }
+    .mini {
+      font-family: var(--font-mono); font-size: 0.62rem; letter-spacing: 0.04em; color: var(--dim);
+      border: 1px solid var(--line); border-radius: 999px; padding: 0.15rem 0.5rem; white-space: nowrap;
+      max-width: 100%; overflow: hidden; text-overflow: ellipsis;
+    }
+    .mini--project { color: var(--accent); border-color: rgba(77, 140, 245, 0.35); }
+    .mini--late { color: #ff7b7b; border-color: rgba(240, 61, 61, 0.45); }
+    .mini--soon { color: #f5b84d; border-color: rgba(245, 184, 77, 0.4); }
+    .avatar {
+      width: 22px; height: 22px; border-radius: 50%; background: rgba(10, 92, 245, 0.25); color: #fff;
+      font-family: var(--font-mono); font-size: 0.62rem; font-weight: 600; display: inline-flex; align-items: center; justify-content: center;
+      margin-left: auto; flex-shrink: 0; border: 1px solid rgba(77, 140, 245, 0.4);
+    }
+
+    /* ---- Diálogo de tarea ---- */
+    dialog.sheet {
+      border: 1px solid var(--line-strong); border-radius: 16px 16px 0 0; background: var(--card); color: var(--text);
+      padding: 0; width: 100%; max-width: 100%; margin: auto 0 0; max-height: 92vh;
+      box-shadow: 0 -20px 60px rgba(0, 0, 0, 0.5);
+    }
+    dialog.sheet::backdrop { background: rgba(4, 7, 20, 0.7); backdrop-filter: blur(3px); }
+    dialog.sheet[open] { display: flex; flex-direction: column; }
+    .sheet__head { display: flex; align-items: center; gap: 0.6rem; padding: 0.9rem 1rem 0.6rem; border-bottom: 1px solid var(--line); }
+    .sheet__close {
+      margin-left: auto; background: transparent; border: 1px solid var(--line-strong); color: var(--dim-strong);
+      width: 32px; height: 32px; border-radius: 8px; cursor: pointer; font-size: 1.1rem; line-height: 1; flex-shrink: 0;
+    }
+    .sheet__body { padding: 1rem; overflow-y: auto; flex: 1; }
+    .sheet__title {
+      width: 100%; background: transparent; border: none; border-bottom: 1px solid transparent; border-radius: 0; padding: 0.2rem 0;
+      font-family: var(--font-display); font-size: 1.3rem; font-weight: 600; color: var(--text); line-height: 1.3;
+    }
+    .sheet__title:focus { border-bottom-color: var(--primary); }
+    .sheet__title[readonly] { cursor: default; }
+    .sheet__by { color: var(--dim); font-family: var(--font-mono); font-size: 0.66rem; margin: 0.35rem 0 1rem; }
+    .seg { display: flex; gap: 0.3rem; flex: 1; min-width: 0; }
+    .seg__btn {
+      flex: 1 1 0; min-width: 0; background: transparent; border: 1px solid var(--line); color: var(--dim-strong);
+      font-family: var(--font-mono); font-size: 0.64rem; text-transform: uppercase; letter-spacing: 0.08em;
+      padding: 0.5rem 0.4rem; border-radius: 8px; cursor: pointer; transition: all 0.2s ease;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .seg__btn--on { border-color: var(--col, var(--primary)); color: #fff; background: color-mix(in srgb, var(--col, var(--primary)) 22%, transparent); }
+    .seg__btn[data-status="todo"] { --col: #9fb3ff; }
+    .seg__btn[data-status="doing"] { --col: #4D8CF5; }
+    .seg__btn[data-status="review"] { --col: #f5b84d; }
+    .seg__btn[data-status="done"] { --col: #7ee2a8; }
+    .sheet__grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin: 1rem 0; }
+    .sheet__grid select, .sheet__grid input { padding: 0.5rem 0.65rem; font-size: 0.9rem; }
+    .sheet__desc { min-height: 96px; resize: vertical; font-size: 0.92rem; line-height: 1.5; }
+    .sheet__desc[readonly] { border-color: var(--line); color: var(--dim-strong); }
+    .sheet__actions { display: flex; gap: 0.6rem; flex-wrap: wrap; margin-top: 0.9rem; }
+    .sheet__actions .btn--danger { margin-left: auto; }
+
+    .comments { margin-top: 1.5rem; border-top: 1px solid var(--line); padding-top: 1rem; }
+    .comment { padding: 0.55rem 0; border-bottom: 1px solid var(--line); }
+    .comment:last-child { border-bottom: none; }
+    .comment__head { display: flex; align-items: baseline; gap: 0.5rem; font-size: 0.78rem; }
+    .comment__author { font-weight: 600; }
+    .comment__author--admin { color: var(--accent); }
+    .comment__time { color: var(--dim); font-family: var(--font-mono); font-size: 0.66rem; }
+    .comment__del { margin-left: auto; background: none; border: none; color: var(--dim); cursor: pointer; font-size: 0.72rem; padding: 0; }
+    .comment__del:hover { color: var(--danger); }
+    .comment__text { font-size: 0.9rem; line-height: 1.5; margin-top: 0.2rem; white-space: pre-wrap; overflow-wrap: anywhere; }
+    .comment--system { padding: 0.35rem 0; }
+    .comment--system .comment__text { color: var(--dim); font-size: 0.8rem; font-style: italic; margin: 0; }
+    .comment-form { display: flex; gap: 0.5rem; margin-top: 0.75rem; align-items: flex-end; }
+    .comment-form textarea { flex: 1; min-height: 44px; max-height: 160px; resize: none; font-size: 0.9rem; line-height: 1.4; padding: 0.55rem 0.7rem; display: block; }
+    .comment-form .btn { height: 44px; padding: 0 1rem; }
+
+    .entry__user { font-family: var(--font-mono); font-size: 0.62rem; color: var(--accent); text-transform: uppercase; letter-spacing: 0.08em; margin-top: 0.15rem; }
+
+    @media (min-width: 900px) {
+      .board { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); overflow: visible; margin: 0; padding: 0; }
+      .col { flex: initial; max-height: none; min-height: 320px; }
+      .col__body { max-height: 64vh; }
+      dialog.sheet { border-radius: var(--radius); max-width: 640px; margin: auto; max-height: 88vh; }
+    }
     @media (max-width: 560px) {
       .stats { grid-template-columns: 1fr; }
       .top { flex-wrap: wrap; gap: 0.6rem; }
+      .sheet__grid { grid-template-columns: 1fr; }
+      .seg__btn { font-size: 0.6rem; padding: 0.5rem 0.25rem; }
     }
   </style>
 </head>
@@ -195,8 +331,12 @@
     <section id="view-login" class="login hidden">
       <div class="card">
         <h1 class="login__title">VENTURE<span style="color: var(--primary)">.</span></h1>
-        <p class="login__sub">Panel interno de tiempo. Ingresá tu clave de acceso.</p>
+        <p class="login__sub">Panel interno de tiempo y tareas. Ingresá con tu usuario o con la clave del equipo.</p>
         <form id="login-form">
+          <div class="field">
+            <label for="login-email">Email <span class="label-hint">(solo si tenés usuario)</span></label>
+            <input type="email" id="login-email" autocomplete="username" placeholder="nombre@venturebyte.com.ar" />
+          </div>
           <div class="field">
             <label for="login-key">Clave</label>
             <input type="password" id="login-key" autocomplete="current-password" required />
@@ -211,7 +351,7 @@
       <header class="top">
         <div class="top__brand">
           <span class="top__logo">VENTURE<span style="color: var(--primary)">.</span></span>
-          <span class="top__tag">Tiempo</span>
+          <span class="top__tag">Panel</span>
         </div>
         <div class="top__actions">
           <span class="top__role" id="role-badge"></span>
@@ -221,6 +361,12 @@
 
       <!-- ===== Vista empleado ===== -->
       <section id="view-employee" class="hidden">
+        <div class="tabs" data-scope="employee">
+          <button class="tab tab--active" data-tab="time">Tiempo</button>
+          <button class="tab" data-tab="tasks">Tareas<span class="tab__count" id="count-tasks-emp"></span></button>
+        </div>
+
+        <div id="tab-time">
         <div class="card timer">
           <div class="card__label">Timer</div>
           <div class="timer__clock" id="clock">00:00:00</div>
@@ -290,13 +436,15 @@
           <div class="card__label">Registros de hoy</div>
           <div id="today-list"></div>
         </div>
+        </div><!-- /tab-time -->
       </section>
 
       <!-- ===== Vista admin ===== -->
       <section id="view-admin" class="hidden">
-        <div class="tabs">
+        <div class="tabs" data-scope="admin">
           <button class="tab tab--active" data-tab="records">Registros</button>
           <button class="tab" data-tab="projects">Trabajos</button>
+          <button class="tab" data-tab="tasks">Tareas<span class="tab__count" id="count-tasks-adm"></span></button>
         </div>
 
         <div id="tab-records">
@@ -340,8 +488,71 @@
           </div>
         </div>
       </section>
+
+      <!-- ===== Tareas (compartido admin / equipo) ===== -->
+      <section id="tab-tasks" class="hidden">
+        <div class="board-head">
+          <div>
+            <div class="board-head__title">Tablero</div>
+            <div class="board-head__hint" id="board-hint">Tocá una tarea para ver el detalle y comentar.</div>
+          </div>
+          <button class="btn btn--sm" id="btn-new-task">+ Nueva tarea</button>
+        </div>
+        <div class="board" id="board"></div>
+      </section>
     </div>
   </div>
+
+  <dialog class="sheet" id="task-dialog">
+    <form method="dialog" class="sheet__head" id="task-status-form">
+      <div class="seg" id="task-status"></div>
+      <button type="submit" class="sheet__close" aria-label="Cerrar" formnovalidate>×</button>
+    </form>
+    <div class="sheet__body">
+      <input type="text" class="sheet__title" id="t-title" maxlength="140" placeholder="Título de la tarea" />
+      <div class="sheet__by" id="t-by"></div>
+      <div class="sheet__grid">
+        <div>
+          <label for="t-project">Trabajo</label>
+          <select id="t-project"></select>
+        </div>
+        <div>
+          <label for="t-assignee">Responsable</label>
+          <select id="t-assignee"></select>
+        </div>
+        <div>
+          <label for="t-priority">Prioridad</label>
+          <select id="t-priority">
+            <option value="baja">Baja</option>
+            <option value="normal">Normal</option>
+            <option value="alta">Alta</option>
+          </select>
+        </div>
+        <div>
+          <label for="t-due">Fecha límite</label>
+          <input type="date" id="t-due" />
+        </div>
+      </div>
+      <div class="field">
+        <label for="t-desc">Descripción</label>
+        <textarea id="t-desc" class="sheet__desc" maxlength="4000" placeholder="Detalle, links, criterios para darla por lista…"></textarea>
+      </div>
+      <div class="sheet__actions">
+        <button class="btn" id="t-save">Guardar</button>
+        <button class="btn btn--ghost hidden" id="t-track">▶ Iniciar timer</button>
+        <button class="btn btn--danger btn--sm hidden" id="t-delete">Borrar</button>
+      </div>
+
+      <div class="comments" id="t-comments-wrap">
+        <div class="card__label">Comentarios</div>
+        <div id="t-comments"></div>
+        <form class="comment-form" id="comment-form">
+          <textarea id="c-text" maxlength="2000" placeholder="Escribí un comentario…" rows="1" required></textarea>
+          <button type="submit" class="btn btn--sm">Enviar</button>
+        </form>
+      </div>
+    </div>
+  </dialog>
 
   <div class="toast" id="toast"></div>
 
@@ -350,8 +561,11 @@
       'use strict';
       const $ = (id) => document.getElementById(id);
       const KEY_STORAGE = 'vb_tracker_key';
+      const USER_STORAGE = 'vb_tracker_user';
+      const TAB_STORAGE = 'vb_tracker_tab';
 
-      let state = { role: null, projects: [], entries: [], running: null };
+      const EMPTY_STATE = { role: null, user: null, users: [], projects: [], entries: [], tasks: [], running: null };
+      let state = { ...EMPTY_STATE };
       let clockInterval = null;
 
       /* ---------- API ---------- */
@@ -361,6 +575,7 @@
           headers: {
             'Content-Type': 'application/json',
             'x-tracker-key': localStorage.getItem(KEY_STORAGE) || '',
+            'x-tracker-user': localStorage.getItem(USER_STORAGE) || '',
             ...(opts.headers || {}),
           },
         });
@@ -381,6 +596,8 @@
       }
 
       const projectName = (id) => (state.projects.find((p) => p.id === id) || {}).name || '—';
+      const userName = (email) => (state.users.find((u) => u.email === email) || {}).name || (email ? email.split('@')[0] : '');
+      const isAdmin = () => state.role === 'admin';
       const pausedMs = (e) => (e.pauses || []).reduce((a, p) => a + (new Date(p.end || e.end || Date.now()) - new Date(p.start)), 0);
       const durationMs = (e) => new Date(e.end || Date.now()) - new Date(e.start) - pausedMs(e);
       const isPaused = (e) => !!e && (e.pauses || []).some((p) => !p.end);
@@ -418,18 +635,42 @@
         $('view-app').classList.toggle('hidden', view === 'login');
         $('view-employee').classList.toggle('hidden', view !== 'employee');
         $('view-admin').classList.toggle('hidden', view !== 'admin');
+        if (view === 'login') {
+          $('tab-tasks').classList.add('hidden');
+          document.querySelector('.wrap').classList.remove('wrap--wide');
+        }
       }
 
+      /* Pestañas: cada vista tiene su grupo; "tasks" es un panel compartido */
+      const TABS = { employee: ['time', 'tasks'], admin: ['records', 'projects', 'tasks'] };
+      function currentTab() {
+        const scope = state.role === 'admin' ? 'admin' : 'employee';
+        const saved = localStorage.getItem(TAB_STORAGE + '_' + scope);
+        return TABS[scope].includes(saved) ? saved : TABS[scope][0];
+      }
+      function activateTab(name) {
+        const scope = state.role === 'admin' ? 'admin' : 'employee';
+        if (!TABS[scope].includes(name)) name = TABS[scope][0];
+        localStorage.setItem(TAB_STORAGE + '_' + scope, name);
+        document.querySelectorAll(`.tabs[data-scope="${scope}"] .tab`).forEach((t) => t.classList.toggle('tab--active', t.dataset.tab === name));
+        TABS[scope].forEach((n) => { const el = $('tab-' + n); if (el) el.classList.toggle('hidden', n !== name); });
+        document.querySelector('.wrap').classList.toggle('wrap--wide', name === 'tasks');
+      }
+      document.querySelectorAll('.tabs .tab').forEach((t) => t.addEventListener('click', () => activateTab(t.dataset.tab)));
+
       function logout(clear = true) {
-        if (clear) localStorage.removeItem(KEY_STORAGE);
+        if (clear) { localStorage.removeItem(KEY_STORAGE); localStorage.removeItem(USER_STORAGE); }
         clearInterval(clockInterval);
-        state = { role: null, projects: [], entries: [], running: null };
+        state = { ...EMPTY_STATE };
+        if ($('task-dialog').open) $('task-dialog').close();
         show('login');
       }
 
       async function refresh() {
         state = await api('/state');
-        $('role-badge').textContent = state.role === 'admin' ? 'Admin' : 'Equipo';
+        state.tasks = state.tasks || [];
+        state.users = state.users || [];
+        $('role-badge').textContent = state.user?.name || (state.role === 'admin' ? 'Admin' : 'Equipo');
         if (state.role === 'admin') {
           show('admin');
           renderAdmin();
@@ -437,6 +678,8 @@
           show('employee');
           renderEmployee();
         }
+        renderTasks();
+        activateTab(currentTab());
       }
 
       /* ---------- Empleado ---------- */
@@ -622,7 +865,7 @@
           <tr>
             <td class="mono">${fmtDate(e.start)}${e.manual ? '<div class="tag-manual">manual</div>' : ''}</td>
             <td>${esc(projectName(e.projectId))}</td>
-            <td>${esc(e.memo) || '<span style="color:var(--dim)">—</span>'}</td>
+            <td>${esc(e.memo) || '<span style="color:var(--dim)">—</span>'}${e.user ? `<div class="entry__user">${esc(userName(e.user))}</div>` : ''}</td>
             <td class="mono">${fmtTime(e.start)}–${e.end ? fmtTime(e.end) : '<span class="pulse"></span>ahora'}</td>
             <td class="mono">${e.end ? fmtDur(durationMs(e)) : (isPaused(e) ? 'en pausa' : 'en curso')}${pausedMs(e) >= 60000 ? `<div class="entry__time">${fmtDur(pausedMs(e))} pausa</div>` : ''}</td>
             <td><button class="btn btn--ghost btn--sm" data-del="${e.id}">Borrar</button></td>
@@ -641,12 +884,6 @@
               </div>`).join('')
           : '<div class="empty">Sin trabajos. Agregá el primero arriba.</div>';
       }
-
-      document.querySelectorAll('.tab').forEach((t) => t.addEventListener('click', () => {
-        document.querySelectorAll('.tab').forEach((x) => x.classList.toggle('tab--active', x === t));
-        $('tab-records').classList.toggle('hidden', t.dataset.tab !== 'records');
-        $('tab-projects').classList.toggle('hidden', t.dataset.tab !== 'projects');
-      }));
 
       ['f-from', 'f-to', 'f-project'].forEach((id) => $(id).addEventListener('change', renderRecords));
 
@@ -701,18 +938,322 @@
         } catch (e) { toast(e.message, true); }
       });
 
+      /* ---------- Tareas ---------- */
+      const STATUSES = [
+        { id: 'todo', label: 'Por hacer' },
+        { id: 'doing', label: 'En curso' },
+        { id: 'review', label: 'Para revisar', short: 'Revisar' },
+        { id: 'done', label: 'Listo' },
+      ];
+      const PRIO_RANK = { alta: 0, normal: 1, baja: 2 };
+      const DONE_VISIBLE_DAYS = 30;
+      let openTaskId = null;
+      let quickAddStatus = null;
+
+      const statusLabel = (id) => (STATUSES.find((s) => s.id === id) || {}).label || id;
+      const initials = (name) => (name || '?').split(/\s+/).map((w) => w[0]).join('').slice(0, 2).toUpperCase();
+      const canEdit = (t) => isAdmin() || (!!t.createdBy && t.createdBy === state.user?.email);
+      const todayKey = () => dayKey(new Date());
+
+      function dueChip(t) {
+        if (!t.dueDate || t.status === 'done') return '';
+        const today = todayKey();
+        const d = new Date(t.dueDate + 'T00:00:00');
+        const label = d.toLocaleDateString('es-AR', { day: '2-digit', month: 'short' }).replace('.', '');
+        const cls = t.dueDate < today ? 'mini--late' : (t.dueDate === today ? 'mini--soon' : '');
+        return `<span class="mini ${cls}">${t.dueDate < today ? 'vencida · ' : ''}${esc(label)}</span>`;
+      }
+
+      function sortTasks(list, status) {
+        return list.slice().sort((a, b) => {
+          if (status === 'done') return new Date(b.updatedAt) - new Date(a.updatedAt);
+          const pr = PRIO_RANK[a.priority] - PRIO_RANK[b.priority];
+          if (pr) return pr;
+          if (a.dueDate !== b.dueDate) return (a.dueDate || '9999') < (b.dueDate || '9999') ? -1 : 1;
+          return new Date(a.createdAt) - new Date(b.createdAt);
+        });
+      }
+
+      function renderTasks() {
+        const tasks = state.tasks;
+        const cutoff = Date.now() - DONE_VISIBLE_DAYS * 86400000;
+
+        // Contadores en las pestañas
+        const mine = tasks.filter((t) => t.status !== 'done' && (!state.user?.email || t.assignee === state.user.email || !t.assignee));
+        $('count-tasks-emp').textContent = mine.length || '';
+        const review = tasks.filter((t) => t.status === 'review').length;
+        $('count-tasks-adm').textContent = review || '';
+
+        $('board-hint').textContent = isAdmin()
+          ? 'Tocá una tarea para editarla, asignarla o comentar. El "+" de cada columna crea una tarea en ese estado.'
+          : 'Tocá una tarea para ver el detalle, cambiar el estado o comentar.';
+
+        $('board').innerHTML = STATUSES.map((st) => {
+          let list = tasks.filter((t) => t.status === st.id);
+          let hiddenCount = 0;
+          if (st.id === 'done') {
+            const recent = list.filter((t) => new Date(t.updatedAt).getTime() >= cutoff);
+            hiddenCount = list.length - recent.length;
+            list = recent;
+          }
+          list = sortTasks(list, st.id);
+          const cards = list.map((t) => `
+            <button type="button" class="task task--${t.priority} ${t.status === 'done' ? 'task--done' : ''}" data-open="${t.id}">
+              <div class="task__title">${esc(t.title)}</div>
+              <div class="task__meta">
+                ${t.priority === 'alta' ? '<span class="mini mini--late">alta</span>' : ''}
+                ${t.projectId ? `<span class="mini mini--project">${esc(projectName(t.projectId))}</span>` : ''}
+                ${dueChip(t)}
+                ${t.comments.filter((c) => !c.system).length ? `<span class="mini">💬 ${t.comments.filter((c) => !c.system).length}</span>` : ''}
+                ${t.assignee ? `<span class="avatar" title="${esc(userName(t.assignee))}">${esc(initials(userName(t.assignee)))}</span>` : ''}
+              </div>
+            </button>`).join('');
+          return `
+            <div class="col col--${st.id}" data-status="${st.id}">
+              <div class="col__head">
+                <span class="col__dot"></span>
+                <span class="col__name">${st.label}</span>
+                <span class="col__count">${list.length}</span>
+                <button type="button" class="col__add" data-quick="${st.id}" title="Nueva tarea en ${st.label}">+</button>
+              </div>
+              <div class="col__quick ${quickAddStatus === st.id ? '' : 'hidden'}">
+                <input type="text" maxlength="140" placeholder="Título y Enter…" data-quick-input="${st.id}" />
+              </div>
+              <div class="col__body">
+                ${cards || `<div class="col__empty">${st.id === 'done' ? 'Nada terminado todavía' : 'Sin tareas'}</div>`}
+                ${hiddenCount ? `<div class="col__more">${hiddenCount} más de hace +${DONE_VISIBLE_DAYS} días</div>` : ''}
+              </div>
+            </div>`;
+        }).join('');
+
+        if (quickAddStatus) {
+          const inp = document.querySelector(`[data-quick-input="${quickAddStatus}"]`);
+          if (inp) inp.focus();
+        }
+        if (openTaskId && $('task-dialog').open) fillDialog();
+      }
+
+      async function createTask(payload) {
+        const { task } = await api('/tasks', { method: 'POST', body: JSON.stringify(payload) });
+        toast('Tarea creada');
+        await refresh();
+        return task;
+      }
+
+      $('board').addEventListener('click', (ev) => {
+        const quick = ev.target.closest('[data-quick]');
+        if (quick) {
+          quickAddStatus = quickAddStatus === quick.dataset.quick ? null : quick.dataset.quick;
+          renderTasks();
+          return;
+        }
+        const card = ev.target.closest('[data-open]');
+        if (card) openTask(card.dataset.open);
+      });
+
+      $('board').addEventListener('keydown', async (ev) => {
+        const inp = ev.target.closest('[data-quick-input]');
+        if (!inp) return;
+        if (ev.key === 'Escape') { quickAddStatus = null; renderTasks(); return; }
+        if (ev.key !== 'Enter') return;
+        ev.preventDefault();
+        const title = inp.value.trim();
+        if (!title) return;
+        try {
+          inp.disabled = true;
+          quickAddStatus = null;
+          await createTask({ title, status: inp.dataset.quickInput });
+        } catch (e) { toast(e.message, true); inp.disabled = false; }
+      });
+
+      $('btn-new-task').addEventListener('click', () => {
+        quickAddStatus = 'todo';
+        renderTasks();
+        const board = $('board');
+        if (board.scrollWidth > board.clientWidth) board.scrollTo({ left: 0, behavior: 'smooth' });
+      });
+
+      /* --- Diálogo --- */
+      function openTask(id) {
+        openTaskId = id;
+        fillDialog();
+        const dlg = $('task-dialog');
+        if (!dlg.open) dlg.showModal();
+        dlg.querySelector('.sheet__body').scrollTop = 0;
+      }
+
+      function fillDialog() {
+        const t = state.tasks.find((x) => x.id === openTaskId);
+        if (!t) { $('task-dialog').close(); return; }
+        const editor = canEdit(t);
+
+        $('task-status').innerHTML = STATUSES.map((s) =>
+          `<button type="button" class="seg__btn ${s.id === t.status ? 'seg__btn--on' : ''}" data-status="${s.id}">${s.short || s.label}</button>`).join('');
+
+        const title = $('t-title');
+        if (document.activeElement !== title) title.value = t.title;
+        title.readOnly = !editor;
+
+        const byName = t.createdByName || userName(t.createdBy) || 'Admin';
+        $('t-by').textContent = `Creada por ${byName} · ${fmtDate(t.createdAt)}` + (t.assignee ? ` · Responsable: ${userName(t.assignee)}` : ' · Sin responsable');
+
+        const proj = $('t-project');
+        proj.innerHTML = '<option value="">— Sin trabajo —</option>' + state.projects.map((p) => `<option value="${p.id}">${esc(p.name)}</option>`).join('');
+        proj.value = t.projectId || '';
+        proj.disabled = !editor;
+
+        const asg = $('t-assignee');
+        asg.innerHTML = '<option value="">— Nadie —</option>' + state.users.map((u) => `<option value="${esc(u.email)}">${esc(u.name)}</option>`).join('');
+        asg.value = t.assignee || '';
+        asg.disabled = !isAdmin();
+
+        $('t-priority').value = t.priority || 'normal';
+        $('t-priority').disabled = !editor;
+        $('t-due').value = t.dueDate || '';
+        $('t-due').disabled = !editor;
+
+        const desc = $('t-desc');
+        if (document.activeElement !== desc) desc.value = t.description || '';
+        desc.readOnly = !editor;
+        desc.placeholder = editor ? 'Detalle, links, criterios para darla por lista…' : 'Sin descripción';
+
+        $('t-save').classList.toggle('hidden', !editor);
+        $('t-delete').classList.toggle('hidden', !isAdmin());
+        const trackBtn = $('t-track');
+        trackBtn.classList.toggle('hidden', isAdmin());
+        trackBtn.disabled = !t.projectId || !!state.running;
+        trackBtn.title = !t.projectId ? 'Asignale un trabajo a la tarea para trackear tiempo' : (state.running ? 'Ya hay un timer en curso' : 'Inicia el timer con este trabajo y la tarea como memo');
+
+        const comments = (t.comments || []).slice().sort((a, b) => new Date(a.at) - new Date(b.at));
+        $('t-comments').innerHTML = comments.length
+          ? comments.map((c) => c.system
+              ? `<div class="comment comment--system"><div class="comment__text">${esc(c.text)} · ${fmtDate(c.at)} ${fmtTime(c.at)}</div></div>`
+              : `<div class="comment">
+                  <div class="comment__head">
+                    <span class="comment__author ${c.authorRole === 'admin' ? 'comment__author--admin' : ''}">${esc(c.authorName || userName(c.author) || 'Equipo')}</span>
+                    <span class="comment__time">${fmtDate(c.at)} ${fmtTime(c.at)}</span>
+                    ${(isAdmin() || (c.author && c.author === state.user?.email)) ? `<button type="button" class="comment__del" data-del-comment="${c.id}">borrar</button>` : ''}
+                  </div>
+                  <div class="comment__text">${esc(c.text)}</div>
+                </div>`).join('')
+          : '<div class="empty">Sin comentarios todavía.</div>';
+      }
+
+      $('task-dialog').addEventListener('close', () => {
+        openTaskId = null;
+        $('c-text').value = '';
+      });
+      // Cerrar al tocar el fondo
+      $('task-dialog').addEventListener('click', (ev) => {
+        if (ev.target === $('task-dialog')) $('task-dialog').close();
+      });
+
+      $('task-status').addEventListener('click', async (ev) => {
+        const btn = ev.target.closest('[data-status]');
+        if (!btn || !openTaskId) return;
+        try {
+          await api('/tasks/' + openTaskId, { method: 'PATCH', body: JSON.stringify({ status: btn.dataset.status }) });
+          toast('Movida a ' + statusLabel(btn.dataset.status));
+          await refresh();
+        } catch (e) { toast(e.message, true); }
+      });
+
+      $('t-save').addEventListener('click', async () => {
+        if (!openTaskId) return;
+        const payload = {
+          title: $('t-title').value.trim(),
+          description: $('t-desc').value.trim(),
+          projectId: $('t-project').value || null,
+          priority: $('t-priority').value,
+          dueDate: $('t-due').value || null,
+        };
+        if (isAdmin()) payload.assignee = $('t-assignee').value || null;
+        try {
+          await api('/tasks/' + openTaskId, { method: 'PATCH', body: JSON.stringify(payload) });
+          toast('Tarea guardada');
+          await refresh();
+        } catch (e) { toast(e.message, true); }
+      });
+
+      $('t-delete').addEventListener('click', async () => {
+        const btn = $('t-delete');
+        if (!btn.dataset.confirm) {
+          btn.dataset.confirm = '1';
+          btn.textContent = '¿Borrar definitivamente?';
+          setTimeout(() => { if (btn.isConnected) { delete btn.dataset.confirm; btn.textContent = 'Borrar'; } }, 3000);
+          return;
+        }
+        try {
+          await api('/tasks/' + openTaskId, { method: 'DELETE' });
+          delete btn.dataset.confirm;
+          btn.textContent = 'Borrar';
+          $('task-dialog').close();
+          toast('Tarea borrada');
+          await refresh();
+        } catch (e) { toast(e.message, true); }
+      });
+
+      $('t-track').addEventListener('click', async () => {
+        const t = state.tasks.find((x) => x.id === openTaskId);
+        if (!t || !t.projectId) return;
+        try {
+          await api('/start', { method: 'POST', body: JSON.stringify({ projectId: t.projectId, memo: t.title, taskId: t.id }) });
+          if (t.status === 'todo') {
+            await api('/tasks/' + t.id, { method: 'PATCH', body: JSON.stringify({ status: 'doing' }) });
+          }
+          $('task-dialog').close();
+          toast('Timer iniciado');
+          await refresh();
+          activateTab('time');
+        } catch (e) { toast(e.message, true); }
+      });
+
+      $('comment-form').addEventListener('submit', async (ev) => {
+        ev.preventDefault();
+        const text = $('c-text').value.trim();
+        if (!text || !openTaskId) return;
+        try {
+          await api('/tasks/' + openTaskId + '/comments', { method: 'POST', body: JSON.stringify({ text }) });
+          $('c-text').value = '';
+          $('c-text').style.height = '';
+          await refresh();
+          const list = $('t-comments');
+          list.lastElementChild?.scrollIntoView({ block: 'nearest' });
+        } catch (e) { toast(e.message, true); }
+      });
+      // Enter envía, Shift+Enter hace salto de línea; el textarea crece solo
+      $('c-text').addEventListener('keydown', (ev) => {
+        if (ev.key === 'Enter' && !ev.shiftKey) { ev.preventDefault(); $('comment-form').requestSubmit(); }
+      });
+      $('c-text').addEventListener('input', () => {
+        const el = $('c-text');
+        el.style.height = 'auto';
+        el.style.height = Math.min(el.scrollHeight, 160) + 'px';
+      });
+
+      $('t-comments').addEventListener('click', async (ev) => {
+        const btn = ev.target.closest('[data-del-comment]');
+        if (!btn) return;
+        try {
+          await api('/tasks/' + openTaskId + '/comments/' + btn.dataset.delComment, { method: 'DELETE' });
+          await refresh();
+        } catch (e) { toast(e.message, true); }
+      });
+
       /* ---------- Login / arranque ---------- */
       $('login-form').addEventListener('submit', async (ev) => {
         ev.preventDefault();
         const key = $('login-key').value;
+        const email = $('login-email').value.trim().toLowerCase();
         try {
           const res = await fetch('/api/tracker/login', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ key }),
+            body: JSON.stringify({ email, key }),
           });
-          if (!res.ok) throw new Error('Clave inválida');
+          if (!res.ok) throw new Error('Usuario o clave inválidos');
           localStorage.setItem(KEY_STORAGE, key);
+          if (email) localStorage.setItem(USER_STORAGE, email); else localStorage.removeItem(USER_STORAGE);
           $('login-key').value = '';
           await refresh();
         } catch (e) { toast(e.message, true); }

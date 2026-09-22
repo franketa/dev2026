@@ -4,9 +4,10 @@
    - Expone POST /api/upload para archivos del formulario
    - Sirve /uploads/<filename> para que Web3Forms incluya la URL
      como texto en el email (evita la feature paga de adjuntos).
-   - API /api/tracker/* para el panel interno de tiempo (tracker.html).
-     Datos en data/tracker.json. Claves via TRACKER_ADMIN_KEY /
-     TRACKER_EMPLOYEE_KEY (env).
+   - API /api/tracker/* para el panel interno (tracker.html): tiempo
+     y tareas. Datos en data/tracker.json.
+     Acceso: claves compartidas TRACKER_ADMIN_KEY / TRACKER_EMPLOYEE_KEY
+     (env) o usuarios con email + clave (TRACKER_USERS, JSON en env).
    ============================================================ */
 import express from 'express';
 import multer from 'multer';
@@ -90,12 +91,46 @@ if (!process.env.TRACKER_ADMIN_KEY || !process.env.TRACKER_EMPLOYEE_KEY) {
   console.warn('[tracker] AVISO: usando claves por defecto. Configurá TRACKER_ADMIN_KEY y TRACKER_EMPLOYEE_KEY en el entorno.');
 }
 
-function loadTracker() {
+// Usuarios con cuenta propia (email + clave). Se pueden sobreescribir con
+// TRACKER_USERS='[{"email":"...","password":"...","name":"...","role":"employee"}]'
+const DEFAULT_USERS = [
+  { email: 'lucas@venturebyte.com.ar', password: '123456', name: 'Lucas', role: 'employee' },
+];
+let USERS = DEFAULT_USERS;
+if (process.env.TRACKER_USERS) {
   try {
-    return JSON.parse(fs.readFileSync(TRACKER_FILE, 'utf8'));
+    const parsed = JSON.parse(process.env.TRACKER_USERS);
+    if (Array.isArray(parsed)) USERS = parsed;
   } catch {
-    return { projects: [], entries: [] };
+    console.warn('[tracker] TRACKER_USERS no es JSON válido, usando usuarios por defecto.');
   }
+}
+USERS = USERS
+  .filter((u) => u && u.email && u.password)
+  .map((u) => ({
+    email: String(u.email).trim().toLowerCase(),
+    password: String(u.password),
+    name: String(u.name || String(u.email).split('@')[0]).trim().slice(0, 60),
+    role: u.role === 'admin' ? 'admin' : 'employee',
+  }));
+if (!process.env.TRACKER_USERS) {
+  console.warn('[tracker] AVISO: usuarios por defecto activos. Configurá TRACKER_USERS para cambiar claves.');
+}
+const ADMIN_USER = { email: null, name: 'Admin', role: 'admin' };
+const TEAM_USER = { email: null, name: 'Equipo', role: 'employee' };
+const publicUser = (u) => ({ email: u.email, name: u.name, role: u.role });
+
+function loadTracker() {
+  let data;
+  try {
+    data = JSON.parse(fs.readFileSync(TRACKER_FILE, 'utf8'));
+  } catch {
+    data = {};
+  }
+  if (!Array.isArray(data.projects)) data.projects = [];
+  if (!Array.isArray(data.entries)) data.entries = [];
+  if (!Array.isArray(data.tasks)) data.tasks = [];
+  return data;
 }
 
 function saveTracker(data) {
@@ -110,17 +145,26 @@ function safeEqual(a, b) {
   return ba.length === bb.length && crypto.timingSafeEqual(ba, bb);
 }
 
-function roleFromKey(key) {
-  if (key && safeEqual(key, ADMIN_KEY)) return 'admin';
-  if (key && safeEqual(key, EMPLOYEE_KEY)) return 'employee';
+// Devuelve el usuario autenticado o null. Si viene email, valida contra
+// USERS; si no, contra las claves compartidas (admin / equipo).
+function authenticate(email, key) {
+  if (!key) return null;
+  const mail = String(email || '').trim().toLowerCase();
+  if (mail) {
+    const u = USERS.find((x) => x.email === mail);
+    return u && safeEqual(key, u.password) ? publicUser(u) : null;
+  }
+  if (safeEqual(key, ADMIN_KEY)) return ADMIN_USER;
+  if (safeEqual(key, EMPLOYEE_KEY)) return TEAM_USER;
   return null;
 }
 
 // Auth por header para todos los endpoints del tracker salvo login
 const trackerAuth = (req, res, next) => {
-  const role = roleFromKey(req.get('x-tracker-key'));
-  if (!role) return res.status(401).json({ error: 'Clave inválida' });
-  req.trackerRole = role;
+  const user = authenticate(req.get('x-tracker-user'), req.get('x-tracker-key'));
+  if (!user) return res.status(401).json({ error: 'Clave inválida' });
+  req.trackerRole = user.role;
+  req.trackerUser = user;
   next();
 };
 const adminOnly = (req, res, next) => {
@@ -131,19 +175,27 @@ const adminOnly = (req, res, next) => {
 app.use('/api/tracker', express.json());
 
 app.post('/api/tracker/login', (req, res) => {
-  const role = roleFromKey(req.body?.key);
-  if (!role) return res.status(401).json({ error: 'Clave inválida' });
-  res.json({ role });
+  const user = authenticate(req.body?.email, req.body?.key);
+  if (!user) return res.status(401).json({ error: 'Usuario o clave inválidos' });
+  res.json({ role: user.role, user });
 });
 
-// Estado completo: proyectos, registros y el timer en curso (si hay)
+// Estado completo: proyectos, registros, tareas y el timer en curso (si hay)
 app.get('/api/tracker/state', trackerAuth, (req, res) => {
   const data = loadTracker();
   const running = data.entries.find((e) => !e.end) || null;
   const projects = req.trackerRole === 'admin'
     ? data.projects
     : data.projects.filter((p) => p.active);
-  res.json({ role: req.trackerRole, projects, entries: data.entries, running });
+  res.json({
+    role: req.trackerRole,
+    user: req.trackerUser,
+    users: USERS.map(publicUser),
+    projects,
+    entries: data.entries,
+    tasks: data.tasks,
+    running,
+  });
 });
 
 app.post('/api/tracker/start', trackerAuth, (req, res) => {
@@ -154,6 +206,7 @@ app.post('/api/tracker/start', trackerAuth, (req, res) => {
   }
   const project = data.projects.find((p) => p.id === projectId && p.active);
   if (!project) return res.status(400).json({ error: 'Trabajo inválido o pausado' });
+  const task = req.body?.taskId ? data.tasks.find((t) => t.id === req.body.taskId) : null;
   const entry = {
     id: crypto.randomBytes(8).toString('hex'),
     projectId,
@@ -161,6 +214,8 @@ app.post('/api/tracker/start', trackerAuth, (req, res) => {
     start: new Date().toISOString(),
     end: null,
     pauses: [],
+    user: req.trackerUser.email || null,
+    taskId: task ? task.id : null,
   };
   data.entries.push(entry);
   saveTracker(data);
@@ -233,6 +288,7 @@ app.post('/api/tracker/manual', trackerAuth, (req, res) => {
     start: s.toISOString(),
     end: e.toISOString(),
     manual: true,
+    user: req.trackerUser.email || null,
   };
   data.entries.push(entry);
   saveTracker(data);
@@ -283,6 +339,179 @@ app.delete('/api/tracker/entries/:id', trackerAuth, adminOnly, (req, res) => {
   data.entries.splice(idx, 1);
   saveTracker(data);
   res.json({ ok: true });
+});
+
+/* ============================================================
+   Tareas (tablero tipo kanban básico)
+   ============================================================ */
+const TASK_STATUSES = ['todo', 'doing', 'review', 'done'];
+const TASK_STATUS_LABEL = { todo: 'Por hacer', doing: 'En curso', review: 'Para revisar', done: 'Listo' };
+const TASK_PRIORITIES = ['baja', 'normal', 'alta'];
+const MAX_TITLE = 140;
+const MAX_DESC = 4000;
+const MAX_COMMENT = 2000;
+
+const newId = () => crypto.randomBytes(8).toString('hex');
+const cleanStr = (v, max) => String(v ?? '').trim().slice(0, max);
+const isAdmin = (req) => req.trackerRole === 'admin';
+const canEditTask = (req, task) => isAdmin(req) || (!!task.createdBy && task.createdBy === req.trackerUser.email);
+
+// null = sin responsable; undefined = inválido
+function validAssignee(email) {
+  if (email == null || email === '') return null;
+  const mail = String(email).trim().toLowerCase();
+  return USERS.some((u) => u.email === mail) ? mail : undefined;
+}
+
+function validDue(v) {
+  if (v == null || v === '') return null;
+  return /^\d{4}-\d{2}-\d{2}$/.test(String(v)) && !isNaN(new Date(v)) ? String(v) : undefined;
+}
+
+function systemComment(task, text) {
+  task.comments.push({ id: newId(), author: null, authorName: null, text, at: new Date().toISOString(), system: true });
+}
+
+app.post('/api/tracker/tasks', trackerAuth, (req, res) => {
+  const b = req.body || {};
+  const title = cleanStr(b.title, MAX_TITLE);
+  if (!title) return res.status(400).json({ error: 'Falta el título de la tarea' });
+  const data = loadTracker();
+  const status = TASK_STATUSES.includes(b.status) ? b.status : 'todo';
+  const priority = TASK_PRIORITIES.includes(b.priority) ? b.priority : 'normal';
+  const projectId = b.projectId && data.projects.some((p) => p.id === b.projectId) ? b.projectId : null;
+  // El empleado siempre se asigna a sí mismo; el admin elige
+  let assignee = req.trackerUser.email;
+  if (isAdmin(req)) {
+    assignee = validAssignee(b.assignee);
+    if (assignee === undefined) return res.status(400).json({ error: 'Responsable inválido' });
+  }
+  const dueDate = validDue(b.dueDate);
+  if (dueDate === undefined) return res.status(400).json({ error: 'Fecha límite inválida' });
+  const now = new Date().toISOString();
+  const task = {
+    id: newId(),
+    title,
+    description: cleanStr(b.description, MAX_DESC),
+    status,
+    priority,
+    projectId,
+    assignee,
+    dueDate,
+    createdAt: now,
+    updatedAt: now,
+    createdBy: req.trackerUser.email || null,
+    createdByName: req.trackerUser.name,
+    comments: [],
+  };
+  data.tasks.push(task);
+  saveTracker(data);
+  res.json({ task });
+});
+
+app.patch('/api/tracker/tasks/:id', trackerAuth, (req, res) => {
+  const b = req.body || {};
+  const data = loadTracker();
+  const task = data.tasks.find((t) => t.id === req.params.id);
+  if (!task) return res.status(404).json({ error: 'Tarea no encontrada' });
+  const editor = canEditTask(req, task);
+  let changed = false;
+
+  // Cualquiera con acceso puede mover de estado
+  if (typeof b.status === 'string' && b.status !== task.status) {
+    if (!TASK_STATUSES.includes(b.status)) return res.status(400).json({ error: 'Estado inválido' });
+    systemComment(task, `${req.trackerUser.name} movió la tarea a “${TASK_STATUS_LABEL[b.status]}”`);
+    task.status = b.status;
+    changed = true;
+  }
+
+  // Título, descripción, trabajo, prioridad y fecha: admin o quien la creó
+  const wantsEdit = ['title', 'description', 'projectId', 'priority', 'dueDate', 'assignee'].some((k) => k in b);
+  if (wantsEdit && !editor) return res.status(403).json({ error: 'Solo el administrador o quien creó la tarea puede editarla' });
+  if (editor) {
+    if ('title' in b) {
+      const title = cleanStr(b.title, MAX_TITLE);
+      if (!title) return res.status(400).json({ error: 'El título no puede quedar vacío' });
+      if (title !== task.title) { task.title = title; changed = true; }
+    }
+    if ('description' in b) {
+      const d = cleanStr(b.description, MAX_DESC);
+      if (d !== task.description) { task.description = d; changed = true; }
+    }
+    if ('projectId' in b) {
+      const pid = b.projectId && data.projects.some((p) => p.id === b.projectId) ? b.projectId : null;
+      if (pid !== task.projectId) { task.projectId = pid; changed = true; }
+    }
+    if ('priority' in b) {
+      if (!TASK_PRIORITIES.includes(b.priority)) return res.status(400).json({ error: 'Prioridad inválida' });
+      if (b.priority !== task.priority) { task.priority = b.priority; changed = true; }
+    }
+    if ('dueDate' in b) {
+      const due = validDue(b.dueDate);
+      if (due === undefined) return res.status(400).json({ error: 'Fecha límite inválida' });
+      if (due !== task.dueDate) { task.dueDate = due; changed = true; }
+    }
+    if ('assignee' in b) {
+      if (!isAdmin(req)) return res.status(403).json({ error: 'Solo el administrador puede reasignar' });
+      const a = validAssignee(b.assignee);
+      if (a === undefined) return res.status(400).json({ error: 'Responsable inválido' });
+      if (a !== task.assignee) {
+        const who = a ? ((USERS.find((u) => u.email === a) || {}).name || a) : 'nadie';
+        systemComment(task, `${req.trackerUser.name} asignó la tarea a ${who}`);
+        task.assignee = a;
+        changed = true;
+      }
+    }
+  }
+
+  if (changed) {
+    task.updatedAt = new Date().toISOString();
+    saveTracker(data);
+  }
+  res.json({ task });
+});
+
+app.delete('/api/tracker/tasks/:id', trackerAuth, adminOnly, (req, res) => {
+  const data = loadTracker();
+  const idx = data.tasks.findIndex((t) => t.id === req.params.id);
+  if (idx === -1) return res.status(404).json({ error: 'Tarea no encontrada' });
+  data.tasks.splice(idx, 1);
+  saveTracker(data);
+  res.json({ ok: true });
+});
+
+app.post('/api/tracker/tasks/:id/comments', trackerAuth, (req, res) => {
+  const text = cleanStr(req.body?.text, MAX_COMMENT);
+  if (!text) return res.status(400).json({ error: 'El comentario está vacío' });
+  const data = loadTracker();
+  const task = data.tasks.find((t) => t.id === req.params.id);
+  if (!task) return res.status(404).json({ error: 'Tarea no encontrada' });
+  const comment = {
+    id: newId(),
+    author: req.trackerUser.email || null,
+    authorName: req.trackerUser.name,
+    authorRole: req.trackerRole,
+    text,
+    at: new Date().toISOString(),
+  };
+  task.comments.push(comment);
+  task.updatedAt = comment.at;
+  saveTracker(data);
+  res.json({ task, comment });
+});
+
+app.delete('/api/tracker/tasks/:id/comments/:cid', trackerAuth, (req, res) => {
+  const data = loadTracker();
+  const task = data.tasks.find((t) => t.id === req.params.id);
+  if (!task) return res.status(404).json({ error: 'Tarea no encontrada' });
+  const idx = task.comments.findIndex((c) => c.id === req.params.cid);
+  if (idx === -1) return res.status(404).json({ error: 'Comentario no encontrado' });
+  const c = task.comments[idx];
+  const own = !!c.author && c.author === req.trackerUser.email;
+  if (!isAdmin(req) && !own) return res.status(403).json({ error: 'Solo podés borrar tus propios comentarios' });
+  task.comments.splice(idx, 1);
+  saveTracker(data);
+  res.json({ task });
 });
 
 // ---- Healthcheck (Coolify lo suele usar) ----
