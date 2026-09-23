@@ -424,6 +424,19 @@ CREATE TABLE IF NOT EXISTS auditoria (
 CREATE INDEX IF NOT EXISTS auditoria_fecha_idx ON auditoria(fecha DESC);
 
 -- ============================================================================
+-- Ajustes posteriores. Van acá y no arriba para que correr este archivo sobre
+-- una base que ya existe agregue lo que falte sin tocar lo que hay.
+-- ============================================================================
+
+-- Una permuta o un saldo pueden quedar pactados en dólares. Sin moneda, la
+-- deuda del cliente se leía en pesos y el número no era el que se firmó.
+ALTER TABLE cobranzas ADD COLUMN IF NOT EXISTS moneda text NOT NULL DEFAULT 'ARS';
+ALTER TABLE cobranzas ADD COLUMN IF NOT EXISTS cotizacion numeric(12,2) NOT NULL DEFAULT 1;
+DO $$ BEGIN
+  ALTER TABLE cobranzas ADD CONSTRAINT cobranzas_moneda_ck CHECK (moneda IN ('ARS','USD'));
+EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+
+-- ============================================================================
 -- Vista: costo real y margen por unidad. Una sola fuente de verdad.
 -- La compra NO es un gasto del mes: es el valor de toma de la unidad.
 -- ============================================================================
@@ -446,7 +459,23 @@ SELECT
     WHEN (current_date - v.fecha_ingreso) > 60 THEN 'naranja'
     WHEN (current_date - v.fecha_ingreso) > 30 THEN 'amarillo'
     ELSE 'verde'
-  END                                                           AS alerta
+  END                                                           AS alerta,
+
+  -- De quién es la unidad. Cambia qué significa la plata que deja al venderse.
+  CASE
+    WHEN v.tipo_adquisicion = 'consignacion' THEN 'consignacion'
+    WHEN v.inversor_id IS NOT NULL           THEN 'inversor'
+    ELSE 'propia'
+  END                                                           AS propiedad,
+
+  -- Capital de la agencia parado en esta unidad.
+  -- En consignación el auto no se compró: lo único puesto es la preparación.
+  -- Sumar el valor de toma ahí infla el capital inmovilizado con plata que
+  -- nunca salió de la caja.
+  CASE WHEN v.tipo_adquisicion = 'consignacion'
+       THEN COALESCE(c.total_costos, 0)
+       ELSE v.valor_compra + COALESCE(c.total_costos, 0)
+  END                                                           AS capital
 FROM vehiculos v
 LEFT JOIN sucursales s ON s.id = v.sucursal_id
 LEFT JOIN inversores i ON i.id = v.inversor_id

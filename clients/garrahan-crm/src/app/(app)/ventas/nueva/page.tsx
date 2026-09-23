@@ -149,10 +149,18 @@ export default async function NuevaVenta({ searchParams }: { searchParams: Promi
     /* ------------------------------------------------------- saldo a cobrar */
     const saldo = Math.round(total - cobrado);
     if (saldo > 0) {
+      // El saldo puede quedar pactado en dólares. Se guarda en la moneda en
+      // que se pactó, no convertido: es la cifra que el cliente tiene que pagar.
+      const monedaSaldo = String(fd.get("moneda_saldo") || "ARS") === "USD" ? "USD" : "ARS";
+      const cotSaldo = monedaSaldo === "USD" ? (num("cotizacion_saldo") || 1) : 1;
+      const montoSaldo = monedaSaldo === "USD" ? Math.round(saldo / cotSaldo) : saldo;
+
       await sql`
-        INSERT INTO cobranzas (venta_id, cliente_id, concepto, monto, vencimiento, estado)
+        INSERT INTO cobranzas (venta_id, cliente_id, concepto, monto, moneda, cotizacion,
+                               vencimiento, estado)
         VALUES (${venta.id}, ${clienteId}, ${"Saldo venta #" + venta.id},
-                ${saldo}, ${txt("vencimiento_saldo") ?? fechaVenta}, 'pendiente')`;
+                ${montoSaldo}, ${monedaSaldo}, ${cotSaldo},
+                ${txt("vencimiento_saldo") ?? fechaVenta}, 'pendiente')`;
     }
 
     /* ---------------------------------------------------- estado del auto */
@@ -263,6 +271,22 @@ export default async function NuevaVenta({ searchParams }: { searchParams: Promi
             <Campo label="Vencimiento del saldo">
               <input name="vencimiento_saldo" type="date" className="campo" />
             </Campo>
+          </div>
+
+          <div className="grid sm:grid-cols-3 gap-4 mt-4">
+            <Campo label="¿En qué moneda queda el saldo?">
+              <select name="moneda_saldo" className="campo" defaultValue="ARS">
+                <option value="ARS">Pesos</option>
+                <option value="USD">Dólares</option>
+              </select>
+            </Campo>
+            <Campo label="Cotización del saldo (si es en USD)">
+              <input name="cotizacion_saldo" type="number" step="0.01" min="0" className="campo" defaultValue={1} />
+            </Campo>
+            <p className="text-[11.5px] text-[#64748b] leading-relaxed self-end pb-2">
+              Si el saldo se pactó en dólares se guarda en dólares, no convertido:
+              es la cifra que el cliente tiene que pagar.
+            </p>
           </div>
         </Panel>
 

@@ -77,11 +77,18 @@ export default async function Venta({ params }: { params: Promise<any> }) {
 
     // El saldo abierto se va descontando solo: si se salda, la cobranza se cierra.
     const enPesos = monto * cot;
-    const [ab] = await sql`SELECT id, monto, cobrado FROM cobranzas
+    const [ab] = await sql`SELECT id, monto, cobrado, moneda, cotizacion FROM cobranzas
                            WHERE venta_id = ${id} AND estado <> 'cobrado'
                            ORDER BY vencimiento LIMIT 1`;
     if (ab) {
-      const nuevo = Number(ab.cobrado) + enPesos;
+      // La cobranza lleva su propia moneda: hay que imputar el cobro en esa
+      // moneda, no en pesos, o un saldo en dólares se cancelaría con la cifra
+      // equivocada apenas se mueva la cotización.
+      const monedaDeuda = (ab.moneda || "ARS") as "ARS" | "USD";
+      const imputado = monedaDeuda === "USD"
+        ? (moneda === "USD" ? monto : enPesos / Number(ab.cotizacion || cot || 1))
+        : enPesos;
+      const nuevo = Number(ab.cobrado) + imputado;
       await sql`UPDATE cobranzas
                 SET cobrado = ${nuevo},
                     estado = ${nuevo >= Number(ab.monto) ? "cobrado" : "pendiente"},

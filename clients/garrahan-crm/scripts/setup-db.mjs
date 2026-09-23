@@ -260,6 +260,13 @@ async function main() {
               VALUES ('Service de flota — 3 unidades', ${diasAtras(7)}, 850000, 300000, 'vencido',
                       'Transporte Chivilcoy SRL. Pagó la primera, reclamar el saldo.')`;
 
+    // saldo pactado en dólares: se reclama en dólares, no convertido
+    await sql`INSERT INTO cobranzas (cliente_id, concepto, vencimiento, monto, moneda,
+                                     cotizacion, cobrado, estado, observaciones)
+              VALUES (${cli("Álvarez")}, 'Anticipo pactado en dólares', ${diasAtras(-25)},
+                      2500, 'USD', 1600, 0, 'pendiente',
+                      'Se acordó en dólares billete, contra entrega de la unidad.')`;
+
     // deudas
     await sql`INSERT INTO deudas (acreedor, concepto, tipo, monto, pagado, vencimiento, estado)
               VALUES ('Inmobiliaria Pons','Alquiler del local','gasto_fijo',2400000,0,${diasAtras(-12)},'pendiente'),

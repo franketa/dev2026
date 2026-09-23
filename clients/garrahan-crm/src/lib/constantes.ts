@@ -124,8 +124,23 @@ export const CATEGORIAS: { valor: string; label: string; tipo: "ingreso" | "gast
   { valor: "patentes",       label: "Patentes",           tipo: "gasto" },
   { valor: "gastos_banco",   label: "Gastos bancarios",   tipo: "gasto" },
   { valor: "viaticos",       label: "Viáticos/Movilidad", tipo: "gasto" },
+  { valor: "garantia_postventa", label: "Garantías post-venta", tipo: "gasto" },
   { valor: "otros_gastos",   label: "Otros gastos",       tipo: "gasto" },
 ];
+
+/**
+ * De quién es la unidad. No es una etiqueta: cambia qué significa la plata que
+ * deja al venderse. Una unidad propia deja margen; una en consignación deja
+ * comisión, porque el auto nunca fue de la agencia.
+ */
+export const PROPIEDAD: Record<string, { label: string; corto: string; tono: Tono; deja: string }> = {
+  propia:       { label: "Propia",          corto: "Propia",   tono: "verde",   deja: "margen" },
+  inversor:     { label: "De un inversor",  corto: "Inversor", tono: "violeta", deja: "margen" },
+  consignacion: { label: "En consignación", corto: "Consig.",  tono: "celeste", deja: "comisión" },
+};
+
+/** Lo que la agencia gana con una unidad que no es suya es comisión, no margen. */
+export const GANA_COMISION = ["consignacion"];
 
 /** La compra y la preparación NO son gasto del mes: son costo de la unidad. */
 export const CATEGORIAS_INVENTARIO = ["compra_unidad", "prep_unidad"];

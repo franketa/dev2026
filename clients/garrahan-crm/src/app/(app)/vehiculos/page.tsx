@@ -30,6 +30,8 @@ export default async function Vehiculos({ searchParams }: { searchParams: Promis
   const q = (p.q || "").trim();
   const sucursal = p.sucursal || "";
   const alerta = p.alerta || "";
+  const inversor = p.inversor || "";
+  const propiedad = p.propiedad || "";
 
   // Lista blanca: el nombre de la columna va a parar al ORDER BY, así que no
   // puede salir de la URL sin pasar por acá.
@@ -53,6 +55,9 @@ export default async function Vehiculos({ searchParams }: { searchParams: Promis
   if (q) donde.push(sql`(dominio ILIKE ${"%" + q + "%"} OR marca ILIKE ${"%" + q + "%"} OR modelo ILIKE ${"%" + q + "%"})`);
   if (filtroSucursal) donde.push(sql`sucursal_id = ${filtroSucursal}`);
   if (alerta) donde.push(sql`alerta = ${alerta}`);
+  if (inversor === "sin") donde.push(sql`inversor_id IS NULL`);
+  else if (inversor) donde.push(sql`inversor_id = ${Number(inversor)}`);
+  if (propiedad) donde.push(sql`propiedad = ${propiedad}`);
 
   const where = donde.length
     ? donde.reduce((acc, cur, i) => (i === 0 ? sql`WHERE ${cur}` : sql`${acc} AND ${cur}`), sql``)
@@ -63,14 +68,18 @@ export default async function Vehiculos({ searchParams }: { searchParams: Promis
   const soloSuc = filtroSucursal ? sql`AND sucursal_id = ${filtroSucursal}` : sql``;
   const soloSucWhere = filtroSucursal ? sql`WHERE sucursal_id = ${filtroSucursal}` : sql``;
 
-  const [filas, resumen, sucursales, conteos] = await Promise.all([
+  const [filas, resumen, sucursales, conteos, inversores] = await Promise.all([
     sql`SELECT * FROM v_vehiculos ${where}
         ORDER BY ${sql(columna)} ${dir === "asc" ? sql`ASC` : sql`DESC`} NULLS LAST
         LIMIT 300`,
-    sql`SELECT count(*)::int AS n, COALESCE(SUM(costo_total),0) AS capital,
+    // "capital" y no "costo_total": una unidad en consignación no se compró,
+    // así que lo único puesto ahí es la preparación.
+    sql`SELECT count(*)::int AS n, COALESCE(SUM(capital),0) AS capital,
                COALESCE(SUM(precio_venta),0) AS venta,
                COALESCE(AVG(NULLIF(margen_pct,0)),0) AS margen,
-               COALESCE(AVG(dias_stock),0) AS dias
+               COALESCE(AVG(dias_stock),0) AS dias,
+               count(*) FILTER (WHERE propiedad = 'consignacion')::int AS consig,
+               count(*) FILTER (WHERE propiedad = 'inversor')::int AS de_inversor
         FROM v_vehiculos WHERE estado NOT IN ('vendido','baja') ${soloSuc}`,
     sql`SELECT id, nombre FROM sucursales WHERE activa ORDER BY nombre`,
     sql`SELECT
@@ -81,6 +90,7 @@ export default async function Vehiculos({ searchParams }: { searchParams: Promis
           count(*) FILTER (WHERE estado = 'baja')::int AS baja,
           count(*)::int AS todos
         FROM vehiculos ${soloSucWhere}`,
+    sql`SELECT id, nombre FROM inversores WHERE activo ORDER BY nombre`,
   ]);
 
   const r = resumen[0] || {};
@@ -88,7 +98,7 @@ export default async function Vehiculos({ searchParams }: { searchParams: Promis
   const demoradas = filas.filter((v: any) => v.alerta === "naranja" || v.alerta === "rojo").length;
 
   const link = (cambios: Record<string, string>) => {
-    const s = new URLSearchParams({ tab, q, sucursal, alerta, orden, dir, ...cambios });
+    const s = new URLSearchParams({ tab, q, sucursal, alerta, inversor, propiedad, orden, dir, ...cambios });
     for (const [k, v] of [...s.entries()]) if (!v) s.delete(k);
     return `/vehiculos?${s.toString()}`;
   };
@@ -104,7 +114,10 @@ export default async function Vehiculos({ searchParams }: { searchParams: Promis
 
       <GrillaKPI>
         <KPI label="Unidades activas" valor={numero(r.n)} detalle="en el predio" />
-        {costos && <KPI label="Capital inmovilizado" valor={plataCorta(r.capital)} detalle="costo real del stock" />}
+        {costos && <KPI label="Capital inmovilizado" valor={plataCorta(r.capital)}
+                        detalle={Number(r.consig) > 0
+                          ? `${numero(r.consig)} en consignación no suman`
+                          : "plata de la agencia parada"} />}
         {costos && <KPI label="Margen potencial" valor={plataCorta(Number(r.venta) - Number(r.capital))}
                         detalle={porcentaje(r.margen) + " promedio"} />}
         <KPI label="Promedio en playón" valor={`${Math.round(Number(r.dias))} días`}
@@ -147,6 +160,19 @@ export default async function Vehiculos({ searchParams }: { searchParams: Promis
           <option value="amarillo">Más de 30 días</option>
           <option value="naranja">Más de 60 días</option>
           <option value="rojo">Más de 90 días</option>
+        </select>
+        {costos && (
+          <select name="inversor" defaultValue={inversor} className="campo w-auto min-w-[160px]">
+            <option value="">Todos los inversores</option>
+            <option value="sin">Sin inversor (de la agencia)</option>
+            {inversores.map((i: any) => <option key={i.id} value={i.id}>{i.nombre}</option>)}
+          </select>
+        )}
+        <select name="propiedad" defaultValue={propiedad} className="campo w-auto min-w-[150px]">
+          <option value="">Propias y de terceros</option>
+          <option value="propia">Solo propias</option>
+          <option value="inversor">De inversores</option>
+          <option value="consignacion">En consignación</option>
         </select>
         <Boton tipo="submit" variante="suave">Filtrar</Boton>
       </form>
@@ -208,7 +234,15 @@ export default async function Vehiculos({ searchParams }: { searchParams: Promis
                   {a ? <Chip tono={a.tono}>{v.dias_stock}</Chip>
                      : <span className="text-[#64748b]">—</span>}
                 </TD>
-                <TD className="text-[#9aa7b8]">{v.sucursal || "—"}</TD>
+                <TD className="text-[#9aa7b8]">
+                  {v.sucursal || "—"}
+                  {v.propiedad !== "propia" && (
+                    <div className="text-[11px] mt-0.5"
+                      style={{ color: v.propiedad === "consignacion" ? "#38bdf8" : "#c084fc" }}>
+                      {v.propiedad === "consignacion" ? "En consignación" : v.inversor || "De un inversor"}
+                    </div>
+                  )}
+                </TD>
                 <TD><Chip tono={e.tono}>{e.label}</Chip></TD>
                 <TD alinear="right">
                   {/* Siempre visibles, no solo al pasar el mouse: una acción que
