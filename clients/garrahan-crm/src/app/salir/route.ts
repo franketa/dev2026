@@ -10,13 +10,21 @@ import { logout } from "@/lib/auth";
  * usuario sin que nadie hiciera clic. Un GET tiene que poder repetirse sin
  * consecuencias: lo dispara el navegador, el prefetch, un antivirus o un bot.
  */
-export async function POST(req: Request) {
+
+/**
+ * El Location va relativo. Detrás de Traefik, `req.url` es la dirección
+ * interna del contenedor, así que armar la URL absoluta desde ahí manda al
+ * navegador a un host que no existe fuera de la red de Docker.
+ */
+const irA = (destino: string) =>
+  new NextResponse(null, { status: 303, headers: { Location: destino } });
+
+export async function POST() {
   await logout();
-  // 303 y no 307: con 307 el navegador repetiría el POST contra /login.
-  return NextResponse.redirect(new URL("/login", req.url), 303);
+  return irA("/login");
 }
 
 /** Si alguien llega por GET (un link viejo, un favorito), no se cierra nada. */
-export async function GET(req: Request) {
-  return NextResponse.redirect(new URL("/", req.url), 303);
+export async function GET() {
+  return irA("/");
 }
