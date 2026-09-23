@@ -8,6 +8,7 @@ import {
   Encabezado, KPI, GrillaKPI, Chip, Tabla, TH, TD, FilaVacia, Boton,
 } from "@/components/ui";
 import Exportar from "@/components/exportar";
+import { sucursalActiva } from "@/lib/sucursal";
 
 export const dynamic = "force-dynamic";
 
@@ -29,17 +30,26 @@ export default async function Vehiculos({ searchParams }: { searchParams: Promis
   const sucursal = p.sucursal || "";
   const alerta = p.alerta || "";
 
+  // La sucursal del menú manda salvo que el listado tenga su propio filtro puesto.
+  const global = await sucursalActiva();
+  const filtroSucursal = sucursal ? Number(sucursal) : global;
+
   // ------------------------------------------------------------- filtros
   const donde: any[] = [];
   if (tab === "activos") donde.push(sql`estado NOT IN ('vendido','baja')`);
   else if (tab !== "todos") donde.push(sql`estado = ${tab}`);
   if (q) donde.push(sql`(dominio ILIKE ${"%" + q + "%"} OR marca ILIKE ${"%" + q + "%"} OR modelo ILIKE ${"%" + q + "%"})`);
-  if (sucursal) donde.push(sql`sucursal_id = ${Number(sucursal)}`);
+  if (filtroSucursal) donde.push(sql`sucursal_id = ${filtroSucursal}`);
   if (alerta) donde.push(sql`alerta = ${alerta}`);
 
   const where = donde.length
     ? donde.reduce((acc, cur, i) => (i === 0 ? sql`WHERE ${cur}` : sql`${acc} AND ${cur}`), sql``)
     : sql``;
+
+  // Los KPIs y los contadores de las pestañas miran la misma sucursal que la
+  // tabla. Si no, muestran un total que no se corresponde con lo que se ve.
+  const soloSuc = filtroSucursal ? sql`AND sucursal_id = ${filtroSucursal}` : sql``;
+  const soloSucWhere = filtroSucursal ? sql`WHERE sucursal_id = ${filtroSucursal}` : sql``;
 
   const [filas, resumen, sucursales, conteos] = await Promise.all([
     sql`SELECT * FROM v_vehiculos ${where} ORDER BY dias_stock DESC NULLS LAST LIMIT 300`,
@@ -47,7 +57,7 @@ export default async function Vehiculos({ searchParams }: { searchParams: Promis
                COALESCE(SUM(precio_venta),0) AS venta,
                COALESCE(AVG(NULLIF(margen_pct,0)),0) AS margen,
                COALESCE(AVG(dias_stock),0) AS dias
-        FROM v_vehiculos WHERE estado NOT IN ('vendido','baja')`,
+        FROM v_vehiculos WHERE estado NOT IN ('vendido','baja') ${soloSuc}`,
     sql`SELECT id, nombre FROM sucursales WHERE activa ORDER BY nombre`,
     sql`SELECT
           count(*) FILTER (WHERE estado NOT IN ('vendido','baja'))::int AS activos,
@@ -56,7 +66,7 @@ export default async function Vehiculos({ searchParams }: { searchParams: Promis
           count(*) FILTER (WHERE estado = 'vendido')::int AS vendido,
           count(*) FILTER (WHERE estado = 'baja')::int AS baja,
           count(*)::int AS todos
-        FROM vehiculos`,
+        FROM vehiculos ${soloSucWhere}`,
   ]);
 
   const r = resumen[0] || {};

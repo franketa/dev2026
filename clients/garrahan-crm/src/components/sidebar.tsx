@@ -9,6 +9,7 @@ import {
   History, BookMarked, Settings, Menu, X, LogOut, HeartHandshake, LifeBuoy,
 } from "lucide-react";
 import { iniciales } from "@/lib/format";
+import SelectorSucursal from "./selector-sucursal";
 
 type Item = { href: string; label: string; icono: any; permiso?: string };
 type Grupo = { titulo: string; items: Item[] };
@@ -56,8 +57,13 @@ const MENU: Grupo[] = [
   },
 ];
 
-export default function Sidebar({ usuario, permisos }:
-  { usuario: { nombre: string; rol: string }; permisos: string[] }) {
+export default function Sidebar({ usuario, permisos, sucursales, sucursalActual, elegirSucursal }: {
+  usuario: { nombre: string; rol: string };
+  permisos: string[];
+  sucursales: { id: number; nombre: string }[];
+  sucursalActual: string;
+  elegirSucursal: (fd: FormData) => Promise<void>;
+}) {
   const path = usePathname();
   const [abierto, setAbierto] = useState(false);
 
@@ -95,6 +101,11 @@ export default function Sidebar({ usuario, permisos }:
           <span className="font-semibold text-[13.5px] truncate">Garrahan</span>
           <button onClick={() => setAbierto(false)}
             className="lg:hidden ml-auto text-[#64748b]" aria-label="Cerrar menú"><X size={17} /></button>
+        </div>
+
+        {/* sucursal activa: filtra todos los listados de una sola vez */}
+        <div className="px-2.5 pt-3 shrink-0">
+          <SelectorSucursal sucursales={sucursales} actual={sucursalActual} accion={elegirSucursal} />
         </div>
 
         {/* navegación */}
