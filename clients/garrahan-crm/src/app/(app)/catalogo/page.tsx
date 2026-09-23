@@ -23,9 +23,9 @@ export default async function Catalogo() {
         <tbody>
           {marcas.length === 0 && <FilaVacia cols={3} mensaje="El catálogo está vacío." />}
           {marcas.map((m: any) => (
-            <tr key={m.id} className="hover:bg-[#151d29]">
+            <tr key={m.id} className="hover:bg-[var(--c-hover)]">
               <TD className="font-medium">{m.nombre}</TD>
-              <TD alinear="right" className="text-[#9aa7b8]">{m.modelos}</TD>
+              <TD alinear="right" className="text-[var(--c-tinta-media)]">{m.modelos}</TD>
               <TD alinear="right">{m.unidades || "\u2014"}</TD>
             </tr>
           ))}

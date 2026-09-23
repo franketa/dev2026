@@ -34,14 +34,14 @@ export default async function Clientes() {
         <tbody>
           {filas.length === 0 && <FilaVacia cols={7} mensaje="Todavía no hay clientes cargados." />}
           {filas.map((c: any) => (
-            <tr key={c.id} className="hover:bg-[#151d29]">
+            <tr key={c.id} className="hover:bg-[var(--c-hover)]">
               <TD className="font-medium">{[c.apellido, c.nombre].filter(Boolean).join(", ")}</TD>
-              <TD className="text-[#9aa7b8]">{c.dni_cuit || "\u2014"}</TD>
-              <TD className="text-[#9aa7b8]">{c.telefono || "\u2014"}</TD>
-              <TD className="text-[#9aa7b8]">{c.email || "\u2014"}</TD>
-              <TD className="text-[#9aa7b8]">{c.localidad || "\u2014"}</TD>
+              <TD className="text-[var(--c-tinta-media)]">{c.dni_cuit || "\u2014"}</TD>
+              <TD className="text-[var(--c-tinta-media)]">{c.telefono || "\u2014"}</TD>
+              <TD className="text-[var(--c-tinta-media)]">{c.email || "\u2014"}</TD>
+              <TD className="text-[var(--c-tinta-media)]">{c.localidad || "\u2014"}</TD>
               <TD alinear="right">{c.compras > 0 ? <Chip tono="verde">{c.compras}</Chip> : "\u2014"}</TD>
-              <TD alinear="right" className="text-[#9aa7b8]">{c.consultas || "\u2014"}</TD>
+              <TD alinear="right" className="text-[var(--c-tinta-media)]">{c.consultas || "\u2014"}</TD>
             </tr>
           ))}
         </tbody>

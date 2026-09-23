@@ -71,12 +71,12 @@ export default async function Cuenta({ searchParams }: { searchParams: Promise<a
             <Boton tipo="submit">Guardar</Boton>
           </form>
 
-          <div className="mt-5 pt-4 border-t border-[#1f2937]">
+          <div className="mt-5 pt-4 border-t border-[var(--c-borde)]">
             <Dato label="Email">{yo?.email}</Dato>
             <Dato label="Rol"><Chip tono="violeta">{rol?.label || u.rol}</Chip></Dato>
           </div>
           {rol && (
-            <p className="mt-3 text-[11.5px] text-[#64748b] leading-relaxed">{rol.detalle}.
+            <p className="mt-3 text-[11.5px] text-[var(--c-tinta-tenue)] leading-relaxed">{rol.detalle}.
               {" "}El email y el rol los cambia el dueño desde Usuarios.</p>
           )}
         </Panel>
@@ -86,8 +86,8 @@ export default async function Cuenta({ searchParams }: { searchParams: Promise<a
             detalle="Al cambiarla se cierran todas tus sesiones y tenés que volver a entrar." />
 
           {p.e && ERRORES[p.e] && (
-            <p className="mb-4 rounded-lg border border-[#991b1b] bg-[#2e0a0a] px-3.5 py-2.5
-              text-[12.5px] text-[#f87171]">{ERRORES[p.e]}</p>
+            <p className="mb-4 rounded-lg border border-[var(--c-rojo-borde)] bg-[var(--c-rojo-fondo)] px-3.5 py-2.5
+              text-[12.5px] text-[var(--c-rojo-alto)]">{ERRORES[p.e]}</p>
           )}
 
           <form action={cambiarClave} className="space-y-4">
@@ -105,7 +105,7 @@ export default async function Cuenta({ searchParams }: { searchParams: Promise<a
             <Boton tipo="submit">Cambiar contraseña</Boton>
           </form>
 
-          <p className="mt-4 pt-3 border-t border-[#1f2937] text-[11.5px] text-[#64748b] leading-relaxed">
+          <p className="mt-4 pt-3 border-t border-[var(--c-borde)] text-[11.5px] text-[var(--c-tinta-tenue)] leading-relaxed">
             Mínimo 8 caracteres. Evitá la fecha de nacimiento o la patente de un auto: son lo
             primero que prueba cualquiera que conozca el negocio.
           </p>

@@ -90,14 +90,14 @@ export default async function NuevaOrden({ searchParams }: { searchParams: Promi
             detalle="Destildá lo que no corresponda. Si no tocás nada, entra el checklist completo." />
           <div className="grid sm:grid-cols-2 gap-x-6 gap-y-2.5">
             {CHECKLIST_TALLER.map((t) => (
-              <label key={t} className="flex items-center gap-2.5 text-[13px] text-[#cbd5e1] cursor-pointer">
+              <label key={t} className="flex items-center gap-2.5 text-[13px] text-[var(--c-tinta-clara)] cursor-pointer">
                 <input type="checkbox" name="tarea" value={t} defaultChecked
-                  className="h-4 w-4 accent-[#2f6bff]" />
+                  className="h-4 w-4 accent-[var(--c-primario)]" />
                 {t}
               </label>
             ))}
           </div>
-          <div className="mt-4 pt-4 border-t border-[#1f2937]">
+          <div className="mt-4 pt-4 border-t border-[var(--c-borde)]">
             <Campo label="Agregar una tarea que no está en la lista">
               <input name="tarea_extra" className="campo" placeholder="Cambiar parabrisas" />
             </Campo>

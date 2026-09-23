@@ -227,8 +227,8 @@ export default async function NuevaVenta({ searchParams }: { searchParams: Promi
             </Campo>
           </div>
 
-          <div className="mt-4 pt-4 border-t border-[#1f2937]">
-            <p className="text-[12px] text-[#64748b] mb-3">
+          <div className="mt-4 pt-4 border-t border-[var(--c-borde)]">
+            <p className="text-[12px] text-[var(--c-tinta-tenue)] mb-3">
               Si el comprador todavía no está cargado, completá estos campos y se crea solo.
             </p>
             <div className="grid sm:grid-cols-4 gap-4">
@@ -256,7 +256,7 @@ export default async function NuevaVenta({ searchParams }: { searchParams: Promi
               : "Se puede combinar efectivo, permuta y financiación"} />
           <PagosVenta precioSugerido={Number(elegido?.precio_venta || 0)} />
 
-          <div className="grid sm:grid-cols-3 gap-4 mt-5 pt-5 border-t border-[#1f2937]">
+          <div className="grid sm:grid-cols-3 gap-4 mt-5 pt-5 border-t border-[var(--c-borde)]">
             <Campo label="Cuenta de caja donde entra la plata">
               <select name="cuenta_id" className="campo" defaultValue={cuentas[0]?.id ?? ""}>
                 <option value="">No registrar en caja</option>
@@ -283,7 +283,7 @@ export default async function NuevaVenta({ searchParams }: { searchParams: Promi
             <Campo label="Cotización del saldo (si es en USD)">
               <input name="cotizacion_saldo" type="number" step="0.01" min="0" className="campo" defaultValue={1} />
             </Campo>
-            <p className="text-[11.5px] text-[#64748b] leading-relaxed self-end pb-2">
+            <p className="text-[11.5px] text-[var(--c-tinta-tenue)] leading-relaxed self-end pb-2">
               Si el saldo se pactó en dólares se guarda en dólares, no convertido:
               es la cifra que el cliente tiene que pagar.
             </p>

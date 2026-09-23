@@ -53,10 +53,10 @@ export default async function Taller({ searchParams }: { searchParams: Promise<a
 
       <div className="flex flex-wrap gap-1.5 mt-6 mb-3">
         <Link href="/taller" className={`rounded-lg px-3 py-1.5 text-[12.5px] font-medium
-          ${!estado ? "bg-[#1b2433] text-[#e8edf5]" : "text-[#9aa7b8] hover:bg-[#151d29]"}`}>En curso</Link>
+          ${!estado ? "bg-[var(--c-activo)] text-[var(--c-tinta)]" : "text-[var(--c-tinta-media)] hover:bg-[var(--c-hover)]"}`}>En curso</Link>
         {Object.entries(ESTADOS_TALLER).map(([k, x]) => (
           <Link key={k} href={`/taller?estado=${k}`} className={`rounded-lg px-3 py-1.5 text-[12.5px] font-medium
-            ${estado === k ? "bg-[#1b2433] text-[#e8edf5]" : "text-[#9aa7b8] hover:bg-[#151d29]"}`}>{x.label}</Link>
+            ${estado === k ? "bg-[var(--c-activo)] text-[var(--c-tinta)]" : "text-[var(--c-tinta-media)] hover:bg-[var(--c-hover)]"}`}>{x.label}</Link>
         ))}
       </div>
 
@@ -76,11 +76,11 @@ export default async function Taller({ searchParams }: { searchParams: Promise<a
           {ordenes.map((o: any) => {
             const e = ESTADOS_TALLER[o.estado] || { label: o.estado, tono: "gris" as const };
             return (
-              <tr key={o.id} className="hover:bg-[#151d29]">
+              <tr key={o.id} className="hover:bg-[var(--c-hover)]">
                 <TD>
-                  <Link href={`/taller/${o.id}`} className="hover:text-[#2f6bff]">
+                  <Link href={`/taller/${o.id}`} className="hover:text-[var(--c-primario)]">
                     <div className="font-medium">{o.marca} {o.modelo} {o.anio}</div>
-                    <div className="text-[11.5px] text-[#64748b]">{dominio(o.dominio)}</div>
+                    <div className="text-[11.5px] text-[var(--c-tinta-tenue)]">{dominio(o.dominio)}</div>
                   </Link>
                 </TD>
                 <TD><Chip tono={e.tono}>{e.label}</Chip></TD>
@@ -90,14 +90,14 @@ export default async function Taller({ searchParams }: { searchParams: Promise<a
                 </TD>
                 {costos && <TD alinear="right">{Number(o.costo) > 0 ? plata(o.costo) : "—"}</TD>}
                 <TD alinear="center">
-                  <span className={Number(o.dias) > 15 ? "text-[#f87171] tabular" : "text-[#9aa7b8] tabular"}>
+                  <span className={Number(o.dias) > 15 ? "text-[var(--c-rojo-alto)] tabular" : "text-[var(--c-tinta-media)] tabular"}>
                     {o.dias}d
                   </span>
                 </TD>
-                <TD className="text-[#9aa7b8]">{o.sucursal || "—"}</TD>
-                <TD className="text-[#9aa7b8]">{fecha(o.fecha_ingreso)}</TD>
+                <TD className="text-[var(--c-tinta-media)]">{o.sucursal || "—"}</TD>
+                <TD className="text-[var(--c-tinta-media)]">{fecha(o.fecha_ingreso)}</TD>
                 <TD alinear="right">
-                  <Link href={`/taller/${o.id}`} className="text-[12.5px] text-[#2f6bff] hover:underline">Ver →</Link>
+                  <Link href={`/taller/${o.id}`} className="text-[12.5px] text-[var(--c-primario)] hover:underline">Ver →</Link>
                 </TD>
               </tr>
             );

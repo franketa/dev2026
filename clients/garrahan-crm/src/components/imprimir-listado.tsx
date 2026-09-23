@@ -14,8 +14,8 @@ export default function ImprimirListado({ label = "Imprimir" }: { label?: string
   return (
     <button type="button" onClick={() => window.print()}
       className="no-imprimir inline-flex items-center justify-center gap-2 rounded-lg px-3.5 py-2
-        text-[13px] font-semibold bg-[#1b2433] hover:bg-[#232e40] text-[#cbd5e1]
-        border border-[#1f2937] transition-colors">
+        text-[13px] font-semibold bg-[var(--c-activo)] hover:bg-[var(--c-activo-alto)] text-[var(--c-tinta-clara)]
+        border border-[var(--c-borde)] transition-colors">
       <Printer size={15} /> {label}
     </button>
   );

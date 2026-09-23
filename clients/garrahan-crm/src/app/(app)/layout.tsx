@@ -2,6 +2,7 @@ import Sidebar from "@/components/sidebar";
 import Buscador from "@/components/buscador";
 import Migas from "@/components/migas";
 import EstadoOperacion from "@/components/estado-operacion";
+import Tema from "@/components/tema";
 import { sql } from "@/lib/db";
 import { requiereSesion, permisosDe } from "@/lib/auth";
 import { cotizacionDeHoy } from "@/lib/cotizacion";
@@ -30,19 +31,20 @@ export default async function AppLayout({ children }: { children: React.ReactNod
 
       <div className="flex-1 min-w-0 flex flex-col">
         {/* -------------------------------------------------------- barra superior */}
-        <header className="h-[57px] shrink-0 sticky top-0 z-30 bg-[#0a0e14]/90 backdrop-blur
-          border-b border-[#1f2937] flex items-center gap-3 px-4 lg:px-7">
+        <header className="h-[57px] shrink-0 sticky top-0 z-30 bg-[var(--c-fondo)]/90 backdrop-blur
+          border-b border-[var(--c-borde)] flex items-center gap-3 px-4 lg:px-7">
           <div className="hidden md:flex min-w-0 flex-1 pl-11 lg:pl-0"><Migas /></div>
           <div className="flex-1 md:flex-none pl-11 md:pl-0"><Buscador /></div>
           <EstadoOperacion usuario={u} />
           {cot && (
-            <div className="hidden sm:flex items-center gap-2 rounded-lg border border-[#1f2937]
-              bg-[#111721] px-3 py-1.5" title={`Dólar blue al ${ffecha(cot.fecha)}`}>
+            <div className="hidden sm:flex items-center gap-2 rounded-lg border border-[var(--c-borde)]
+              bg-[var(--c-panel)] px-3 py-1.5" title={`Dólar blue al ${ffecha(cot.fecha)}`}>
               <span className="etiqueta">Dólar</span>
               <span className="text-[13px] font-semibold tabular">{plata(cot.valor)}</span>
             </div>
           )}
-          <div className="h-7 w-7 rounded-full bg-[#2f6bff] grid place-items-center
+          <Tema />
+          <div className="h-7 w-7 rounded-full bg-[var(--c-primario)] grid place-items-center
             text-[11px] font-semibold text-white shrink-0">
             {u.nombre.slice(0, 1).toUpperCase()}
           </div>

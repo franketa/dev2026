@@ -140,8 +140,8 @@ export default async function NuevoLead({ searchParams }: { searchParams: Promis
         <Panel>
           <PanelTitulo titulo="Entrega usado"
             detalle="La permuta define la operación entera: conviene saberlo desde el primer día" />
-          <label className="flex items-center gap-2.5 text-[13px] text-[#cbd5e1] cursor-pointer mb-4">
-            <input type="checkbox" name="entrega_usado" className="h-4 w-4 accent-[#2f6bff]" />
+          <label className="flex items-center gap-2.5 text-[13px] text-[var(--c-tinta-clara)] cursor-pointer mb-4">
+            <input type="checkbox" name="entrega_usado" className="h-4 w-4 accent-[var(--c-primario)]" />
             Entrega un usado como parte de pago
           </label>
           <div className="grid sm:grid-cols-2 gap-4">

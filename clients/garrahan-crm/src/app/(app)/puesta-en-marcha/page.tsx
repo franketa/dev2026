@@ -109,7 +109,7 @@ export default async function PuestaEnMarcha() {
             <div className="text-[15px] font-semibold">
               {listo ? "Está todo listo." : `${hechos} de ${PASOS.length} pasos`}
             </div>
-            <p className="text-[12.5px] text-[#64748b] mt-0.5">
+            <p className="text-[12.5px] text-[var(--c-tinta-tenue)] mt-0.5">
               {listo
                 ? "No queda nada por configurar. Esta pantalla queda como referencia."
                 : "Ninguno es obligatorio para empezar a trabajar."}
@@ -124,24 +124,24 @@ export default async function PuestaEnMarcha() {
       <div className="space-y-3 max-w-3xl">
         {PASOS.map((p, i) => (
           <Panel key={p.titulo}
-            className={p.hecho ? "" : "border-[#334155]"}>
+            className={p.hecho ? "" : "border-[var(--c-borde-alto)]"}>
             <div className="flex items-start gap-4">
               <div className={`h-7 w-7 shrink-0 rounded-full grid place-items-center text-[12px]
                 font-semibold mt-0.5
                 ${p.hecho
-                  ? "bg-[#052e1a] border border-[#14532d] text-[#4ade80]"
-                  : "bg-[#1b2433] border border-[#334155] text-[#9aa7b8]"}`}>
+                  ? "bg-[var(--c-verde-fondo)] border border-[var(--c-verde-borde)] text-[var(--c-verde-alto)]"
+                  : "bg-[var(--c-activo)] border border-[var(--c-borde-alto)] text-[var(--c-tinta-media)]"}`}>
                 {p.hecho ? <Check size={14} /> : i + 1}
               </div>
 
               <div className="min-w-0 flex-1">
                 <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
-                  <h3 className="text-[14px] font-semibold text-[#e8edf5]">{p.titulo}</h3>
-                  {p.dato && <span className="text-[11.5px] text-[#64748b] tabular">{p.dato}</span>}
+                  <h3 className="text-[14px] font-semibold text-[var(--c-tinta)]">{p.titulo}</h3>
+                  {p.dato && <span className="text-[11.5px] text-[var(--c-tinta-tenue)] tabular">{p.dato}</span>}
                 </div>
-                <p className="text-[12.5px] text-[#9aa7b8] mt-1 leading-relaxed">{p.detalle}</p>
+                <p className="text-[12.5px] text-[var(--c-tinta-media)] mt-1 leading-relaxed">{p.detalle}</p>
                 {!p.hecho && p.falta && (
-                  <p className="text-[12px] text-[#eab308] mt-1.5">{p.falta}</p>
+                  <p className="text-[12px] text-[var(--c-amarillo)] mt-1.5">{p.falta}</p>
                 )}
               </div>
 
@@ -155,7 +155,7 @@ export default async function PuestaEnMarcha() {
         ))}
       </div>
 
-      <p className="mt-6 text-[12px] text-[#64748b] max-w-2xl leading-relaxed">
+      <p className="mt-6 text-[12px] text-[var(--c-tinta-tenue)] max-w-2xl leading-relaxed">
         Si algo de esto no aplica a cómo trabaja Garrahan, decilo y lo sacamos. La lista está
         para que nadie tenga que adivinar qué falta, no para hacer trámites.
       </p>

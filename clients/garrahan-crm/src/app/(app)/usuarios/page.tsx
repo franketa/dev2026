@@ -137,8 +137,8 @@ export default async function Usuarios({ searchParams }: { searchParams: Promise
       {aviso && (
         <p className={`mb-4 rounded-lg px-3.5 py-2.5 text-[12.5px] border
           ${aviso.mal
-            ? "border-[#991b1b] bg-[#2e0a0a] text-[#f87171]"
-            : "border-[#14532d] bg-[#052e1a] text-[#4ade80]"}`}>
+            ? "border-[var(--c-rojo-borde)] bg-[var(--c-rojo-fondo)] text-[var(--c-rojo-alto)]"
+            : "border-[var(--c-verde-borde)] bg-[var(--c-verde-fondo)] text-[var(--c-verde-alto)]"}`}>
           {aviso.texto}
         </p>
       )}
@@ -147,9 +147,9 @@ export default async function Usuarios({ searchParams }: { searchParams: Promise
         <PanelTitulo titulo="Los roles" detalle="El rol define qué ve cada uno, no es solo una etiqueta." />
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
           {ROLES.map((r) => (
-            <div key={r.valor} className="rounded-lg border border-[#1f2937] bg-[#0f1520] px-3.5 py-3">
+            <div key={r.valor} className="rounded-lg border border-[var(--c-borde)] bg-[var(--c-hueco)] px-3.5 py-3">
               <div className="text-[13px] font-semibold">{r.label}</div>
-              <div className="text-[11.5px] text-[#64748b] mt-1 leading-relaxed">{r.detalle}</div>
+              <div className="text-[11.5px] text-[var(--c-tinta-tenue)] mt-1 leading-relaxed">{r.detalle}</div>
             </div>
           ))}
         </div>
@@ -163,12 +163,12 @@ export default async function Usuarios({ searchParams }: { searchParams: Promise
         </tr></thead>
         <tbody>
           {filas.map((x: any) => (
-            <tr key={x.id} className="hover:bg-[#151d29] align-top">
+            <tr key={x.id} className="hover:bg-[var(--c-hover)] align-top">
               <TD className="font-medium">
                 {x.nombre}
-                {x.id === u.id && <span className="ml-2 text-[11px] text-[#64748b]">(vos)</span>}
+                {x.id === u.id && <span className="ml-2 text-[11px] text-[var(--c-tinta-tenue)]">(vos)</span>}
               </TD>
-              <TD className="text-[#9aa7b8]">{x.email}</TD>
+              <TD className="text-[var(--c-tinta-media)]">{x.email}</TD>
               <TD>
                 {administra && x.id !== u.id ? (
                   <SelectEstado id={x.id} valor={x.rol} accion={cambiarRol}
@@ -179,27 +179,27 @@ export default async function Usuarios({ searchParams }: { searchParams: Promise
                   </Chip>
                 )}
               </TD>
-              <TD className="text-[#9aa7b8]">{x.sucursal || "—"}</TD>
+              <TD className="text-[var(--c-tinta-media)]">{x.sucursal || "—"}</TD>
               <TD alinear="right">{x.ventas || "—"}</TD>
-              <TD alinear="right" className="text-[#9aa7b8]">{x.meta_unidades || "—"}</TD>
+              <TD alinear="right" className="text-[var(--c-tinta-media)]">{x.meta_unidades || "—"}</TD>
               <TD><Chip tono={x.activo ? "verde" : "gris"}>{x.activo ? "Activo" : "Inactivo"}</Chip></TD>
 
               {administra && (
                 <TD>
                   <div className="flex items-start gap-3">
                     <details>
-                      <summary className="cursor-pointer list-none text-[12.5px] text-[#60a5fa] hover:underline">
+                      <summary className="cursor-pointer list-none text-[12.5px] text-[var(--c-enlace)] hover:underline">
                         Cambiar clave
                       </summary>
                       <form action={resetearClave} className="mt-3 w-[250px] space-y-2.5 p-3
-                        bg-[#0d131c] border border-[#1f2937] rounded-lg">
+                        bg-[var(--c-superficie)] border border-[var(--c-borde)] rounded-lg">
                         <input type="hidden" name="id" value={x.id} />
                         <Campo label="Contraseña nueva">
                           <input name="clave" type="password" required minLength={8}
                             autoComplete="new-password" className="campo" />
                         </Campo>
                         <Boton tipo="submit" className="w-full">Cambiar</Boton>
-                        <p className="text-[11px] text-[#64748b] leading-relaxed">
+                        <p className="text-[11px] text-[var(--c-tinta-tenue)] leading-relaxed">
                           Se le cierran las sesiones abiertas.
                         </p>
                       </form>
@@ -210,7 +210,7 @@ export default async function Usuarios({ searchParams }: { searchParams: Promise
                         <input type="hidden" name="id" value={x.id} />
                         <button type="submit"
                           className={`text-[12.5px] hover:underline whitespace-nowrap
-                            ${x.activo ? "text-[#f87171]" : "text-[#4ade80]"}`}>
+                            ${x.activo ? "text-[var(--c-rojo-alto)]" : "text-[var(--c-verde-alto)]"}`}>
                           {x.activo ? "Desactivar" : "Reactivar"}
                         </button>
                       </form>
@@ -265,7 +265,7 @@ export default async function Usuarios({ searchParams }: { searchParams: Promise
         </Panel>
       ) : (
         <Panel>
-          <p className="text-[13px] text-[#9aa7b8]">
+          <p className="text-[13px] text-[var(--c-tinta-media)]">
             Para dar de alta o modificar usuarios hace falta perfil de dueño o gerente.
             Tu contraseña la cambiás desde <b>Mi cuenta</b>.
           </p>

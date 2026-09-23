@@ -68,7 +68,7 @@ export default async function Configuracion() {
             detalle="Se usa para convertir los movimientos en dólares." />
           <p className="text-[13px] mb-3">
             Última cargada: <b className="tabular">{cot ? plata(cot.valor) : "ninguna"}</b>
-            {cot && <span className="text-[#64748b]"> · {fecha(cot.fecha)}</span>}
+            {cot && <span className="text-[var(--c-tinta-tenue)]"> · {fecha(cot.fecha)}</span>}
           </p>
           <form action={guardarCotizacion} className="space-y-3">
             <Campo label="Valor de hoy">

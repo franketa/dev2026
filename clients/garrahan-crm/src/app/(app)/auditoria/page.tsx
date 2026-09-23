@@ -21,14 +21,14 @@ export default async function Auditoria() {
         <tbody>
           {filas.length === 0 && <FilaVacia cols={5} mensaje="Todavía no hay movimientos registrados." />}
           {filas.map((a: any) => (
-            <tr key={a.id} className="hover:bg-[#151d29]">
-              <TD className="text-[#9aa7b8]">
+            <tr key={a.id} className="hover:bg-[var(--c-hover)]">
+              <TD className="text-[var(--c-tinta-media)]">
                 {new Date(a.fecha).toLocaleString("es-AR", { dateStyle: "short", timeStyle: "short" })}
               </TD>
               <TD className="font-medium">{a.usuario || "Sistema"}</TD>
-              <TD className="text-[#9aa7b8]">{a.entidad} #{a.entidad_id}</TD>
+              <TD className="text-[var(--c-tinta-media)]">{a.entidad} #{a.entidad_id}</TD>
               <TD><Chip tono="azul">{a.accion}</Chip></TD>
-              <TD className="text-[#9aa7b8]">{a.detalle || "\u2014"}</TD>
+              <TD className="text-[var(--c-tinta-media)]">{a.detalle || "\u2014"}</TD>
             </tr>
           ))}
         </tbody>

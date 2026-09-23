@@ -22,13 +22,13 @@ export default async function Sucursales() {
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
         {filas.length === 0 && (
           <Panel className="sm:col-span-2 lg:col-span-3">
-            <p className="text-[13px] text-[#64748b] py-6 text-center">No hay sucursales cargadas.</p>
+            <p className="text-[13px] text-[var(--c-tinta-tenue)] py-6 text-center">No hay sucursales cargadas.</p>
           </Panel>
         )}
         {filas.map((s: any) => (
           <Panel key={s.id}>
             <h3 className="text-[14.5px] font-semibold">{s.nombre}</h3>
-            {s.direccion && <p className="text-[12px] text-[#64748b] mt-0.5">{s.direccion}</p>}
+            {s.direccion && <p className="text-[12px] text-[var(--c-tinta-tenue)] mt-0.5">{s.direccion}</p>}
             <div className="mt-4 flex items-end justify-between">
               <div>
                 <div className="etiqueta">Unidades</div>
@@ -36,7 +36,7 @@ export default async function Sucursales() {
               </div>
               <div className="text-right">
                 <div className="etiqueta">Capital</div>
-                <div className="text-[15px] font-semibold tabular mt-1 text-[#9aa7b8]">{plata(s.capital)}</div>
+                <div className="text-[15px] font-semibold tabular mt-1 text-[var(--c-tinta-media)]">{plata(s.capital)}</div>
               </div>
             </div>
           </Panel>

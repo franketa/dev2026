@@ -138,18 +138,18 @@ export default async function Orden({ params }: { params: Promise<any> }) {
                   <input type="hidden" name="item" value={i.id} />
                   <button type="submit" className={`w-full flex items-center gap-3 rounded-lg border px-3.5 py-2.5
                     text-left transition-colors
-                    ${i.hecho ? "border-[#14532d] bg-[#052e1a]" : "border-[#1f2937] bg-[#0f1520] hover:border-[#2f6bff]"}`}>
+                    ${i.hecho ? "border-[var(--c-verde-borde)] bg-[var(--c-verde-fondo)]" : "border-[var(--c-borde)] bg-[var(--c-hueco)] hover:border-[var(--c-primario)]"}`}>
                     <span className={`h-4.5 w-4.5 shrink-0 rounded grid place-items-center border
-                      ${i.hecho ? "bg-[#22c55e] border-[#22c55e]" : "border-[#334155]"}`}
+                      ${i.hecho ? "bg-[var(--c-verde)] border-[var(--c-verde)]" : "border-[var(--c-borde-alto)]"}`}
                       style={{ height: 18, width: 18 }}>
-                      {i.hecho && <Check size={12} className="text-[#052e1a]" />}
+                      {i.hecho && <Check size={12} className="text-[var(--c-verde-fondo)]" />}
                     </span>
-                    <span className={`flex-1 text-[13px] ${i.hecho ? "text-[#9aa7b8] line-through" : ""}`}>
+                    <span className={`flex-1 text-[13px] ${i.hecho ? "text-[var(--c-tinta-media)] line-through" : ""}`}>
                       {i.tarea}
                     </span>
-                    {i.proveedor && <span className="text-[11.5px] text-[#64748b]">{i.proveedor}</span>}
+                    {i.proveedor && <span className="text-[11.5px] text-[var(--c-tinta-tenue)]">{i.proveedor}</span>}
                     {costos && Number(i.costo) > 0 && (
-                      <span className="text-[12.5px] tabular text-[#9aa7b8]">{plata(i.costo)}</span>
+                      <span className="text-[12.5px] tabular text-[var(--c-tinta-media)]">{plata(i.costo)}</span>
                     )}
                   </button>
                 </form>
@@ -182,7 +182,7 @@ export default async function Orden({ params }: { params: Promise<any> }) {
         <Panel>
           <PanelTitulo titulo="La unidad" />
           <Dato label="Vehículo">
-            <Link href={`/vehiculos/${o.vid}`} className="text-[#60a5fa] hover:underline">
+            <Link href={`/vehiculos/${o.vid}`} className="text-[var(--c-enlace)] hover:underline">
               {o.marca} {o.modelo}
             </Link>
           </Dato>
@@ -192,9 +192,9 @@ export default async function Orden({ params }: { params: Promise<any> }) {
           <Dato label="Ingreso al taller">{fecha(o.fecha_ingreso)}</Dato>
           {o.fecha_salida && <Dato label="Salida">{fecha(o.fecha_salida)}</Dato>}
           {o.notas && (
-            <div className="mt-3 pt-3 border-t border-[#1f2937]">
+            <div className="mt-3 pt-3 border-t border-[var(--c-borde)]">
               <div className="etiqueta mb-1.5">Notas</div>
-              <p className="text-[13px] text-[#cbd5e1] whitespace-pre-line">{o.notas}</p>
+              <p className="text-[13px] text-[var(--c-tinta-clara)] whitespace-pre-line">{o.notas}</p>
             </div>
           )}
         </Panel>

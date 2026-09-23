@@ -251,7 +251,7 @@ export default async function NuevoVehiculo({ searchParams }: { searchParams: Pr
             </Campo>
           </div>
           {verCostos && cuentas.length > 0 && (
-            <div className="mt-4 pt-4 border-t border-[#1f2937]">
+            <div className="mt-4 pt-4 border-t border-[var(--c-borde)]">
               <Campo label="¿De qué cuenta salió la plata? (opcional)">
                 <select name="cuenta_id" className="campo sm:w-1/2" defaultValue="">
                   <option value="">No registrar el pago ahora</option>
@@ -260,7 +260,7 @@ export default async function NuevoVehiculo({ searchParams }: { searchParams: Pr
                   ))}
                 </select>
               </Campo>
-              <p className="mt-2 text-[11.5px] text-[#64748b] leading-relaxed">
+              <p className="mt-2 text-[11.5px] text-[var(--c-tinta-tenue)] leading-relaxed">
                 Si elegís una cuenta, la salida queda registrada en la caja como compra de
                 unidad. No cuenta como gasto del mes: es plata que se transformó en
                 mercadería y pega en el resultado recién cuando el auto se vende.

@@ -35,7 +35,7 @@ const NOMBRES: Record<string, string> = {
 export default function Migas() {
   const path = usePathname();
   if (!path || path === "/") {
-    return <span className="text-[12.5px] text-[#cbd5e1]">Inicio</span>;
+    return <span className="text-[12.5px] text-[var(--c-tinta-clara)]">Inicio</span>;
   }
 
   const partes = path.split("/").filter(Boolean);
@@ -50,16 +50,16 @@ export default function Migas() {
 
   return (
     <nav aria-label="Ubicación" className="flex items-center gap-1.5 min-w-0">
-      <Link href="/" className="text-[12.5px] text-[#64748b] hover:text-[#cbd5e1] shrink-0">
+      <Link href="/" className="text-[12.5px] text-[var(--c-tinta-tenue)] hover:text-[var(--c-tinta-clara)] shrink-0">
         Inicio
       </Link>
       {migas.map((m) => (
         <span key={m.href} className="flex items-center gap-1.5 min-w-0">
-          <span className="text-[#334155] shrink-0">/</span>
+          <span className="text-[var(--c-borde-alto)] shrink-0">/</span>
           {m.ultima ? (
-            <span className="text-[12.5px] text-[#e8edf5] font-medium truncate">{m.label}</span>
+            <span className="text-[12.5px] text-[var(--c-tinta)] font-medium truncate">{m.label}</span>
           ) : (
-            <Link href={m.href} className="text-[12.5px] text-[#64748b] hover:text-[#cbd5e1] truncate">
+            <Link href={m.href} className="text-[12.5px] text-[var(--c-tinta-tenue)] hover:text-[var(--c-tinta-clara)] truncate">
               {m.label}
             </Link>
           )}

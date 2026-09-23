@@ -180,8 +180,8 @@ export default async function Guia() {
         <div className="flex flex-wrap gap-2">
           {secciones.map((s) => (
             <a key={s.id} href={`#${s.id}`}
-              className="rounded-lg border border-[#1f2937] bg-[#151d29] px-3 py-1.5
-                text-[12.5px] text-[#cbd5e1] hover:border-[#2f6bff] transition-colors">
+              className="rounded-lg border border-[var(--c-borde)] bg-[var(--c-hover)] px-3 py-1.5
+                text-[12.5px] text-[var(--c-tinta-clara)] hover:border-[var(--c-primario)] transition-colors">
               {s.titulo}
             </a>
           ))}
@@ -195,31 +195,31 @@ export default async function Guia() {
             <PanelTitulo titulo={s.titulo} detalle={s.para}
               accion={s.href
                 ? <Link href={s.href}
-                    className="text-[12.5px] font-semibold text-[#60a5fa] hover:underline whitespace-nowrap">
+                    className="text-[12.5px] font-semibold text-[var(--c-enlace)] hover:underline whitespace-nowrap">
                     Ir a {s.titulo} →
                   </Link>
                 : <Chip tono="azul">Atajo</Chip>} />
 
             <ol className="space-y-2">
               {s.pasos.map((p, i) => (
-                <li key={i} className="flex gap-3 text-[13px] text-[#cbd5e1] leading-relaxed">
-                  <span className="mt-[3px] h-[18px] w-[18px] shrink-0 rounded-full bg-[#1b2433]
-                    grid place-items-center text-[10.5px] font-semibold text-[#9aa7b8]">{i + 1}</span>
+                <li key={i} className="flex gap-3 text-[13px] text-[var(--c-tinta-clara)] leading-relaxed">
+                  <span className="mt-[3px] h-[18px] w-[18px] shrink-0 rounded-full bg-[var(--c-activo)]
+                    grid place-items-center text-[10.5px] font-semibold text-[var(--c-tinta-media)]">{i + 1}</span>
                   {p}
                 </li>
               ))}
             </ol>
 
             {s.ojo && (
-              <p className="mt-4 pt-3 border-t border-[#1f2937] text-[12.5px] text-[#9aa7b8] leading-relaxed">
-                <span className="font-semibold text-[#eab308]">Ojo: </span>{s.ojo}
+              <p className="mt-4 pt-3 border-t border-[var(--c-borde)] text-[12.5px] text-[var(--c-tinta-media)] leading-relaxed">
+                <span className="font-semibold text-[var(--c-amarillo)]">Ojo: </span>{s.ojo}
               </p>
             )}
           </Panel>
         ))}
       </div>
 
-      <p className="mt-6 text-[12px] text-[#64748b] max-w-2xl leading-relaxed">
+      <p className="mt-6 text-[12px] text-[var(--c-tinta-tenue)] max-w-2xl leading-relaxed">
         Si algo no está donde lo buscás o falta una pantalla, decilo. El sistema es de
         Garrahan y se acomoda a cómo trabajan ustedes, no al revés.
       </p>

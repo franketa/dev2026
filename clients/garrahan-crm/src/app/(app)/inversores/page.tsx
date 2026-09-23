@@ -14,7 +14,7 @@ export const dynamic = "force-dynamic";
 export default async function Inversores() {
   const u = await requiereSesion();
   if (!veCostos(u)) {
-    return <Panel><p className="text-[13px] text-[#9aa7b8] py-8 text-center">
+    return <Panel><p className="text-[13px] text-[var(--c-tinta-media)] py-8 text-center">
       Tu perfil no tiene acceso al panel de inversores.</p></Panel>;
   }
 
@@ -88,7 +88,7 @@ export default async function Inversores() {
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3 mt-6">
         {inv.length === 0 && (
           <Panel className="sm:col-span-2 lg:col-span-3">
-            <p className="text-[13px] text-[#64748b] py-6 text-center">
+            <p className="text-[13px] text-[var(--c-tinta-tenue)] py-6 text-center">
               Todavía no hay inversores cargados.
             </p>
           </Panel>
@@ -102,30 +102,30 @@ export default async function Inversores() {
                   {i.tipo === "propio" ? "Capital propio" : "Inversor externo"}
                 </Chip>
               </div>
-              <Link href={`/vehiculos?inversor=${i.id}`} className="text-[#64748b] hover:text-[#2f6bff]">
+              <Link href={`/vehiculos?inversor=${i.id}`} className="text-[var(--c-tinta-tenue)] hover:text-[var(--c-primario)]">
                 <ArrowRight size={16} />
               </Link>
             </div>
             <div className="space-y-1.5">
               <div className="flex justify-between text-[13px]">
-                <span className="text-[#64748b]">Saldo ARS</span>
-                <span className={`tabular ${Number(i.saldo_ars) < 0 ? "text-[#f87171]" : "text-[#22c55e]"}`}>
+                <span className="text-[var(--c-tinta-tenue)]">Saldo ARS</span>
+                <span className={`tabular ${Number(i.saldo_ars) < 0 ? "text-[var(--c-rojo-alto)]" : "text-[var(--c-verde)]"}`}>
                   {plata(i.saldo_ars)}
                 </span>
               </div>
               <div className="flex justify-between text-[13px]">
-                <span className="text-[#64748b]">Saldo USD</span>
-                <span className={`tabular ${Number(i.saldo_usd) < 0 ? "text-[#f87171]" : "text-[#22c55e]"}`}>
+                <span className="text-[var(--c-tinta-tenue)]">Saldo USD</span>
+                <span className={`tabular ${Number(i.saldo_usd) < 0 ? "text-[var(--c-rojo-alto)]" : "text-[var(--c-verde)]"}`}>
                   {plata(i.saldo_usd, "USD")}
                 </span>
               </div>
-              <div className="flex justify-between text-[13px] pt-1.5 border-t border-[#1f2937]">
-                <span className="text-[#64748b]">Unidades activas</span>
+              <div className="flex justify-between text-[13px] pt-1.5 border-t border-[var(--c-borde)]">
+                <span className="text-[var(--c-tinta-tenue)]">Unidades activas</span>
                 <span className="tabular">{i.unidades}</span>
               </div>
               <div className="flex justify-between text-[13px]">
-                <span className="text-[#64748b]">Capital invertido</span>
-                <span className="tabular text-[#9aa7b8]">{plataCorta(i.capital)}</span>
+                <span className="text-[var(--c-tinta-tenue)]">Capital invertido</span>
+                <span className="tabular text-[var(--c-tinta-media)]">{plataCorta(i.capital)}</span>
               </div>
             </div>
           </Panel>
@@ -142,12 +142,12 @@ export default async function Inversores() {
             </thead>
             <tbody>
               {pendientes.map((p: any) => (
-                <tr key={p.id} className="hover:bg-[#151d29]">
+                <tr key={p.id} className="hover:bg-[var(--c-hover)]">
                   <TD className="font-medium">{p.de}</TD>
                   <TD>{p.para || "—"}</TD>
                   <TD alinear="right">{plata(p.monto, p.moneda)}</TD>
-                  <TD className="text-[#9aa7b8]">{p.descripcion || "—"}</TD>
-                  <TD className="text-[#9aa7b8]">{fecha(p.fecha)}</TD>
+                  <TD className="text-[var(--c-tinta-media)]">{p.descripcion || "—"}</TD>
+                  <TD className="text-[var(--c-tinta-media)]">{fecha(p.fecha)}</TD>
                   <TD alinear="right">
                     <form action={marcarDevuelta}>
                       <input type="hidden" name="id" value={p.id} />
@@ -214,14 +214,14 @@ export default async function Inversores() {
             <tbody>
               {ultimos.length === 0 && <FilaVacia cols={5} mensaje="Sin movimientos registrados." />}
               {ultimos.map((m: any) => (
-                <tr key={m.id} className="hover:bg-[#151d29]">
-                  <TD className="text-[#9aa7b8]">{fecha(m.fecha)}</TD>
+                <tr key={m.id} className="hover:bg-[var(--c-hover)]">
+                  <TD className="text-[var(--c-tinta-media)]">{fecha(m.fecha)}</TD>
                   <TD className="font-medium">{m.inversor}</TD>
                   <TD><Chip tono={["aporte", "venta", "devolucion"].includes(m.tipo) ? "verde" : "rojo"}>
                     {m.tipo}</Chip></TD>
-                  <TD className="text-[#9aa7b8]">
+                  <TD className="text-[var(--c-tinta-media)]">
                     {m.descripcion || "—"}
-                    {m.dominio && <span className="text-[#64748b]"> · {m.dominio}</span>}
+                    {m.dominio && <span className="text-[var(--c-tinta-tenue)]"> · {m.dominio}</span>}
                   </TD>
                   <TD alinear="right">{plata(m.monto, m.moneda)}</TD>
                 </tr>

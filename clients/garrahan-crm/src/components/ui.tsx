@@ -4,14 +4,14 @@ import type { Tono } from "@/lib/constantes";
 
 /* ------------------------------------------------------------------- tonos */
 const TONOS: Record<Tono, string> = {
-  verde:    "text-[#22c55e] bg-[#052e1a] border-[#14532d]",
-  azul:     "text-[#60a5fa] bg-[#0a1b3d] border-[#1e3a8a]",
-  celeste:  "text-[#38bdf8] bg-[#052232] border-[#075985]",
-  violeta:  "text-[#c084fc] bg-[#210a33] border-[#6b21a8]",
-  naranja:  "text-[#fb923c] bg-[#2c1405] border-[#9a3412]",
-  amarillo: "text-[#eab308] bg-[#2a2205] border-[#854d0e]",
-  rojo:     "text-[#f87171] bg-[#2e0a0a] border-[#991b1b]",
-  gris:     "text-[#94a3b8] bg-[#171d27] border-[#334155]",
+  verde:    "text-[var(--c-verde)] bg-[var(--c-verde-fondo)] border-[var(--c-verde-borde)]",
+  azul:     "text-[var(--c-enlace)] bg-[var(--c-azul-fondo)] border-[var(--c-azul-borde)]",
+  celeste:  "text-[var(--c-celeste)] bg-[var(--c-celeste-fondo)] border-[var(--c-celeste-borde)]",
+  violeta:  "text-[var(--c-violeta-alto)] bg-[var(--c-violeta-fondo)] border-[var(--c-violeta-borde)]",
+  naranja:  "text-[var(--c-naranja-alto)] bg-[var(--c-naranja-fondo)] border-[var(--c-naranja-borde)]",
+  amarillo: "text-[var(--c-amarillo)] bg-[var(--c-amarillo-fondo)] border-[var(--c-amarillo-borde)]",
+  rojo:     "text-[var(--c-rojo-alto)] bg-[var(--c-rojo-fondo)] border-[var(--c-rojo-borde)]",
+  gris:     "text-[var(--c-tinta-gris)] bg-[var(--c-gris-fondo)] border-[var(--c-borde-alto)]",
 };
 
 export function Chip({ tono = "gris", children, className = "" }:
@@ -26,9 +26,9 @@ export function Chip({ tono = "gris", children, className = "" }:
 
 export function Punto({ tono = "gris" }: { tono?: Tono }) {
   const c: Record<Tono, string> = {
-    verde: "bg-[#22c55e]", azul: "bg-[#3b82f6]", celeste: "bg-[#38bdf8]",
-    violeta: "bg-[#a855f7]", naranja: "bg-[#f97316]", amarillo: "bg-[#eab308]",
-    rojo: "bg-[#ef4444]", gris: "bg-[#64748b]",
+    verde: "bg-[var(--c-verde)]", azul: "bg-[var(--c-azul)]", celeste: "bg-[var(--c-celeste)]",
+    violeta: "bg-[var(--c-violeta)]", naranja: "bg-[var(--c-naranja)]", amarillo: "bg-[var(--c-amarillo)]",
+    rojo: "bg-[var(--c-rojo)]", gris: "bg-[var(--c-tinta-tenue)]",
   };
   return <span className={`inline-block h-1.5 w-1.5 rounded-full ${c[tono]}`} />;
 }
@@ -37,7 +37,7 @@ export function Punto({ tono = "gris" }: { tono?: Tono }) {
 export function Panel({ children, className = "", padding = true }:
   { children: ReactNode; className?: string; padding?: boolean }) {
   return (
-    <div className={`bg-[#111721] border border-[#1f2937] rounded-xl ${padding ? "p-5" : ""} ${className}`}>
+    <div className={`bg-[var(--c-panel)] border border-[var(--c-borde)] rounded-xl ${padding ? "p-5" : ""} ${className}`}>
       {children}
     </div>
   );
@@ -48,8 +48,8 @@ export function PanelTitulo({ titulo, detalle, accion }:
   return (
     <div className="flex items-start justify-between gap-4 mb-4">
       <div>
-        <h3 className="text-[15px] font-semibold text-[#e8edf5]">{titulo}</h3>
-        {detalle && <p className="text-[12.5px] text-[#64748b] mt-0.5">{detalle}</p>}
+        <h3 className="text-[15px] font-semibold text-[var(--c-tinta)]">{titulo}</h3>
+        {detalle && <p className="text-[12.5px] text-[var(--c-tinta-tenue)] mt-0.5">{detalle}</p>}
       </div>
       {accion}
     </div>
@@ -64,20 +64,20 @@ export function KPI({ label, valor, detalle, delta, tono, href }: {
   delta?: { valor: string; positivo: boolean }; tono?: Tono; href?: string;
 }) {
   const cuerpo = (
-    <div className={`bg-[#111721] border rounded-xl px-5 py-4 h-full transition-colors
-      ${tono ? TONOS[tono].split(" ")[2] : "border-[#1f2937]"} ${href ? "hover:border-[#2f6bff]" : ""}`}>
+    <div className={`bg-[var(--c-panel)] border rounded-xl px-5 py-4 h-full transition-colors
+      ${tono ? TONOS[tono].split(" ")[2] : "border-[var(--c-borde)]"} ${href ? "hover:border-[var(--c-primario)]" : ""}`}>
       <div className="etiqueta flex items-center gap-1.5">
         {tono && <Punto tono={tono} />}
         {label}
       </div>
-      <div className="mt-2 text-[27px] leading-none font-semibold tabular text-[#e8edf5]">{valor}</div>
+      <div className="mt-2 text-[27px] leading-none font-semibold tabular text-[var(--c-tinta)]">{valor}</div>
       <div className="mt-1.5 flex items-center gap-2 min-h-[18px]">
         {delta && (
-          <span className={`text-[11.5px] font-semibold ${delta.positivo ? "text-[#22c55e]" : "text-[#f87171]"}`}>
+          <span className={`text-[11.5px] font-semibold ${delta.positivo ? "text-[var(--c-verde)]" : "text-[var(--c-rojo-alto)]"}`}>
             {delta.positivo ? "↑" : "↓"} {delta.valor}
           </span>
         )}
-        {detalle && <span className="text-[11.5px] text-[#64748b]">{detalle}</span>}
+        {detalle && <span className="text-[11.5px] text-[var(--c-tinta-tenue)]">{detalle}</span>}
       </div>
     </div>
   );
@@ -93,11 +93,11 @@ export function GrillaKPI({ children, cols = 4 }: { children: ReactNode; cols?: 
 export function Boton({ children, href, onClick, variante = "primario", tipo = "button", className = "", ...rest }: any) {
   const base = "inline-flex items-center justify-center gap-2 rounded-lg px-3.5 py-2 text-[13px] font-semibold transition-colors disabled:opacity-50";
   const v: Record<string, string> = {
-    primario: "bg-[#2f6bff] hover:bg-[#4d81ff] text-white",
-    suave:    "bg-[#1b2433] hover:bg-[#232e40] text-[#cbd5e1] border border-[#1f2937]",
-    fantasma: "hover:bg-[#1b2433] text-[#9aa7b8]",
-    peligro:  "bg-[#2e0a0a] hover:bg-[#3d0f0f] text-[#f87171] border border-[#991b1b]",
-    exito:    "bg-[#052e1a] hover:bg-[#08401f] text-[#4ade80] border border-[#14532d]",
+    primario: "bg-[var(--c-primario)] hover:bg-[var(--c-primario-alto)] text-white",
+    suave:    "bg-[var(--c-activo)] hover:bg-[var(--c-activo-alto)] text-[var(--c-tinta-clara)] border border-[var(--c-borde)]",
+    fantasma: "hover:bg-[var(--c-activo)] text-[var(--c-tinta-media)]",
+    peligro:  "bg-[var(--c-rojo-fondo)] hover:bg-[var(--c-rojo-fondo-alto)] text-[var(--c-rojo-alto)] border border-[var(--c-rojo-borde)]",
+    exito:    "bg-[var(--c-verde-fondo)] hover:bg-[var(--c-verde-fondo-alto)] text-[var(--c-verde-alto)] border border-[var(--c-verde-borde)]",
   };
   const cls = `${base} ${v[variante] || v.primario} ${className}`;
   if (href) return <Link href={href} className={cls} {...rest}>{children}</Link>;
@@ -107,7 +107,7 @@ export function Boton({ children, href, onClick, variante = "primario", tipo = "
 /* --------------------------------------------------------------------- tabla */
 export function Tabla({ children, className = "" }: { children: ReactNode; className?: string }) {
   return (
-    <div className={`overflow-x-auto bg-[#111721] border border-[#1f2937] rounded-xl ${className}`}>
+    <div className={`overflow-x-auto bg-[var(--c-panel)] border border-[var(--c-borde)] rounded-xl ${className}`}>
       <table className="w-full text-[13px]">{children}</table>
     </div>
   );
@@ -116,7 +116,7 @@ export function Tabla({ children, className = "" }: { children: ReactNode; class
 export function TH({ children, alinear = "left", className = "" }:
   { children?: ReactNode; alinear?: "left" | "right" | "center"; className?: string }) {
   return (
-    <th className={`etiqueta px-4 py-3 border-b border-[#1f2937] whitespace-nowrap
+    <th className={`etiqueta px-4 py-3 border-b border-[var(--c-borde)] whitespace-nowrap
       ${alinear === "right" ? "text-right" : alinear === "center" ? "text-center" : "text-left"} ${className}`}>
       {children}
     </th>
@@ -126,7 +126,7 @@ export function TH({ children, alinear = "left", className = "" }:
 export function TD({ children, alinear = "left", className = "" }:
   { children?: ReactNode; alinear?: "left" | "right" | "center"; className?: string }) {
   return (
-    <td className={`px-4 py-3 border-b border-[#172033] align-middle
+    <td className={`px-4 py-3 border-b border-[var(--c-borde-suave)] align-middle
       ${alinear === "right" ? "text-right tabular" : alinear === "center" ? "text-center" : "text-left"} ${className}`}>
       {children}
     </td>
@@ -150,10 +150,10 @@ export function THOrden({ campo, actual, dir, href, alinear = "left", children }
   return (
     <TH alinear={alinear}>
       <Link href={href(campo, proxima)}
-        className={`inline-flex items-center gap-1 hover:text-[#cbd5e1] transition-colors
-          ${activo ? "text-[#e8edf5]" : ""}`}>
+        className={`inline-flex items-center gap-1 hover:text-[var(--c-tinta-clara)] transition-colors
+          ${activo ? "text-[var(--c-tinta)]" : ""}`}>
         {children}
-        <span className={`text-[10px] ${activo ? "text-[#2f6bff]" : "text-[#334155]"}`}>
+        <span className={`text-[10px] ${activo ? "text-[var(--c-primario)]" : "text-[var(--c-borde-alto)]"}`}>
           {flecha || "↕"}
         </span>
       </Link>
@@ -164,7 +164,7 @@ export function THOrden({ campo, actual, dir, href, alinear = "left", children }
 export function FilaVacia({ cols, mensaje = "No hay registros todavía." }: { cols: number; mensaje?: string }) {
   return (
     <tr>
-      <td colSpan={cols} className="px-4 py-14 text-center text-[#64748b] text-[13px]">{mensaje}</td>
+      <td colSpan={cols} className="px-4 py-14 text-center text-[var(--c-tinta-tenue)] text-[13px]">{mensaje}</td>
     </tr>
   );
 }
@@ -173,10 +173,10 @@ export function FilaVacia({ cols, mensaje = "No hay registros todavía." }: { co
 export function Vacio({ titulo, detalle, accion, icono }:
   { titulo: string; detalle?: string; accion?: ReactNode; icono?: ReactNode }) {
   return (
-    <div className="bg-[#111721] border border-[#1f2937] rounded-xl py-16 px-6 text-center">
-      {icono && <div className="mx-auto mb-4 h-12 w-12 rounded-full bg-[#1b2433] grid place-items-center text-[#64748b]">{icono}</div>}
-      <h3 className="text-[15px] font-semibold text-[#e8edf5]">{titulo}</h3>
-      {detalle && <p className="text-[13px] text-[#64748b] mt-1.5 max-w-md mx-auto leading-relaxed">{detalle}</p>}
+    <div className="bg-[var(--c-panel)] border border-[var(--c-borde)] rounded-xl py-16 px-6 text-center">
+      {icono && <div className="mx-auto mb-4 h-12 w-12 rounded-full bg-[var(--c-activo)] grid place-items-center text-[var(--c-tinta-tenue)]">{icono}</div>}
+      <h3 className="text-[15px] font-semibold text-[var(--c-tinta)]">{titulo}</h3>
+      {detalle && <p className="text-[13px] text-[var(--c-tinta-tenue)] mt-1.5 max-w-md mx-auto leading-relaxed">{detalle}</p>}
       {accion && <div className="mt-5">{accion}</div>}
     </div>
   );
@@ -190,11 +190,11 @@ export function Encabezado({ titulo, detalle, acciones, volver }:
       <div className="flex items-start gap-3">
         {volver && (
           <Link href={volver} className="mt-1 h-7 w-7 grid place-items-center rounded-lg
-            hover:bg-[#1b2433] text-[#9aa7b8] shrink-0">←</Link>
+            hover:bg-[var(--c-activo)] text-[var(--c-tinta-media)] shrink-0">←</Link>
         )}
         <div>
-          <h1 className="text-[23px] font-semibold text-[#e8edf5] leading-tight">{titulo}</h1>
-          {detalle && <p className="text-[13px] text-[#64748b] mt-1">{detalle}</p>}
+          <h1 className="text-[23px] font-semibold text-[var(--c-tinta)] leading-tight">{titulo}</h1>
+          {detalle && <p className="text-[13px] text-[var(--c-tinta-tenue)] mt-1">{detalle}</p>}
         </div>
       </div>
       {acciones && <div className="flex flex-wrap items-center gap-2">{acciones}</div>}
@@ -209,12 +209,12 @@ export function Progreso({ hechos, total, etiqueta }:
   return (
     <div className="min-w-[130px]">
       <div className="flex items-center gap-2">
-        <div className="h-1.5 flex-1 rounded-full bg-[#1f2937] overflow-hidden">
-          <div className="h-full rounded-full bg-[#22c55e] transition-all" style={{ width: `${pct}%` }} />
+        <div className="h-1.5 flex-1 rounded-full bg-[var(--c-borde)] overflow-hidden">
+          <div className="h-full rounded-full bg-[var(--c-verde)] transition-all" style={{ width: `${pct}%` }} />
         </div>
-        <span className="text-[11.5px] text-[#9aa7b8] tabular shrink-0">{hechos}/{total}</span>
+        <span className="text-[11.5px] text-[var(--c-tinta-media)] tabular shrink-0">{hechos}/{total}</span>
       </div>
-      {etiqueta && <div className="text-[11px] text-[#64748b] mt-1">{etiqueta}</div>}
+      {etiqueta && <div className="text-[11px] text-[var(--c-tinta-tenue)] mt-1">{etiqueta}</div>}
     </div>
   );
 }
@@ -226,10 +226,10 @@ export function Etapas({ indice, total = 5, etiqueta }:
     <div className="min-w-[110px]">
       <div className="flex gap-1">
         {Array.from({ length: total }).map((_, i) => (
-          <span key={i} className={`h-1.5 w-5 rounded-full ${i <= indice ? "bg-[#2f6bff]" : "bg-[#1f2937]"}`} />
+          <span key={i} className={`h-1.5 w-5 rounded-full ${i <= indice ? "bg-[var(--c-primario)]" : "bg-[var(--c-borde)]"}`} />
         ))}
       </div>
-      {etiqueta && <div className="text-[11px] text-[#64748b] mt-1">{etiqueta}</div>}
+      {etiqueta && <div className="text-[11px] text-[var(--c-tinta-tenue)] mt-1">{etiqueta}</div>}
     </div>
   );
 }
@@ -238,7 +238,7 @@ export function Etapas({ indice, total = 5, etiqueta }:
 export function Monto({ valor, signo = false, className = "" }:
   { valor: number; signo?: boolean; className?: string }) {
   const n = Number(valor || 0);
-  const color = !signo ? "" : n > 0 ? "text-[#22c55e]" : n < 0 ? "text-[#f87171]" : "";
+  const color = !signo ? "" : n > 0 ? "text-[var(--c-verde)]" : n < 0 ? "text-[var(--c-rojo-alto)]" : "";
   const prefijo = signo && n > 0 ? "+" : "";
   return (
     <span className={`tabular ${color} ${className}`}>
@@ -260,9 +260,9 @@ export function Campo({ label, children, ancho = "" }:
 
 export function Dato({ label, children }: { label: string; children: ReactNode }) {
   return (
-    <div className="flex items-baseline justify-between gap-6 py-2 border-b border-[#172033] last:border-0">
-      <span className="text-[12.5px] text-[#64748b] shrink-0">{label}</span>
-      <span className="text-[13px] text-[#e8edf5] text-right font-medium">{children}</span>
+    <div className="flex items-baseline justify-between gap-6 py-2 border-b border-[var(--c-borde-suave)] last:border-0">
+      <span className="text-[12.5px] text-[var(--c-tinta-tenue)] shrink-0">{label}</span>
+      <span className="text-[13px] text-[var(--c-tinta)] text-right font-medium">{children}</span>
     </div>
   );
 }

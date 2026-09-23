@@ -20,9 +20,9 @@ export default function SelectorSucursal({ sucursales, actual, accion }: {
   // Con una sola sucursal el selector es ruido: se muestra el nombre y listo.
   if (sucursales.length <= 1) {
     return (
-      <div className="flex items-center gap-2 rounded-lg border border-[#1f2937]
-        bg-[#111721] px-2.5 py-2 text-[12.5px] text-[#cbd5e1]">
-        <Building2 size={14} className="text-[#64748b] shrink-0" />
+      <div className="flex items-center gap-2 rounded-lg border border-[var(--c-borde)]
+        bg-[var(--c-panel)] px-2.5 py-2 text-[12.5px] text-[var(--c-tinta-clara)]">
+        <Building2 size={14} className="text-[var(--c-tinta-tenue)] shrink-0" />
         <span className="truncate">{sucursales[0]?.nombre || "Casa Central"}</span>
       </div>
     );
@@ -30,16 +30,16 @@ export default function SelectorSucursal({ sucursales, actual, accion }: {
 
   return (
     <form ref={form} action={accion}>
-      <div className={`relative flex items-center gap-2 rounded-lg border border-[#1f2937]
-        bg-[#111721] px-2.5 hover:border-[#334155] transition-colors
+      <div className={`relative flex items-center gap-2 rounded-lg border border-[var(--c-borde)]
+        bg-[var(--c-panel)] px-2.5 hover:border-[var(--c-borde-alto)] transition-colors
         ${pendiente ? "opacity-50" : ""}`}>
-        <Building2 size={14} className="text-[#64748b] shrink-0" />
+        <Building2 size={14} className="text-[var(--c-tinta-tenue)] shrink-0" />
         <select
           name="sucursal"
           defaultValue={actual}
           disabled={pendiente}
           onChange={() => empezar(() => form.current?.requestSubmit())}
-          className="appearance-none bg-transparent py-2 pr-4 text-[12.5px] text-[#cbd5e1]
+          className="appearance-none bg-transparent py-2 pr-4 text-[12.5px] text-[var(--c-tinta-clara)]
             outline-none cursor-pointer w-full"
         >
           <option value="todas">Todas las sucursales</option>
@@ -47,7 +47,7 @@ export default function SelectorSucursal({ sucursales, actual, accion }: {
             <option key={s.id} value={s.id}>{s.nombre}</option>
           ))}
         </select>
-        <ChevronDown size={13} className="text-[#64748b] shrink-0 pointer-events-none absolute right-2.5" />
+        <ChevronDown size={13} className="text-[var(--c-tinta-tenue)] shrink-0 pointer-events-none absolute right-2.5" />
       </div>
     </form>
   );

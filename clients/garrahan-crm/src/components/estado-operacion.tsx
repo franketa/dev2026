@@ -35,10 +35,10 @@ export default async function EstadoOperacion({ usuario }: { usuario: Usuario })
 
   if (total === 0) {
     return (
-      <div className="hidden md:flex items-center gap-2 rounded-lg border border-[#14532d]
-        bg-[#052e1a] px-3 py-1.5" title="No hay nada vencido">
-        <span className="h-1.5 w-1.5 rounded-full bg-[#22c55e]" />
-        <span className="text-[12px] font-semibold text-[#4ade80]">Al día</span>
+      <div className="hidden md:flex items-center gap-2 rounded-lg border border-[var(--c-verde-borde)]
+        bg-[var(--c-verde-fondo)] px-3 py-1.5" title="No hay nada vencido">
+        <span className="h-1.5 w-1.5 rounded-full bg-[var(--c-verde)]" />
+        <span className="text-[12px] font-semibold text-[var(--c-verde-alto)]">Al día</span>
       </div>
     );
   }
@@ -48,10 +48,10 @@ export default async function EstadoOperacion({ usuario }: { usuario: Usuario })
 
   return (
     <Link href={principal.href} title={items.map((x) => `${x.n} ${x.texto}`).join(" · ")}
-      className="hidden md:flex items-center gap-2 rounded-lg border border-[#854d0e]
-        bg-[#2a2205] px-3 py-1.5 hover:border-[#eab308] transition-colors">
-      <span className="h-1.5 w-1.5 rounded-full bg-[#eab308]" />
-      <span className="text-[12px] font-semibold text-[#eab308]">
+      className="hidden md:flex items-center gap-2 rounded-lg border border-[var(--c-amarillo-borde)]
+        bg-[var(--c-amarillo-fondo)] px-3 py-1.5 hover:border-[var(--c-amarillo)] transition-colors">
+      <span className="h-1.5 w-1.5 rounded-full bg-[var(--c-amarillo)]" />
+      <span className="text-[12px] font-semibold text-[var(--c-amarillo)]">
         {total} {total === 1 ? "pendiente" : "pendientes"}
       </span>
     </Link>

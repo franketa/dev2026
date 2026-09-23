@@ -183,17 +183,17 @@ export default async function Venta({ params }: { params: Promise<any> }) {
               <tbody>
                 {pagos.length === 0 && <FilaVacia cols={6} mensaje="Todavía no se registró ningún cobro." />}
                 {pagos.map((p: any) => (
-                  <tr key={p.id} className="hover:bg-[#151d29]">
+                  <tr key={p.id} className="hover:bg-[var(--c-hover)]">
                     <TD className="font-medium">{MEDIOS_PAGO[p.medio] || p.medio}</TD>
-                    <TD className="text-[#9aa7b8]">{fecha(p.fecha)}</TD>
-                    <TD className="text-[#64748b]">{p.referencia || "—"}</TD>
+                    <TD className="text-[var(--c-tinta-media)]">{fecha(p.fecha)}</TD>
+                    <TD className="text-[var(--c-tinta-tenue)]">{p.referencia || "—"}</TD>
                     <TD alinear="right">{plata(p.monto, p.moneda)}</TD>
-                    <TD alinear="right" className="text-[#9aa7b8]">
+                    <TD alinear="right" className="text-[var(--c-tinta-media)]">
                       {plata(Number(p.monto) * (p.moneda === "USD" ? Number(p.cotizacion || 1) : 1))}
                     </TD>
                     <TD alinear="right">
                       <a href={`/documentos/recibo/${p.id}`} target="_blank" rel="noopener noreferrer"
-                        className="text-[12.5px] text-[#60a5fa] hover:underline whitespace-nowrap">
+                        className="text-[12.5px] text-[var(--c-enlace)] hover:underline whitespace-nowrap">
                         Recibo
                       </a>
                     </TD>
@@ -253,7 +253,7 @@ export default async function Venta({ params }: { params: Promise<any> }) {
             <Panel padding={false}>
               <div className="p-5 pb-0">
                 <PanelTitulo titulo="Saldo a cobrar"
-                  accion={<Link href="/cobranzas" className="text-[12.5px] text-[#60a5fa] hover:underline">Ver cobranzas →</Link>} />
+                  accion={<Link href="/cobranzas" className="text-[12.5px] text-[var(--c-enlace)] hover:underline">Ver cobranzas →</Link>} />
               </div>
               <Tabla className="border-0 rounded-none bg-transparent">
                 <thead>
@@ -266,9 +266,9 @@ export default async function Venta({ params }: { params: Promise<any> }) {
                   {cobranzas.map((c: any) => (
                     <tr key={c.id}>
                       <TD>{c.concepto}</TD>
-                      <TD className="text-[#9aa7b8]">{fecha(c.vencimiento)}</TD>
+                      <TD className="text-[var(--c-tinta-media)]">{fecha(c.vencimiento)}</TD>
                       <TD alinear="right">{plata(c.monto)}</TD>
-                      <TD alinear="right" className="text-[#22c55e]">{plata(c.cobrado)}</TD>
+                      <TD alinear="right" className="text-[var(--c-verde)]">{plata(c.cobrado)}</TD>
                       <TD><Chip tono={c.estado === "cobrado" ? "verde" : c.estado === "vencido" ? "rojo" : "amarillo"}>
                         {c.estado}</Chip></TD>
                     </tr>
@@ -328,7 +328,7 @@ export default async function Venta({ params }: { params: Promise<any> }) {
           <Panel>
             <PanelTitulo titulo="La unidad" />
             <Dato label="Vehículo">
-              <Link href={`/vehiculos/${v.vehiculo_id}`} className="text-[#60a5fa] hover:underline">
+              <Link href={`/vehiculos/${v.vehiculo_id}`} className="text-[var(--c-enlace)] hover:underline">
                 {v.marca} {v.modelo} {v.anio || ""}
               </Link>
             </Dato>
@@ -337,7 +337,7 @@ export default async function Venta({ params }: { params: Promise<any> }) {
             {v.inversor && <Dato label="Inversor">{v.inversor}</Dato>}
             {v.permuta_vehiculo_id && (
               <Dato label="Entró en permuta">
-                <Link href={`/vehiculos/${v.permuta_vehiculo_id}`} className="text-[#60a5fa] hover:underline">
+                <Link href={`/vehiculos/${v.permuta_vehiculo_id}`} className="text-[var(--c-enlace)] hover:underline">
                   {v.permuta_marca} {v.permuta_modelo} · {plata(v.permuta_valor)}
                 </Link>
               </Dato>
@@ -352,7 +352,7 @@ export default async function Venta({ params }: { params: Promise<any> }) {
             <Dato label="Entrega">{fecha(v.fecha_entrega)}</Dato>
             {postventa.length > 0 && (
               <Dato label="Postventa">
-                <Link href="/postventa" className="text-[#60a5fa] hover:underline">Seguimiento abierto</Link>
+                <Link href="/postventa" className="text-[var(--c-enlace)] hover:underline">Seguimiento abierto</Link>
               </Dato>
             )}
           </Panel>
@@ -360,7 +360,7 @@ export default async function Venta({ params }: { params: Promise<any> }) {
           {v.observaciones && (
             <Panel>
               <PanelTitulo titulo="Observaciones" />
-              <p className="text-[13px] text-[#cbd5e1] leading-relaxed whitespace-pre-line">{v.observaciones}</p>
+              <p className="text-[13px] text-[var(--c-tinta-clara)] leading-relaxed whitespace-pre-line">{v.observaciones}</p>
             </Panel>
           )}
         </div>

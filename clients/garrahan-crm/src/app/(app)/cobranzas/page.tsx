@@ -62,19 +62,19 @@ export default async function Cobranzas() {
           {filas.map((f: any) => {
             const moneda = (f.moneda || "ARS") as "ARS" | "USD";
             return (
-              <tr key={f.id} className="hover:bg-[#151d29]">
+              <tr key={f.id} className="hover:bg-[var(--c-hover)]">
                 <TD className="font-medium">{[f.apellido, f.nombre].filter(Boolean).join(", ") || "—"}</TD>
-                <TD className="text-[#9aa7b8]">
+                <TD className="text-[var(--c-tinta-media)]">
                   {f.concepto}
                   {moneda === "USD" && (
-                    <span className="ml-2 text-[11px] text-[#38bdf8]">en dólares</span>
+                    <span className="ml-2 text-[11px] text-[var(--c-celeste)]">en dólares</span>
                   )}
                 </TD>
                 <TD>{f.vencida
                   ? <Chip tono="rojo">{fecha(f.vencimiento)}</Chip>
-                  : <span className="text-[#9aa7b8]">{fecha(f.vencimiento)}</span>}</TD>
+                  : <span className="text-[var(--c-tinta-media)]">{fecha(f.vencimiento)}</span>}</TD>
                 <TD alinear="right">{plata(f.monto, moneda)}</TD>
-                <TD alinear="right" className="text-[#9aa7b8]">{plata(f.cobrado, moneda)}</TD>
+                <TD alinear="right" className="text-[var(--c-tinta-media)]">{plata(f.cobrado, moneda)}</TD>
                 <TD alinear="right" className="font-medium">{plata(f.saldo, moneda)}</TD>
                 <TD><Chip tono={f.estado === "cobrado" ? "verde" : f.vencida ? "rojo" : "amarillo"}>
                   {f.estado}</Chip></TD>
@@ -85,7 +85,7 @@ export default async function Cobranzas() {
       </Tabla>
 
       {hayUSD && (
-        <p className="mt-4 text-[11.5px] text-[#64748b] leading-relaxed max-w-2xl">
+        <p className="mt-4 text-[11.5px] text-[var(--c-tinta-tenue)] leading-relaxed max-w-2xl">
           Los saldos en dólares no se suman a los de pesos. Un saldo pactado en dólares se
           reclama en dólares: convertirlo daría un número que no es el que se firmó y que
           cambiaría solo cada vez que se mueve la cotización.

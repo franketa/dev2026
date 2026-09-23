@@ -31,11 +31,11 @@ export default async function Proveedores() {
         <tbody>
           {filas.length === 0 && <FilaVacia cols={6} mensaje="No hay proveedores cargados." />}
           {filas.map((p: any) => (
-            <tr key={p.id} className="hover:bg-[#151d29]">
+            <tr key={p.id} className="hover:bg-[var(--c-hover)]">
               <TD className="font-medium">{p.nombre}</TD>
-              <TD className="text-[#9aa7b8]">{p.rubro || "\u2014"}</TD>
-              <TD className="text-[#9aa7b8]">{p.cuit || "\u2014"}</TD>
-              <TD className="text-[#9aa7b8]">{p.telefono || "\u2014"}</TD>
+              <TD className="text-[var(--c-tinta-media)]">{p.rubro || "\u2014"}</TD>
+              <TD className="text-[var(--c-tinta-media)]">{p.cuit || "\u2014"}</TD>
+              <TD className="text-[var(--c-tinta-media)]">{p.telefono || "\u2014"}</TD>
               <TD alinear="right">{p.trabajos || "\u2014"}</TD>
               <TD alinear="right">{Number(p.facturado) > 0 ? plata(p.facturado) : "\u2014"}</TD>
             </tr>

@@ -20,8 +20,8 @@ export default function SelectEstado({ id, valor, opciones, accion }: {
         defaultValue={valor}
         disabled={pendiente}
         onChange={() => empezar(() => form.current?.requestSubmit())}
-        className={`bg-[#151d29] border border-[#1f2937] rounded-md px-2 py-1 text-[12px]
-          text-[#e8edf5] hover:border-[#2f6bff] transition-colors cursor-pointer
+        className={`bg-[var(--c-hover)] border border-[var(--c-borde)] rounded-md px-2 py-1 text-[12px]
+          text-[var(--c-tinta)] hover:border-[var(--c-primario)] transition-colors cursor-pointer
           ${pendiente ? "opacity-50" : ""}`}
       >
         {opciones.map((o) => (

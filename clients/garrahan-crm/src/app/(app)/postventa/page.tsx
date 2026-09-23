@@ -95,12 +95,12 @@ export default async function Postventa({ searchParams }: { searchParams: Promis
           detalle={conNps.length ? `sobre ${conNps.length} respuestas` : "sin respuestas todavía"} />
       </GrillaKPI>
 
-      <div className="flex flex-wrap gap-1 my-4 border-b border-[#1f2937]">
+      <div className="flex flex-wrap gap-1 my-4 border-b border-[var(--c-borde)]">
         {TABS.map(([v, l, n]) => (
           <Link key={v} href={`/postventa?ver=${v}`}
             className={`px-3.5 py-2.5 text-[13px] font-medium border-b-2 -mb-px transition-colors
-              ${filtro === v ? "border-[#2f6bff] text-[#e8edf5]" : "border-transparent text-[#9aa7b8] hover:text-[#cbd5e1]"}`}>
-            {l} <span className="text-[#64748b]">({n})</span>
+              ${filtro === v ? "border-[var(--c-primario)] text-[var(--c-tinta)]" : "border-transparent text-[var(--c-tinta-media)] hover:text-[var(--c-tinta-clara)]"}`}>
+            {l} <span className="text-[var(--c-tinta-tenue)]">({n})</span>
           </Link>
         ))}
       </div>
@@ -121,41 +121,41 @@ export default async function Postventa({ searchParams }: { searchParams: Promis
                 : "No hay entregas con seguimiento abierto."} />
           )}
           {lista.map((f: any) => (
-            <tr key={f.id} className="hover:bg-[#151d29] align-top">
+            <tr key={f.id} className="hover:bg-[var(--c-hover)] align-top">
               <TD>
                 <div className="font-medium">{f.cliente ? `${f.cliente} ${f.apellido || ""}` : "—"}</div>
-                <div className="text-[11.5px] text-[#64748b]">{f.telefono || ""}</div>
+                <div className="text-[11.5px] text-[var(--c-tinta-tenue)]">{f.telefono || ""}</div>
               </TD>
-              <TD className="text-[#9aa7b8]">
-                <Link href={`/ventas/${f.venta_id}`} className="hover:text-[#2f6bff]">
+              <TD className="text-[var(--c-tinta-media)]">
+                <Link href={`/ventas/${f.venta_id}`} className="hover:text-[var(--c-primario)]">
                   {f.marca} {f.modelo} {f.anio || ""}
                 </Link>
               </TD>
-              <TD className="text-[#9aa7b8]">
+              <TD className="text-[var(--c-tinta-media)]">
                 {fecha(f.fecha_venta)}
-                <div className="text-[11.5px] text-[#64748b]">hace {numero(f.dias)} días</div>
+                <div className="text-[11.5px] text-[var(--c-tinta-tenue)]">hace {numero(f.dias)} días</div>
               </TD>
               <TD alinear="center">
                 {f.contacto_30
                   ? <Chip tono="verde">{fecha(f.contacto_30)}</Chip>
                   : Number(f.dias) >= 30 ? <Chip tono="amarillo">Vencido</Chip>
-                  : <span className="text-[#475569]">—</span>}
+                  : <span className="text-[var(--c-tinta-apagada)]">—</span>}
               </TD>
               <TD alinear="center">
                 {f.contacto_90
                   ? <Chip tono="verde">{fecha(f.contacto_90)}</Chip>
                   : Number(f.dias) >= 90 ? <Chip tono="amarillo">Vencido</Chip>
-                  : <span className="text-[#475569]">—</span>}
+                  : <span className="text-[var(--c-tinta-apagada)]">—</span>}
               </TD>
               <TD alinear="center">{f.nps !== null ? `${f.nps}/10` : "—"}</TD>
-              <TD className="text-[#9aa7b8]">{f.nombre_referido || "—"}</TD>
+              <TD className="text-[var(--c-tinta-media)]">{f.nombre_referido || "—"}</TD>
               <TD>
                 <details className="group">
-                  <summary className="cursor-pointer list-none text-[12.5px] text-[#60a5fa] hover:underline">
+                  <summary className="cursor-pointer list-none text-[12.5px] text-[var(--c-enlace)] hover:underline">
                     Registrar
                   </summary>
                   <form action={registrar} className="mt-3 w-[300px] space-y-2.5 p-3
-                    bg-[#0d131c] border border-[#1f2937] rounded-lg">
+                    bg-[var(--c-superficie)] border border-[var(--c-borde)] rounded-lg">
                     <input type="hidden" name="id" value={f.id} />
                     <Campo label="Hito">
                       <select name="hito" className="campo" defaultValue={f.contacto_30 ? "90" : "30"}>
@@ -181,7 +181,7 @@ export default async function Postventa({ searchParams }: { searchParams: Promis
         </tbody>
       </Tabla>
 
-      <p className="mt-4 text-[11.5px] text-[#64748b] leading-relaxed max-w-2xl">
+      <p className="mt-4 text-[11.5px] text-[var(--c-tinta-tenue)] leading-relaxed max-w-2xl">
         El seguimiento se abre solo cuando una venta pasa a completada. Si cargás un
         referido, se crea el lead en Captación para que alguien lo trabaje.
       </p>

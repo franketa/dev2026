@@ -58,8 +58,8 @@ export default function PagosVenta({ precioSugerido = 0 }: { precioSugerido?: nu
         </label>
         <div>
           <span className="etiqueta block mb-1.5">Total de la operación</span>
-          <div className="h-[38px] flex items-center px-3 rounded-lg bg-[#151d29] border border-[#1f2937]
-            text-[15px] font-semibold tabular text-[#e8edf5]">
+          <div className="h-[38px] flex items-center px-3 rounded-lg bg-[var(--c-hover)] border border-[var(--c-borde)]
+            text-[15px] font-semibold tabular text-[var(--c-tinta)]">
             {pesos(total)}
           </div>
         </div>
@@ -103,7 +103,7 @@ export default function PagosVenta({ precioSugerido = 0 }: { precioSugerido?: nu
             <div className="col-span-1 flex justify-end">
               <button type="button" aria-label="Quitar renglón"
                 onClick={() => setFilas((x) => (x.length === 1 ? [vacia()] : x.filter((_, j) => j !== i)))}
-                className="h-[38px] w-9 grid place-items-center rounded-lg text-[#64748b] hover:text-[#f87171] hover:bg-[#1b2433]">
+                className="h-[38px] w-9 grid place-items-center rounded-lg text-[var(--c-tinta-tenue)] hover:text-[var(--c-rojo-alto)] hover:bg-[var(--c-activo)]">
                 <X size={15} />
               </button>
             </div>
@@ -113,16 +113,16 @@ export default function PagosVenta({ precioSugerido = 0 }: { precioSugerido?: nu
 
       <div className="flex flex-wrap items-center justify-between gap-3">
         <button type="button" onClick={() => setFilas((f) => [...f, vacia()])}
-          className="inline-flex items-center gap-1.5 text-[12.5px] font-semibold text-[#60a5fa] hover:text-[#93c5fd]">
+          className="inline-flex items-center gap-1.5 text-[12.5px] font-semibold text-[var(--c-enlace)] hover:text-[var(--c-enlace-alto)]">
           <Plus size={14} /> Agregar forma de pago
         </button>
 
         {total > 0 && (
           <div className="text-[12.5px] tabular">
-            <span className="text-[#64748b]">Cargado </span>
-            <span className="text-[#e8edf5]">{pesos(sumado)}</span>
-            <span className="text-[#64748b]"> · </span>
-            <span className={Math.abs(resta) < 1 ? "text-[#22c55e]" : resta > 0 ? "text-[#eab308]" : "text-[#f87171]"}>
+            <span className="text-[var(--c-tinta-tenue)]">Cargado </span>
+            <span className="text-[var(--c-tinta)]">{pesos(sumado)}</span>
+            <span className="text-[var(--c-tinta-tenue)]"> · </span>
+            <span className={Math.abs(resta) < 1 ? "text-[var(--c-verde)]" : resta > 0 ? "text-[var(--c-amarillo)]" : "text-[var(--c-rojo-alto)]"}>
               {Math.abs(resta) < 1
                 ? "coincide con el total"
                 : resta > 0
@@ -133,7 +133,7 @@ export default function PagosVenta({ precioSugerido = 0 }: { precioSugerido?: nu
         )}
       </div>
 
-      <p className="text-[11.5px] text-[#64748b] leading-relaxed">
+      <p className="text-[11.5px] text-[var(--c-tinta-tenue)] leading-relaxed">
         Lo que se cargue en efectivo, transferencia, tarjeta o Mercado Pago entra a la cuenta
         de caja que elijas abajo. Si queda un saldo sin cubrir, se abre solo en Cobranzas.
       </p>

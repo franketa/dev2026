@@ -6,44 +6,172 @@
    =========================================================================== */
 
 @theme {
-  --color-fondo:        #0a0e14;
-  --color-panel:        #111721;
-  --color-panel-alto:   #161d29;
-  --color-borde:        #1f2937;
-  --color-borde-suave:  #172033;
+  /* Apuntan a las variables de tema, así las utilidades de Tailwind
+     (bg-panel, text-tinta) cambian con el tema igual que todo lo demás. */
+  --color-fondo:        var(--c-fondo);
+  --color-panel:        var(--c-panel);
+  --color-panel-alto:   var(--c-hover);
+  --color-borde:        var(--c-borde);
+  --color-borde-suave:  var(--c-borde-suave);
 
-  --color-tinta:        #e8edf5;
-  --color-tinta-media:  #9aa7b8;
-  --color-tinta-tenue:  #64748b;
+  --color-tinta:        var(--c-tinta);
+  --color-tinta-media:  var(--c-tinta-media);
+  --color-tinta-tenue:  var(--c-tinta-tenue);
 
-  --color-primario:     #2f6bff;
-  --color-primario-alto:#4d81ff;
+  --color-primario:     var(--c-primario);
+  --color-primario-alto:var(--c-primario-alto);
 
-  --color-verde:        #22c55e;
-  --color-verde-fondo:  #052e1a;
-  --color-rojo:         #ef4444;
-  --color-rojo-fondo:   #2e0a0a;
-  --color-amarillo:     #eab308;
-  --color-amarillo-fondo:#2a2205;
-  --color-naranja:      #f97316;
-  --color-naranja-fondo:#2c1405;
-  --color-violeta:      #a855f7;
-  --color-violeta-fondo:#210a33;
-  --color-celeste:      #38bdf8;
-  --color-celeste-fondo:#052232;
-  --color-azul:         #3b82f6;
-  --color-azul-fondo:   #0a1b3d;
-  --color-gris:         #64748b;
-  --color-gris-fondo:   #171d27;
+  --color-verde:        var(--c-verde);
+  --color-verde-fondo:  var(--c-verde-fondo);
+  --color-rojo:         var(--c-rojo);
+  --color-rojo-fondo:   var(--c-rojo-fondo);
+  --color-amarillo:     var(--c-amarillo);
+  --color-amarillo-fondo:var(--c-amarillo-fondo);
+  --color-naranja:      var(--c-naranja);
+  --color-naranja-fondo:var(--c-naranja-fondo);
+  --color-violeta:      var(--c-violeta);
+  --color-violeta-fondo:var(--c-violeta-fondo);
+  --color-celeste:      var(--c-celeste);
+  --color-celeste-fondo:var(--c-celeste-fondo);
+  --color-azul:         var(--c-azul);
+  --color-azul-fondo:   var(--c-azul-fondo);
+  --color-gris:         var(--c-tinta-tenue);
+  --color-gris-fondo:   var(--c-gris-fondo);
 
   --radius-caja: 12px;
 }
 
+/* ---------------------------------------------------------------- temas
+   Los colores viven acá y no escritos a mano en cada archivo. El tema claro
+   no invierte a ojo: cada color va a su equivalente de la misma familia, así
+   el contraste se mantiene en los dos en vez de quedar texto claro sobre
+   fondo claro.                                                              */
+:root {
+  --c-fondo: #0a0e14;
+  --c-superficie: #0d131c;
+  --c-hueco: #0f1520;
+  --c-panel: #111721;
+  --c-hover: #151d29;
+  --c-borde-suave: #172033;
+  --c-activo: #1b2433;
+  --c-borde: #1f2937;
+  --c-activo-alto: #232e40;
+  --c-borde-alto: #334155;
+  --c-tinta-apagada: #475569;
+  --c-tinta-tenue: #64748b;
+  --c-tinta-gris: #94a3b8;
+  --c-tinta-media: #9aa7b8;
+  --c-tinta-clara: #cbd5e1;
+  --c-tinta: #e8edf5;
+  --c-primario: #2f6bff;
+  --c-primario-alto: #4d81ff;
+  --c-enlace: #60a5fa;
+  --c-enlace-alto: #93c5fd;
+  --c-verde: #22c55e;
+  --c-verde-alto: #4ade80;
+  --c-rojo: #ef4444;
+  --c-rojo-alto: #f87171;
+  --c-rojo-suave: #fca5a5;
+  --c-amarillo: #eab308;
+  --c-naranja: #f97316;
+  --c-naranja-alto: #fb923c;
+  --c-violeta: #a855f7;
+  --c-violeta-alto: #c084fc;
+  --c-celeste: #38bdf8;
+  --c-azul: #3b82f6;
+  --c-verde-fondo: #052e1a;
+  --c-verde-fondo-alto: #08401f;
+  --c-rojo-fondo: #2e0a0a;
+  --c-rojo-fondo-alto: #3d0f0f;
+  --c-amarillo-fondo: #2a2205;
+  --c-naranja-fondo: #2c1405;
+  --c-naranja-fondo-alto: #3d1c07;
+  --c-violeta-fondo: #210a33;
+  --c-celeste-fondo: #052232;
+  --c-azul-fondo: #0a1b3d;
+  --c-azul-fondo-alto: #0e2452;
+  --c-gris-fondo: #171d27;
+  --c-verde-borde: #14532d;
+  --c-rojo-borde: #991b1b;
+  --c-amarillo-borde: #854d0e;
+  --c-naranja-borde: #9a3412;
+  --c-violeta-borde: #6b21a8;
+  --c-celeste-borde: #075985;
+  --c-azul-borde: #1e3a8a;
+  --c-degradado-a: #0d1420;
+  --c-degradado-b: #0f1a33;
+  --c-degradado-c: #3a0d0d;
+
+  /* La marca no cambia con el tema. */
+  --c-marca: #e3242b;
+  --c-barra: #243044;
+  --c-barra-alto: #33425c;
+}
+
+:root[data-tema="claro"] {
+  --c-fondo: #f5f7fa;
+  --c-superficie: #ffffff;
+  --c-hueco: #f1f5f9;
+  --c-panel: #ffffff;
+  --c-hover: #f1f5f9;
+  --c-borde-suave: #edf1f6;
+  --c-activo: #e7edf6;
+  --c-borde: #dce3ec;
+  --c-activo-alto: #dae2ee;
+  --c-borde-alto: #b6c2d2;
+  --c-tinta-apagada: #8494a8;
+  --c-tinta-tenue: #68778d;
+  --c-tinta-gris: #64748b;
+  --c-tinta-media: #53617a;
+  --c-tinta-clara: #334155;
+  --c-tinta: #0f172a;
+  --c-primario-alto: #1d54e0;
+  --c-enlace: #1d63d8;
+  --c-enlace-alto: #2563eb;
+  --c-verde: #15803d;
+  --c-verde-alto: #16a34a;
+  --c-rojo: #dc2626;
+  --c-rojo-alto: #b91c1c;
+  --c-rojo-suave: #ef4444;
+  --c-amarillo: #a16207;
+  --c-naranja: #c2410c;
+  --c-naranja-alto: #ea580c;
+  --c-violeta: #7e22ce;
+  --c-violeta-alto: #9333ea;
+  --c-celeste: #0369a1;
+  --c-azul: #2563eb;
+  --c-verde-fondo: #dcfce7;
+  --c-verde-fondo-alto: #bbf7d0;
+  --c-rojo-fondo: #fee2e2;
+  --c-rojo-fondo-alto: #fecaca;
+  --c-amarillo-fondo: #fef9c3;
+  --c-naranja-fondo: #ffedd5;
+  --c-naranja-fondo-alto: #fed7aa;
+  --c-violeta-fondo: #f3e8ff;
+  --c-celeste-fondo: #e0f2fe;
+  --c-azul-fondo: #dbeafe;
+  --c-azul-fondo-alto: #bfdbfe;
+  --c-gris-fondo: #f1f5f9;
+  --c-verde-borde: #86efac;
+  --c-rojo-borde: #fca5a5;
+  --c-amarillo-borde: #fde047;
+  --c-naranja-borde: #fdba74;
+  --c-violeta-borde: #d8b4fe;
+  --c-celeste-borde: #7dd3fc;
+  --c-azul-borde: #93c5fd;
+  --c-degradado-a: #eef3fa;
+  --c-degradado-b: #e4ecfb;
+  --c-degradado-c: #fdeaea;
+  --c-barra: #cbd5e1;
+  --c-barra-alto: #94a3b8;
+}
+
+
 html, body { height: 100%; }
 
 body {
-  background: var(--color-fondo);
-  color: var(--color-tinta);
+  background: var(--c-fondo);
+  color: var(--c-tinta);
   font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   font-size: 14px;
   -webkit-font-smoothing: antialiased;
@@ -54,8 +182,8 @@ body {
 
 ::-webkit-scrollbar { width: 10px; height: 10px; }
 ::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: #243044; border-radius: 6px; border: 2px solid var(--color-fondo); }
-::-webkit-scrollbar-thumb:hover { background: #33425c; }
+::-webkit-scrollbar-thumb { background: var(--c-barra); border-radius: 6px; border: 2px solid var(--c-fondo); }
+::-webkit-scrollbar-thumb:hover { background: var(--c-barra-alto); }
 
 input, select, textarea { font-family: inherit; }
 

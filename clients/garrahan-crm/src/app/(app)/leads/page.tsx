@@ -79,7 +79,7 @@ export default async function Leads({ searchParams }: { searchParams: Promise<an
       {/* ------------------------------------------------ filtros por etapa */}
       <div className="flex flex-wrap items-center gap-x-4 gap-y-2 mt-6 mb-3">
         <Link href="/leads" className={`rounded-lg px-3 py-1.5 text-[12.5px] font-medium
-          ${!estado ? "bg-[#2f6bff] text-white" : "bg-[#1b2433] text-[#9aa7b8] hover:bg-[#232e40]"}`}>Todos</Link>
+          ${!estado ? "bg-[var(--c-primario)] text-white" : "bg-[var(--c-activo)] text-[var(--c-tinta-media)] hover:bg-[var(--c-activo-alto)]"}`}>Todos</Link>
         {ETAPAS_LEAD.map((et) => (
           <div key={et.valor} className="flex items-center gap-1.5">
             <span className="etiqueta">{et.label}</span>
@@ -88,7 +88,7 @@ export default async function Leads({ searchParams }: { searchParams: Promise<an
               return (
                 <Link key={es} href={`/leads?estado=${es}`}
                   className={`rounded-full px-2.5 py-1 text-[11.5px] font-medium transition-colors
-                    ${estado === es ? "bg-[#2f6bff] text-white" : "bg-[#151d29] text-[#9aa7b8] hover:bg-[#1b2433]"}`}>
+                    ${estado === es ? "bg-[var(--c-primario)] text-white" : "bg-[var(--c-hover)] text-[var(--c-tinta-media)] hover:bg-[var(--c-activo)]"}`}>
                   {e.label}
                 </Link>
               );
@@ -99,7 +99,7 @@ export default async function Leads({ searchParams }: { searchParams: Promise<an
 
       <form action="/leads" className="flex gap-2 mb-3">
         <div className="relative flex-1 max-w-md">
-          <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#64748b]" />
+          <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--c-tinta-tenue)]" />
           <input name="q" defaultValue={q} className="campo pl-9"
             placeholder="Buscar por nombre, teléfono o vehículo…" />
         </div>
@@ -122,31 +122,31 @@ export default async function Leads({ searchParams }: { searchParams: Promise<an
             const Ico = ICONO_ORIGEN[l.origen] || Store;
             const vencida = l.fecha_proxima && new Date(l.fecha_proxima) < new Date(new Date().toDateString());
             return (
-              <tr key={l.id} className="hover:bg-[#151d29]">
+              <tr key={l.id} className="hover:bg-[var(--c-hover)]">
                 <TD><Etapas indice={idxEtapa} etiqueta={ETAPAS_LEAD[idxEtapa]?.label} /></TD>
                 <TD>
                   <SelectEstado id={l.id} valor={l.estado} accion={cambiarEstado}
                     opciones={Object.entries(ESTADOS_LEAD).map(([k, x]) => ({ valor: k, label: x.label }))} />
                 </TD>
                 <TD>
-                  <Link href={`/leads/${l.id}`} className="font-medium hover:text-[#2f6bff]">{l.nombre}</Link>
-                  {l.telefono && <div className="text-[11.5px] text-[#64748b]">{l.telefono}</div>}
+                  <Link href={`/leads/${l.id}`} className="font-medium hover:text-[var(--c-primario)]">{l.nombre}</Link>
+                  {l.telefono && <div className="text-[11.5px] text-[var(--c-tinta-tenue)]">{l.telefono}</div>}
                 </TD>
                 <TD>
-                  <span className="inline-flex items-center gap-1.5 text-[12.5px] text-[#9aa7b8]">
+                  <span className="inline-flex items-center gap-1.5 text-[12.5px] text-[var(--c-tinta-media)]">
                     <Ico size={13} /> {ORIGENES_LEAD[l.origen] || l.origen}
                   </span>
                 </TD>
-                <TD className="text-[#9aa7b8]">{l.asesor || "—"}</TD>
+                <TD className="text-[var(--c-tinta-media)]">{l.asesor || "—"}</TD>
                 <TD>
                   {l.marca ? (
-                    <Link href={`/vehiculos/${l.vehiculo_id}`} className="hover:text-[#2f6bff]">
+                    <Link href={`/vehiculos/${l.vehiculo_id}`} className="hover:text-[var(--c-primario)]">
                       {l.marca} {l.modelo}
-                      {l.dominio && <span className="text-[#64748b]"> ({l.dominio})</span>}
+                      {l.dominio && <span className="text-[var(--c-tinta-tenue)]"> ({l.dominio})</span>}
                     </Link>
-                  ) : <span className="text-[#9aa7b8]">{l.vehiculo_texto || "—"}</span>}
+                  ) : <span className="text-[var(--c-tinta-media)]">{l.vehiculo_texto || "—"}</span>}
                 </TD>
-                <TD alinear="right" className="text-[#9aa7b8]">
+                <TD alinear="right" className="text-[var(--c-tinta-media)]">
                   {l.presupuesto ? plata(l.presupuesto) : "—"}
                 </TD>
                 <TD>
@@ -155,7 +155,7 @@ export default async function Leads({ searchParams }: { searchParams: Promise<an
                       <div className="text-[12.5px] truncate max-w-[200px]">{l.proxima_accion}</div>
                       <Chip tono={vencida ? "rojo" : "azul"} className="mt-1">{fecha(l.fecha_proxima)}</Chip>
                     </div>
-                  ) : <span className="text-[#64748b]">Sin definir</span>}
+                  ) : <span className="text-[var(--c-tinta-tenue)]">Sin definir</span>}
                 </TD>
               </tr>
             );

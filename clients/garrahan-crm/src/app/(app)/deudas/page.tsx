@@ -33,13 +33,13 @@ export default async function Deudas() {
         <tbody>
           {filas.length === 0 && <FilaVacia cols={7} mensaje="No hay deudas registradas." />}
           {filas.map((f: any) => (
-            <tr key={f.id} className="hover:bg-[#151d29]">
+            <tr key={f.id} className="hover:bg-[var(--c-hover)]">
               <TD className="font-medium">{f.acreedor}</TD>
-              <TD className="text-[#9aa7b8]">{f.concepto || "\u2014"}</TD>
-              <TD className="text-[#9aa7b8]">{f.tipo}</TD>
+              <TD className="text-[var(--c-tinta-media)]">{f.concepto || "\u2014"}</TD>
+              <TD className="text-[var(--c-tinta-media)]">{f.tipo}</TD>
               <TD>{f.vencida
                 ? <Chip tono="rojo">{fecha(f.vencimiento)}</Chip>
-                : <span className="text-[#9aa7b8]">{fecha(f.vencimiento)}</span>}</TD>
+                : <span className="text-[var(--c-tinta-media)]">{fecha(f.vencimiento)}</span>}</TD>
               <TD alinear="right">{plata(f.monto)}</TD>
               <TD alinear="right" className="font-medium">{plata(f.saldo)}</TD>
               <TD><Chip tono={f.estado === "pagado" ? "verde" : f.vencida ? "rojo" : "amarillo"}>

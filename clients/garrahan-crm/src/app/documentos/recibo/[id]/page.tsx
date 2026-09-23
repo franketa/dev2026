@@ -50,9 +50,9 @@ export default async function Recibo({ params }: { params: Promise<any> }) {
   );
 
   return (
-    <div className="min-h-screen bg-[#0a0e14] print:bg-white py-8 print:py-0">
+    <div className="min-h-screen bg-[var(--c-fondo)] print:bg-white py-8 print:py-0">
       <div className="no-imprimir max-w-[800px] mx-auto mb-4 flex justify-between items-center px-6">
-        <a href={`/ventas/${p.venta_id}`} className="text-[13px] text-[#9aa7b8] hover:text-white">
+        <a href={`/ventas/${p.venta_id}`} className="text-[13px] text-[var(--c-tinta-media)] hover:text-white">
           ← Volver a la venta
         </a>
         <BotonImprimir />

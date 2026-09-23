@@ -70,40 +70,40 @@ export default function Buscador() {
   return (
     <>
       <button onClick={() => setAbierto(true)}
-        className="flex items-center gap-2 rounded-lg border border-[#1f2937] bg-[#111721]
-          px-3 py-1.5 text-[12.5px] text-[#64748b] hover:border-[#334155] transition-colors
+        className="flex items-center gap-2 rounded-lg border border-[var(--c-borde)] bg-[var(--c-panel)]
+          px-3 py-1.5 text-[12.5px] text-[var(--c-tinta-tenue)] hover:border-[var(--c-borde-alto)] transition-colors
           min-w-[180px] sm:min-w-[260px]">
         <Search size={14} />
         <span className="flex-1 text-left">Buscar…</span>
         <kbd className="hidden sm:inline text-[10.5px] px-1.5 py-0.5 rounded border
-          border-[#1f2937] bg-[#0d131c] text-[#475569]">Ctrl K</kbd>
+          border-[var(--c-borde)] bg-[var(--c-superficie)] text-[var(--c-tinta-apagada)]">Ctrl K</kbd>
       </button>
 
       {abierto && (
         <div className="fixed inset-0 z-[60] bg-black/70 px-4 pt-[12vh]"
           onClick={() => setAbierto(false)}>
           <div onClick={(e) => e.stopPropagation()}
-            className="mx-auto w-full max-w-xl bg-[#111721] border border-[#1f2937]
+            className="mx-auto w-full max-w-xl bg-[var(--c-panel)] border border-[var(--c-borde)]
               rounded-xl shadow-2xl overflow-hidden">
-            <div className="flex items-center gap-2.5 px-4 border-b border-[#1f2937]">
-              <Search size={16} className="text-[#64748b] shrink-0" />
+            <div className="flex items-center gap-2.5 px-4 border-b border-[var(--c-borde)]">
+              <Search size={16} className="text-[var(--c-tinta-tenue)] shrink-0" />
               <input ref={input} value={q} onChange={(e) => setQ(e.target.value)} onKeyDown={teclas}
                 placeholder="Dominio, cliente, teléfono, modelo o N° de venta"
-                className="flex-1 bg-transparent py-3.5 text-[14px] text-[#e8edf5]
-                  placeholder:text-[#475569] outline-none" />
+                className="flex-1 bg-transparent py-3.5 text-[14px] text-[var(--c-tinta)]
+                  placeholder:text-[var(--c-tinta-apagada)] outline-none" />
               <button onClick={() => setAbierto(false)}
-                className="text-[11px] text-[#475569] px-1.5 py-0.5 rounded border border-[#1f2937]">esc</button>
+                className="text-[11px] text-[var(--c-tinta-apagada)] px-1.5 py-0.5 rounded border border-[var(--c-borde)]">esc</button>
             </div>
 
             <div className="max-h-[52vh] overflow-y-auto py-1.5">
               {q.trim().length < 2 ? (
-                <p className="px-4 py-8 text-center text-[12.5px] text-[#475569]">
+                <p className="px-4 py-8 text-center text-[12.5px] text-[var(--c-tinta-apagada)]">
                   Escribí al menos dos letras.
                 </p>
               ) : buscando && res.length === 0 ? (
-                <p className="px-4 py-8 text-center text-[12.5px] text-[#475569]">Buscando…</p>
+                <p className="px-4 py-8 text-center text-[12.5px] text-[var(--c-tinta-apagada)]">Buscando…</p>
               ) : res.length === 0 ? (
-                <p className="px-4 py-8 text-center text-[12.5px] text-[#475569]">
+                <p className="px-4 py-8 text-center text-[12.5px] text-[var(--c-tinta-apagada)]">
                   Nada que coincida con «{q}».
                 </p>
               ) : (
@@ -115,10 +115,10 @@ export default function Buscador() {
                       {nuevoGrupo && <div className="etiqueta px-4 pt-2.5 pb-1">{r.grupo}</div>}
                       <button onClick={() => ir(r.href)} onMouseEnter={() => setSel(i)}
                         className={`w-full text-left px-4 py-2 transition-colors
-                          ${i === sel ? "bg-[#1b2433]" : "hover:bg-[#151d29]"}`}>
-                        <div className="text-[13px] text-[#e8edf5]">{r.titulo}</div>
+                          ${i === sel ? "bg-[var(--c-activo)]" : "hover:bg-[var(--c-hover)]"}`}>
+                        <div className="text-[13px] text-[var(--c-tinta)]">{r.titulo}</div>
                         {r.detalle && (
-                          <div className="text-[11.5px] text-[#64748b] mt-0.5">{r.detalle}</div>
+                          <div className="text-[11.5px] text-[var(--c-tinta-tenue)] mt-0.5">{r.detalle}</div>
                         )}
                       </button>
                     </div>
@@ -128,7 +128,7 @@ export default function Buscador() {
             </div>
 
             {res.length > 0 && (
-              <div className="border-t border-[#1f2937] px-4 py-2 text-[11px] text-[#475569]
+              <div className="border-t border-[var(--c-borde)] px-4 py-2 text-[11px] text-[var(--c-tinta-apagada)]
                 flex gap-4">
                 <span>↑↓ moverse</span><span>Enter abrir</span><span>Esc cerrar</span>
               </div>

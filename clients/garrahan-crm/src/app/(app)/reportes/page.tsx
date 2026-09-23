@@ -24,7 +24,7 @@ const TABS = [
 export default async function Reportes({ searchParams }: { searchParams: Promise<any> }) {
   const u = await requiereSesion();
   if (!veCostos(u)) {
-    return <Panel><p className="text-[13px] text-[#9aa7b8] py-8 text-center">
+    return <Panel><p className="text-[13px] text-[var(--c-tinta-media)] py-8 text-center">
       Tu perfil no tiene acceso a los reportes.</p></Panel>;
   }
   const p = await searchParams;
@@ -147,18 +147,18 @@ export default async function Reportes({ searchParams }: { searchParams: Promise
         acciones={
           <a href={`/api/exportar/reporte?mes=${mes}&anio=${anio}${suc ? "&sucursal=" + suc : ""}`} download
             className="inline-flex items-center justify-center gap-2 rounded-lg px-3.5 py-2
-              text-[13px] font-semibold bg-[#1b2433] hover:bg-[#232e40] text-[#cbd5e1]
-              border border-[#1f2937] transition-colors">
+              text-[13px] font-semibold bg-[var(--c-activo)] hover:bg-[var(--c-activo-alto)] text-[var(--c-tinta-clara)]
+              border border-[var(--c-borde)] transition-colors">
             Exportar a Excel
           </a>
         } />
 
       {/* ------------------------------------------------------------- tabs */}
-      <div className="flex flex-wrap gap-1 mb-4 border-b border-[#1f2937]">
+      <div className="flex flex-wrap gap-1 mb-4 border-b border-[var(--c-borde)]">
         {TABS.map(([v, l]) => (
           <Link key={v} href={link({ tab: v })}
             className={`px-3.5 py-2.5 text-[13px] font-medium border-b-2 -mb-px transition-colors
-              ${tab === v ? "border-[#2f6bff] text-[#e8edf5]" : "border-transparent text-[#9aa7b8] hover:text-[#cbd5e1]"}`}>
+              ${tab === v ? "border-[var(--c-primario)] text-[var(--c-tinta)]" : "border-transparent text-[var(--c-tinta-media)] hover:text-[var(--c-tinta-clara)]"}`}>
             {l}
           </Link>
         ))}
@@ -206,50 +206,50 @@ export default async function Reportes({ searchParams }: { searchParams: Promise
               <PanelTitulo titulo="Cómo se compone" detalle={`${MESES[mes - 1]} ${anio}`} />
               <div className="space-y-0.5 text-[13px]">
                 <div className="flex justify-between py-2">
-                  <span className="text-[#cbd5e1]">Margen de unidades propias</span>
-                  <span className="tabular text-[#22c55e]">{plata(margenPropio)}</span>
+                  <span className="text-[var(--c-tinta-clara)]">Margen de unidades propias</span>
+                  <span className="tabular text-[var(--c-verde)]">{plata(margenPropio)}</span>
                 </div>
                 {margenInversor !== 0 && (
                   <div className="flex justify-between py-2">
-                    <span className="text-[#cbd5e1]">Margen de unidades de inversores</span>
-                    <span className="tabular text-[#22c55e]">{plata(margenInversor)}</span>
+                    <span className="text-[var(--c-tinta-clara)]">Margen de unidades de inversores</span>
+                    <span className="tabular text-[var(--c-verde)]">{plata(margenInversor)}</span>
                   </div>
                 )}
                 <div className="flex justify-between py-2">
-                  <span className="text-[#cbd5e1]">Comisiones de agencia
-                    <span className="text-[11px] text-[#64748b] ml-1.5">unidades en consignación</span>
+                  <span className="text-[var(--c-tinta-clara)]">Comisiones de agencia
+                    <span className="text-[11px] text-[var(--c-tinta-tenue)] ml-1.5">unidades en consignación</span>
                   </span>
-                  <span className="tabular text-[#22c55e]">{plata(comisionAgencia)}</span>
+                  <span className="tabular text-[var(--c-verde)]">{plata(comisionAgencia)}</span>
                 </div>
-                <div className="flex justify-between py-2 border-t border-[#1f2937] font-semibold">
+                <div className="flex justify-between py-2 border-t border-[var(--c-borde)] font-semibold">
                   <span>Ingresos</span>
-                  <span className="tabular text-[#22c55e]">{plata(ingresos)}</span>
+                  <span className="tabular text-[var(--c-verde)]">{plata(ingresos)}</span>
                 </div>
 
                 <div className="flex justify-between py-2 pt-4">
-                  <span className="text-[#cbd5e1]">Comisiones a vendedores</span>
-                  <span className="tabular text-[#f87171]">− {plata(vm.comisiones)}</span>
+                  <span className="text-[var(--c-tinta-clara)]">Comisiones a vendedores</span>
+                  <span className="tabular text-[var(--c-rojo-alto)]">− {plata(vm.comisiones)}</span>
                 </div>
                 <div className="flex justify-between py-2">
-                  <span className="text-[#cbd5e1]">Garantías post-venta</span>
-                  <span className="tabular text-[#f87171]">− {plata(garantias)}</span>
+                  <span className="text-[var(--c-tinta-clara)]">Garantías post-venta</span>
+                  <span className="tabular text-[var(--c-rojo-alto)]">− {plata(garantias)}</span>
                 </div>
                 <div className="flex justify-between py-2">
-                  <span className="text-[#cbd5e1]">Gastos de estructura</span>
-                  <span className="tabular text-[#f87171]">− {plata(otrosGastos)}</span>
+                  <span className="text-[var(--c-tinta-clara)]">Gastos de estructura</span>
+                  <span className="tabular text-[var(--c-rojo-alto)]">− {plata(otrosGastos)}</span>
                 </div>
-                <div className="flex justify-between py-2 border-t border-[#1f2937] font-semibold">
+                <div className="flex justify-between py-2 border-t border-[var(--c-borde)] font-semibold">
                   <span>Egresos</span>
-                  <span className="tabular text-[#f87171]">− {plata(egresos)}</span>
+                  <span className="tabular text-[var(--c-rojo-alto)]">− {plata(egresos)}</span>
                 </div>
 
-                <div className="flex justify-between py-3 mt-2 border-t-2 border-[#1f2937] text-[15px] font-semibold">
+                <div className="flex justify-between py-3 mt-2 border-t-2 border-[var(--c-borde)] text-[15px] font-semibold">
                   <span>Resultado neto</span>
                   <Monto valor={resultado} signo />
                 </div>
               </div>
 
-              <p className="mt-4 pt-3 border-t border-[#1f2937] text-[11.5px] text-[#64748b] leading-relaxed">
+              <p className="mt-4 pt-3 border-t border-[var(--c-borde)] text-[11.5px] text-[var(--c-tinta-tenue)] leading-relaxed">
                 La compra de unidades no figura acá: no es un gasto del mes sino el costo de la
                 unidad, y pega en el resultado recién cuando se vende. Una unidad en consignación
                 nunca fue de la agencia, así que lo que deja es comisión y no margen.
@@ -263,7 +263,7 @@ export default async function Reportes({ searchParams }: { searchParams: Promise
                   ? "De toda la agencia: las cuentas de caja no son por sucursal"
                   : "Sin contar compra ni preparación de unidades"} />
               {gastos.length === 0 ? (
-                <p className="text-[13px] text-[#64748b] py-8 text-center">Sin gastos cargados en el período.</p>
+                <p className="text-[13px] text-[var(--c-tinta-tenue)] py-8 text-center">Sin gastos cargados en el período.</p>
               ) : (
                 <div className="space-y-2.5">
                   {gastos.map((g: any) => {
@@ -271,19 +271,19 @@ export default async function Reportes({ searchParams }: { searchParams: Promise
                     const desvio = pres ? Number(g.total) - Number(pres.monto) : null;
                     return (
                       <div key={g.categoria || "sin"} className="flex items-baseline justify-between gap-3">
-                        <span className="text-[12.5px] text-[#cbd5e1]">{etiquetaCat(g.categoria)}</span>
+                        <span className="text-[12.5px] text-[var(--c-tinta-clara)]">{etiquetaCat(g.categoria)}</span>
                         <span className="flex items-baseline gap-2 shrink-0">
                           {desvio !== null && (
-                            <span className={`text-[11px] ${desvio > 0 ? "text-[#f87171]" : "text-[#22c55e]"}`}>
+                            <span className={`text-[11px] ${desvio > 0 ? "text-[var(--c-rojo-alto)]" : "text-[var(--c-verde)]"}`}>
                               {desvio > 0 ? "+" : ""}{plataCorta(desvio)}
                             </span>
                           )}
-                          <span className="text-[12.5px] tabular text-[#9aa7b8]">{plata(g.total)}</span>
+                          <span className="text-[12.5px] tabular text-[var(--c-tinta-media)]">{plata(g.total)}</span>
                         </span>
                       </div>
                     );
                   })}
-                  <div className="flex justify-between pt-3 mt-1 border-t border-[#1f2937] font-semibold text-[13px]">
+                  <div className="flex justify-between pt-3 mt-1 border-t border-[var(--c-borde)] font-semibold text-[13px]">
                     <span>Total</span>
                     <span className="tabular">{plata(totalGastos)}</span>
                   </div>
@@ -306,11 +306,11 @@ export default async function Reportes({ searchParams }: { searchParams: Promise
           <tbody>
             {comisiones.length === 0 && <FilaVacia cols={5} mensaje={`Sin ventas cerradas en ${anio}.`} />}
             {comisiones.map((c: any) => (
-              <tr key={c.vendedor} className="hover:bg-[#151d29]">
+              <tr key={c.vendedor} className="hover:bg-[var(--c-hover)]">
                 <TD className="font-medium">{c.vendedor}</TD>
                 <TD alinear="right">{numero(c.unidades)}</TD>
-                <TD alinear="right" className="text-[#9aa7b8]">{plata(c.facturado)}</TD>
-                <TD alinear="right" className="text-[#22c55e]">{plata(c.margen)}</TD>
+                <TD alinear="right" className="text-[var(--c-tinta-media)]">{plata(c.facturado)}</TD>
+                <TD alinear="right" className="text-[var(--c-verde)]">{plata(c.margen)}</TD>
                 <TD alinear="right">{plata(c.comision)}</TD>
               </tr>
             ))}
@@ -321,7 +321,7 @@ export default async function Reportes({ searchParams }: { searchParams: Promise
       {/* -------------------------------------------------------- inversores */}
       {tab === "inversores" && (
         <>
-          <p className="text-[12.5px] text-[#64748b] mb-3 max-w-2xl leading-relaxed">
+          <p className="text-[12.5px] text-[var(--c-tinta-tenue)] mb-3 max-w-2xl leading-relaxed">
             Lo que le corresponde a cada inversor por lo vendido en {MESES[mes - 1]} de {anio},
             y cuánto capital suyo sigue parado en el playón.
           </p>
@@ -340,16 +340,16 @@ export default async function Reportes({ searchParams }: { searchParams: Promise
             <tbody>
               {inversoresMes.length === 0 && <FilaVacia cols={7} mensaje="No hay inversores cargados." />}
               {inversoresMes.map((i: any) => (
-                <tr key={i.id} className="hover:bg-[#151d29]">
+                <tr key={i.id} className="hover:bg-[var(--c-hover)]">
                   <TD className="font-medium">
-                    <Link href="/inversores" className="hover:text-[#2f6bff]">{i.nombre}</Link>
+                    <Link href="/inversores" className="hover:text-[var(--c-primario)]">{i.nombre}</Link>
                   </TD>
                   <TD alinear="right">{numero(i.unidades)}</TD>
-                  <TD alinear="right" className="text-[#9aa7b8]">{plata(i.facturado)}</TD>
-                  <TD alinear="right" className="text-[#9aa7b8]">{plata(i.costo)}</TD>
+                  <TD alinear="right" className="text-[var(--c-tinta-media)]">{plata(i.facturado)}</TD>
+                  <TD alinear="right" className="text-[var(--c-tinta-media)]">{plata(i.costo)}</TD>
                   <TD alinear="right"><Monto valor={Number(i.resultado)} signo /></TD>
                   <TD alinear="right">{numero(i.en_stock)}</TD>
-                  <TD alinear="right" className="text-[#9aa7b8]">{plata(i.capital_parado)}</TD>
+                  <TD alinear="right" className="text-[var(--c-tinta-media)]">{plata(i.capital_parado)}</TD>
                 </tr>
               ))}
             </tbody>
@@ -373,39 +373,39 @@ export default async function Reportes({ searchParams }: { searchParams: Promise
             <PanelTitulo titulo="De dónde sale la plata que gana la agencia"
               detalle={`${MESES[mes - 1]} ${anio}`} />
             {ingresos === 0 ? (
-              <p className="text-[13px] text-[#64748b] py-8 text-center">
+              <p className="text-[13px] text-[var(--c-tinta-tenue)] py-8 text-center">
                 Sin ventas cerradas en el período.
               </p>
             ) : (
               <div className="space-y-3">
                 {[
-                  ["Unidades propias", margenPropio, "#22c55e", "Autos comprados por la agencia. Lo que dejan es margen."],
-                  ["Unidades de inversores", margenInversor, "#a855f7", "Comprados con plata de un tercero, que después se rinde."],
-                  ["Consignación", comisionAgencia, "#38bdf8", "El auto nunca fue de la agencia: lo que queda es comisión."],
+                  ["Unidades propias", margenPropio, "var(--c-verde)", "Autos comprados por la agencia. Lo que dejan es margen."],
+                  ["Unidades de inversores", margenInversor, "var(--c-violeta)", "Comprados con plata de un tercero, que después se rinde."],
+                  ["Consignación", comisionAgencia, "var(--c-celeste)", "El auto nunca fue de la agencia: lo que queda es comisión."],
                 ].map(([label, valor, color, nota]: any) => (
                   <div key={label}>
                     <div className="flex items-baseline justify-between gap-3 mb-1">
-                      <span className="text-[13px] text-[#cbd5e1]">{label}</span>
+                      <span className="text-[13px] text-[var(--c-tinta-clara)]">{label}</span>
                       <span className="text-[13px] tabular">
                         {plata(valor)}
-                        <span className="text-[11.5px] text-[#64748b] ml-2">
+                        <span className="text-[11.5px] text-[var(--c-tinta-tenue)] ml-2">
                           {porcentaje(ingresos !== 0 ? (valor / ingresos) * 100 : 0)}
                         </span>
                       </span>
                     </div>
-                    <div className="h-1.5 rounded-full bg-[#1f2937] overflow-hidden">
+                    <div className="h-1.5 rounded-full bg-[var(--c-borde)] overflow-hidden">
                       <div className="h-full rounded-full"
                         style={{
                           width: `${ingresos !== 0 ? Math.max(0, (valor / ingresos) * 100) : 0}%`,
                           background: color,
                         }} />
                     </div>
-                    <p className="text-[11px] text-[#64748b] mt-1">{nota}</p>
+                    <p className="text-[11px] text-[var(--c-tinta-tenue)] mt-1">{nota}</p>
                   </div>
                 ))}
-                <div className="flex justify-between pt-3 mt-1 border-t border-[#1f2937] font-semibold text-[13px]">
+                <div className="flex justify-between pt-3 mt-1 border-t border-[var(--c-borde)] font-semibold text-[13px]">
                   <span>Total de ingresos</span>
-                  <span className="tabular text-[#22c55e]">{plata(ingresos)}</span>
+                  <span className="tabular text-[var(--c-verde)]">{plata(ingresos)}</span>
                 </div>
               </div>
             )}
@@ -419,17 +419,17 @@ export default async function Reportes({ searchParams }: { searchParams: Promise
           <PanelTitulo titulo={`Margen por mes — últimos ${meses} meses`}
             detalle="Solo unidades vendidas" />
           {evolucion.length === 0 ? (
-            <p className="text-[13px] text-[#64748b] py-10 text-center">Sin ventas en el período.</p>
+            <p className="text-[13px] text-[var(--c-tinta-tenue)] py-10 text-center">Sin ventas en el período.</p>
           ) : (
             <div className="flex items-end gap-2 h-[240px] pt-4 overflow-x-auto">
               {evolucion.map((e: any) => (
                 <div key={e.periodo} className="flex-1 min-w-[42px] flex flex-col items-center gap-2">
-                  <span className="text-[11px] tabular text-[#9aa7b8]">{plataCorta(e.margen)}</span>
+                  <span className="text-[11px] tabular text-[var(--c-tinta-media)]">{plataCorta(e.margen)}</span>
                   <div className={`w-full rounded-t-md min-h-[3px]
-                    ${Number(e.margen) >= 0 ? "bg-[#22c55e]" : "bg-[#ef4444]"}`}
+                    ${Number(e.margen) >= 0 ? "bg-[var(--c-verde)]" : "bg-[var(--c-rojo)]"}`}
                     style={{ height: `${(Math.abs(Number(e.margen)) / maxEvo) * 100}%` }} />
-                  <span className="text-[10.5px] text-[#64748b] whitespace-nowrap">{nombreMes(e.periodo)}</span>
-                  <span className="text-[10.5px] text-[#475569]">{e.unidades}u</span>
+                  <span className="text-[10.5px] text-[var(--c-tinta-tenue)] whitespace-nowrap">{nombreMes(e.periodo)}</span>
+                  <span className="text-[10.5px] text-[var(--c-tinta-apagada)]">{e.unidades}u</span>
                 </div>
               ))}
             </div>

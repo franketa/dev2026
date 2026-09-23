@@ -17,7 +17,7 @@ export const dynamic = "force-dynamic";
 export default async function Caja({ searchParams }: { searchParams: Promise<any> }) {
   const u = await requiereSesion();
   if (!veCostos(u)) {
-    return <Panel><p className="text-[13px] text-[#9aa7b8] py-8 text-center">
+    return <Panel><p className="text-[13px] text-[var(--c-tinta-media)] py-8 text-center">
       Tu perfil no tiene acceso a la caja.</p></Panel>;
   }
   const p = await searchParams;
@@ -98,10 +98,10 @@ export default async function Caja({ searchParams }: { searchParams: Promise<any
         {saldos.map((s: any) => (
           <Link key={s.id} href={`/caja?cuenta=${s.id}`}
             className={`rounded-xl border px-4 py-3.5 transition-colors
-              ${String(s.id) === cuentaF ? "border-[#2f6bff] bg-[#0f1a33]" : "border-[#1f2937] bg-[#111721] hover:border-[#334155]"}`}>
+              ${String(s.id) === cuentaF ? "border-[var(--c-primario)] bg-[var(--c-degradado-b)]" : "border-[var(--c-borde)] bg-[var(--c-panel)] hover:border-[var(--c-borde-alto)]"}`}>
             <div className="etiqueta truncate">{s.nombre}</div>
             <div className={`mt-1.5 text-[18px] font-semibold tabular
-              ${Number(s.saldo) < 0 ? "text-[#f87171]" : ""}`}>
+              ${Number(s.saldo) < 0 ? "text-[var(--c-rojo-alto)]" : ""}`}>
               {plata(s.saldo, s.moneda)}
             </div>
           </Link>
@@ -171,18 +171,18 @@ export default async function Caja({ searchParams }: { searchParams: Promise<any
         <Panel>
           <PanelTitulo titulo="Gastos del mes" detalle="Por categoría" />
           {porCategoria.length === 0 ? (
-            <p className="text-[13px] text-[#64748b] py-6 text-center">Sin gastos en el período.</p>
+            <p className="text-[13px] text-[var(--c-tinta-tenue)] py-6 text-center">Sin gastos en el período.</p>
           ) : (
             <div className="space-y-2.5">
               {porCategoria.map((c: any) => (
                 <div key={c.categoria} className="flex items-baseline justify-between gap-3">
-                  <span className="text-[12.5px] text-[#cbd5e1] truncate">{etiquetaCat(c.categoria)}</span>
-                  <span className="text-[12.5px] tabular text-[#9aa7b8] shrink-0">{plata(c.total)}</span>
+                  <span className="text-[12.5px] text-[var(--c-tinta-clara)] truncate">{etiquetaCat(c.categoria)}</span>
+                  <span className="text-[12.5px] tabular text-[var(--c-tinta-media)] shrink-0">{plata(c.total)}</span>
                 </div>
               ))}
             </div>
           )}
-          <p className="mt-4 pt-3 border-t border-[#1f2937] text-[11.5px] text-[#64748b] leading-relaxed">
+          <p className="mt-4 pt-3 border-t border-[var(--c-borde)] text-[11.5px] text-[var(--c-tinta-tenue)] leading-relaxed">
             La compra y la preparación de unidades no cuentan como gasto del mes:
             son costo de la unidad y pegan en el resultado cuando se vende.
           </p>
@@ -192,7 +192,7 @@ export default async function Caja({ searchParams }: { searchParams: Promise<any
       {/* ----------------------------------------------------- movimientos */}
       <div className="flex items-center justify-between mt-6 mb-3">
         <h2 className="text-[15px] font-semibold">Movimientos</h2>
-        {cuentaF && <Link href="/caja" className="text-[12.5px] text-[#2f6bff] hover:underline">Ver todas las cuentas</Link>}
+        {cuentaF && <Link href="/caja" className="text-[12.5px] text-[var(--c-primario)] hover:underline">Ver todas las cuentas</Link>}
       </div>
 
       <Tabla>
@@ -205,33 +205,33 @@ export default async function Caja({ searchParams }: { searchParams: Promise<any
         <tbody>
           {movimientos.length === 0 && <FilaVacia cols={7} mensaje="No hay movimientos cargados." />}
           {movimientos.map((mv: any) => (
-            <tr key={mv.id} className="hover:bg-[#151d29]">
-              <TD className="text-[#9aa7b8]">{fecha(mv.fecha)}</TD>
+            <tr key={mv.id} className="hover:bg-[var(--c-hover)]">
+              <TD className="text-[var(--c-tinta-media)]">{fecha(mv.fecha)}</TD>
               <TD>
                 <Chip tono={mv.tipo === "ingreso" ? "verde" : mv.tipo === "egreso" ? "rojo" : "gris"}>
                   {mv.tipo === "transferencia" ? "Transferencia" : mv.tipo === "ingreso" ? "Ingreso" : "Egreso"}
                 </Chip>
               </TD>
-              <TD className="text-[#9aa7b8]">
-                {mv.cuenta}{mv.destino && <span className="text-[#64748b]"> → {mv.destino}</span>}
+              <TD className="text-[var(--c-tinta-media)]">
+                {mv.cuenta}{mv.destino && <span className="text-[var(--c-tinta-tenue)]"> → {mv.destino}</span>}
               </TD>
-              <TD className="text-[#9aa7b8] text-[12.5px]">{etiquetaCat(mv.categoria)}</TD>
+              <TD className="text-[var(--c-tinta-media)] text-[12.5px]">{etiquetaCat(mv.categoria)}</TD>
               <TD>
                 {mv.descripcion}
-                {mv.contraparte && <div className="text-[11.5px] text-[#64748b]">{mv.contraparte}</div>}
+                {mv.contraparte && <div className="text-[11.5px] text-[var(--c-tinta-tenue)]">{mv.contraparte}</div>}
               </TD>
               <TD>
                 {mv.dominio ? (
-                  <Link href={`/vehiculos/${mv.vehiculo_id}`} className="text-[12px] text-[#60a5fa] hover:underline">
+                  <Link href={`/vehiculos/${mv.vehiculo_id}`} className="text-[12px] text-[var(--c-enlace)] hover:underline">
                     {mv.dominio}
                   </Link>
-                ) : <span className="text-[#64748b]">—</span>}
+                ) : <span className="text-[var(--c-tinta-tenue)]">—</span>}
               </TD>
               <TD alinear="right">
                 <Monto valor={mv.tipo === "egreso" ? -Number(mv.equivalente_ars) : Number(mv.equivalente_ars)}
                        signo={mv.tipo !== "transferencia"} />
                 {mv.moneda === "USD" && (
-                  <div className="text-[11px] text-[#64748b]">{plata(mv.monto, "USD")} @ {mv.cotizacion}</div>
+                  <div className="text-[11px] text-[var(--c-tinta-tenue)]">{plata(mv.monto, "USD")} @ {mv.cotizacion}</div>
                 )}
               </TD>
             </tr>

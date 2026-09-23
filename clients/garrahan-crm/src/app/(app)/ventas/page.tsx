@@ -58,10 +58,10 @@ export default async function Ventas({ searchParams }: { searchParams: Promise<a
 
       <div className="flex flex-wrap gap-1.5 mt-6 mb-3">
         <Link href="/ventas" className={`rounded-lg px-3 py-1.5 text-[12.5px] font-medium
-          ${!estado ? "bg-[#1b2433] text-[#e8edf5]" : "text-[#9aa7b8] hover:bg-[#151d29]"}`}>Todas</Link>
+          ${!estado ? "bg-[var(--c-activo)] text-[var(--c-tinta)]" : "text-[var(--c-tinta-media)] hover:bg-[var(--c-hover)]"}`}>Todas</Link>
         {Object.entries(ESTADOS_VENTA).map(([k, x]) => (
           <Link key={k} href={`/ventas?estado=${k}`} className={`rounded-lg px-3 py-1.5 text-[12.5px] font-medium
-            ${estado === k ? "bg-[#1b2433] text-[#e8edf5]" : "text-[#9aa7b8] hover:bg-[#151d29]"}`}>{x.label}</Link>
+            ${estado === k ? "bg-[var(--c-activo)] text-[var(--c-tinta)]" : "text-[var(--c-tinta-media)] hover:bg-[var(--c-hover)]"}`}>{x.label}</Link>
         ))}
       </div>
 
@@ -83,29 +83,29 @@ export default async function Ventas({ searchParams }: { searchParams: Promise<a
             const medios = (v.medios || "").split(",").filter(Boolean)
               .map((m: string) => MEDIOS_PAGO[m] || m).join(" + ");
             return (
-              <tr key={v.id} className="hover:bg-[#151d29]">
-                <TD><Link href={`/ventas/${v.id}`} className="text-[#60a5fa] hover:underline">#{v.id}</Link></TD>
+              <tr key={v.id} className="hover:bg-[var(--c-hover)]">
+                <TD><Link href={`/ventas/${v.id}`} className="text-[var(--c-enlace)] hover:underline">#{v.id}</Link></TD>
                 <TD>
-                  <Link href={`/vehiculos/${v.vehiculo_id}`} className="hover:text-[#2f6bff]">
+                  <Link href={`/vehiculos/${v.vehiculo_id}`} className="hover:text-[var(--c-primario)]">
                     <div className="font-medium">{v.marca} {v.modelo} {v.anio}</div>
-                    <div className="text-[11.5px] text-[#64748b]">{dominio(v.dominio)}</div>
+                    <div className="text-[11.5px] text-[var(--c-tinta-tenue)]">{dominio(v.dominio)}</div>
                   </Link>
                 </TD>
                 <TD>{[v.cliente_apellido, v.cliente_nombre].filter(Boolean).join(", ") || "—"}</TD>
-                <TD className="text-[#9aa7b8]">{v.vendedor || "—"}</TD>
+                <TD className="text-[var(--c-tinta-media)]">{v.vendedor || "—"}</TD>
                 <TD><Chip tono={e.tono}>{e.label}</Chip></TD>
                 <TD alinear="right" className="font-medium">{plata(final)}</TD>
                 {costos && (
                   <TD alinear="right">
-                    <span className={margen >= 0 ? "text-[#22c55e]" : "text-[#f87171]"}>{plata(margen)}</span>
+                    <span className={margen >= 0 ? "text-[var(--c-verde)]" : "text-[var(--c-rojo-alto)]"}>{plata(margen)}</span>
                   </TD>
                 )}
-                <TD className="text-[#9aa7b8] text-[12.5px]">{medios || "—"}</TD>
-                <TD className="text-[#9aa7b8] text-[12.5px]">{ESTADOS_TRAMITE[v.estado_tramite] || "—"}</TD>
-                <TD className="text-[#9aa7b8]">{fecha(v.fecha)}</TD>
+                <TD className="text-[var(--c-tinta-media)] text-[12.5px]">{medios || "—"}</TD>
+                <TD className="text-[var(--c-tinta-media)] text-[12.5px]">{ESTADOS_TRAMITE[v.estado_tramite] || "—"}</TD>
+                <TD className="text-[var(--c-tinta-media)]">{fecha(v.fecha)}</TD>
                 <TD alinear="right">
                   <Link href={`/documentos/boleto/${v.id}`} target="_blank"
-                    className="inline-flex items-center gap-1.5 text-[12px] text-[#9aa7b8] hover:text-[#2f6bff]">
+                    className="inline-flex items-center gap-1.5 text-[12px] text-[var(--c-tinta-media)] hover:text-[var(--c-primario)]">
                     <FileText size={13} /> Boleto
                   </Link>
                 </TD>

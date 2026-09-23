@@ -185,25 +185,25 @@ export default async function Lead({ params }: { params: Promise<any> }) {
             <PanelTitulo titulo="Historial"
               detalle={`${numero(interacciones.length)} ${interacciones.length === 1 ? "registro" : "registros"}`} />
             {interacciones.length === 0 ? (
-              <p className="text-[13px] text-[#64748b] py-10 text-center">
+              <p className="text-[13px] text-[var(--c-tinta-tenue)] py-10 text-center">
                 Todavía no hay seguimiento cargado.
               </p>
             ) : (
-              <ol className="relative border-l border-[#1f2937] ml-2 space-y-5">
+              <ol className="relative border-l border-[var(--c-borde)] ml-2 space-y-5">
                 {interacciones.map((i: any) => {
                   const t = TIPOS_INTERACCION[i.tipo] || TIPOS_INTERACCION.nota;
                   return (
                     <li key={i.id} className="ml-5">
                       <span className="absolute -left-[7px] mt-1 h-3.5 w-3.5 rounded-full
-                        bg-[#151d29] border border-[#334155] grid place-items-center
-                        text-[8px] text-[#9aa7b8]">{t.icono}</span>
+                        bg-[var(--c-hover)] border border-[var(--c-borde-alto)] grid place-items-center
+                        text-[8px] text-[var(--c-tinta-media)]">{t.icono}</span>
                       <div className="flex flex-wrap items-baseline gap-x-2.5 gap-y-1">
-                        <span className="text-[12.5px] font-semibold text-[#e8edf5]">{t.label}</span>
-                        <span className="text-[11.5px] text-[#64748b]">
+                        <span className="text-[12.5px] font-semibold text-[var(--c-tinta)]">{t.label}</span>
+                        <span className="text-[11.5px] text-[var(--c-tinta-tenue)]">
                           {fecha(i.fecha)} · {i.usuario || "sistema"}
                         </span>
                       </div>
-                      <p className="text-[13px] text-[#cbd5e1] mt-1 leading-relaxed">{i.detalle}</p>
+                      <p className="text-[13px] text-[var(--c-tinta-clara)] mt-1 leading-relaxed">{i.detalle}</p>
                     </li>
                   );
                 })}
@@ -215,13 +215,13 @@ export default async function Lead({ params }: { params: Promise<any> }) {
         {/* ------------------------------------------------------- columna 2 */}
         <div className="space-y-4">
           {l.fecha_proxima && !cerrado && (
-            <Panel className="border-[#1e3a8a]">
+            <Panel className="border-[var(--c-azul-borde)]">
               <div className="flex items-start gap-3">
-                <CalendarClock size={18} className="text-[#60a5fa] mt-0.5 shrink-0" />
+                <CalendarClock size={18} className="text-[var(--c-enlace)] mt-0.5 shrink-0" />
                 <div>
                   <span className="etiqueta block">Próxima acción</span>
-                  <p className="text-[13.5px] text-[#e8edf5] mt-1">{l.proxima_accion || "Sin detalle"}</p>
-                  <p className="text-[12px] text-[#60a5fa] mt-0.5">{fecha(l.fecha_proxima)}</p>
+                  <p className="text-[13.5px] text-[var(--c-tinta)] mt-1">{l.proxima_accion || "Sin detalle"}</p>
+                  <p className="text-[12px] text-[var(--c-enlace)] mt-0.5">{fecha(l.fecha_proxima)}</p>
                 </div>
               </div>
             </Panel>
@@ -236,7 +236,7 @@ export default async function Lead({ params }: { params: Promise<any> }) {
             <Dato label="Sucursal">{l.sucursal || "—"}</Dato>
             {l.cliente_nombre && (
               <Dato label="Cliente">
-                <Link href="/clientes" className="text-[#60a5fa] hover:underline">
+                <Link href="/clientes" className="text-[var(--c-enlace)] hover:underline">
                   {l.cliente_nombre} {l.cliente_apellido || ""}
                 </Link>
               </Dato>
@@ -247,7 +247,7 @@ export default async function Lead({ params }: { params: Promise<any> }) {
             <PanelTitulo titulo="Qué busca" />
             <Dato label="Unidad">
               {l.vehiculo_id ? (
-                <Link href={`/vehiculos/${l.vehiculo_id}`} className="text-[#60a5fa] hover:underline">
+                <Link href={`/vehiculos/${l.vehiculo_id}`} className="text-[var(--c-enlace)] hover:underline">
                   {l.marca} {l.modelo} {l.anio || ""}
                 </Link>
               ) : (l.vehiculo_texto || "—")}
@@ -266,16 +266,16 @@ export default async function Lead({ params }: { params: Promise<any> }) {
           {l.observaciones && (
             <Panel>
               <PanelTitulo titulo="Observaciones" />
-              <p className="text-[13px] text-[#cbd5e1] leading-relaxed whitespace-pre-line">
+              <p className="text-[13px] text-[var(--c-tinta-clara)] leading-relaxed whitespace-pre-line">
                 {l.observaciones}
               </p>
             </Panel>
           )}
 
           {l.estado === "perdido" ? (
-            <Panel className="border-[#991b1b]">
+            <Panel className="border-[var(--c-rojo-borde)]">
               <PanelTitulo titulo="Lead perdido" />
-              <p className="text-[13px] text-[#cbd5e1]">{l.motivo_perdida || "Sin motivo cargado."}</p>
+              <p className="text-[13px] text-[var(--c-tinta-clara)]">{l.motivo_perdida || "Sin motivo cargado."}</p>
             </Panel>
           ) : !cerrado ? (
             <Panel>
