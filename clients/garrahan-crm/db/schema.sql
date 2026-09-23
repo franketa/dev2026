@@ -236,6 +236,19 @@ CREATE TABLE IF NOT EXISTS leads (
 );
 CREATE INDEX IF NOT EXISTS leads_estado_idx ON leads(estado);
 
+-- El seguimiento del lead: cada llamada, cada visita, cada mensaje.
+-- Sin esto el pipeline miente, porque muestra en que etapa esta pero no que se hizo.
+CREATE TABLE IF NOT EXISTS lead_interacciones (
+  id         serial PRIMARY KEY,
+  lead_id    int NOT NULL REFERENCES leads(id) ON DELETE CASCADE,
+  tipo       text NOT NULL DEFAULT 'nota'
+             CHECK (tipo IN ('nota','llamada','whatsapp','email','visita','test_drive','cotizacion','cambio_estado')),
+  detalle    text,
+  usuario_id int REFERENCES usuarios(id),
+  fecha      timestamptz NOT NULL DEFAULT now()
+);
+CREATE INDEX IF NOT EXISTS lead_inter_lead_idx ON lead_interacciones(lead_id, fecha DESC);
+
 -- ----------------------------------------------------------------- ventas
 CREATE TABLE IF NOT EXISTS ventas (
   id                 serial PRIMARY KEY,

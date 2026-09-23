@@ -6,7 +6,7 @@ import { useState } from "react";
 import {
   LayoutGrid, Car, Receipt, Users, Flame, Wrench, Truck, Wallet,
   HandCoins, CreditCard, TrendingUp, BarChart3, Building2, UserCog,
-  History, BookMarked, Settings, Menu, X, LogOut,
+  History, BookMarked, Settings, Menu, X, LogOut, HeartHandshake,
 } from "lucide-react";
 import { iniciales } from "@/lib/format";
 
@@ -23,6 +23,7 @@ const MENU: Grupo[] = [
       { href: "/clientes", label: "Clientes", icono: Users },
       { href: "/leads", label: "Leads", icono: Flame },
       { href: "/taller", label: "Taller", icono: Wrench },
+      { href: "/postventa", label: "Postventa", icono: HeartHandshake, permiso: "ventas" },
       { href: "/proveedores", label: "Proveedores", icono: Truck, permiso: "proveedores" },
     ],
   },
