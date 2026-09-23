@@ -1,6 +1,7 @@
 import Sidebar from "@/components/sidebar";
 import Buscador from "@/components/buscador";
 import Migas from "@/components/migas";
+import EstadoOperacion from "@/components/estado-operacion";
 import { sql } from "@/lib/db";
 import { requiereSesion, permisosDe } from "@/lib/auth";
 import { cotizacionDeHoy } from "@/lib/cotizacion";
@@ -33,6 +34,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
           border-b border-[#1f2937] flex items-center gap-3 px-4 lg:px-7">
           <div className="hidden md:flex min-w-0 flex-1 pl-11 lg:pl-0"><Migas /></div>
           <div className="flex-1 md:flex-none pl-11 md:pl-0"><Buscador /></div>
+          <EstadoOperacion usuario={u} />
           {cot && (
             <div className="hidden sm:flex items-center gap-2 rounded-lg border border-[#1f2937]
               bg-[#111721] px-3 py-1.5" title={`Dólar blue al ${ffecha(cot.fecha)}`}>

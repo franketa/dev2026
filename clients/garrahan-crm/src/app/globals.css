@@ -98,5 +98,30 @@ input:focus-visible, select:focus-visible, textarea:focus-visible, button:focus-
   .solo-imprimir { display: block !important; }
   .hoja { box-shadow: none !important; border: none !important; padding: 0 !important; }
   @page { margin: 18mm 16mm; }
+
+  /* --------------------------------------------------- listados en papel
+     Un listado impreso no necesita menú, buscador ni botones: necesita la
+     tabla, legible y en blanco y negro. Sin esto, imprimir gasta tinta en
+     un fondo oscuro y corta las columnas de la derecha.                    */
+  aside, header { display: none !important; }
+  main { padding: 0 !important; max-width: none !important; }
+
+  /* Los fondos oscuros se van; los bordes quedan para poder seguir la fila. */
+  .panel, table, thead, tbody, tr, td, th, div {
+    background: transparent !important;
+    color: #000 !important;
+    box-shadow: none !important;
+  }
+  table { width: 100% !important; border-collapse: collapse !important; font-size: 10.5px !important; }
+  th, td { border-bottom: 1px solid #ccc !important; padding: 5px 6px !important; }
+  thead th { border-bottom: 1.5px solid #000 !important; font-weight: 700 !important; }
+  a { text-decoration: none !important; color: #000 !important; }
+
+  /* Las tablas anchas se acuestan para que entren. */
+  .apaisado { page-break-inside: auto; }
+  tr { page-break-inside: avoid; }
+
+  /* El encabezado de la tabla se repite en cada hoja. */
+  thead { display: table-header-group; }
 }
 .solo-imprimir { display: none; }

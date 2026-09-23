@@ -3,6 +3,7 @@ import { requiereSesion } from "@/lib/auth";
 import { plata, fecha, numero } from "@/lib/format";
 import { Encabezado, KPI, GrillaKPI, Chip, Tabla, TH, TD, FilaVacia, Panel } from "@/components/ui";
 import Exportar from "@/components/exportar";
+import ImprimirListado from "@/components/imprimir-listado";
 
 export const dynamic = "force-dynamic";
 
@@ -18,7 +19,7 @@ export default async function Clientes() {
   return (
     <>
       <Encabezado titulo="Clientes" detalle="Quién compró, quién consultó y cómo ubicarlo."
-        acciones={<Exportar que="clientes" />} />
+        acciones={<><ImprimirListado /><Exportar que="clientes" /></>} />
       <GrillaKPI cols={3}>
         <KPI label="Clientes" valor={numero(filas.length)} />
         <KPI label="Con compras" valor={numero(filas.filter((c: any) => c.compras > 0).length)} tono="verde" />

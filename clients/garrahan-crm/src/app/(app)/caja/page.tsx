@@ -10,6 +10,7 @@ import {
   FilaVacia, Boton, Campo, Monto,
 } from "@/components/ui";
 import Exportar from "@/components/exportar";
+import ImprimirListado from "@/components/imprimir-listado";
 
 export const dynamic = "force-dynamic";
 
@@ -80,7 +81,7 @@ export default async function Caja({ searchParams }: { searchParams: Promise<any
   return (
     <>
       <Encabezado titulo="Caja" detalle="Todos los movimientos, en las cuentas reales de la agencia."
-        acciones={<Exportar que="caja" />} />
+        acciones={<><ImprimirListado /><Exportar que="caja" /></>} />
 
       <GrillaKPI>
         <KPI label="Ingresos del mes" valor={plataCorta(m.ingresos)} tono="verde" />

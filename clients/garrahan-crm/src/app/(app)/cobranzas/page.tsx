@@ -3,6 +3,7 @@ import { requiereSesion } from "@/lib/auth";
 import { plata, fecha, numero } from "@/lib/format";
 import { Encabezado, KPI, GrillaKPI, Chip, Tabla, TH, TD, FilaVacia } from "@/components/ui";
 import Exportar from "@/components/exportar";
+import ImprimirListado from "@/components/imprimir-listado";
 
 export const dynamic = "force-dynamic";
 
@@ -33,7 +34,7 @@ export default async function Cobranzas() {
   return (
     <>
       <Encabezado titulo="Cobranzas" detalle="Lo que falta cobrar y lo que ya se venció."
-        acciones={<Exportar que="cobranzas" />} />
+        acciones={<><ImprimirListado /><Exportar que="cobranzas" /></>} />
 
       <GrillaKPI cols={hayUSD ? 4 : 3}>
         <KPI label="Saldo pendiente en pesos" valor={plata(pendARS)}
