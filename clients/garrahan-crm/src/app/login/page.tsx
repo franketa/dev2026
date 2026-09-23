@@ -1,9 +1,9 @@
 import { redirect } from "next/navigation";
 import { login, usuarioActual } from "@/lib/auth";
 
-export default async function Login({ searchParams }: { searchParams: Promise<{ error?: string }> }) {
+export default async function Login({ searchParams }: { searchParams: Promise<{ error?: string; m?: string }> }) {
   if (await usuarioActual()) redirect("/");
-  const { error } = await searchParams;
+  const { error, m } = await searchParams;
 
   async function entrar(fd: FormData) {
     "use server";
@@ -66,6 +66,12 @@ export default async function Login({ searchParams }: { searchParams: Promise<{ 
             {error && (
               <div className="rounded-lg border border-[#991b1b] bg-[#2e0a0a] px-3 py-2.5 text-[12.5px] text-[#f87171]">
                 Email o contraseña incorrectos.
+              </div>
+            )}
+
+            {m === "clave" && (
+              <div className="rounded-lg border border-[#14532d] bg-[#052e1a] px-3 py-2.5 text-[12.5px] text-[#4ade80]">
+                Contraseña cambiada. Entrá con la nueva.
               </div>
             )}
 

@@ -124,10 +124,12 @@ export default function Sidebar({ usuario, permisos }:
             <div className="h-7 w-7 rounded-full bg-[#2f6bff] grid place-items-center text-[11px] font-semibold text-white shrink-0">
               {iniciales(usuario.nombre)}
             </div>
-            <div className="min-w-0 flex-1">
+            <Link href="/cuenta" onClick={() => setAbierto(false)}
+              className="min-w-0 flex-1 rounded-md hover:bg-[#151d29] px-1 -mx-1 py-0.5"
+              title="Mi cuenta">
               <div className="text-[12.5px] font-medium truncate">{usuario.nombre}</div>
               <div className="text-[11px] text-[#64748b] capitalize">{usuario.rol}</div>
-            </div>
+            </Link>
             <Link href="/salir" title="Cerrar sesión"
               className="h-7 w-7 grid place-items-center rounded-lg text-[#64748b] hover:bg-[#1b2433] hover:text-[#f87171]">
               <LogOut size={14} />
