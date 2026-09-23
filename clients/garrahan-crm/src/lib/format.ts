@@ -2,10 +2,15 @@
 
 const AR = "es-AR";
 
+/** El menos va adelante del símbolo, como se escribe un importe en contabilidad. */
+const conSigno = (n: number, simbolo: string, cuerpo: string) =>
+  (n < 0 ? "−" : "") + simbolo + cuerpo;
+
 export function plata(v: any, moneda: "ARS" | "USD" = "ARS"): string {
   const n = Number(v ?? 0);
   const simbolo = moneda === "USD" ? "USD " : "$ ";
-  return simbolo + n.toLocaleString(AR, { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+  return conSigno(n, simbolo,
+    Math.abs(n).toLocaleString(AR, { minimumFractionDigits: 0, maximumFractionDigits: 0 }));
 }
 
 /** Version corta para tarjetas: $ 28,5 M */
@@ -13,9 +18,13 @@ export function plataCorta(v: any, moneda: "ARS" | "USD" = "ARS"): string {
   const n = Number(v ?? 0);
   const simbolo = moneda === "USD" ? "USD " : "$ ";
   const abs = Math.abs(n);
-  if (abs >= 1_000_000) return simbolo + (n / 1_000_000).toLocaleString(AR, { maximumFractionDigits: 1 }) + " M";
-  if (abs >= 1_000) return simbolo + (n / 1_000).toLocaleString(AR, { maximumFractionDigits: 0 }) + " K";
-  return simbolo + n.toLocaleString(AR, { maximumFractionDigits: 0 });
+  if (abs >= 1_000_000) {
+    return conSigno(n, simbolo, (abs / 1_000_000).toLocaleString(AR, { maximumFractionDigits: 1 }) + " M");
+  }
+  if (abs >= 1_000) {
+    return conSigno(n, simbolo, (abs / 1_000).toLocaleString(AR, { maximumFractionDigits: 0 }) + " K");
+  }
+  return conSigno(n, simbolo, abs.toLocaleString(AR, { maximumFractionDigits: 0 }));
 }
 
 export function numero(v: any, decimales = 0): string {

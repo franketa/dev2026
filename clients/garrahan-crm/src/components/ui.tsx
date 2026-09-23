@@ -235,11 +235,17 @@ export function Etapas({ indice, total = 5, etiqueta }:
 }
 
 /* ---------------------------------------------------------------- monto */
+/**
+ * Un monto con su signo. El negativo SIEMPRE lleva el menos adelante, no
+ * alcanza con pintarlo de rojo: un quebranto de $1.320.000 se leía igual que
+ * una ganancia de $1.320.000. El color se pierde al imprimir en blanco y
+ * negro y no existe para quien no distingue el rojo del verde.
+ */
 export function Monto({ valor, signo = false, className = "" }:
   { valor: number; signo?: boolean; className?: string }) {
   const n = Number(valor || 0);
   const color = !signo ? "" : n > 0 ? "text-[var(--c-verde)]" : n < 0 ? "text-[var(--c-rojo-alto)]" : "";
-  const prefijo = signo && n > 0 ? "+" : "";
+  const prefijo = n < 0 ? "− " : signo && n > 0 ? "+" : "";
   return (
     <span className={`tabular ${color} ${className}`}>
       {prefijo}$ {Math.abs(n).toLocaleString("es-AR", { maximumFractionDigits: 0 })}
