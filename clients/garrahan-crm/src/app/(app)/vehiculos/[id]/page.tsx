@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
-import { Plus, Receipt, Wrench } from "lucide-react";
+import { Plus, Receipt, Wrench, FileText } from "lucide-react";
 import { sql } from "@/lib/db";
 import { requiereSesion, veCostos } from "@/lib/auth";
 import { plata, numero, km as fkm, dominio, porcentaje, fecha } from "@/lib/format";
@@ -97,6 +97,14 @@ export default async function Vehiculo({ params, searchParams }: { params: Promi
               </select>
               <Boton tipo="submit" variante="suave">Cambiar</Boton>
             </form>
+            {v.tipo_adquisicion === "consignacion" && (
+              <a href={`/documentos/mandato/${id}`} target="_blank" rel="noopener noreferrer"
+                className="inline-flex items-center justify-center gap-2 rounded-lg px-3.5 py-2
+                  text-[13px] font-semibold bg-[#1b2433] hover:bg-[#232e40] text-[#cbd5e1]
+                  border border-[#1f2937] transition-colors">
+                <FileText size={15} /> Mandato
+              </a>
+            )}
             {!["vendido", "baja"].includes(v.estado) && (
               <Boton href={`/ventas/nueva?vehiculo=${id}`}><Receipt size={15} /> Crear venta</Boton>
             )}

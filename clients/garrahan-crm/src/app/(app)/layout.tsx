@@ -1,14 +1,14 @@
 import Sidebar from "@/components/sidebar";
 import Buscador from "@/components/buscador";
 import { requiereSesion, permisosDe } from "@/lib/auth";
-import { sql } from "@/lib/db";
-import { plata } from "@/lib/format";
+import { cotizacionDeHoy } from "@/lib/cotizacion";
+import { plata, fecha as ffecha } from "@/lib/format";
 
 export default async function AppLayout({ children }: { children: React.ReactNode }) {
   const u = await requiereSesion();
   const permisos = permisosDe(u.rol);
 
-  const [cot] = await sql`SELECT valor, fecha FROM cotizaciones ORDER BY fecha DESC LIMIT 1`;
+  const cot = await cotizacionDeHoy();
 
   return (
     <div className="flex min-h-screen">
@@ -21,7 +21,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
           <div className="flex-1 pl-11 lg:pl-0"><Buscador /></div>
           {cot && (
             <div className="hidden sm:flex items-center gap-2 rounded-lg border border-[#1f2937]
-              bg-[#111721] px-3 py-1.5" title="Última cotización cargada">
+              bg-[#111721] px-3 py-1.5" title={`Dólar blue al ${ffecha(cot.fecha)}`}>
               <span className="etiqueta">Dólar</span>
               <span className="text-[13px] font-semibold tabular">{plata(cot.valor)}</span>
             </div>
