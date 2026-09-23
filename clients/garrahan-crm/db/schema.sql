@@ -462,9 +462,11 @@ SELECT
   END                                                           AS alerta,
 
   -- De quién es la unidad. Cambia qué significa la plata que deja al venderse.
+  -- Un inversor de tipo 'propio' es la agencia misma: se usa para separar la
+  -- plata de la casa de la de terceros, no para decir que el auto es ajeno.
   CASE
-    WHEN v.tipo_adquisicion = 'consignacion' THEN 'consignacion'
-    WHEN v.inversor_id IS NOT NULL           THEN 'inversor'
+    WHEN v.tipo_adquisicion = 'consignacion'            THEN 'consignacion'
+    WHEN v.inversor_id IS NOT NULL AND i.tipo = 'externo' THEN 'inversor'
     ELSE 'propia'
   END                                                           AS propiedad,
 

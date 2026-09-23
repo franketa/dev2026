@@ -412,6 +412,9 @@ export default async function Vehiculos({ searchParams }: { searchParams: Promis
                     {v.propiedad === "inversor" && (
                       <span className="text-[#c084fc]"> · {v.inversor}</span>
                     )}
+                    {v.propiedad === "propia" && v.inversor && (
+                      <span> · {v.inversor}</span>
+                    )}
                   </span>
                   {a && <Chip tono={a.tono}>{v.dias_stock} días</Chip>}
                 </div>
