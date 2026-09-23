@@ -171,13 +171,13 @@ export default async function Venta({ params }: { params: Promise<any> }) {
           <Panel padding={false}>
             <div className="p-5 pb-0">
               <PanelTitulo titulo="Formas de pago"
-                detalle="Cada renglón es plata que entró, con su medio y su fecha." />
+                detalle="Cada renglón es plata que entró. De cada uno se imprime su recibo." />
             </div>
             <Tabla className="border-0 rounded-none bg-transparent">
               <thead>
                 <tr>
                   <TH>Medio</TH><TH>Fecha</TH><TH>Referencia</TH>
-                  <TH alinear="right">Monto</TH><TH alinear="right">En pesos</TH><TH></TH>
+                  <TH alinear="right">Monto</TH><TH alinear="right">En pesos</TH><TH alinear="right">Comprobante</TH>
                 </tr>
               </thead>
               <tbody>
@@ -192,9 +192,14 @@ export default async function Venta({ params }: { params: Promise<any> }) {
                       {plata(Number(p.monto) * (p.moneda === "USD" ? Number(p.cotizacion || 1) : 1))}
                     </TD>
                     <TD alinear="right">
+                      {/* Botón y no link de texto: estaba, pero al final de la
+                          fila y en letra chica nadie lo encontraba. */}
                       <a href={`/documentos/recibo/${p.id}`} target="_blank" rel="noopener noreferrer"
-                        className="text-[12.5px] text-[var(--c-enlace)] hover:underline whitespace-nowrap">
-                        Recibo
+                        title="Imprimir el recibo de este cobro"
+                        className="inline-flex items-center gap-1.5 rounded-md border border-[var(--c-azul-borde)]
+                          bg-[var(--c-azul-fondo)] px-2 py-1 text-[11.5px] text-[var(--c-enlace)]
+                          hover:bg-[var(--c-azul-fondo-alto)] transition-colors whitespace-nowrap">
+                        <FileText size={12} /> Recibo
                       </a>
                     </TD>
                   </tr>
