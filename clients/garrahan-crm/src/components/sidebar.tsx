@@ -130,10 +130,15 @@ export default function Sidebar({ usuario, permisos }:
               <div className="text-[12.5px] font-medium truncate">{usuario.nombre}</div>
               <div className="text-[11px] text-[#64748b] capitalize">{usuario.rol}</div>
             </Link>
-            <Link href="/salir" title="Cerrar sesión"
-              className="h-7 w-7 grid place-items-center rounded-lg text-[#64748b] hover:bg-[#1b2433] hover:text-[#f87171]">
-              <LogOut size={14} />
-            </Link>
+            {/* Form y no Link: /salir es POST porque un link se precarga solo
+                y cerraba la sesión sin que nadie hiciera clic. */}
+            <form action="/salir" method="post">
+              <button type="submit" title="Cerrar sesión" aria-label="Cerrar sesión"
+                className="h-7 w-7 grid place-items-center rounded-lg text-[#64748b]
+                  hover:bg-[#1b2433] hover:text-[#f87171] transition-colors">
+                <LogOut size={14} />
+              </button>
+            </form>
           </div>
         </div>
       </aside>
