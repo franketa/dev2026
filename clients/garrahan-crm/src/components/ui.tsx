@@ -133,6 +133,34 @@ export function TD({ children, alinear = "left", className = "" }:
   );
 }
 
+/**
+ * Encabezado que ordena la tabla. El primer clic ordena descendente, que es
+ * lo que casi siempre se quiere mirar primero: los más caros, los más viejos,
+ * los de más días. El segundo clic da vuelta el orden.
+ */
+export function THOrden({ campo, actual, dir, href, alinear = "left", children }: {
+  campo: string; actual: string; dir: string;
+  href: (campo: string, dir: string) => string;
+  alinear?: "left" | "right" | "center"; children: ReactNode;
+}) {
+  const activo = actual === campo;
+  const proxima = activo && dir === "desc" ? "asc" : "desc";
+  const flecha = !activo ? "" : dir === "asc" ? "↑" : "↓";
+
+  return (
+    <TH alinear={alinear}>
+      <Link href={href(campo, proxima)}
+        className={`inline-flex items-center gap-1 hover:text-[#cbd5e1] transition-colors
+          ${activo ? "text-[#e8edf5]" : ""}`}>
+        {children}
+        <span className={`text-[10px] ${activo ? "text-[#2f6bff]" : "text-[#334155]"}`}>
+          {flecha || "↕"}
+        </span>
+      </Link>
+    </TH>
+  );
+}
+
 export function FilaVacia({ cols, mensaje = "No hay registros todavía." }: { cols: number; mensaje?: string }) {
   return (
     <tr>

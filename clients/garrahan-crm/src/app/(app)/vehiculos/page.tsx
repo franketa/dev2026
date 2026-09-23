@@ -1,14 +1,15 @@
 import Link from "next/link";
-import { Plus, Search, Wrench } from "lucide-react";
+import { Plus, Search, Wrench, Receipt } from "lucide-react";
 import { sql } from "@/lib/db";
 import { requiereSesion, veCostos } from "@/lib/auth";
 import { plata, plataCorta, numero, km as fkm, dominio, porcentaje } from "@/lib/format";
 import { ESTADOS_VEHICULO, ALERTAS } from "@/lib/constantes";
 import {
-  Encabezado, KPI, GrillaKPI, Chip, Tabla, TH, TD, FilaVacia, Boton,
+  Encabezado, KPI, GrillaKPI, Chip, Tabla, TH, THOrden, TD, FilaVacia, Boton,
 } from "@/components/ui";
 import Exportar from "@/components/exportar";
 import { sucursalActiva } from "@/lib/sucursal";
+import AtajoBuscar from "@/components/atajo-buscar";
 
 export const dynamic = "force-dynamic";
 
@@ -29,6 +30,17 @@ export default async function Vehiculos({ searchParams }: { searchParams: Promis
   const q = (p.q || "").trim();
   const sucursal = p.sucursal || "";
   const alerta = p.alerta || "";
+
+  // Lista blanca: el nombre de la columna va a parar al ORDER BY, así que no
+  // puede salir de la URL sin pasar por acá.
+  const ORDENABLES: Record<string, string> = {
+    dominio: "dominio", vehiculo: "marca", anio: "anio", km: "km",
+    costos: "costos", invertido: "costo_total", precio: "precio_venta",
+    margen: "margen_pct", dias: "dias_stock", ubicacion: "sucursal", estado: "estado",
+  };
+  const orden = ORDENABLES[p.orden] ? p.orden : "dias";
+  const columna = ORDENABLES[orden];
+  const dir = p.dir === "asc" ? "asc" : "desc";
 
   // La sucursal del menú manda salvo que el listado tenga su propio filtro puesto.
   const global = await sucursalActiva();
@@ -52,7 +64,9 @@ export default async function Vehiculos({ searchParams }: { searchParams: Promis
   const soloSucWhere = filtroSucursal ? sql`WHERE sucursal_id = ${filtroSucursal}` : sql``;
 
   const [filas, resumen, sucursales, conteos] = await Promise.all([
-    sql`SELECT * FROM v_vehiculos ${where} ORDER BY dias_stock DESC NULLS LAST LIMIT 300`,
+    sql`SELECT * FROM v_vehiculos ${where}
+        ORDER BY ${sql(columna)} ${dir === "asc" ? sql`ASC` : sql`DESC`} NULLS LAST
+        LIMIT 300`,
     sql`SELECT count(*)::int AS n, COALESCE(SUM(costo_total),0) AS capital,
                COALESCE(SUM(precio_venta),0) AS venta,
                COALESCE(AVG(NULLIF(margen_pct,0)),0) AS margen,
@@ -74,10 +88,11 @@ export default async function Vehiculos({ searchParams }: { searchParams: Promis
   const demoradas = filas.filter((v: any) => v.alerta === "naranja" || v.alerta === "rojo").length;
 
   const link = (cambios: Record<string, string>) => {
-    const s = new URLSearchParams({ tab, q, sucursal, alerta, ...cambios });
+    const s = new URLSearchParams({ tab, q, sucursal, alerta, orden, dir, ...cambios });
     for (const [k, v] of [...s.entries()]) if (!v) s.delete(k);
     return `/vehiculos?${s.toString()}`;
   };
+  const ordenar = (campo: string, d: string) => link({ orden: campo, dir: d });
 
   return (
     <>
@@ -110,12 +125,17 @@ export default async function Vehiculos({ searchParams }: { searchParams: Promis
       </div>
 
       {/* ---------------------------------------------------------- filtros */}
+      <AtajoBuscar />
       <form className="flex flex-wrap gap-2 mb-3" action="/vehiculos">
         <input type="hidden" name="tab" value={tab} />
+        <input type="hidden" name="orden" value={orden} />
+        <input type="hidden" name="dir" value={dir} />
         <div className="relative flex-1 min-w-[220px]">
           <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#64748b]" />
           <input name="q" defaultValue={q} placeholder="Buscar por dominio, marca o modelo…"
-            className="campo pl-9" />
+            className="campo pl-9 pr-9" />
+          <kbd className="absolute right-3 top-1/2 -translate-y-1/2 text-[10.5px] px-1.5 py-0.5
+            rounded border border-[#1f2937] bg-[#0d131c] text-[#475569] pointer-events-none">/</kbd>
         </div>
         <select name="sucursal" defaultValue={sucursal} className="campo w-auto min-w-[160px]">
           <option value="">Todas las sucursales</option>
@@ -135,17 +155,17 @@ export default async function Vehiculos({ searchParams }: { searchParams: Promis
       <Tabla>
         <thead>
           <tr>
-            <TH>Dominio</TH>
-            <TH>Vehículo</TH>
-            <TH alinear="right">Año</TH>
-            <TH alinear="right">Kilometraje</TH>
-            {costos && <TH alinear="right">Costos</TH>}
-            {costos && <TH alinear="right">Total invertido</TH>}
-            <TH alinear="right">Precio venta</TH>
-            {costos && <TH alinear="right">Margen</TH>}
-            <TH alinear="center">Días</TH>
-            <TH>Ubicación</TH>
-            <TH>Estado</TH>
+            <THOrden campo="dominio" actual={orden} dir={dir} href={ordenar}>Dominio</THOrden>
+            <THOrden campo="vehiculo" actual={orden} dir={dir} href={ordenar}>Vehículo</THOrden>
+            <THOrden campo="anio" actual={orden} dir={dir} href={ordenar} alinear="right">Año</THOrden>
+            <THOrden campo="km" actual={orden} dir={dir} href={ordenar} alinear="right">Kilometraje</THOrden>
+            {costos && <THOrden campo="costos" actual={orden} dir={dir} href={ordenar} alinear="right">Costos</THOrden>}
+            {costos && <THOrden campo="invertido" actual={orden} dir={dir} href={ordenar} alinear="right">Total invertido</THOrden>}
+            <THOrden campo="precio" actual={orden} dir={dir} href={ordenar} alinear="right">Precio venta</THOrden>
+            {costos && <THOrden campo="margen" actual={orden} dir={dir} href={ordenar} alinear="right">Margen</THOrden>}
+            <THOrden campo="dias" actual={orden} dir={dir} href={ordenar} alinear="center">Días</THOrden>
+            <THOrden campo="ubicacion" actual={orden} dir={dir} href={ordenar}>Ubicación</THOrden>
+            <THOrden campo="estado" actual={orden} dir={dir} href={ordenar}>Estado</THOrden>
             <TH></TH>
           </tr>
         </thead>
@@ -191,13 +211,23 @@ export default async function Vehiculos({ searchParams }: { searchParams: Promis
                 <TD className="text-[#9aa7b8]">{v.sucursal || "—"}</TD>
                 <TD><Chip tono={e.tono}>{e.label}</Chip></TD>
                 <TD alinear="right">
+                  {/* Siempre visibles, no solo al pasar el mouse: una acción que
+                      hay que descubrir moviendo el cursor es una acción que no existe. */}
                   {!["vendido", "baja"].includes(v.estado) && (
-                    <Link href={`/taller/nueva?vehiculo=${v.id}`}
-                      className="opacity-0 group-hover:opacity-100 inline-flex items-center gap-1.5
-                        rounded-md border border-[#9a3412] bg-[#2c1405] px-2 py-1
-                        text-[11.5px] text-[#fb923c] transition-opacity whitespace-nowrap">
-                      <Wrench size={12} /> Al taller
-                    </Link>
+                    <span className="inline-flex items-center gap-1.5">
+                      <Link href={`/taller/nueva?vehiculo=${v.id}`} title="Mandar al taller"
+                        className="inline-flex items-center gap-1.5 rounded-md border border-[#9a3412]
+                          bg-[#2c1405] px-2 py-1 text-[11.5px] text-[#fb923c]
+                          hover:bg-[#3d1c07] transition-colors whitespace-nowrap">
+                        <Wrench size={12} /> Al taller
+                      </Link>
+                      <Link href={`/ventas/nueva?vehiculo=${v.id}`} title="Crear venta de esta unidad"
+                        className="inline-flex items-center gap-1.5 rounded-md border border-[#1e3a8a]
+                          bg-[#0a1b3d] px-2 py-1 text-[11.5px] text-[#60a5fa]
+                          hover:bg-[#0e2452] transition-colors whitespace-nowrap">
+                        <Receipt size={12} /> Vender
+                      </Link>
+                    </span>
                   )}
                 </TD>
               </tr>
