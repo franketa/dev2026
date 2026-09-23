@@ -7,6 +7,7 @@ import { ESTADOS_VEHICULO, ALERTAS } from "@/lib/constantes";
 import {
   Encabezado, KPI, GrillaKPI, Chip, Tabla, TH, TD, FilaVacia, Boton,
 } from "@/components/ui";
+import Exportar from "@/components/exportar";
 
 export const dynamic = "force-dynamic";
 
@@ -73,7 +74,7 @@ export default async function Vehiculos({ searchParams }: { searchParams: Promis
       <Encabezado
         titulo="Vehículos"
         detalle="El inventario, el estado y la rentabilidad de cada unidad."
-        acciones={<Boton href="/vehiculos/nuevo"><Plus size={15} /> Nuevo vehículo</Boton>}
+        acciones={<><Exportar que="vehiculos" /><Boton href="/vehiculos/nuevo"><Plus size={15} /> Nuevo vehículo</Boton></>}
       />
 
       <GrillaKPI>

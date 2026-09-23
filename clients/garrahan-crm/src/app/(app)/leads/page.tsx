@@ -6,6 +6,7 @@ import { requiereSesion } from "@/lib/auth";
 import { plata, fecha, numero } from "@/lib/format";
 import { ESTADOS_LEAD, ETAPAS_LEAD, ORIGENES_LEAD } from "@/lib/constantes";
 import { Encabezado, KPI, GrillaKPI, Chip, Tabla, TH, TD, FilaVacia, Boton, Etapas } from "@/components/ui";
+import Exportar from "@/components/exportar";
 import SelectEstado from "@/components/select-estado";
 
 export const dynamic = "force-dynamic";
@@ -64,7 +65,7 @@ export default async function Leads({ searchParams }: { searchParams: Promise<an
   return (
     <>
       <Encabezado titulo="Leads" detalle="De la consulta al cierre. Cada uno con responsable y próxima acción."
-        acciones={<Boton href="/leads/nuevo"><Plus size={15} /> Nuevo lead</Boton>} />
+        acciones={<><Exportar que="leads" /><Boton href="/leads/nuevo"><Plus size={15} /> Nuevo lead</Boton></>} />
 
       <GrillaKPI>
         <KPI label="Leads visibles" valor={numero(r.total)} />

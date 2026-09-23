@@ -1,4 +1,5 @@
 import Sidebar from "@/components/sidebar";
+import Buscador from "@/components/buscador";
 import { requiereSesion, permisosDe } from "@/lib/auth";
 import { sql } from "@/lib/db";
 import { plata } from "@/lib/format";
@@ -16,7 +17,8 @@ export default async function AppLayout({ children }: { children: React.ReactNod
       <div className="flex-1 min-w-0 flex flex-col">
         {/* -------------------------------------------------------- barra superior */}
         <header className="h-[57px] shrink-0 sticky top-0 z-30 bg-[#0a0e14]/90 backdrop-blur
-          border-b border-[#1f2937] flex items-center justify-end gap-3 px-4 lg:px-7">
+          border-b border-[#1f2937] flex items-center gap-3 px-4 lg:px-7">
+          <div className="flex-1 pl-11 lg:pl-0"><Buscador /></div>
           {cot && (
             <div className="hidden sm:flex items-center gap-2 rounded-lg border border-[#1f2937]
               bg-[#111721] px-3 py-1.5" title="Última cotización cargada">

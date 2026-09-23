@@ -2,6 +2,7 @@ import { sql } from "@/lib/db";
 import { requiereSesion } from "@/lib/auth";
 import { plata, fecha, numero } from "@/lib/format";
 import { Encabezado, KPI, GrillaKPI, Chip, Tabla, TH, TD, FilaVacia, Panel } from "@/components/ui";
+import Exportar from "@/components/exportar";
 
 export const dynamic = "force-dynamic";
 
@@ -19,7 +20,8 @@ export default async function Cobranzas() {
 
   return (
     <>
-      <Encabezado titulo="Cobranzas" detalle="Lo que falta cobrar y lo que ya se venció." />
+      <Encabezado titulo="Cobranzas" detalle="Lo que falta cobrar y lo que ya se venció."
+        acciones={<Exportar que="cobranzas" />} />
       <GrillaKPI cols={3}>
         <KPI label="Total a cobrar" valor={plata(totalPend)} />
         <KPI label="Vencidas" valor={numero(vencidas.length)} tono={vencidas.length ? "rojo" : "verde"}

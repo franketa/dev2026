@@ -170,11 +170,11 @@ export default async function Venta({ params }: { params: Promise<any> }) {
               <thead>
                 <tr>
                   <TH>Medio</TH><TH>Fecha</TH><TH>Referencia</TH>
-                  <TH alinear="right">Monto</TH><TH alinear="right">En pesos</TH>
+                  <TH alinear="right">Monto</TH><TH alinear="right">En pesos</TH><TH></TH>
                 </tr>
               </thead>
               <tbody>
-                {pagos.length === 0 && <FilaVacia cols={5} mensaje="Todavía no se registró ningún cobro." />}
+                {pagos.length === 0 && <FilaVacia cols={6} mensaje="Todavía no se registró ningún cobro." />}
                 {pagos.map((p: any) => (
                   <tr key={p.id} className="hover:bg-[#151d29]">
                     <TD className="font-medium">{MEDIOS_PAGO[p.medio] || p.medio}</TD>
@@ -183,6 +183,12 @@ export default async function Venta({ params }: { params: Promise<any> }) {
                     <TD alinear="right">{plata(p.monto, p.moneda)}</TD>
                     <TD alinear="right" className="text-[#9aa7b8]">
                       {plata(Number(p.monto) * (p.moneda === "USD" ? Number(p.cotizacion || 1) : 1))}
+                    </TD>
+                    <TD alinear="right">
+                      <a href={`/documentos/recibo/${p.id}`} target="_blank" rel="noopener noreferrer"
+                        className="text-[12.5px] text-[#60a5fa] hover:underline whitespace-nowrap">
+                        Recibo
+                      </a>
                     </TD>
                   </tr>
                 ))}

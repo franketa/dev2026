@@ -9,6 +9,7 @@ import {
   Encabezado, KPI, GrillaKPI, Panel, PanelTitulo, Chip, Tabla, TH, TD,
   FilaVacia, Boton, Campo, Monto,
 } from "@/components/ui";
+import Exportar from "@/components/exportar";
 
 export const dynamic = "force-dynamic";
 
@@ -78,7 +79,8 @@ export default async function Caja({ searchParams }: { searchParams: Promise<any
 
   return (
     <>
-      <Encabezado titulo="Caja" detalle="Todos los movimientos, en las cuentas reales de la agencia." />
+      <Encabezado titulo="Caja" detalle="Todos los movimientos, en las cuentas reales de la agencia."
+        acciones={<Exportar que="caja" />} />
 
       <GrillaKPI>
         <KPI label="Ingresos del mes" valor={plataCorta(m.ingresos)} tono="verde" />

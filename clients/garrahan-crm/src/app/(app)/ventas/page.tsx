@@ -5,6 +5,7 @@ import { requiereSesion, veCostos } from "@/lib/auth";
 import { plata, plataCorta, fecha, numero, dominio, porcentaje } from "@/lib/format";
 import { ESTADOS_VENTA, MEDIOS_PAGO, ESTADOS_TRAMITE } from "@/lib/constantes";
 import { Encabezado, KPI, GrillaKPI, Chip, Tabla, TH, TD, FilaVacia, Boton } from "@/components/ui";
+import Exportar from "@/components/exportar";
 
 export const dynamic = "force-dynamic";
 
@@ -45,7 +46,7 @@ export default async function Ventas({ searchParams }: { searchParams: Promise<a
   return (
     <>
       <Encabezado titulo="Ventas" detalle="Operaciones, señas y documentación."
-        acciones={<Boton href="/ventas/nueva"><Plus size={15} /> Nueva venta</Boton>} />
+        acciones={<><Exportar que="ventas" /><Boton href="/ventas/nueva"><Plus size={15} /> Nueva venta</Boton></>} />
 
       <GrillaKPI>
         <KPI label="Ventas del mes" valor={numero(r.mes_n)} detalle={costos ? plataCorta(r.mes) : undefined} />
