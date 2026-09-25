@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="es-AR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Aeroclub 25 de Mayo</title>
+  <meta name="theme-color" content="#FFFFFF">
+  <meta name="robots" content="noindex">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Aeroclub 25">
+  <link rel="icon" type="image/png" href="/assets/img/favicon.png">
+  <link rel="apple-touch-icon" href="/assets/img/apple-touch-icon.png">
+  <link rel="manifest" href="/manifest.webmanifest">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&family=Barlow+Semi+Condensed:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/app.css">
+</head>
+<body>
+  <div class="app">
+    <header class="barra">
+      <img class="barra__escudo" src="/assets/img/escudo-256.png" alt="" width="38" height="38">
+      <div class="barra__club">Aeroclub 25 de Mayo<small id="barra-seccion"></small></div>
+      <div class="barra__usuario"><a class="avatar" id="barra-avatar" href="#/perfil" aria-label="Mi perfil"></a></div>
+    </header>
+
+    <nav class="lateral" id="lateral" aria-label="Secciones"></nav>
+
+    <main class="contenido" id="vista" tabindex="-1"></main>
+
+    <nav class="nav-inf" id="nav-inf" aria-label="Navegación principal"></nav>
+  </div>
+  <script type="module" src="/assets/js/app.js"></script>
+</body>
+</html>

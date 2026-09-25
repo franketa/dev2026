@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="es-AR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Aeroclub 25 de Mayo · Ingresar</title>
+  <meta name="description" content="Carga de horas de vuelo y cuenta corriente de socios del Aeroclub 25 de Mayo.">
+  <meta name="theme-color" content="#172A4F">
+  <meta name="robots" content="noindex">
+  <link rel="icon" type="image/png" href="/assets/img/favicon.png">
+  <link rel="apple-touch-icon" href="/assets/img/apple-touch-icon.png">
+  <link rel="manifest" href="/manifest.webmanifest">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&family=Barlow+Semi+Condensed:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/app.css">
+  <link rel="stylesheet" href="/assets/css/ingreso.css">
+</head>
+<body class="ingreso">
+  <main class="ingreso__marco">
+    <section class="ingreso__cielo" aria-hidden="true">
+      <svg class="ingreso__ala" viewBox="0 280 720 340"><path d="M14 466L122 461L170 457L212 451L260 439L302 421L344 398L380 375L446 343L506 318L554 302L560 302L584 295L608 291L656 291L680 297L704 312L710 314L710 318L632 317L572 325L542 333L506 346L470 365L446 381L416 407L368 458L344 489L314 533L272 609L254 568L236 536L212 507L200 496L188 489L176 483L152 475L122 470L86 469L26 472L14 470Z"/></svg>
+      <div class="ingreso__pista"><span>03</span><span>21</span></div>
+    </section>
+
+    <section class="ingreso__panel">
+      <img class="ingreso__escudo" src="/assets/img/escudo-256.png" alt="Escudo del Aeroclub 25 de Mayo" width="112" height="112">
+      <h1>Aeroclub 25 de Mayo</h1>
+      <p class="ingreso__bajada">Cargá tus vuelos y seguí tu cuenta del club.</p>
+
+      <form id="form-ingreso" class="form" novalidate>
+        <div class="campo">
+          <label for="email">Email</label>
+          <input class="input" id="email" name="email" type="email" autocomplete="username" inputmode="email" required autofocus>
+        </div>
+        <div class="campo">
+          <label for="password">Contraseña</label>
+          <input class="input" id="password" name="password" type="password" autocomplete="current-password" required>
+        </div>
+        <p id="ingreso-error" class="aviso aviso--mal" role="alert" hidden></p>
+        <button class="btn btn--principal btn--grande btn--ancho" type="submit">Entrar</button>
+      </form>
+
+      <p class="ingreso__ayuda">¿Te olvidaste la contraseña? Pedile una nueva a tesorería.</p>
+      <p class="ingreso__pie">Fundado el 4 de septiembre de 1939</p>
+    </section>
+  </main>
+  <script type="module" src="/assets/js/ingreso.js"></script>
+</body>
+</html>

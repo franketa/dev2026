@@ -1,0 +1,18 @@
+{
+  "name": "Aeroclub 25 de Mayo",
+  "short_name": "Aeroclub 25",
+  "description": "Carga de horas de vuelo y cuenta de socios",
+  "lang": "es-AR",
+  "start_url": "/app#/inicio",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#F3F6F9",
+  "theme_color": "#172A4F",
+  "icons": [
+    { "src": "/assets/img/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "/assets/img/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ],
+  "shortcuts": [
+    { "name": "Cargar vuelo", "url": "/app#/cargar", "icons": [{ "src": "/assets/img/icon-192.png", "sizes": "192x192" }] }
+  ]
+}
