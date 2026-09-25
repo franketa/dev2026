@@ -3,7 +3,7 @@
     {
       "nombre": "Marco corredizo Modena",
       "categoria": "Perfiles",
-      "linea": "Modena",
+      "linea": "MDNA",
       "codigo": "MOD-1001",
       "resumen": "Perfil de marco para ventana corrediza de dos hojas. El corazón de la línea Modena.",
       "descripcion": "Perfil extruido en aleación 6063 T6 para marcos de ventanas y puertas corredizas de la línea Modena. Cámara europea, doble riel con canal para felpa y excelente rigidez para grandes paños. Se entrega con film protector individual.",
@@ -24,7 +24,7 @@
     {
       "nombre": "Hoja corrediza Modena",
       "categoria": "Perfiles",
-      "linea": "Modena",
+      "linea": "MDNA",
       "codigo": "MOD-1002",
       "resumen": "Perfil de hoja para corredizas Modena, con alojamiento para vidrio simple o DVH.",
       "descripcion": "Hoja para ventanas corredizas línea Modena. Admite vidrio de 4 a 6 mm con contravidrio y DVH con el contravidrio correspondiente. Compatible con ruedas y cierres de la línea.",
@@ -44,7 +44,7 @@
     {
       "nombre": "Marco A30 New",
       "categoria": "Perfiles",
-      "linea": "A30",
+      "linea": "A3",
       "codigo": "A30-2001",
       "resumen": "Marco para corredizas A30 New. Robusto y económico para obra.",
       "descripcion": "Perfil de marco para ventanas corredizas de la línea A30 New. Ideal para obras de gran volumen por su relación costo-prestación. Disponible en todas las terminaciones.",
@@ -64,7 +64,7 @@
     {
       "nombre": "Hoja A30 New",
       "categoria": "Perfiles",
-      "linea": "A30",
+      "linea": "A3",
       "codigo": "A30-2002",
       "resumen": "Hoja corrediza A30 New con contravidrio a presión.",
       "descripcion": "Perfil de hoja para corredizas A30 New. Toma vidrio simple de 4 mm con contravidrio a presión. Compatible con toda la accesoriería de la línea.",
@@ -83,7 +83,7 @@
     {
       "nombre": "Marco Herrero",
       "categoria": "Perfiles",
-      "linea": "Herrero",
+      "linea": "Clásica",
       "codigo": "HER-3001",
       "resumen": "Marco línea Herrero para ventanas de abrir, banderolas y paños fijos.",
       "descripcion": "Perfil de marco de la línea Herrero, la más versátil para carpinterías tradicionales: ventanas de abrir, banderolas, paños fijos y puertas. Terminaciones anodizadas y pintadas.",
@@ -102,7 +102,7 @@
     {
       "nombre": "Tubo estructural 40 × 40",
       "categoria": "Perfiles",
-      "linea": "Universal",
+      "linea": "Deco",
       "codigo": "EST-4040",
       "resumen": "Tubo cuadrado de aluminio para estructuras, marcos y cerramientos.",
       "descripcion": "Tubo cuadrado de aluminio extruido de 40 × 40 mm, pared de 1,5 mm. Liviano, no se oxida y se corta y suelda con facilidad. Ideal para estructuras livianas, portones, rejas y mobiliario.",
@@ -122,7 +122,7 @@
     {
       "nombre": "Ángulo 25 × 25",
       "categoria": "Perfiles",
-      "linea": "Universal",
+      "linea": "Deco",
       "codigo": "ANG-2525",
       "resumen": "Perfil ángulo de aluminio para terminaciones, cantoneras y refuerzos.",
       "descripcion": "Ángulo de aluminio de alas iguales 25 × 25 mm, espesor 2 mm. Uso general en terminaciones, guardacantos, refuerzos y estructuras livianas.",
@@ -142,7 +142,7 @@
     {
       "nombre": "Wall panel Silver Brushed",
       "categoria": "Wall Panels",
-      "linea": "",
+      "linea": "Deco",
       "codigo": "WP-SILVER",
       "resumen": "Panel compuesto de aluminio (ACM) cepillado para fachadas y revestimientos.",
       "descripcion": "Panel compuesto de aluminio de 3 mm con núcleo de polietileno y terminación cepillada plata. Se corta, ranura y pliega para fachadas ventiladas, frentes de locales y cartelería. Superficie protegida con film removible.",
@@ -163,7 +163,7 @@
     {
       "nombre": "Wall panel Negro Mate",
       "categoria": "Wall Panels",
-      "linea": "",
+      "linea": "Deco",
       "codigo": "WP-NEGRO",
       "resumen": "Panel compuesto de aluminio negro mate. Elegancia total para frentes.",
       "descripcion": "Panel ACM de 3 mm con terminación negro mate PVDF de alta durabilidad a la intemperie. Ideal para frentes comerciales y modernizar fachadas.",
@@ -183,7 +183,7 @@
     {
       "nombre": "Wall panel Símil Madera Roble",
       "categoria": "Wall Panels",
-      "linea": "",
+      "linea": "Deco",
       "codigo": "WP-ROBLE",
       "resumen": "Panel de aluminio con textura de madera. Calidez sin mantenimiento.",
       "descripcion": "Panel compuesto de aluminio con terminación símil madera roble. La estética de la madera con la durabilidad del aluminio: no se raja, no se destiñe ni necesita mantenimiento.",
@@ -202,7 +202,7 @@
     {
       "nombre": "Felpa 6,7 × 5 mm",
       "categoria": "Accesorios",
-      "linea": "Universal",
+      "linea": "",
       "codigo": "ACC-FELPA",
       "resumen": "Felpa siliconada para corredizas. Rollo de 100 m.",
       "descripcion": "Felpa con aleta central siliconada para hojas corredizas. Sella contra el polvo, el viento y el ruido. Compatible con Modena, A30 y Herrero.",
@@ -222,7 +222,7 @@
     {
       "nombre": "Burlete de vidrio EPDM",
       "categoria": "Accesorios",
-      "linea": "Modena",
+      "linea": "MDNA",
       "codigo": "ACC-BURL",
       "resumen": "Burlete EPDM para fijar vidrio en hojas y paños fijos.",
       "descripcion": "Burlete de caucho EPDM para vidrio de 4 mm en línea Modena. Excelente resistencia al sol y a la intemperie. Se vende por rollo.",
@@ -242,7 +242,7 @@
     {
       "nombre": "Rueda doble corrediza",
       "categoria": "Herrajes",
-      "linea": "Modena",
+      "linea": "MDNA",
       "codigo": "HRJ-RUEDA",
       "resumen": "Rueda de doble rodamiento regulable para hojas corredizas Modena.",
       "descripcion": "Rueda con doble rodamiento blindado y regulación de altura. Soporta hojas pesadas con DVH. Bolsa por 10 unidades.",
@@ -262,7 +262,7 @@
     {
       "nombre": "Cierre de embutir con llave",
       "categoria": "Herrajes",
-      "linea": "Modena",
+      "linea": "MDNA",
       "codigo": "HRJ-CIERRE",
       "resumen": "Cierre de embutir con llave para ventanas corredizas.",
       "descripcion": "Cierre de embutir con cilindro y llave para hojas corredizas línea Modena. Cuerpo de zamak, acabado blanco o negro. Incluye tornillería.",
@@ -281,7 +281,7 @@
     {
       "nombre": "Manijón de puerta 30 cm",
       "categoria": "Herrajes",
-      "linea": "Herrero",
+      "linea": "Clásica",
       "codigo": "HRJ-MANIJON",
       "resumen": "Manijón recto de aluminio anodizado para puertas de entrada.",
       "descripcion": "Manijón recto de 30 cm en aluminio anodizado. Diseño minimalista para puertas de abrir línea Herrero. Se vende por juego (interior + exterior).",

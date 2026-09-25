@@ -106,6 +106,23 @@ function runMigrations(db) {
       console.log(`Migración 2026-09-sin-aberturas aplicada (${ocultos} aberturas ocultas)`);
     })();
   }
+
+  // 2026-09: las líneas pasan a los nombres AR5 (Herrero → Clásica, Modena → MDNA, A30 → A3).
+  // Tubos, ángulos y wall panels van a Deco; "Línea 20" y "Universal" desaparecen.
+  if (!done('2026-09-lineas-ar5')) {
+    db.transaction(() => {
+      const set = db.prepare('UPDATE products SET linea = ? WHERE linea = ?');
+      set.run('Clásica', 'Herrero');
+      set.run('MDNA', 'Modena');
+      set.run('A3', 'A30');
+      set.run('', 'Línea 20');
+      db.prepare("UPDATE products SET linea = 'Deco' WHERE linea = 'Universal' AND categoria = 'Perfiles'").run();
+      db.prepare("UPDATE products SET linea = 'Deco' WHERE linea = '' AND categoria = 'Wall Panels'").run();
+      set.run('', 'Universal');
+      mark('2026-09-lineas-ar5');
+      console.log('Migración 2026-09-lineas-ar5 aplicada');
+    })();
+  }
 }
 
 const INSERT_SQL = `

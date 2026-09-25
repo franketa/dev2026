@@ -68,7 +68,7 @@
     $('sheetCategoria').innerHTML = chip('Todo', '', !draft.categoria) + cats.map(c => chip(c, c, draft.categoria === c)).join('');
 
     const lineas = catalogos.lineas.filter(l => products.some(p => p.linea === l));
-    $('selectLinea').innerHTML = '<option value="">Todas las líneas</option>' + lineas.map(l => `<option value="${e(l)}" ${state.linea === l ? 'selected' : ''}>${e(l)}</option>`).join('');
+    $('selectLinea').innerHTML = '<option value="">Todas las líneas AR5</option>' + lineas.map(l => `<option value="${e(l)}" ${state.linea === l ? 'selected' : ''}>${e(l)}</option>`).join('');
     $('sheetLinea').innerHTML = chip('Todas', '', !draft.linea) + lineas.map(l => chip(l, l, draft.linea === l)).join('');
 
     const ordenes = [['relevancia', 'Relevancia'], ['nombre', 'Nombre A–Z'], ['nuevos', 'Más nuevos']];
@@ -117,7 +117,7 @@
     writeURL();
   }
 
-  // Agrupa por línea (carátula "Línea Herrero" arriba de cada bloque, con sus códigos).
+  // Agrupa por línea (carátula "Línea Clásica" arriba de cada bloque, con sus códigos).
   // Los productos sin línea se agrupan por categoría, al final.
   function grouped(list) {
     const groups = new Map();
