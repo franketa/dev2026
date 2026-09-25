@@ -1,6 +1,6 @@
 # Aluminios Ruta 5
 
-Sitio web + catálogo administrable para **Aluminios Ruta 5**, distribuidora de aluminio de Rubén Darío Meletto en el Parque Industrial de Chivilcoy. Perfiles (líneas Modena, A30 y Herrero), accesorios y wall panels. **No fabrican aberturas**: el sitio no debe mencionarlas.
+Sitio web + catálogo administrable para **Aluminios Ruta 5**, distribuidora de aluminio de Rubén Darío Meletto en el Parque Industrial de Chivilcoy. Perfiles de las líneas AR5 (Clásica, RTO640, MDNA, A3, A4, A4C, Baranda, FI, Mampara y Deco), accesorios y wall panels. **No fabrican aberturas**: el sitio no debe mencionarlas.
 
 > **Estado:** sitio, catálogo, ficha de producto, backend y panel admin funcionales. Los 20 productos y las fotos de secciones son **placeholders** a reemplazar con material real del cliente.
 
@@ -26,7 +26,7 @@ En el primer arranque crea `data/db.sqlite`, siembra los productos de `data/prod
 | Ruta | Qué es |
 |---|---|
 | `/` | Home |
-| `/catalogo` | Catálogo con búsqueda, categorías, líneas y orden (filtros en la URL: `?categoria=Perfiles&linea=Modena&q=marco`) |
+| `/catalogo` | Catálogo con búsqueda, categorías, líneas y orden (filtros en la URL: `?categoria=Perfiles&linea=MDNA&q=marco`) |
 | `/producto/<slug>` | Ficha de producto con galería, ficha técnica y CTA de WhatsApp con el producto prellenado |
 | `/admin` | Panel de administración |
 
@@ -76,7 +76,7 @@ En el primer arranque crea `data/db.sqlite`, siembra los productos de `data/prod
 
 - Reemplazar las fotos placeholder (Unsplash) de hero, nave, "por qué aluminio" por fotos reales; cargar fotos de productos desde el panel.
 - Validar el catálogo: nombres, líneas, medidas, terminaciones y qué productos se destacan.
-- **Líneas de perfiles pendientes de confirmar** con el cliente (las habla con su papá): Línea Herrero, Modena, Rotonda 640, A-30, A-40, ALB 4C, IBM, Baranda y Deco (tubo, ángulo, Wall Panel). Cuando estén confirmadas, cargarlas en `CATALOGOS.lineas` (`server/routes/products.js`) y en la barra celeste de la home.
+- Líneas AR5 confirmadas (2026-09): Herrero → Clásica, Rotonda 640 → RTO640, Modena 90/45 → MDNA, A-30 → A3, A-40 → A4, ALB 4C → A4C, IBM → FI, Baranda, Mampara y Deco (tubo, ángulo, wall panel). En pantalla van con el nombre corto; el código completo es AR5-<nombre>.
 - Catálogo del cliente: cada hoja lleva arriba el nombre de la línea ("Línea Herrero") con sus códigos, y una carátula cada vez que cambia de línea. El catálogo web replica eso agrupando por línea con una cabecera por grupo.
 - Terminaciones: blanco y negro en stock; el resto (incluido el anodizado natural) es por pedido, en menos de 30 días.
 - Ajustar el pin del mapa al galpón 111 cuando se tenga la ubicación exacta.

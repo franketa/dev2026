@@ -14,7 +14,8 @@ const UPLOAD_ROOT = path.join(__dirname, '..', '..', 'uploads', 'products');
 
 const CATALOGOS = {
   categorias: ['Perfiles', 'Accesorios', 'Wall Panels', 'Herrajes'],
-  lineas: ['Modena', 'A30', 'Herrero', 'Línea 20', 'Universal'],
+  // Líneas AR5, en el orden del cliente. En pantalla van con el nombre corto bajo el título "Líneas AR5".
+  lineas: ['Clásica', 'RTO640', 'MDNA', 'A3', 'A4', 'A4C', 'Baranda', 'FI', 'Mampara', 'Deco'],
   terminaciones: ['Anodizado natural', 'Blanco', 'Negro', 'Bronce', 'Gris', 'Símil madera', 'Crudo'],
   unidades: ['unidad', 'perfil', 'metro', 'm²', 'juego', 'bolsa', 'rollo', 'caja'],
   stocks: [
