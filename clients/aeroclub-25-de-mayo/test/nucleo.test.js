@@ -141,8 +141,6 @@ test('cierre de julio: cupones correctos y vuelos congelados', () => {
   assert.throws(() => vuelos.editar(v.id, { notas: 'cambio' }, ana), /cierre del mes/);
   assert.throws(() => db.prepare(`UPDATE vuelos SET importe = 1 WHERE id = ?`).run(v.id), /cerrado/);
   assert.throws(() => db.prepare(`DELETE FROM vuelos WHERE id = ?`).run(v.id), /no se borran/);
-  assert.throws(() => db.prepare(`UPDATE cierres SET total_vuelos = 0`).run(), /sellado/);
-  assert.throws(() => db.prepare(`UPDATE cupones SET total = 0`).run(), /inmutable/);
   assert.throws(() => cierres.cerrar('2026-07', admin), /ya está cerrado/);
 });
 
@@ -202,10 +200,34 @@ test('cupón en PDF', async () => {
   fs.writeFileSync(path.join(dir, 'cupon.pdf'), buf);
 });
 
+test('tesorería corrige movimientos: edita, borra y los cupones se recalculan', () => {
+  const correcciones = require('../server/services/correcciones');
+  const cup = () => db.prepare('SELECT * FROM cupones WHERE usuario_id = ? ORDER BY id').all(ana.id);
+  const pagoJulio = db.prepare(`SELECT * FROM movimientos WHERE usuario_id = ? AND tipo = 'pago' ORDER BY id LIMIT 1`).get(ana.id);
+  assert.equal(cup()[0].total, 6400000);
+
+  // El pago de julio era de $60.000, no de $50.000.
+  assert.throws(() => correcciones.editar(pagoJulio.id, { importe: '60000' }, admin), /por qué/);
+  correcciones.editar(pagoJulio.id, { importe: '60000', motivo: 'Mal tipeado' }, admin);
+  assert.equal(db.prepare('SELECT importe FROM movimientos WHERE id = ?').get(pagoJulio.id).importe, -6000000);
+  assert.equal(cup()[0].total, 5400000);
+  assert.equal(cup()[1].saldo_anterior, 5400000);          // el cambio se arrastra al cupón siguiente
+  assert.equal(ledger.verificarCadena().ok, true);          // la cadena se rehízo
+
+  // Borrar un pago devuelve la deuda.
+  const saldoAntes = ledger.saldo(ana.id);
+  const pagoAgosto = db.prepare(`SELECT * FROM movimientos WHERE usuario_id = ? AND concepto = 'Pago parcial'`).get(ana.id);
+  correcciones.borrar(pagoAgosto.id, 'Pago duplicado', admin);
+  assert.equal(ledger.saldo(ana.id), saldoAntes + 4000000);
+  assert.equal(cup()[1].total_pagos, 0);
+  assert.equal(ledger.verificarCadena().ok, true);
+  const audit = db.prepare(`SELECT accion FROM auditoria WHERE accion LIKE 'movimiento.%' ORDER BY id`).all().map(a => a.accion);
+  assert.deepEqual(audit, ['movimiento.edicion', 'movimiento.borrado']);
+});
+
 test('la cadena de hashes detecta una manipulación por fuera del sistema', () => {
   assert.equal(ledger.verificarCadena().ok, true);
-  // Alguien con acceso al archivo desactiva la protección y cambia un importe…
-  db.exec('DROP TRIGGER movimientos_no_update');
+  // Alguien con acceso al archivo cambia un importe sin pasar por el sistema…
   db.prepare('UPDATE movimientos SET importe = importe - 100 WHERE id = 2').run();
   const r = ledger.verificarCadena();
   assert.equal(r.ok, false);

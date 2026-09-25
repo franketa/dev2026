@@ -183,6 +183,30 @@ function estadoCupon(cupon) {
   return { estado: 'pendiente', estado_detalle: vencido ? 'Vencido' : 'Pendiente de pago', restante: actual, vencido };
 }
 
+// Recalcula los cupones de un socio a partir del libro (después de corregir un movimiento).
+function recalcularCupones(usuarioId) {
+  const cupones = db.prepare(`
+    SELECT cu.id, cu.cierre_id, ci.desde_movimiento_id desde, ci.hasta_movimiento_id hasta
+    FROM cupones cu JOIN cierres ci ON ci.id = cu.cierre_id WHERE cu.usuario_id = ? ORDER BY ci.periodo`).all(usuarioId);
+  const upd = db.prepare('UPDATE cupones SET saldo_anterior = ?, total_vuelos = ?, total_pagos = ?, total_ajustes = ?, total = ? WHERE id = ?');
+  const totalCierre = db.prepare(`UPDATE cierres SET total_cupones = (SELECT COALESCE(SUM(CASE WHEN total > 0 THEN total END), 0) FROM cupones WHERE cierre_id = ?) WHERE id = ?`);
+  for (const c of cupones) {
+    const anterior = ledger.saldo(usuarioId, c.desde);
+    const t = totalesRango(usuarioId, c.desde, c.hasta);
+    upd.run(anterior, t.vuelos, t.pagos, t.ajustes, anterior + t.vuelos + t.pagos + t.ajustes, c.id);
+    totalCierre.run(c.cierre_id, c.cierre_id);
+  }
+}
+
+// Después de rehacer la cadena, cada cupón vuelve a tomar como sello el hash del libro al cierre.
+function actualizarSellos() {
+  db.prepare(`
+    UPDATE cupones SET sello = COALESCE((
+      SELECT m.hash FROM movimientos m
+      WHERE m.id <= (SELECT c.hasta_movimiento_id FROM cierres c WHERE c.id = cupones.cierre_id)
+      ORDER BY m.id DESC LIMIT 1), ?)`).run(ledger.GENESIS);
+}
+
 // Todo lo necesario para imprimir un cupón.
 function datosCupon(cuponId) {
   const cupon = db.prepare(`
@@ -239,5 +263,5 @@ function proximoCierreAutomatico() {
 
 module.exports = {
   cerrar, simular, listarCierres, detalleCierre, estadoCupon, datosCupon, registrarEnvio, cierreAutomatico,
-  periodosPendientes, proximoCierreAutomatico, ultimoCierre, totalesRango
+  periodosPendientes, proximoCierreAutomatico, ultimoCierre, totalesRango, recalcularCupones, actualizarSellos
 };

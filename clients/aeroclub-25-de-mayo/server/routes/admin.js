@@ -10,6 +10,7 @@ const vuelos = require('../services/vuelos');
 const cierres = require('../services/cierres');
 const cuentas = require('../services/cuentas');
 const ledger = require('../services/ledger');
+const correcciones = require('../services/correcciones');
 const { enviarPdf } = require('./app');
 const {
   ErrorNegocio, hoy, periodoActual, sumarMeses, esFecha, esPeriodo, parsePesos, fmtPesos, fmtHoras,
@@ -194,6 +195,14 @@ router.post('/movimientos/:id/anular', (req, res) => {
   const m = ledger.anular(Number(req.params.id), motivo, req.user.id);
   auditar(req.user.id, 'movimiento.anulacion', `Movimiento #${req.params.id} anulado con #${m.id}: ${motivo}`);
   res.status(201).json({ movimiento_id: m.id });
+});
+
+router.put('/movimientos/:id', (req, res) => {
+  res.json(correcciones.editar(Number(req.params.id), req.body || {}, req.user));
+});
+
+router.post('/movimientos/:id/borrar', (req, res) => {
+  res.json(correcciones.borrar(Number(req.params.id), req.body?.motivo, req.user));
 });
 
 // ── Cierres y cupones ───────────────────────────────────────────────────────

@@ -5,7 +5,7 @@ Sistema multiusuario para reemplazar la planilla de Excel del aeroclub:
 - Cada piloto o alumno **carga su vuelo al bajar del avión**: avión, fecha, tiempo de vuelo en horas con un decimal (0,1 = 6 minutos), si voló con instructor (y cuál) y novedades.
 - A fin de mes el sistema **cierra el período solo**, factura los vuelos y genera un **cupón de pago en PDF** por socio: horas del mes + saldo anterior − pagos ± ajustes.
 - Tesorería manda el cupón por **WhatsApp** con un toque (link privado al PDF) y **registra los pagos**.
-- Todo lo que toca plata queda en un **libro inviolable**: no se puede borrar ni editar, y cualquier alteración por fuera del sistema se detecta.
+- Todo lo que toca plata queda en un **libro de movimientos** encadenado: tesorería puede corregirlo (cada cambio queda auditado) y cualquier alteración por fuera del sistema se detecta.
 
 Mobile-first, instalable como app en el celular (PWA).
 
@@ -50,10 +50,10 @@ Usuarios de la demo: `tesoreria@aeroclub25demayo.com.ar` / `demo1234` (tesorerí
 | Cada vuelo guarda el precio del día en que se voló; cambiar una tarifa no toca lo ya volado (salvo que tesorería lo pida para vuelos sin facturar) | `server/services/flota.js` |
 | Si un piloto carga dos veces el mismo vuelo (avión, fecha y horas), el sistema le avisa | `server/services/vuelos.js` |
 | El piloto corrige sus vuelos hasta el cierre; después el vuelo queda congelado (trigger en SQLite) | `server/db.js` |
-| Libro de movimientos: sin UPDATE ni DELETE (triggers), encadenado con SHA-256, sello impreso en cada cupón | `server/services/ledger.js` |
+| Libro de movimientos encadenado con SHA-256 y sello impreso en cada cupón. Tesorería puede anular, editar o borrar movimientos: se rehace la cadena, se recalculan los cupones y queda en la auditoría | `server/services/ledger.js`, `correcciones.js` |
 | Cierre mensual en una sola transacción; la "simulación" corre el cierre real y lo revierte | `server/services/cierres.js` |
 | Vuelos cargados tarde de un mes ya cerrado entran en el cierre siguiente con su fecha real | `cierres.correrCierre()` |
-| Cierre automático el día y hora configurados (por defecto, día 1 a las 9), en orden y sin saltear meses | `cierres.cierreAutomatico()` |
+| El período es el mes calendario; el cierre automático corre el día 5 del mes siguiente a las 9 (configurable), así los vuelos cargados tarde entran en su mes. En orden y sin saltear meses | `cierres.cierreAutomatico()` |
 
 Copia de seguridad: **Registro → Copia de seguridad** descarga la base completa. Conviene bajarla después de cada cierre.
 

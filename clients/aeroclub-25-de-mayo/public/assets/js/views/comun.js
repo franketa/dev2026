@@ -105,7 +105,11 @@ export function listaMovimientos(movs, { admin = false } = {}) {
       <div class="mov__texto"><strong>${m.concepto}</strong>
         <small>${fecha(m.fecha)}${m.cierre_periodo ? `, cierre ${m.cierre_periodo}` : ''}${admin && m.autor ? `, cargado por ${m.autor}` : ''}, movimiento #${m.id}${m.anulado_por ? `, anulado por #${m.anulado_por}` : ''}</small></div>
       <span class="monto ${m.importe < 0 ? 'monto--neg' : ''}">${pesos(m.importe, { signo: true })}</span>
-      ${admin && !m.anulado_por && m.tipo !== 'anulacion' ? html`<div class="mov__acciones"><button class="btn btn--fantasma btn--chico" type="button" data-anular-mov="${m.id}">${icono('anular')} Anular</button></div>` : ''}
+      ${admin ? html`<div class="mov__acciones">
+        <button class="btn btn--fantasma btn--chico" type="button" data-editar-mov="${m.id}">${icono('editar')} Editar</button>
+        ${!m.anulado_por && m.tipo !== 'anulacion' ? html`<button class="btn btn--fantasma btn--chico" type="button" data-anular-mov="${m.id}">${icono('anular')} Anular</button>` : ''}
+        <button class="btn btn--fantasma btn--chico" type="button" data-borrar-mov="${m.id}" style="color:var(--peligro)">${icono('x')} Borrar</button>
+      </div>` : ''}
     </div>`)}</div>`;
 }
 

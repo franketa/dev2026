@@ -1,11 +1,11 @@
 // Libro de movimientos (cuenta corriente de cada socio).
 //
-// Tres capas de protección:
-//   1. Triggers de SQLite: la tabla rechaza UPDATE y DELETE (ver db.js).
-//   2. Cadena de hashes: cada movimiento guarda el hash del anterior, así que alterar o
-//      borrar cualquier fila por fuera del sistema rompe la cadena y verificarCadena() lo detecta.
-//   3. Sello en los cupones: cada cupón imprime el hash del último movimiento al momento del
-//      cierre. Un cupón ya entregado sirve de prueba de cómo estaba el libro ese día.
+// Tesorería puede anular, editar o borrar movimientos (ver correcciones.js); cada cambio
+// queda en `auditoria` con autor, motivo y el antes/después.
+//   - Cadena de hashes: cada movimiento guarda el hash del anterior. Las correcciones hechas
+//     desde el sistema rehacen la cadena; un cambio hecho por fuera la rompe y
+//     verificarCadena() lo detecta.
+//   - Sello en los cupones: cada cupón imprime el hash del libro al cierre de su período.
 //
 // Convención de signo: importe > 0 aumenta la deuda del socio (vuelos, cargos);
 // importe < 0 la reduce (pagos, créditos).
@@ -97,8 +97,19 @@ function verificarCadena() {
   return { ok: true, movimientos: n, ultimo_hash: anterior };
 }
 
+// Rehace la cadena desde el movimiento `id` en adelante (después de editar o borrar).
+function rehashDesde(id) {
+  let anterior = db.prepare('SELECT hash FROM movimientos WHERE id < ? ORDER BY id DESC LIMIT 1').get(id)?.hash || GENESIS;
+  const upd = db.prepare('UPDATE movimientos SET hash_anterior = ?, hash = ? WHERE id = ?');
+  for (const m of db.prepare('SELECT * FROM movimientos WHERE id >= ? ORDER BY id').all(id)) {
+    const hash = calcularHash({ ...m, hash_anterior: anterior });
+    upd.run(anterior, hash, m.id);
+    anterior = hash;
+  }
+}
+
 function describirImporte(importe) {
   return importe > 0 ? `cargo de ${fmtPesos(importe)}` : `crédito de ${fmtPesos(-importe)}`;
 }
 
-module.exports = { registrar, saldo, anular, verificarCadena, ultimoHash, calcularHash, describirImporte, GENESIS };
+module.exports = { registrar, saldo, anular, verificarCadena, rehashDesde, ultimoHash, calcularHash, describirImporte, GENESIS };

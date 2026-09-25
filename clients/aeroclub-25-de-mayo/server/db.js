@@ -13,9 +13,12 @@ db.pragma('journal_mode = WAL');
 db.pragma('foreign_keys = ON');
 db.pragma('busy_timeout = 5000');
 
-// Tablas que son registro histórico: la base misma rechaza borrar o editar filas,
-// sin importar qué código lo intente. Las correcciones se hacen agregando filas.
-const INMUTABLES = ['movimientos', 'tarifas', 'cupones', 'cupon_envios', 'vuelos_historial', 'auditoria'];
+// Bitácoras: la base rechaza editarlas o borrarlas. El libro de movimientos y los cupones
+// sí se pueden corregir (tesorería o código); cada cambio queda en `auditoria`.
+const INMUTABLES = ['tarifas', 'cupon_envios', 'vuelos_historial', 'auditoria'];
+
+// Triggers de versiones anteriores que ya no aplican (bases creadas antes del cambio).
+const TRIGGERS_VIEJOS = ['movimientos_no_update', 'movimientos_no_delete', 'cupones_no_update', 'cupones_no_delete', 'cierres_sellados'];
 
 const SCHEMA = `
 CREATE TABLE IF NOT EXISTS usuarios (
@@ -173,12 +176,9 @@ CREATE TRIGGER IF NOT EXISTS vuelos_cerrados_inmutables BEFORE UPDATE ON vuelos
 WHEN OLD.estado <> 'abierto'
 BEGIN SELECT RAISE(ABORT, 'El vuelo ya está cerrado o anulado y no se puede modificar'); END;
 
--- Cierres: se sellan una sola vez (al completar el corte) y después quedan fijos.
+-- Cierres: no se borran (sus totales se recalculan si tesorería corrige movimientos).
 CREATE TRIGGER IF NOT EXISTS cierres_no_delete BEFORE DELETE ON cierres
 BEGIN SELECT RAISE(ABORT, 'Los cierres no se borran'); END;
-CREATE TRIGGER IF NOT EXISTS cierres_sellados BEFORE UPDATE ON cierres
-WHEN OLD.hasta_movimiento_id IS NOT NULL
-BEGIN SELECT RAISE(ABORT, 'El cierre está sellado y no se puede modificar'); END;
 `;
 
 function triggersInmutables() {
@@ -199,7 +199,7 @@ const CONFIG_DEFAULT = {
   pago_banco: '',
   pago_instrucciones: 'Enviá el comprobante al tesorero indicando tu nombre y el número de cupón.',
   cierre_automatico: '1',
-  cierre_dia: '1',
+  cierre_dia: '5',
   cierre_hora: '9',
   vencimiento_dia: '10',
   whatsapp_mensaje: 'Hola {nombre}. Te enviamos el resumen de {periodo} del {club}: volaste {horas} y el total a pagar es {total}. Podés pagar por transferencia al alias {alias}. Descargá tu cupón acá: {link}',
@@ -207,6 +207,7 @@ const CONFIG_DEFAULT = {
 };
 
 function initDB() {
+  for (const t of TRIGGERS_VIEJOS) db.exec(`DROP TRIGGER IF EXISTS ${t}`);
   db.exec(SCHEMA + triggersInmutables());
 
   const setDefault = db.prepare('INSERT OR IGNORE INTO config (clave, valor) VALUES (?, ?)');

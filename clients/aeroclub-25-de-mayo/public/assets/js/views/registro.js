@@ -4,7 +4,7 @@ const ACCIONES = {
   'usuario.alta': 'Alta de socio', 'usuario.edicion': 'Edición de socio', 'usuario.reset_password': 'Contraseña regenerada', 'usuario.password': 'Cambio de contraseña',
   'usuario.perfil': 'Actualizó su perfil', 'avion.alta': 'Alta de avión', 'avion.edicion': 'Edición de avión', 'tarifa.alta': 'Nueva tarifa',
   'pago.alta': 'Pago registrado', 'ajuste.alta': 'Ajuste manual', 'saldo_inicial.alta': 'Saldo inicial',
-  'movimiento.anulacion': 'Movimiento anulado', 'cierre.manual': 'Cierre manual', 'cierre.automatico': 'Cierre automático', 'config.edicion': 'Configuración', 'respaldo.descarga': 'Copia de seguridad'
+  'movimiento.anulacion': 'Movimiento anulado', 'movimiento.edicion': 'Movimiento corregido', 'movimiento.borrado': 'Movimiento borrado', 'cierre.manual': 'Cierre manual', 'cierre.automatico': 'Cierre automático', 'config.edicion': 'Configuración', 'respaldo.descarga': 'Copia de seguridad'
 };
 
 export default async function registro(ctx) {
@@ -13,10 +13,10 @@ export default async function registro(ctx) {
 
   pintar(ctx.el, html`
   <div class="vista">
-    <div class="vista__cab"><div><h1>Registro</h1><p>Todo lo que pasa en el sistema queda acá, y nadie lo puede borrar ni editar.</p></div></div>
+    <div class="vista__cab"><div><h1>Registro</h1><p>Todo lo que pasa en el sistema queda acá: quién lo hizo, cuándo y por qué.</p></div></div>
 
     <section class="panel">
-      <div class="panel__cab"><div><h2>Integridad del libro</h2><p>Cada movimiento de plata está encadenado con el anterior. Si alguien modificara la base por fuera del sistema, la verificación lo detecta.</p></div>
+      <div class="panel__cab"><div><h2>Integridad del libro</h2><p>Cada movimiento de plata está encadenado con el anterior. Las correcciones hechas desde el sistema quedan en "Acciones de usuarios"; si alguien modificara la base por fuera, la verificación lo detecta.</p></div>
         <div class="vista__acciones"><button class="btn btn--sec" type="button" data-verificar>${icono('cadena')} Verificar ahora</button>
         <a class="btn btn--fantasma" href="/api/admin/respaldo">${icono('descargar')} Copia de seguridad</a></div></div>
       <div id="verificacion"></div>
