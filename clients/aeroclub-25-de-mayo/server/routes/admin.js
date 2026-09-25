@@ -13,7 +13,7 @@ const ledger = require('../services/ledger');
 const { enviarPdf } = require('./app');
 const {
   ErrorNegocio, hoy, periodoActual, sumarMeses, esFecha, esPeriodo, parsePesos, fmtPesos, fmtHoras,
-  limpiarTexto, telefonoWhatsApp, nombrePeriodo, fmtFechaCorta
+  limpiarTexto, normalizarEmail, telefonoWhatsApp, nombrePeriodo, fmtFechaCorta
 } = require('../util');
 
 const router = express.Router();
@@ -59,7 +59,7 @@ function passwordTemporal() {
 function leerSocio(body, existente = null) {
   const nombre = limpiarTexto(body.nombre, 60);
   const apellido = limpiarTexto(body.apellido, 60);
-  const email = limpiarTexto(body.email, 120)?.toLowerCase();
+  const email = normalizarEmail(limpiarTexto(body.email, 120)) || null;
   if (!nombre || !apellido) throw new ErrorNegocio('Completá nombre y apellido');
   if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) throw new ErrorNegocio('Email inválido');
   const telefono = limpiarTexto(body.telefono, 30);

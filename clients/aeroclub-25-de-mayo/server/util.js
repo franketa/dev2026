@@ -111,6 +111,12 @@ function telefonoWhatsApp(tel) {
   return '549' + d;
 }
 
+// Email tolerante a cómo lo tipea la gente: sin espacios, en minúsculas y sin tildes
+// ("Tomás.Aguirre@Demo.com " → "tomas.aguirre@demo.com").
+function normalizarEmail(v) {
+  return String(v ?? '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/\s+/g, '').toLowerCase();
+}
+
 function limpiarTexto(v, max = 500) {
   if (v == null) return null;
   const s = String(v).replace(/\s+$/g, '').replace(/^\s+/g, '').slice(0, max);
@@ -120,5 +126,5 @@ function limpiarTexto(v, max = 500) {
 module.exports = {
   TZ, ErrorNegocio, hoy, fechaDeSqlite, horaAR, periodoDe, periodoActual, sumarMeses, ultimoDia, sumarDias, nombrePeriodo,
   esFecha, esPeriodo, parseHoras, parsePesos, fmtPesos, fmtHoras, fmtFechaCorta, importeVuelo,
-  telefonoWhatsApp, limpiarTexto, MESES
+  telefonoWhatsApp, normalizarEmail, limpiarTexto, MESES
 };

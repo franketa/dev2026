@@ -1,7 +1,7 @@
 const express = require('express');
 const path = require('path');
 const { db } = require('./db');
-const { requireAuth, requireAdmin, exigirOrigenPropio, identificar } = require('./middleware/auth');
+const { requireAuth, requireAdmin, exigirOrigenPropio } = require('./middleware/auth');
 const authRouter = require('./routes/auth');
 const { router: appRouter, enviarPdf } = require('./routes/app');
 const adminRouter = require('./routes/admin');
@@ -59,10 +59,7 @@ app.get('/c/:token', (req, res) => {
 });
 
 // ── Páginas ─────────────────────────────────────────────────────────────────
-app.get('/', (req, res) => {
-  if (identificar(req)) return res.redirect('/app');
-  res.sendFile(path.join(PUBLIC, 'index.html'));
-});
+app.get('/', (req, res) => res.sendFile(path.join(PUBLIC, 'index.html')));
 app.get('/app', (req, res) => res.sendFile(path.join(PUBLIC, 'app.html')));
 app.get('/sw.js', (req, res) => {
   res.setHeader('Cache-Control', 'no-cache');

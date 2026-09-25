@@ -28,10 +28,20 @@
       <h1>Aeroclub 25 de Mayo</h1>
       <p class="ingreso__bajada">Cargá tus vuelos y seguí tu cuenta del club.</p>
 
+      <div id="sesion-abierta" class="aviso aviso--info" hidden>
+        <div class="pila" style="gap:12px;width:100%">
+          <p>Ya entraste como <strong id="sesion-nombre"></strong>.</p>
+          <div class="vista__acciones">
+            <a class="btn btn--principal" href="/app">Seguir</a>
+            <button class="btn btn--sec" type="button" id="otro-usuario">Entrar con otro usuario</button>
+          </div>
+        </div>
+      </div>
+
       <form id="form-ingreso" class="form" novalidate>
         <div class="campo">
           <label for="email">Email</label>
-          <input class="input" id="email" name="email" type="email" autocomplete="username" inputmode="email" required autofocus>
+          <input class="input" id="email" name="email" type="email" autocomplete="username" inputmode="email" autocapitalize="none" spellcheck="false" required autofocus>
         </div>
         <div class="campo">
           <label for="password">Contraseña</label>
