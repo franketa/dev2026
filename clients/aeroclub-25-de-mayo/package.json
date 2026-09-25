@@ -1,0 +1,21 @@
+{
+  "name": "aeroclub-25-de-mayo",
+  "private": true,
+  "description": "Aeroclub 25 de Mayo — carga de horas de vuelo, cierre mensual y cupones de pago",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "start": "node server/index.js",
+    "dev": "node --watch server/index.js",
+    "demo": "node server/seed-demo.js",
+    "test": "node --test test/"
+  },
+  "dependencies": {
+    "bcryptjs": "^3.0.2",
+    "better-sqlite3": "^12.2.0",
+    "express": "^4.21.0",
+    "jsonwebtoken": "^9.0.2",
+    "pdfkit": "^0.17.1"
+  }
+}
