@@ -17,6 +17,8 @@ const fmtFecha = new Intl.DateTimeFormat('en-CA', { timeZone: TZ, year: 'numeric
 const fmtHora = new Intl.DateTimeFormat('en-GB', { timeZone: TZ, hour: '2-digit', minute: '2-digit', hour12: false });
 
 function hoy(d = new Date()) { return fmtFecha.format(d); }
+// datetime('now') de SQLite está en UTC: '2026-09-25 00:28:16' → '2026-09-24' en Argentina.
+function fechaDeSqlite(s) { return s ? hoy(new Date(s.replace(' ', 'T') + 'Z')) : null; }
 function horaAR(d = new Date()) { return Number(fmtHora.format(d).slice(0, 2)); }
 function periodoDe(fecha) { return fecha.slice(0, 7); }
 function periodoActual() { return periodoDe(hoy()); }
@@ -116,7 +118,7 @@ function limpiarTexto(v, max = 500) {
 }
 
 module.exports = {
-  TZ, ErrorNegocio, hoy, horaAR, periodoDe, periodoActual, sumarMeses, ultimoDia, sumarDias, nombrePeriodo,
+  TZ, ErrorNegocio, hoy, fechaDeSqlite, horaAR, periodoDe, periodoActual, sumarMeses, ultimoDia, sumarDias, nombrePeriodo,
   esFecha, esPeriodo, parseTac, fmtTac, parsePesos, fmtPesos, fmtHoras, fmtFechaCorta, importeVuelo,
   telefonoWhatsApp, limpiarTexto, MESES
 };

@@ -23,7 +23,8 @@ function leerCookies(req) {
   const out = {};
   for (const par of (req.headers.cookie || '').split(';')) {
     const i = par.indexOf('=');
-    if (i > 0) out[par.slice(0, i).trim()] = decodeURIComponent(par.slice(i + 1).trim());
+    if (i <= 0) continue;
+    try { out[par.slice(0, i).trim()] = decodeURIComponent(par.slice(i + 1).trim()); } catch { /* cookie ajena mal codificada: se ignora */ }
   }
   return out;
 }

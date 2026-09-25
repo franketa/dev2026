@@ -1,5 +1,5 @@
 const { db, auditar } = require('../db');
-const { ErrorNegocio, hoy, periodoActual, esFecha, fmtTac, fmtPesos, importeVuelo, limpiarTexto } = require('../util');
+const { ErrorNegocio, hoy, fechaDeSqlite, periodoActual, esFecha, fmtTac, fmtPesos, importeVuelo, limpiarTexto } = require('../util');
 
 const qTarifa = db.prepare(`
   SELECT * FROM tarifas WHERE avion_id = ? AND tipo = ? AND vigente_desde <= ?
@@ -60,9 +60,10 @@ function continuidad(avionId) {
     FROM vuelos v JOIN usuarios u ON u.id = v.piloto_id
     WHERE v.avion_id = @id AND v.estado <> 'anulado'
     UNION ALL
-    SELECT 'justificado', j.id, j.desde, j.hasta, substr(j.creado_en,1,10), NULL, j.motivo
+    SELECT 'justificado', j.id, j.desde, j.hasta, j.creado_en, NULL, j.motivo
     FROM tacometro_justificaciones j WHERE j.avion_id = @id
-    ORDER BY desde, hasta`).all({ id: avionId });
+    ORDER BY desde, hasta`).all({ id: avionId })
+    .map(t => (t.clase === 'justificado' ? { ...t, fecha: fechaDeSqlite(t.fecha) } : t));
 
   const huecos = [];
   let cursor = avion.tac_base;

@@ -43,8 +43,9 @@ router.get('/instructores', (req, res) => {
 
 router.get('/vuelos', (req, res) => {
   const f = { ...req.query };
-  if (req.user.rol !== 'admin') {
-    // Un piloto ve sus vuelos; un instructor además puede ver los que voló como instructor.
+  // Un piloto sólo ve lo suyo; un instructor además los vuelos que dio. Un admin ve todo,
+  // salvo que pida explícitamente "lo mío" (como=piloto / como=instructor).
+  if (req.user.rol !== 'admin' || f.como) {
     if (f.como === 'instructor' && req.user.es_instructor) { f.instructor_id = req.user.id; delete f.piloto_id; }
     else { f.piloto_id = req.user.id; delete f.instructor_id; }
   }

@@ -43,6 +43,7 @@ test('utilidades: tacómetro, pesos, teléfonos e importes', () => {
   assert.equal(util.importeVuelo(8000000, 12), 9600000);   // 1,2 h × $80.000 = $96.000
   assert.equal(util.sumarMeses('2026-12', 1), '2027-01');
   assert.equal(util.ultimoDia('2028-02'), '2028-02-29');
+  assert.equal(util.fechaDeSqlite('2026-09-25 00:28:16'), '2026-09-24');   // 21:28 en Argentina
 });
 
 let ana, juan, inst;
@@ -133,7 +134,8 @@ test('cierre de julio: cupones correctos y vuelos congelados', () => {
   assert.equal(cupAna.total, 6400000);
   assert.equal(cupAna.decimas, 12);
   assert.equal(cupAna.estado, 'pendiente');
-  assert.equal(cupAna.vencimiento, '2026-08-10');
+  // Cerrado tarde (en septiembre): el vencimiento se corre para dar al menos 7 días.
+  assert.equal(cupAna.vencimiento, util.sumarDias(util.hoy(), 7));
 
   const v = db.prepare('SELECT * FROM vuelos WHERE piloto_id = ?').get(ana.id);
   assert.equal(v.estado, 'cerrado');

@@ -3,7 +3,7 @@
 
 const path = require('path');
 const PDFDocument = require('pdfkit');
-const { nombrePeriodo, fmtFechaCorta, fmtHoras, fmtTac } = require('../util');
+const { nombrePeriodo, fmtFechaCorta, fmtHoras, fmtTac, fechaDeSqlite } = require('../util');
 
 const FONTS = path.join(__dirname, '..', 'fonts');
 const ESCUDO = path.join(__dirname, '..', '..', 'public', 'assets', 'img', 'escudo.png');
@@ -176,7 +176,7 @@ function generarCupon({ cupon, movimientos, config, estado }) {
   doc.moveTo(M, pie - 10).lineTo(M + ancho, pie - 10).lineWidth(0.5).strokeColor(C.linea).stroke();
   doc.font('R').fontSize(7.5).fillColor(C.gris)
     .text(`Sello de integridad del libro de movimientos al cierre: ${cupon.sello.slice(0, 32)}`, M, pie - 2, { width: ancho, lineBreak: false });
-  doc.text(`Cierre de ${nombrePeriodo(cupon.periodo)} generado el ${fmtFechaCorta(cupon.creado_en.slice(0, 10))}. Documento no válido como factura.`, M, pie + 9, { width: ancho, lineBreak: false });
+  doc.text(`Cierre de ${nombrePeriodo(cupon.periodo)} generado el ${fmtFechaCorta(fechaDeSqlite(cupon.creado_en))}. Documento no válido como factura.`, M, pie + 9, { width: ancho, lineBreak: false });
 
   doc.end();
   return doc;

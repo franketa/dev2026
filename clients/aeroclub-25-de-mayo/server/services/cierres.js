@@ -13,8 +13,10 @@ const crypto = require('crypto');
 const { db, getConfig, auditar } = require('../db');
 const ledger = require('./ledger');
 const {
-  ErrorNegocio, hoy, horaAR, periodoActual, sumarMeses, ultimoDia, esPeriodo, nombrePeriodo, fmtHoras, fmtFechaCorta, fmtPesos
+  ErrorNegocio, hoy, horaAR, periodoActual, sumarMeses, ultimoDia, sumarDias, esPeriodo, nombrePeriodo, fmtHoras, fmtFechaCorta, fmtPesos
 } = require('../util');
+
+const DIAS_MINIMOS_PAGO = 7;
 
 class Simulacion extends Error { constructor(resultado) { super('simulación'); this.resultado = resultado; } }
 
@@ -113,7 +115,8 @@ const correrCierre = db.transaction((periodo, actor, simular) => {
   const insCupon = db.prepare(`
     INSERT INTO cupones (cierre_id, usuario_id, numero, saldo_anterior, total_vuelos, total_pagos, total_ajustes, total, decimas, vencimiento, token, sello)
     VALUES (@cierre_id, @usuario_id, @numero, @saldo_anterior, @total_vuelos, @total_pagos, @total_ajustes, @total, @decimas, @vencimiento, @token, @sello)`);
-  const vencimiento = vencimientoDe(periodo, cfg.vencimiento_dia);
+  // Aunque el cierre se haga tarde, el socio siempre tiene al menos una semana para pagar.
+  const vencimiento = [vencimientoDe(periodo, cfg.vencimiento_dia), sumarDias(hoy(), DIAS_MINIMOS_PAGO)].sort().at(-1);
   let nro = 0;
   let totalCupones = 0;
   for (const s of socios) {

@@ -247,7 +247,7 @@ function linkWhatsApp(c, cierre, cfg, base) {
     .replaceAll('{periodo}', nombrePeriodo(cierre.periodo))
     .replaceAll('{club}', cfg.club_nombre)
     .replaceAll('{horas}', fmtHoras(c.decimas))
-    .replaceAll('{total}', fmtPesos(Math.max(c.total, 0)))
+    .replaceAll('{total}', fmtPesos(c.restante > 0 ? c.restante : Math.max(c.total, 0)))
     .replaceAll('{alias}', cfg.pago_alias || '(consultar)')
     .replaceAll('{vencimiento}', fmtFechaCorta(c.vencimiento))
     .replaceAll('{link}', `${base}/c/${c.token}`);
@@ -288,7 +288,12 @@ router.get('/reportes', (req, res) => {
   const r = reporte(periodo);
   if (req.query.formato !== 'csv') return res.json(r);
 
-  const esc = (v) => { const s = String(v ?? ''); return /[";\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s; };
+  // Excel ejecuta celdas que empiezan con = + - @: se neutralizan con un apóstrofo (las notas las escriben los pilotos).
+  const esc = (v) => {
+    let s = String(v ?? '');
+    if (/^[=+\-@\t\r]/.test(s)) s = `'${s}`;
+    return /[";\r\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
+  };
   const num = (d) => (d / 10).toFixed(1).replace('.', ',');
   const plata = (c) => (c / 100).toFixed(2).replace('.', ',');
   const filas = [['Fecha', 'Avión', 'Piloto', 'Instructor', 'Tac. inicial', 'Tac. final', 'Horas', 'Precio/h', 'Importe', 'Estado', 'Novedades']];
@@ -345,6 +350,9 @@ router.put('/config', (req, res) => {
   const body = req.body || {};
   const actual = getConfig();
   const cambios = [];
+  if (Number(body.vencimiento_dia ?? actual.vencimiento_dia) <= Number(body.cierre_dia ?? actual.cierre_dia)) {
+    throw new ErrorNegocio('El vencimiento del cupón tiene que ser un día posterior al del cierre automático');
+  }
   const set = db.prepare('INSERT INTO config (clave, valor) VALUES (?, ?) ON CONFLICT(clave) DO UPDATE SET valor = excluded.valor');
   for (const k of EDITABLES) {
     if (!(k in body)) continue;
