@@ -2,7 +2,7 @@
 
 Sistema multiusuario para reemplazar la planilla de Excel del aeroclub:
 
-- Cada piloto o alumno **carga su vuelo al bajar del avión**: avión, fecha, tacómetro al encender y al cortar, si voló con instructor (y cuál) y novedades.
+- Cada piloto o alumno **carga su vuelo al bajar del avión**: avión, fecha, tiempo de vuelo en horas con un decimal (0,1 = 6 minutos), si voló con instructor (y cuál) y novedades.
 - A fin de mes el sistema **cierra el período solo**, factura los vuelos y genera un **cupón de pago en PDF** por socio: horas del mes + saldo anterior − pagos ± ajustes.
 - Tesorería manda el cupón por **WhatsApp** con un toque (link privado al PDF) y **registra los pagos**.
 - Todo lo que toca plata queda en un **libro inviolable**: no se puede borrar ni editar, y cualquier alteración por fuera del sistema se detecta.
@@ -40,15 +40,15 @@ Usuarios de la demo: `tesoreria@aeroclub25demayo.com.ar` / `demo1234` (tesorerí
 
 - Healthcheck: `GET /salud`.
 - Después del primer deploy, en **Configuración**: alias, CBU, titular y la dirección pública del sistema (se usa en los links de WhatsApp).
-- En **Flota y tarifas**: la lectura actual del tacómetro de cada avión (punto de partida del control) y las tarifas con y sin instructor.
+- En **Flota y tarifas**: las tarifas con y sin instructor de cada avión.
 
 ## Cómo está pensado
 
 | Regla | Dónde |
 |---|---|
-| Plata en centavos enteros y horas en décimas enteras (2345,6 → 23456), nunca decimales | `server/util.js` |
+| Plata en centavos enteros y horas en décimas enteras (1,4 h → 14), nunca decimales | `server/util.js` |
 | Cada vuelo guarda el precio del día en que se voló; cambiar una tarifa no toca lo ya volado (salvo que tesorería lo pida para vuelos sin facturar) | `server/services/flota.js` |
-| Un tramo del tacómetro no se puede cargar dos veces; los tramos sin cargar se muestran a tesorería para cobrar o justificar | `server/services/vuelos.js`, `flota.continuidad()` |
+| Si un piloto carga dos veces el mismo vuelo (avión, fecha y horas), el sistema le avisa | `server/services/vuelos.js` |
 | El piloto corrige sus vuelos hasta el cierre; después el vuelo queda congelado (trigger en SQLite) | `server/db.js` |
 | Libro de movimientos: sin UPDATE ni DELETE (triggers), encadenado con SHA-256, sello impreso en cada cupón | `server/services/ledger.js` |
 | Cierre mensual en una sola transacción; la "simulación" corre el cierre real y lo revierte | `server/services/cierres.js` |
@@ -64,5 +64,6 @@ Copia de seguridad: **Registro → Copia de seguridad** descarga la base complet
 
 ## Pendiente para una segunda etapa
 
+- Tacómetro como campo opcional al final de la carga (las columnas `tac_inicial` y `tac_final` ya existen en `vuelos`, vacías).
 - Link de pago de Mercado Pago en el cupón.
 - Envío automático de cupones por WhatsApp (hoy es un toque por socio).

@@ -1,4 +1,4 @@
-import { get, html, pintar, icono, pesos, horas, tac, nombrePeriodo, periodoHoy, selectorMes } from '../lib.js';
+import { get, html, pintar, icono, pesos, horas, nombrePeriodo, periodoHoy, selectorMes } from '../lib.js';
 
 export default async function reportes(ctx) {
   const periodo = ctx.query.periodo || periodoHoy();
@@ -19,12 +19,12 @@ export default async function reportes(ctx) {
     <section class="panel">
       <div class="panel__cab"><h2>Por avión</h2></div>
       ${r.por_avion.length ? html`<div class="tabla-caja"><table class="tabla">
-        <thead><tr><th>Avión</th><th class="num">Vuelos</th><th class="num">Sin instructor</th><th class="num">Con instructor</th><th class="num">Total horas</th><th>Tacómetro</th><th class="num">Importe</th></tr></thead>
+        <thead><tr><th>Avión</th><th class="num">Vuelos</th><th class="num">Sin instructor</th><th class="num">Con instructor</th><th class="num">Total horas</th><th class="num">Importe</th></tr></thead>
         <tbody>${r.por_avion.map(a => html`<tr>
           <td><span class="matricula">${a.matricula}</span><div class="muted chico">${a.modelo}</div></td>
           <td class="num">${a.vuelos}</td><td class="num">${horas(a.decimas_solo)}</td><td class="num">${horas(a.decimas_instruccion)}</td>
-          <td class="num"><strong>${horas(a.decimas)}</strong></td><td class="chico">${tac(a.tac_desde)} a ${tac(a.tac_hasta)}</td><td class="num monto">${pesos(a.importe)}</td></tr>`)}</tbody>
-        <tfoot><tr><td>Total</td><td class="num">${tot.vuelos}</td><td class="num">${horas(tot.solo)}</td><td class="num">${horas(tot.inst)}</td><td class="num">${horas(tot.decimas)}</td><td></td><td class="num">${pesos(tot.importe)}</td></tr></tfoot>
+          <td class="num"><strong>${horas(a.decimas)}</strong></td><td class="num monto">${pesos(a.importe)}</td></tr>`)}</tbody>
+        <tfoot><tr><td>Total</td><td class="num">${tot.vuelos}</td><td class="num">${horas(tot.solo)}</td><td class="num">${horas(tot.inst)}</td><td class="num">${horas(tot.decimas)}</td><td class="num">${pesos(tot.importe)}</td></tr></tfoot>
       </table></div>` : html`<p class="muted">No hay vuelos en ${nombrePeriodo(periodo)}.</p>`}
     </section>
 

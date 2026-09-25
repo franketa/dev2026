@@ -3,7 +3,7 @@ import { get, html, pintar, icono, pesos, fecha, fechaHora, error, conBoton } fr
 const ACCIONES = {
   'usuario.alta': 'Alta de socio', 'usuario.edicion': 'Edición de socio', 'usuario.reset_password': 'Contraseña regenerada', 'usuario.password': 'Cambio de contraseña',
   'usuario.perfil': 'Actualizó su perfil', 'avion.alta': 'Alta de avión', 'avion.edicion': 'Edición de avión', 'tarifa.alta': 'Nueva tarifa',
-  'tacometro.justificar': 'Tramo de tacómetro justificado', 'pago.alta': 'Pago registrado', 'ajuste.alta': 'Ajuste manual', 'saldo_inicial.alta': 'Saldo inicial',
+  'pago.alta': 'Pago registrado', 'ajuste.alta': 'Ajuste manual', 'saldo_inicial.alta': 'Saldo inicial',
   'movimiento.anulacion': 'Movimiento anulado', 'cierre.manual': 'Cierre manual', 'cierre.automatico': 'Cierre automático', 'config.edicion': 'Configuración', 'respaldo.descarga': 'Copia de seguridad'
 };
 

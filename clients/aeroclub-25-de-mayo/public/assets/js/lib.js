@@ -65,7 +65,6 @@ export function pesos(c, { signo = false } = {}) {
   return `${s}$ ${txt}`;
 }
 export const horas = (d) => `${((d || 0) / 10).toFixed(1).replace('.', ',')} h`;
-export const tac = (d) => (d / 10).toFixed(1).replace('.', ',');
 export function fecha(f) { if (!f) return '—'; const [y, m, d] = f.slice(0, 10).split('-'); return `${d}/${m}/${y}`; }
 export function fechaCorta(f) { const [, m, d] = f.slice(0, 10).split('-'); return `${Number(d)} ${MESES[Number(m) - 1].slice(0, 3)}`; }
 export function fechaHora(iso) {
@@ -82,12 +81,14 @@ export function sumarMeses(p, n) {
   const t = y * 12 + (m - 1) + n;
   return `${Math.floor(t / 12)}-${String((t % 12) + 1).padStart(2, '0')}`;
 }
-export function parseTac(v) {
-  const s = String(v ?? '').trim().replace(',', '.');
-  if (!/^\d{1,6}(\.\d)?$/.test(s)) return null;
+export function parseHoras(v) {
+  let s = String(v ?? '').trim().replace(',', '.');
+  if (s.startsWith('.')) s = '0' + s;
+  if (!/^\d{1,2}(\.\d)?$/.test(s)) return null;
   const [e, d = '0'] = s.split('.');
   return Number(e) * 10 + Number(d);
 }
+export const horasInput = (d) => (d / 10).toFixed(1).replace('.', ',');
 export function parsePesos(v) {
   let s = String(v ?? '').trim().replace(/\$|\s/g, '');
   if (!s) return null;
@@ -102,8 +103,8 @@ export const iniciales = (n, a) => `${(n || '?')[0]}${(a || '')[0] || ''}`.toUpp
 // Color de identidad de cada avión (por orden en la flota, fijo, nunca por ranking).
 export function colorAvion(orden) { return `var(--serie-${Math.min(Math.max(orden || 1, 1), 3)})`; }
 
-// ── Tacómetro de tambor ─────────────────────────────────────────────────────
-export function tambor(decimas, { tam = '', enteros = 4, desde = null } = {}) {
+// ── Contador de tambor (como el horímetro del avión) ───────────────────────
+export function tambor(decimas, { tam = '', enteros = 4, desde = null, etiqueta = 'Horas' } = {}) {
   const txt = String(Math.max(0, Math.round(decimas || 0))).padStart(enteros + 1, '0');
   const inicio = desde == null ? null : String(Math.max(0, Math.round(desde))).padStart(txt.length, '0');
   const tira = raw(Array.from({ length: 10 }, (_, i) => `<span>${i}</span>`).join(''));
@@ -112,7 +113,7 @@ export function tambor(decimas, { tam = '', enteros = 4, desde = null } = {}) {
     const n = inicio ? inicio[i] : d;
     return html`<span class="tac__d ${dec ? 'tac__d--dec' : ''}"><span class="tac__tira" style="--n:${n}" data-n="${d}">${tira}</span></span>`;
   });
-  return html`<span class="tac ${tam ? 'tac--' + tam : ''}" role="img" aria-label="Tacómetro ${tac(decimas)}">${digitos}</span>`;
+  return html`<span class="tac ${tam ? 'tac--' + tam : ''}" role="img" aria-label="${etiqueta}: ${horas(decimas)}">${digitos}</span>`;
 }
 // Hace rodar los tambores hasta su valor final (después de pintarlos con `desde`).
 export function rodar(el) {

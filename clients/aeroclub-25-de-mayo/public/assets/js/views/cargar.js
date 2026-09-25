@@ -1,5 +1,5 @@
 import {
-  get, post, put, html, raw, pintar, icono, pesos, horas, tac, parseTac, tambor, rodar, hoyAR, colorAvion, error, conBoton, nombrePeriodo, datosForm
+  get, post, put, html, raw, pintar, icono, pesos, horas, horasInput, parseHoras, tambor, rodar, hoyAR, colorAvion, error, conBoton, nombrePeriodo, datosForm
 } from '../lib.js';
 
 export default async function cargar(ctx) {
@@ -16,7 +16,7 @@ export default async function cargar(ctx) {
   // En edición puede figurar un avión dado de baja: lo sumamos para poder mostrarlo.
   const lista = [...aviones];
   if (previo && !lista.some(a => a.id === previo.avion_id)) {
-    lista.push({ id: previo.avion_id, matricula: previo.matricula, modelo: previo.modelo, tac_actual: previo.tac_final, tarifas: {}, orden: 9 });
+    lista.push({ id: previo.avion_id, matricula: previo.matricula, modelo: previo.modelo, tarifas: {}, orden: 9 });
   }
   if (!lista.length) {
     pintar(ctx.el, html`<div class="vacio"><p>No hay aviones activos. Tesorería tiene que dar de alta la flota.</p></div>`);
@@ -36,7 +36,7 @@ export default async function cargar(ctx) {
     <div class="vista__cab"><div>
       ${editando ? html`<a class="volver" href="#/vuelos">${icono('izq')} Mis vuelos</a>` : ''}
       <h1>${editando ? 'Corregir vuelo' : 'Cargar vuelo'}</h1>
-      <p>${editando ? 'Podés corregirlo hasta el cierre del mes. El cambio queda registrado.' : 'Anotá el tacómetro apenas bajes del avión.'}</p>
+      <p>${editando ? 'Podés corregirlo hasta el cierre del mes. El cambio queda registrado.' : 'Cargalo apenas bajes del avión.'}</p>
     </div></div>
 
     <form class="carga" id="form-vuelo" novalidate>
@@ -57,7 +57,7 @@ export default async function cargar(ctx) {
               <input type="radio" name="avion_id" value="${a.id}" ${a.id === estado.avionId ? raw('checked') : ''}>
               <span class="avion-opc__caja">
                 <span class="avion-opc__fila"><span><span class="matricula">${a.matricula}</span><br><small>${a.modelo}</small></span><span class="avion-opc__check">${icono('check')}</span></span>
-                <span class="avion-opc__fila"><small>Último tacómetro</small>${tambor(a.tac_actual, { tam: 'chico' })}</span>
+                <span class="avion-opc__fila"><small>${a.tarifas?.solo ? `${pesos(a.tarifas.solo)} la hora` : 'Sin tarifa cargada'}</small></span>
               </span>
             </label>`)}
         </div>
@@ -69,15 +69,13 @@ export default async function cargar(ctx) {
       </div>
 
       <div class="carga__paso">
-        <h2><span class="num">3</span> Tacómetro</h2>
-        <div class="lecturas">
-          <div class="campo"><label for="tac_inicial">Al encender</label>
-            <input class="input input--tac" id="tac_inicial" name="tac_inicial" inputmode="decimal" autocomplete="off" placeholder="0000,0" value="${previo ? tac(previo.tac_inicial) : avion() ? tac(avion().tac_actual) : ''}" required></div>
-          <span class="lecturas__flecha">${icono('flecha')}</span>
-          <div class="campo"><label for="tac_final">Al cortar</label>
-            <input class="input input--tac" id="tac_final" name="tac_final" inputmode="decimal" autocomplete="off" placeholder="0000,0" value="${previo ? tac(previo.tac_final) : ''}" required></div>
+        <h2><span class="num">3</span> <label for="horas">Tiempo de vuelo</label></h2>
+        <div class="horas-carga">
+          <button class="btn btn--sec" type="button" data-paso="-1" aria-label="Restar 0,1 horas">−0,1</button>
+          <input class="input input--tac" id="horas" name="horas" inputmode="decimal" autocomplete="off" placeholder="0,0" value="${previo ? horasInput(previo.decimas) : ''}" required>
+          <button class="btn btn--sec" type="button" data-paso="1" aria-label="Sumar 0,1 horas">+0,1</button>
         </div>
-        <p class="campo__ayuda" id="ayuda-tac">Con un decimal, como lo marca el instrumento (ej.: 2345,6).</p>
+        <p class="campo__ayuda">En horas, con un decimal: 0,1 son 6 minutos. Ejemplo: 1,4.</p>
         <div class="resultado" id="resultado" aria-live="polite"></div>
       </div>
 
@@ -106,8 +104,7 @@ export default async function cargar(ctx) {
   </div>`);
 
   const form = ctx.el.querySelector('#form-vuelo');
-  const $ini = form.tac_inicial;
-  const $fin = form.tac_final;
+  const $horas = form.horas;
   const $res = ctx.el.querySelector('#resultado');
   const $tipos = ctx.el.querySelector('#tipos');
   const $campoInst = ctx.el.querySelector('#campo-instructor');
@@ -128,48 +125,50 @@ export default async function cargar(ctx) {
   }
 
   function calcular() {
-    const ini = parseTac($ini.value);
-    const fin = parseTac($fin.value);
+    const dec = parseHoras($horas.value);
     const a = avion();
     const precio = a?.tarifas?.[estado.tipo];
-    $ini.setAttribute('aria-invalid', $ini.value && ini == null ? 'true' : 'false');
-    $fin.setAttribute('aria-invalid', $fin.value && (fin == null || (ini != null && fin <= ini)) ? 'true' : 'false');
-    const ok = ini != null && fin != null && fin > ini;
-    const dec = ok ? fin - ini : 0;
+    $horas.setAttribute('aria-invalid', $horas.value && (dec == null || dec <= 0) ? 'true' : 'false');
+    const ok = dec != null && dec > 0;
     const importe = ok && precio ? Math.round(precio * dec / 10) : null;
     $res.classList.toggle('resultado--vacio', !ok);
     pintar($res, html`
-      <div><span>Tiempo de vuelo</span><strong>${ok ? horas(dec) : '—'}</strong><small>${ok && dec > 60 ? 'Revisá: es un vuelo muy largo' : ok ? `${Math.round(dec * 6)} minutos` : 'Completá el tacómetro final'}</small></div>
+      <div><span>Tiempo de vuelo</span><strong>${ok ? horas(dec) : '—'}</strong><small>${ok && dec > 60 ? 'Revisá: es un vuelo muy largo' : ok ? `${dec * 6} minutos` : 'Completá las horas'}</small></div>
       <div><span>Importe</span><strong>${importe != null ? pesos(importe) : '—'}</strong><small>${precio ? 'Se suma en el cierre del mes' : a ? 'Falta la tarifa de este avión' : 'Elegí el avión'}</small></div>`);
   }
+
+  // Botones −0,1 / +0,1: más cómodos que el teclado con guantes o al sol.
+  ctx.el.querySelectorAll('[data-paso]').forEach(b => b.addEventListener('click', () => {
+    const actual = parseHoras($horas.value) || 0;
+    const nuevo = Math.min(99, Math.max(1, actual + Number(b.dataset.paso)));
+    $horas.value = horasInput(nuevo);
+    calcular();
+  }));
 
   form.addEventListener('change', (e) => {
     if (e.target.name === 'avion_id') {
       estado.avionId = Number(e.target.value);
-      if (!editando) $ini.value = tac(avion().tac_actual);
       pintarTipos();
-      if (!editando) $fin.focus();
+      if (!editando && !$horas.value) $horas.focus();
     }
     if (e.target.name === 'tipo') { estado.tipo = e.target.value; pintarTipos(); if (estado.tipo === 'instruccion') $inst.focus(); }
     if (e.target.name === 'piloto_id') { estado.pilotoId = Number(e.target.value); pintarTipos(); }
     calcular();
   });
-  form.addEventListener('input', (e) => { if (e.target === $ini || e.target === $fin) calcular(); });
+  form.addEventListener('input', (e) => { if (e.target === $horas) calcular(); });
 
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
     $err.hidden = true;
     const d = datosForm(form);
     const falta = !estado.avionId ? 'Elegí el avión.'
-      : parseTac($ini.value) == null ? 'Revisá el tacómetro al encender (un decimal, ej.: 2345,6).'
-      : parseTac($fin.value) == null ? 'Completá el tacómetro al cortar.'
-      : parseTac($fin.value) <= parseTac($ini.value) ? 'El tacómetro al cortar tiene que ser mayor que al encender.'
+      : !(parseHoras($horas.value) > 0) ? 'Completá el tiempo de vuelo en horas con un decimal (ej.: 1,4).'
       : estado.tipo === 'instruccion' && !d.instructor_id ? 'Elegí qué instructor voló con vos.'
       : null;
     if (falta) { $err.textContent = falta; $err.hidden = false; $err.scrollIntoView({ block: 'center', behavior: 'smooth' }); return; }
 
     const cuerpo = {
-      avion_id: estado.avionId, fecha: d.fecha, tac_inicial: d.tac_inicial, tac_final: d.tac_final,
+      avion_id: estado.avionId, fecha: d.fecha, horas: d.horas,
       con_instructor: estado.tipo === 'instruccion', instructor_id: estado.tipo === 'instruccion' ? Number(d.instructor_id) : null,
       notas: d.notas
     };
@@ -198,7 +197,7 @@ function listo(ctx, { vuelo: v, avisos }, editado) {
       <div class="listo">
         <span class="listo__icono">${icono('check')}</span>
         <h1>${editado ? 'Corrección guardada' : 'Vuelo guardado'}</h1>
-        ${tambor(v.tac_final, { tam: 'grande', desde: v.tac_inicial })}
+        ${tambor(v.decimas, { tam: 'grande', enteros: 2, desde: 0, etiqueta: 'Horas voladas' })}
         <div class="listo__resumen">
           <p><strong class="matricula">${v.matricula}</strong>, ${horas(v.decimas)} ${v.tipo === 'instruccion' ? `con ${v.instructor}` : 'sin instructor'}${ctx.esAdmin && v.piloto_id !== ctx.usuario.id ? `, a nombre de ${v.piloto}` : ''}</p>
           <p class="muted">${pesos(v.importe)} a facturar en el cierre de ${nombrePeriodo(periodo)}</p>

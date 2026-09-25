@@ -29,7 +29,7 @@ export default async function inicio(ctx) {
       </div>
     </section>
 
-    <a class="cta-cargar" href="#/cargar">${icono('avion')}<div><strong>Cargar vuelo</strong><span>Recién aterrizaste: anotá el tacómetro</span></div>${icono('der')}</a>
+    <a class="cta-cargar" href="#/cargar">${icono('avion')}<div><strong>Cargar vuelo</strong><span>Recién aterrizaste: anotá las horas</span></div>${icono('der')}</a>
 
     <div class="grilla grilla--2">
       <section class="panel">

@@ -1,6 +1,6 @@
 // Piezas compartidas entre vistas.
 import {
-  html, raw, get, post, icono, modal, pesos, horas, tac, fecha, fechaCorta, fechaHora, tambor, chipVuelo,
+  html, raw, get, post, icono, modal, pesos, horas, fecha, fechaCorta, fechaHora, tambor, chipVuelo,
   colorAvion, pedirTexto, toast, error, conBoton
 } from '../lib.js';
 
@@ -15,7 +15,6 @@ export function tiraVuelo(v, { piloto = false, ordenAvion = {} } = {}) {
         <span class="tira__avion"><span class="matricula">${v.matricula}</span><small>${fechaCorta(v.fecha)}</small></span>
         <span class="tira__linea1"><strong>${quien}</strong></span>
         <span class="tira__linea2">
-          <span>Tac. ${tac(v.tac_inicial)} a ${tac(v.tac_final)}</span>
           ${piloto && v.tipo === 'instruccion' ? html`<span>Con ${v.instructor}</span>` : ''}
           ${chipVuelo(v)}
         </span>
@@ -29,39 +28,30 @@ export function mapaOrden(aviones) {
   return Object.fromEntries((aviones || []).map((a, i) => [a.id, a.orden || i + 1]));
 }
 
-export function tarjetaAvion(a, { admin = false } = {}) {
-  const inspeccion = a.inspeccion_restante;
-  const claseMed = inspeccion == null ? '' : inspeccion <= 50 ? 'medidor--mal' : inspeccion <= 100 ? 'medidor--alerta' : '';
-  const pct = inspeccion == null ? 0 : Math.max(0, Math.min(100, 100 - (inspeccion / 1000) * 100));
+export function tarjetaAvion(a) {
   return html`
     <article class="avion" style="--serie:${colorAvion(a.orden)}">
       <div class="avion__cab">
         <span class="avion__marca"></span>
         <div><span class="matricula">${a.matricula}</span><small>${a.modelo}</small></div>
-        ${tambor(a.tac_actual, { tam: 'chico' })}
+        ${tambor(a.mes_decimas, { tam: 'chico', enteros: 3, etiqueta: 'Horas voladas este mes' })}
       </div>
       <div class="avion__datos">
         <span>Este mes <b>${horas(a.mes_decimas)}</b> en ${a.mes_vuelos} ${a.mes_vuelos === 1 ? 'vuelo' : 'vuelos'}</span>
         ${a.tarifas?.solo ? html`<span>Solo <b>${pesos(a.tarifas.solo)}</b>/h</span>` : ''}
         ${a.tarifas?.instruccion ? html`<span>Con instructor <b>${pesos(a.tarifas.instruccion)}</b>/h</span>` : ''}
       </div>
-      ${inspeccion != null ? html`
-        <div class="pila" style="gap:6px">
-          <div class="avion__datos"><span>${inspeccion > 0 ? html`Faltan <b>${horas(inspeccion)}</b> para la inspección` : html`<b>Inspección vencida</b> hace ${horas(-inspeccion)}`}</span></div>
-          <div class="medidor ${claseMed}"><span style="width:${inspeccion > 0 ? pct : 100}%"></span></div>
-        </div>` : ''}
-      ${admin && a.huecos ? html`<a class="aviso" href="#/admin/flota/${a.id}/tacometro">${icono('alerta')}<span>${a.huecos} ${a.huecos === 1 ? 'tramo' : 'tramos'} del tacómetro sin cargar. Revisar</span></a>` : ''}
     </article>`;
 }
 
 const ACCIONES_HIST = { alta: 'Cargado', edicion: 'Corregido', anulacion: 'Anulado', cierre: 'Entró en el cierre', retarifa: 'Precio actualizado' };
-const CAMPOS = { fecha: 'Fecha', tac_inicial: 'Tac. inicial', tac_final: 'Tac. final', tipo: 'Tipo', precio_hora: 'Precio/h', importe: 'Importe', notas: 'Notas', avion_id: 'Avión', instructor_id: 'Instructor', piloto_id: 'Piloto' };
+const CAMPOS = { fecha: 'Fecha', decimas: 'Horas', tipo: 'Tipo', precio_hora: 'Precio/h', importe: 'Importe', notas: 'Notas', avion_id: 'Avión', instructor_id: 'Instructor', piloto_id: 'Piloto' };
 
 function difHistorial(h) {
   if (!h.antes || !h.despues) return '';
   const a = JSON.parse(h.antes); const d = JSON.parse(h.despues);
-  const fmt = (k, v) => v == null || v === '' ? '—' : k.startsWith('tac_') ? tac(v) : (k === 'importe' || k === 'precio_hora') ? pesos(v) : k === 'fecha' ? fecha(v) : k === 'tipo' ? (v === 'solo' ? 'sin instructor' : 'con instructor') : v;
-  const cambios = Object.keys(CAMPOS).filter(k => k in d && k in a && String(a[k]) !== String(d[k]) && k !== 'decimas');
+  const fmt = (k, v) => v == null || v === '' ? '—' : k === 'decimas' ? horas(v) : (k === 'importe' || k === 'precio_hora') ? pesos(v) : k === 'fecha' ? fecha(v) : k === 'tipo' ? (v === 'solo' ? 'sin instructor' : 'con instructor') : v;
+  const cambios = Object.keys(CAMPOS).filter(k => k in d && k in a && String(a[k]) !== String(d[k]));
   if (!cambios.length) return '';
   return html`<small>${cambios.map(k => `${CAMPOS[k]}: ${fmt(k, a[k])} → ${fmt(k, d[k])}`).join('; ')}</small>`;
 }
@@ -76,7 +66,7 @@ export async function abrirVuelo(id, ctx, { alCambiar } = {}) {
     titulo: html`<span class="matricula">${v.matricula}</span> el ${fecha(v.fecha)}`,
     subtitulo: `${v.piloto}${v.tipo === 'instruccion' ? ` con ${v.instructor}` : ', sin instructor'}`,
     contenido: html`<div class="pila">
-      <div class="resultado"><div><span>Tiempo</span><strong>${horas(v.decimas)}</strong><small>Tac. ${tac(v.tac_inicial)} a ${tac(v.tac_final)}</small></div>
+      <div class="resultado"><div><span>Tiempo</span><strong>${horas(v.decimas)}</strong><small>${v.decimas * 6} minutos</small></div>
         <div><span>Importe</span><strong>${pesos(v.importe)}</strong><small>${pesos(v.precio_hora)} por hora</small></div></div>
       <dl class="detalle">
         <dt>Estado</dt><dd>${chipVuelo(v)}${v.cierre_periodo ? html` <span class="muted chico">cierre de ${v.cierre_periodo}</span>` : ''}</dd>

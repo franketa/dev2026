@@ -593,3 +593,7 @@ p { margin: 0; }
   .tabla--tarjetas .tabla__acciones .btn { flex: 1 1 auto; }
   .tabla-caja:has(.tabla--tarjetas) { overflow: visible; }
 }
+
+/* Tiempo de vuelo: campo grande con pasos de 0,1 h a los costados */
+.horas-carga { display: grid; grid-template-columns: auto 1fr auto; gap: 10px; align-items: stretch; }
+.horas-carga .btn { min-height: 60px; min-width: 64px; font-size: 1.05rem; font-family: var(--f-titulo); }

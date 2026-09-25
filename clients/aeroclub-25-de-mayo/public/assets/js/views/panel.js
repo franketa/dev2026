@@ -60,11 +60,6 @@ export default async function panel(ctx) {
   const totalVuelos = d.por_avion.reduce((s, a) => s + a.vuelos, 0);
   const g = grafico(periodo, d.por_dia, d.por_avion.map(a => ({ ...a, orden: orden[a.id] })));
   const pc = d.proximo_cierre;
-  const alertas = [
-    ...d.aviones.filter(a => a.huecos).map(a => html`<a class="aviso" href="#/admin/flota/${a.id}/tacometro">${icono('alerta')}<span><b>${a.matricula}</b>: ${a.huecos} ${a.huecos === 1 ? 'tramo' : 'tramos'} del tacómetro sin cargar.</span></a>`),
-    ...d.aviones.filter(a => a.inspeccion_restante != null && a.inspeccion_restante <= 100).map(a => html`<a class="aviso ${a.inspeccion_restante <= 0 ? 'aviso--mal' : ''}" href="#/admin/flota">${icono('reloj')}<span><b>${a.matricula}</b>: ${a.inspeccion_restante > 0 ? `faltan ${horas(a.inspeccion_restante)} para la inspección.` : 'inspección vencida.'}</span></a>`)
-  ];
-
   pintar(ctx.el, html`
   <div class="vista">
     <div class="vista__cab"><div><h1>Panel</h1><p>Cómo viene el mes en el aeroclub.</p></div>${selectorMes(periodo)}</div>
@@ -93,10 +88,8 @@ export default async function panel(ctx) {
       </section>
     </div>
 
-    ${alertas.length ? html`<section class="pila"><h2>Para revisar</h2><div class="alertas">${alertas}</div></section>` : ''}
-
     <div class="grilla grilla--2">
-      <section class="pila"><h2>La flota</h2>${d.aviones.map(a => tarjetaAvion(a, { admin: true }))}</section>
+      <section class="pila"><h2>La flota</h2>${d.aviones.map(a => tarjetaAvion(a))}</section>
       <section class="panel">
         <div class="panel__cab"><h2>Novedades de los pilotos</h2></div>
         ${d.novedades.length ? d.novedades.map(v => html`

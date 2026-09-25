@@ -8,7 +8,7 @@ import panel from './views/panel.js';
 import cuentas from './views/cuentas.js';
 import { cierres, detalleCierre } from './views/cierres.js';
 import socios from './views/socios.js';
-import { flota, tacometro } from './views/flota.js';
+import { flota } from './views/flota.js';
 import reportes from './views/reportes.js';
 import registro from './views/registro.js';
 import ajustes from './views/ajustes.js';
@@ -27,7 +27,6 @@ const RUTAS = [
   { ruta: '/admin/cierres/:id', vista: detalleCierre, titulo: 'Cierre', admin: true },
   { ruta: '/admin/cierres', vista: cierres, titulo: 'Cierres y cupones', admin: true },
   { ruta: '/admin/socios', vista: socios, titulo: 'Socios', admin: true },
-  { ruta: '/admin/flota/:id/tacometro', vista: tacometro, titulo: 'Tacómetro', admin: true },
   { ruta: '/admin/flota', vista: flota, titulo: 'Flota y tarifas', admin: true },
   { ruta: '/admin/reportes', vista: reportes, titulo: 'Reportes', admin: true },
   { ruta: '/admin/registro', vista: registro, titulo: 'Registro', admin: true },
