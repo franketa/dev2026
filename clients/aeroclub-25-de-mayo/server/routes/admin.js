@@ -12,7 +12,7 @@ const cuentas = require('../services/cuentas');
 const ledger = require('../services/ledger');
 const { enviarPdf } = require('./app');
 const {
-  ErrorNegocio, hoy, periodoActual, sumarMeses, esFecha, esPeriodo, parseTac, parsePesos, fmtPesos, fmtHoras, fmtTac,
+  ErrorNegocio, hoy, periodoActual, sumarMeses, esFecha, esPeriodo, parsePesos, fmtPesos, fmtHoras,
   limpiarTexto, telefonoWhatsApp, nombrePeriodo, fmtFechaCorta
 } = require('../util');
 
@@ -135,21 +135,8 @@ router.get('/aviones', (req, res) => {
   res.json({ aviones });
 });
 
-function leerAvion(body) {
-  const out = { ...body };
-  if (body.tac_base != null && body.tac_base !== '') {
-    out.tac_base = parseTac(body.tac_base);
-    if (out.tac_base == null) throw new ErrorNegocio('Lectura inicial del tacómetro inválida (ej: 2345,6)');
-  } else delete out.tac_base;
-  if (body.proxima_inspeccion != null && body.proxima_inspeccion !== '') {
-    out.proxima_inspeccion = parseTac(body.proxima_inspeccion);
-    if (out.proxima_inspeccion == null) throw new ErrorNegocio('Próxima inspección inválida (ej: 2400,0)');
-  } else out.proxima_inspeccion = null;
-  return out;
-}
-
-router.post('/aviones', (req, res) => res.status(201).json({ id: flota.guardarAvion(leerAvion(req.body || {}), req.user) }));
-router.put('/aviones/:id', (req, res) => res.json({ id: flota.guardarAvion(leerAvion(req.body || {}), req.user, Number(req.params.id)) }));
+router.post('/aviones', (req, res) => res.status(201).json({ id: flota.guardarAvion(req.body || {}, req.user) }));
+router.put('/aviones/:id', (req, res) => res.json({ id: flota.guardarAvion(req.body || {}, req.user, Number(req.params.id)) }));
 
 router.post('/aviones/:id/tarifas', (req, res) => {
   const precio = parsePesos(req.body?.precio_hora);
@@ -157,11 +144,6 @@ router.post('/aviones/:id/tarifas', (req, res) => {
   res.status(201).json(flota.nuevaTarifa(Number(req.params.id), { ...req.body, precio_hora: precio }, req.user));
 });
 
-router.get('/aviones/:id/tacometro', (req, res) => res.json(flota.continuidad(Number(req.params.id))));
-router.post('/aviones/:id/tacometro/justificar', (req, res) => {
-  flota.justificarTramo(Number(req.params.id), req.body || {}, req.user);
-  res.status(201).json({ ok: true });
-});
 
 // ── Cuentas corrientes ──────────────────────────────────────────────────────
 router.get('/cuentas', (req, res) => res.json({ cuentas: cuentas.listarCuentas() }));
@@ -270,7 +252,7 @@ function reporte(periodo) {
       SELECT a.matricula, a.modelo, COUNT(*) vuelos, SUM(v.decimas) decimas,
         SUM(CASE WHEN v.tipo='solo' THEN v.decimas ELSE 0 END) decimas_solo,
         SUM(CASE WHEN v.tipo='instruccion' THEN v.decimas ELSE 0 END) decimas_instruccion,
-        SUM(v.importe) importe, MIN(v.tac_inicial) tac_desde, MAX(v.tac_final) tac_hasta
+        SUM(v.importe) importe
       FROM vuelos v JOIN aviones a ON a.id = v.avion_id WHERE ${filtro} GROUP BY a.id ORDER BY a.orden`).all({ periodo }),
     por_piloto: db.prepare(`
       SELECT u.id, u.nombre, u.apellido, COUNT(*) vuelos, SUM(v.decimas) decimas,
@@ -296,9 +278,9 @@ router.get('/reportes', (req, res) => {
   };
   const num = (d) => (d / 10).toFixed(1).replace('.', ',');
   const plata = (c) => (c / 100).toFixed(2).replace('.', ',');
-  const filas = [['Fecha', 'Avión', 'Piloto', 'Instructor', 'Tac. inicial', 'Tac. final', 'Horas', 'Precio/h', 'Importe', 'Estado', 'Novedades']];
+  const filas = [['Fecha', 'Avión', 'Piloto', 'Instructor', 'Horas', 'Precio/h', 'Importe', 'Estado', 'Novedades']];
   for (const v of [...r.vuelos].reverse()) {
-    filas.push([v.fecha, v.matricula, v.piloto, v.instructor || '', num(v.tac_inicial), num(v.tac_final), num(v.decimas), plata(v.precio_hora), plata(v.importe), v.estado, v.notas || '']);
+    filas.push([v.fecha, v.matricula, v.piloto, v.instructor || '', num(v.decimas), plata(v.precio_hora), plata(v.importe), v.estado, v.notas || '']);
   }
   // Separador ";" y BOM: Excel en español lo abre directo con acentos y columnas bien.
   const csv = '﻿' + filas.map(f => f.map(esc).join(';')).join('\r\n');

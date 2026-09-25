@@ -83,7 +83,7 @@ const correrCierre = db.transaction((periodo, actor, simular) => {
   const vuelos = db.prepare(`
     SELECT v.*, a.matricula, i.nombre || ' ' || i.apellido instructor
     FROM vuelos v JOIN aviones a ON a.id = v.avion_id LEFT JOIN usuarios i ON i.id = v.instructor_id
-    WHERE v.estado = 'abierto' AND v.fecha <= ? ORDER BY v.fecha, v.avion_id, v.tac_inicial`).all(ultimoDia(periodo));
+    WHERE v.estado = 'abierto' AND v.fecha <= ? ORDER BY v.fecha, v.avion_id, v.id`).all(ultimoDia(periodo));
   const cerrarVuelo = db.prepare(`UPDATE vuelos SET estado = 'cerrado', cierre_id = ?, actualizado_en = datetime('now') WHERE id = ?`);
   const hist = db.prepare(`INSERT INTO vuelos_historial (vuelo_id, accion, despues, usuario_id) VALUES (?, 'cierre', ?, ?)`);
   const decimasPorSocio = new Map();
@@ -192,7 +192,7 @@ function datosCupon(cuponId) {
     WHERE cu.id = ?`).get(cuponId);
   if (!cupon) throw new ErrorNegocio('Cupón inexistente', 404);
   const movimientos = db.prepare(`
-    SELECT m.*, COALESCE(o.tipo, m.tipo) clase, v.fecha vuelo_fecha, v.decimas, v.tac_inicial, v.tac_final, v.precio_hora, v.tipo vuelo_tipo,
+    SELECT m.*, COALESCE(o.tipo, m.tipo) clase, v.fecha vuelo_fecha, v.decimas, v.precio_hora, v.tipo vuelo_tipo,
            a.matricula, i.nombre || ' ' || i.apellido instructor
     FROM movimientos m
     LEFT JOIN movimientos o ON o.id = m.anula_id

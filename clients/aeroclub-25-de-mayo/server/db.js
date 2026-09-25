@@ -15,7 +15,7 @@ db.pragma('busy_timeout = 5000');
 
 // Tablas que son registro histórico: la base misma rechaza borrar o editar filas,
 // sin importar qué código lo intente. Las correcciones se hacen agregando filas.
-const INMUTABLES = ['movimientos', 'tarifas', 'cupones', 'cupon_envios', 'vuelos_historial', 'auditoria', 'tacometro_justificaciones'];
+const INMUTABLES = ['movimientos', 'tarifas', 'cupones', 'cupon_envios', 'vuelos_historial', 'auditoria'];
 
 const SCHEMA = `
 CREATE TABLE IF NOT EXISTS usuarios (
@@ -40,8 +40,6 @@ CREATE TABLE IF NOT EXISTS aviones (
   id INTEGER PRIMARY KEY,
   matricula TEXT NOT NULL UNIQUE COLLATE NOCASE,
   modelo TEXT NOT NULL,
-  tac_base INTEGER NOT NULL DEFAULT 0 CHECK (tac_base >= 0),
-  proxima_inspeccion INTEGER,
   activo INTEGER NOT NULL DEFAULT 1 CHECK (activo IN (0,1)),
   orden INTEGER NOT NULL DEFAULT 0,
   creado_en TEXT NOT NULL DEFAULT (datetime('now'))
@@ -79,9 +77,10 @@ CREATE TABLE IF NOT EXISTS vuelos (
   avion_id INTEGER NOT NULL REFERENCES aviones(id),
   instructor_id INTEGER REFERENCES usuarios(id),
   fecha TEXT NOT NULL,
-  tac_inicial INTEGER NOT NULL CHECK (tac_inicial >= 0),
-  tac_final INTEGER NOT NULL,
-  decimas INTEGER NOT NULL,
+  decimas INTEGER NOT NULL CHECK (decimas > 0),
+  -- Opcionales, reservados para sumar el tacómetro más adelante (hoy no se usan).
+  tac_inicial INTEGER,
+  tac_final INTEGER,
   tipo TEXT NOT NULL CHECK (tipo IN ('solo','instruccion')),
   tarifa_id INTEGER NOT NULL REFERENCES tarifas(id),
   precio_hora INTEGER NOT NULL,
@@ -93,11 +92,10 @@ CREATE TABLE IF NOT EXISTS vuelos (
   cargado_por INTEGER NOT NULL REFERENCES usuarios(id),
   creado_en TEXT NOT NULL DEFAULT (datetime('now')),
   actualizado_en TEXT,
-  CHECK (decimas = tac_final - tac_inicial AND decimas > 0),
   CHECK ((tipo = 'instruccion') = (instructor_id IS NOT NULL))
 );
 CREATE INDEX IF NOT EXISTS idx_vuelos_piloto ON vuelos(piloto_id, fecha);
-CREATE INDEX IF NOT EXISTS idx_vuelos_avion ON vuelos(avion_id, tac_inicial);
+CREATE INDEX IF NOT EXISTS idx_vuelos_avion ON vuelos(avion_id, fecha);
 CREATE INDEX IF NOT EXISTS idx_vuelos_estado ON vuelos(estado, fecha);
 
 CREATE TABLE IF NOT EXISTS vuelos_historial (
@@ -153,17 +151,6 @@ CREATE TABLE IF NOT EXISTS cupon_envios (
   canal TEXT NOT NULL CHECK (canal IN ('whatsapp','descarga')),
   usuario_id INTEGER REFERENCES usuarios(id),
   creado_en TEXT NOT NULL DEFAULT (datetime('now'))
-);
-
-CREATE TABLE IF NOT EXISTS tacometro_justificaciones (
-  id INTEGER PRIMARY KEY,
-  avion_id INTEGER NOT NULL REFERENCES aviones(id),
-  desde INTEGER NOT NULL,
-  hasta INTEGER NOT NULL,
-  motivo TEXT NOT NULL,
-  creado_por INTEGER REFERENCES usuarios(id),
-  creado_en TEXT NOT NULL DEFAULT (datetime('now')),
-  CHECK (hasta > desde)
 );
 
 CREATE TABLE IF NOT EXISTS config (

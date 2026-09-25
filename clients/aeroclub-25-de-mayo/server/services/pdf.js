@@ -3,7 +3,7 @@
 
 const path = require('path');
 const PDFDocument = require('pdfkit');
-const { nombrePeriodo, fmtFechaCorta, fmtHoras, fmtTac, fechaDeSqlite } = require('../util');
+const { nombrePeriodo, fmtFechaCorta, fechaDeSqlite } = require('../util');
 
 const FONTS = path.join(__dirname, '..', 'fonts');
 const ESCUDO = path.join(__dirname, '..', '..', 'public', 'assets', 'img', 'escudo.png');
@@ -99,13 +99,12 @@ function generarCupon({ cupon, movimientos, config, estado }) {
   // ── Detalle de movimientos ────────────────────────────────────────────────────
   doc.font('CB').fontSize(12).fillColor(C.tinta).text('Detalle', M, y);
   y += 20;
-  const col = { fecha: M, concepto: M + 62, tac: M + 268, horas: M + 356, precio: M + 392, importe: M + 452 };
+  const col = { fecha: M, concepto: M + 62, horas: M + 356, precio: M + 392, importe: M + 452 };
   const encabezado = () => {
     doc.rect(M, y - 4, ancho, 18).fill(C.celesteClaro);
     doc.font('C').fontSize(8.5).fillColor(C.gris);
     doc.text('Fecha', col.fecha + 6, y);
     doc.text('Concepto', col.concepto, y);
-    doc.text('Tacómetro', col.tac, y);
     doc.text('Horas', col.horas - 6, y, { width: 36, align: 'right' });
     doc.text('Precio/h', col.precio, y, { width: 56, align: 'right' });
     doc.text('Importe', col.importe, y, { width: M + ancho - col.importe - 6, align: 'right' });
@@ -123,12 +122,11 @@ function generarCupon({ cupon, movimientos, config, estado }) {
       ? `${m.matricula} ${m.vuelo_tipo === 'instruccion' ? `con instructor ${m.instructor}` : 'sin instructor'}`
       : m.concepto;
     doc.font('R').fontSize(9.5);
-    const alto = Math.max(14, doc.heightOfString(concepto, { width: esVuelo ? 200 : 320 }));
+    const alto = Math.max(14, doc.heightOfString(concepto, { width: 280 }));
     if (y + alto > 700) { doc.addPage(); y = M; encabezado(); }
     doc.fillColor(C.tinta).text(fmtFechaCorta(esVuelo ? m.vuelo_fecha : m.fecha), col.fecha + 6, y, TNUM);
-    doc.text(concepto, col.concepto, y, { width: esVuelo ? 200 : 320 });
+    doc.text(concepto, col.concepto, y, { width: 280 });
     if (esVuelo) {
-      doc.fillColor(C.gris).text(`${fmtTac(m.tac_inicial)} a ${fmtTac(m.tac_final)}`, col.tac, y, TNUM);
       doc.fillColor(C.tinta).text(horas(m.decimas), col.horas - 6, y, { width: 36, align: 'right', ...TNUM });
       doc.fillColor(C.gris).text(pesos(m.precio_hora), col.precio, y, { width: 56, align: 'right', ...TNUM });
     }

@@ -25,8 +25,6 @@ db.prepare(`UPDATE config SET valor = ? WHERE clave = 'pago_cuit'`).run('30-0000
 db.prepare(`UPDATE config SET valor = ? WHERE clave = 'pago_banco'`).run('Banco de la Provincia de Buenos Aires');
 
 // Flota y tarifas (precios de ejemplo)
-flota.guardarAvion({ matricula: 'LV-APH', modelo: 'Cessna 152', tac_base: 45213, proxima_inspeccion: 46050 }, admin, 1);
-flota.guardarAvion({ matricula: 'LV-XUG', modelo: 'Piper PA-11', tac_base: 22100, proxima_inspeccion: 22610 }, admin, 2);
 const desde = `${inicio}-01`;
 flota.nuevaTarifa(1, { tipo: 'solo', precio_hora: 9500000, vigente_desde: desde }, admin);
 flota.nuevaTarifa(1, { tipo: 'instruccion', precio_hora: 12000000, vigente_desde: desde }, admin);
@@ -61,16 +59,13 @@ const pilotos = [
 // Vuelos: generador determinístico
 let semilla = 7;
 const azar = () => { semilla = (semilla * 16807) % 2147483647; return semilla / 2147483647; };
-const tacs = { 1: 45213, 2: 22100 };
 const NOTAS = ['Aceite 5 qt, todo normal', 'Cubierta del tren izquierdo algo baja', 'Ruido en la radio con el motor en alta', 'Viento cruzado fuerte en 21', 'Cargué 40 litros en la bomba', 'Luz de navegación derecha quemada'];
 
 function vuelo(fecha, piloto, avionId, conInstructor) {
   const dec = conInstructor ? 6 + Math.floor(azar() * 8) : 5 + Math.floor(azar() * 14);
-  const ini = tacs[avionId];
-  tacs[avionId] = ini + dec;
   const inst = conInstructor ? instructores[Math.floor(azar() * instructores.length)] : null;
   vuelos.crear({
-    piloto_id: piloto.id, avion_id: avionId, fecha, tac_inicial: String(ini / 10), tac_final: String((ini + dec) / 10),
+    piloto_id: piloto.id, avion_id: avionId, fecha, horas: String(dec / 10),
     con_instructor: !!inst, instructor_id: inst?.id, notas: azar() < 0.12 ? NOTAS[Math.floor(azar() * NOTAS.length)] : null
   }, admin);
 }
@@ -86,8 +81,6 @@ for (let f = desde; f <= fin; f = sumarDias(f, 1)) {
     const avion = esAlumno ? (azar() < 0.7 ? 1 : 2) : (azar() < 0.5 ? 1 : 2);
     vuelo(f, quien, avion, esAlumno);
   }
-  // Un hueco en el tacómetro del Piper a mitad del período (vuelo que nadie cargó)
-  if (f === `${sumarMeses(inicio, 1)}-20`) tacs[2] += 4;
 }
 
 // Saldos traídos de la planilla

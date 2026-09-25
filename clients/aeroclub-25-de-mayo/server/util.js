@@ -1,6 +1,6 @@
 // Utilidades compartidas. Convenciones de todo el sistema:
 //   - Plata: enteros en centavos (nunca floats).
-//   - Tacómetro y horas: enteros en décimas de hora (2345.6 → 23456).
+//   - Horas de vuelo: enteros en décimas de hora (1,4 h → 14).
 //   - Fechas de negocio: 'YYYY-MM-DD' en hora de Argentina; períodos 'YYYY-MM'.
 
 const TZ = 'America/Argentina/Buenos_Aires';
@@ -54,16 +54,16 @@ function esFecha(s) {
 }
 function esPeriodo(s) { return typeof s === 'string' && /^\d{4}-(0[1-9]|1[0-2])$/.test(s); }
 
-// "2345,6" | "2345.6" | 2345.6 → 23456 décimas. Rechaza más de un decimal.
-function parseTac(v) {
+// Tiempo de vuelo en horas con un decimal: "1,4" | "1.4" | ",5" | "2" | 1.4 → décimas (14).
+function parseHoras(v) {
   if (typeof v === 'number') v = String(v);
   if (typeof v !== 'string') return null;
-  const s = v.trim().replace(',', '.');
-  if (!/^\d{1,6}(\.\d)?$/.test(s)) return null;
+  let s = v.trim().replace(',', '.');
+  if (s.startsWith('.')) s = '0' + s;
+  if (!/^\d{1,2}(\.\d)?$/.test(s)) return null;
   const [ent, dec = '0'] = s.split('.');
   return Number(ent) * 10 + Number(dec);
 }
-function fmtTac(decimas) { return (decimas / 10).toFixed(1).replace('.', ','); }
 
 // "96.000" | "96000,50" | 96000 → centavos. Acepta separador de miles con punto (formato AR).
 function parsePesos(v) {
@@ -119,6 +119,6 @@ function limpiarTexto(v, max = 500) {
 
 module.exports = {
   TZ, ErrorNegocio, hoy, fechaDeSqlite, horaAR, periodoDe, periodoActual, sumarMeses, ultimoDia, sumarDias, nombrePeriodo,
-  esFecha, esPeriodo, parseTac, fmtTac, parsePesos, fmtPesos, fmtHoras, fmtFechaCorta, importeVuelo,
+  esFecha, esPeriodo, parseHoras, parsePesos, fmtPesos, fmtHoras, fmtFechaCorta, importeVuelo,
   telefonoWhatsApp, limpiarTexto, MESES
 };

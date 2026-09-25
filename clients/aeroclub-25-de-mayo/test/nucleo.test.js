@@ -26,13 +26,15 @@ function socio(nombre, apellido, extra = {}) {
   return { id: Number(r.lastInsertRowid), rol: 'piloto', nombre };
 }
 
-test('utilidades: tacómetro, pesos, teléfonos e importes', () => {
-  assert.equal(util.parseTac('2345,6'), 23456);
-  assert.equal(util.parseTac('2345.6'), 23456);
-  assert.equal(util.parseTac('2345'), 23450);
-  assert.equal(util.parseTac('2345,67'), null);
-  assert.equal(util.parseTac('abc'), null);
-  assert.equal(util.fmtTac(23456), '2345,6');
+test('utilidades: horas, pesos, teléfonos, importes y fechas', () => {
+  assert.equal(util.parseHoras('1,4'), 14);
+  assert.equal(util.parseHoras('1.4'), 14);
+  assert.equal(util.parseHoras(',5'), 5);
+  assert.equal(util.parseHoras('0,1'), 1);
+  assert.equal(util.parseHoras('2'), 20);
+  assert.equal(util.parseHoras(1.4), 14);
+  assert.equal(util.parseHoras('1,45'), null);
+  assert.equal(util.parseHoras('abc'), null);
   assert.equal(util.parsePesos('80.000'), 8000000);
   assert.equal(util.parsePesos('80000,50'), 8000050);
   assert.equal(util.parsePesos('$ 1.234.567'), 123456700);
@@ -48,61 +50,58 @@ test('utilidades: tacómetro, pesos, teléfonos e importes', () => {
 
 let ana, juan, inst;
 
-test('preparación: flota, tarifas y socios', () => {
+test('preparación: tarifas y socios', () => {
   // Simulamos que el sistema arrancó en julio para poder cerrar meses pasados.
   db.prepare(`UPDATE config SET valor = '2026-07' WHERE clave = 'periodo_inicio'`).run();
-  flota.guardarAvion({ matricula: 'LV-APH', modelo: 'Cessna 152', tac_base: 10000, proxima_inspeccion: null }, admin, 1);
   flota.nuevaTarifa(1, { tipo: 'solo', precio_hora: 8000000, vigente_desde: '2026-01-01' }, admin);
   flota.nuevaTarifa(1, { tipo: 'instruccion', precio_hora: 9500000, vigente_desde: '2026-01-01' }, admin);
   ana = socio('Ana', 'Gómez');
   juan = socio('Juan', 'Pérez');
   inst = socio('Carlos', 'Instructor', { instructor: true });
-  assert.equal(flota.tacActual(1), 10000);
+  assert.deepEqual(flota.tarifasVigentes(1), { solo: 8000000, instruccion: 9500000 });
 });
 
 // Los vuelos de julio tienen más de 60 días: los carga tesorería en nombre del piloto.
 const porTesoreria = (input, piloto) => vuelos.crear({ ...input, piloto_id: piloto.id }, admin);
 
-test('carga de vuelos: validaciones, superposición e instructor', () => {
-  const v1 = porTesoreria({ avion_id: 1, fecha: '2026-07-10', tac_inicial: '1000,0', tac_final: '1001,2', con_instructor: true, instructor_id: inst.id }, ana);
+test('carga de vuelos: horas, validaciones e instructor', () => {
+  const v1 = porTesoreria({ avion_id: 1, fecha: '2026-07-10', horas: '1,2', con_instructor: true, instructor_id: inst.id }, ana);
+  assert.equal(v1.vuelo.decimas, 12);
   assert.equal(v1.vuelo.importe, 11400000);
   assert.equal(v1.vuelo.cargado_por, admin.id);
+  assert.equal(v1.vuelo.tac_inicial, null);
   assert.deepEqual(v1.avisos, []);
 
-  assert.throws(() => porTesoreria({ avion_id: 1, fecha: '2026-07-11', tac_inicial: '1001,0', tac_final: '1002,0' }, juan), /superpone/);
-  assert.throws(() => porTesoreria({ avion_id: 1, fecha: '2026-07-11', tac_inicial: '1002,0', tac_final: '1001,0' }, juan), /mayor que el inicial/);
-  assert.throws(() => porTesoreria({ avion_id: 1, fecha: '2026-07-11', tac_inicial: '1002,0', tac_final: '1003,0', con_instructor: true }, juan), /instructor/);
-  assert.throws(() => porTesoreria({ avion_id: 1, fecha: '2026-07-11', tac_inicial: '1002,0', tac_final: '1003,0', con_instructor: true, instructor_id: juan.id }, juan), /instructor/);
-  assert.throws(() => vuelos.crear({ avion_id: 1, fecha: '2099-01-01', tac_inicial: '1002,0', tac_final: '1003,0' }, juan), /futura/);
-  assert.throws(() => vuelos.crear({ avion_id: 1, fecha: '2026-07-11', tac_inicial: '1002,0', tac_final: '1003,0' }, juan), /últimos 60 días/);
-  assert.throws(() => vuelos.crear({ avion_id: 1, fecha: util.hoy(), tac_inicial: '1002,0', tac_final: '1022,0' }, juan), /error de tipeo/);
+  assert.throws(() => porTesoreria({ avion_id: 1, fecha: '2026-07-11', horas: '0' }, juan), /Tiempo de vuelo/);
+  assert.throws(() => porTesoreria({ avion_id: 1, fecha: '2026-07-11', horas: '1,25' }, juan), /Tiempo de vuelo/);
+  assert.throws(() => porTesoreria({ avion_id: 1, fecha: '2026-07-11', horas: '1', con_instructor: true }, juan), /instructor/);
+  assert.throws(() => porTesoreria({ avion_id: 1, fecha: '2026-07-11', horas: '1', con_instructor: true, instructor_id: juan.id }, juan), /instructor/);
+  assert.throws(() => vuelos.crear({ avion_id: 1, fecha: '2099-01-01', horas: '1' }, juan), /futura/);
+  assert.throws(() => vuelos.crear({ avion_id: 1, fecha: '2026-07-11', horas: '1' }, juan), /últimos 60 días/);
+  assert.throws(() => vuelos.crear({ avion_id: 1, fecha: util.hoy(), horas: '12' }, juan), /error de tipeo/);
+
   // Un piloto no puede cargarle vuelos a otro: el piloto_id se ignora.
-  const ajeno = vuelos.crear({ avion_id: 1, piloto_id: ana.id, fecha: util.hoy(), tac_inicial: '1500,0', tac_final: '1500,5' }, juan);
+  const ajeno = vuelos.crear({ avion_id: 1, piloto_id: ana.id, fecha: util.hoy(), horas: '0,5' }, juan);
   assert.equal(ajeno.vuelo.piloto_id, juan.id);
-  assert.throws(() => vuelos.anular(ajeno.vuelo.id, '', juan), /por qué/);
+  // Cargar lo mismo dos veces avisa (no bloquea).
+  const doble = vuelos.crear({ avion_id: 1, fecha: util.hoy(), horas: '0,5' }, juan);
+  assert.match(doble.avisos.join(' '), /otro vuelo igual/);
+  assert.throws(() => vuelos.anular(doble.vuelo.id, '', juan), /por qué/);
+  vuelos.anular(doble.vuelo.id, 'Duplicado', juan);
   vuelos.anular(ajeno.vuelo.id, 'Prueba', juan);
   assert.throws(() => vuelos.anular(ajeno.vuelo.id, 'Otra', juan), /anulado/);
 
-  const v2 = vuelos.crear({ avion_id: 1, fecha: '2026-07-12', tac_inicial: '1001,5', tac_final: '1002,5' }, admin);
-  assert.equal(v2.vuelo.piloto_id, admin.id);
-  assert.match(v2.avisos[0], /0,3 h/);   // hueco entre 1001,2 y 1001,5
+  vuelos.crear({ avion_id: 1, fecha: '2026-07-12', horas: '1' }, admin);
 
   // Un piloto no puede tocar vuelos ajenos.
   assert.throws(() => vuelos.editar(v1.vuelo.id, { notas: 'x' }, juan), /tus propios vuelos/);
   // Pero sí corregir el suyo mientras el mes está abierto, y queda en el historial.
-  vuelos.editar(v1.vuelo.id, { notas: 'Presión de aceite baja' }, ana);
+  const corregido = vuelos.editar(v1.vuelo.id, { horas: '1,3', notas: 'Presión de aceite baja' }, ana);
+  assert.equal(corregido.vuelo.importe, 12350000);
   assert.equal(vuelos.historial(v1.vuelo.id).length, 2);
+  vuelos.editar(v1.vuelo.id, { horas: '1,2' }, ana);
 
-  porTesoreria({ avion_id: 1, fecha: '2026-07-20', tac_inicial: '1002,5', tac_final: '1003,5' }, juan);
-});
-
-test('continuidad del tacómetro: detecta y justifica huecos', () => {
-  const c = flota.continuidad(1);
-  assert.equal(c.huecos.length, 1);
-  assert.equal(c.huecos[0].decimas, 3);
-  flota.justificarTramo(1, { desde: 10012, hasta: 10015, motivo: 'Prueba de motor post mantenimiento' }, admin);
-  assert.equal(flota.continuidad(1).huecos.length, 0);
-  assert.throws(() => porTesoreria({ avion_id: 1, fecha: '2026-07-21', tac_inicial: '1001,2', tac_final: '1001,4' }, juan), /tesorería/);
+  porTesoreria({ avion_id: 1, fecha: '2026-07-20', horas: '1' }, juan);
 });
 
 test('pagos y ajustes quedan en el libro', () => {
@@ -117,7 +116,7 @@ test('la simulación del cierre no deja rastros', () => {
   assert.equal(sim.cupones.length, 3);
   assert.equal(db.prepare('SELECT COUNT(*) n FROM cierres').get().n, 0);
   assert.equal(db.prepare('SELECT COUNT(*) n FROM movimientos').get().n, movsAntes);
-  assert.equal(db.prepare(`SELECT COUNT(*) n FROM vuelos WHERE estado = 'abierto'`).get().n, 3);
+  assert.equal(db.prepare(`SELECT COUNT(*) n FROM vuelos WHERE estado = 'abierto' AND fecha < '2026-08-01'`).get().n, 3);
 });
 
 test('no se puede cerrar agosto antes que julio, ni el mes en curso', () => {
@@ -149,9 +148,9 @@ test('cierre de julio: cupones correctos y vuelos congelados', () => {
 
 test('agosto: saldo anterior, pago parcial y vuelo cargado tarde de julio', () => {
   // Juan se olvidó un vuelo de julio y lo carga en agosto: entra en el cierre de agosto.
-  const tarde = vuelos.crear({ avion_id: 1, fecha: '2026-07-30', tac_inicial: '1003,5', tac_final: '1004,0' }, juan);
+  const tarde = porTesoreria({ avion_id: 1, fecha: '2026-07-30', horas: '0,5' }, juan);
   assert.match(tarde.avisos.join(' '), /ya se cerró/);
-  vuelos.crear({ avion_id: 1, fecha: '2026-08-05', tac_inicial: '1004,0', tac_final: '1005,0', con_instructor: true, instructor_id: inst.id }, ana);
+  porTesoreria({ avion_id: 1, fecha: '2026-08-05', horas: '1', con_instructor: true, instructor_id: inst.id }, ana);
   ledger.registrar({ usuario_id: ana.id, tipo: 'pago', concepto: 'Pago parcial', importe: -4000000, creado_por: admin.id });
 
   const cupJulio = db.prepare('SELECT * FROM cupones WHERE usuario_id = ? ORDER BY id DESC').get(ana.id);
@@ -185,7 +184,7 @@ test('anulación de movimientos: contraasiento, una sola vez', () => {
 });
 
 test('retarifa opcional de vuelos abiertos', () => {
-  const v = vuelos.crear({ avion_id: 1, fecha: util.hoy(), tac_inicial: '1005,0', tac_final: '1006,0' }, juan);
+  const v = vuelos.crear({ avion_id: 1, fecha: util.hoy(), horas: '1' }, juan);
   assert.equal(v.vuelo.importe, 8000000);
   const r = flota.nuevaTarifa(1, { tipo: 'solo', precio_hora: 9000000, vigente_desde: util.hoy(), aplicar_abiertos: true }, admin);
   assert.equal(r.repreciados, 1);

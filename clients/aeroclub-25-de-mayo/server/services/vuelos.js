@@ -1,7 +1,7 @@
 const { db } = require('../db');
 const flota = require('./flota');
 const {
-  ErrorNegocio, hoy, sumarDias, esFecha, esPeriodo, parseTac, fmtTac, fmtHoras, fmtFechaCorta, importeVuelo, limpiarTexto, periodoDe
+  ErrorNegocio, hoy, sumarDias, esFecha, esPeriodo, parseHoras, fmtHoras, fmtFechaCorta, importeVuelo, limpiarTexto, periodoDe
 } = require('../util');
 
 const DIAS_ATRAS_PILOTO = 60;
@@ -54,28 +54,11 @@ function armar(input, actor, previo = null) {
     throw new ErrorNegocio(`Sólo podés cargar vuelos de los últimos ${DIAS_ATRAS_PILOTO} días. Para uno más viejo, pedíselo al tesorero.`);
   }
 
-  const tacInicial = input.tac_inicial != null ? parseTac(input.tac_inicial) : previo?.tac_inicial;
-  const tacFinal = input.tac_final != null ? parseTac(input.tac_final) : previo?.tac_final;
-  if (tacInicial == null) throw new ErrorNegocio('Tacómetro inicial inválido: usá un solo decimal, por ejemplo 2345,6');
-  if (tacFinal == null) throw new ErrorNegocio('Tacómetro final inválido: usá un solo decimal, por ejemplo 2346,8');
-  if (tacFinal <= tacInicial) throw new ErrorNegocio('El tacómetro final tiene que ser mayor que el inicial');
-  const decimas = tacFinal - tacInicial;
+  // Tiempo de vuelo en décimas de hora (0,1 = 6 minutos), como se anota en el aeroclub.
+  const decimas = input.horas != null ? parseHoras(input.horas) : previo?.decimas;
+  if (decimas == null || decimas <= 0) throw new ErrorNegocio('Tiempo de vuelo inválido: usá horas con un decimal, por ejemplo 1,4');
   const maxDecimas = esAdmin ? MAX_DECIMAS_ADMIN : MAX_DECIMAS_PILOTO;
-  if (decimas > maxDecimas) throw new ErrorNegocio(`${fmtHoras(decimas)} en un solo vuelo parece un error de tipeo. Revisá los números del tacómetro.`);
-  if (tacInicial < avion.tac_base) throw new ErrorNegocio(`El tacómetro inicial es menor que la lectura con la que ${avion.matricula} se dio de alta en el sistema (${fmtTac(avion.tac_base)}).`);
-
-  // Mismo tramo del tacómetro cargado dos veces = cobrar dos veces. No se permite.
-  const pisa = db.prepare(`
-    SELECT v.*, u.nombre || ' ' || u.apellido piloto FROM vuelos v JOIN usuarios u ON u.id = v.piloto_id
-    WHERE v.avion_id = ? AND v.estado <> 'anulado' AND v.id <> ? AND v.tac_inicial < ? AND v.tac_final > ?
-    LIMIT 1`).get(avionId, previo?.id ?? 0, tacFinal, tacInicial);
-  if (pisa) {
-    throw new ErrorNegocio(`Ese tramo del tacómetro se superpone con un vuelo ya cargado: ${pisa.piloto}, ${fmtFechaCorta(pisa.fecha)}, de ${fmtTac(pisa.tac_inicial)} a ${fmtTac(pisa.tac_final)}.`, 409);
-  }
-  const justificado = db.prepare(`SELECT * FROM tacometro_justificaciones WHERE avion_id = ? AND desde < ? AND hasta > ? LIMIT 1`).get(avionId, tacFinal, tacInicial);
-  if (justificado) {
-    throw new ErrorNegocio(`Ese tramo del tacómetro ya fue registrado por tesorería (${justificado.motivo}).`, 409);
-  }
+  if (decimas > maxDecimas) throw new ErrorNegocio(`${fmtHoras(decimas)} en un solo vuelo parece un error de tipeo. Revisá el tiempo de vuelo.`);
 
   const conInstructor = input.con_instructor != null ? !!input.con_instructor : previo ? previo.tipo === 'instruccion' : false;
   let instructorId = null;
@@ -95,13 +78,11 @@ function armar(input, actor, previo = null) {
 
   const notas = limpiarTexto(input.notas !== undefined ? input.notas : previo?.notas, 1000);
 
-  // Avisos (no bloquean): huecos en el tacómetro y mes ya cerrado.
-  const ultimo = db.prepare(`
-    SELECT MAX(tac_final) t FROM vuelos WHERE avion_id = ? AND estado <> 'anulado' AND id <> ? AND tac_final <= ?`).get(avionId, previo?.id ?? 0, tacInicial).t;
-  const referencia = Math.max(ultimo ?? avion.tac_base, avion.tac_base);
-  if (tacInicial > referencia) {
-    avisos.push(`Quedan ${fmtHoras(tacInicial - referencia)} del tacómetro sin cargar entre ${fmtTac(referencia)} y ${fmtTac(tacInicial)}. Si no fuiste vos, no pasa nada: tesorería lo va a ver.`);
-  }
+  // Avisos (no bloquean): posible vuelo duplicado y mes ya cerrado.
+  const igual = db.prepare(`
+    SELECT id FROM vuelos WHERE piloto_id = ? AND avion_id = ? AND fecha = ? AND decimas = ? AND estado <> 'anulado' AND id <> ? LIMIT 1`)
+    .get(pilotoId, avionId, fecha, decimas, previo?.id ?? 0);
+  if (igual) avisos.push(`Ya había otro vuelo igual (${avion.matricula}, ${fmtFechaCorta(fecha)}, ${fmtHoras(decimas)}). Si lo cargaste dos veces, anulá uno desde tus vuelos.`);
   if (periodoCerrado(periodoDe(fecha))) {
     avisos.push('Ese mes ya se cerró: el vuelo se va a cobrar en el próximo cupón.');
   }
@@ -109,14 +90,14 @@ function armar(input, actor, previo = null) {
   return {
     fila: {
       piloto_id: pilotoId, avion_id: avionId, instructor_id: instructorId, fecha,
-      tac_inicial: tacInicial, tac_final: tacFinal, decimas, tipo,
+      decimas, tipo,
       tarifa_id: tarifa.id, precio_hora: tarifa.precio_hora, importe: importeVuelo(tarifa.precio_hora, decimas), notas
     },
     avisos
   };
 }
 
-const CAMPOS_HIST = ['piloto_id', 'avion_id', 'instructor_id', 'fecha', 'tac_inicial', 'tac_final', 'decimas', 'tipo', 'precio_hora', 'importe', 'notas'];
+const CAMPOS_HIST = ['piloto_id', 'avion_id', 'instructor_id', 'fecha', 'decimas', 'tipo', 'precio_hora', 'importe', 'notas'];
 function snapshot(v) { const o = {}; for (const k of CAMPOS_HIST) o[k] = v[k]; return o; }
 
 const qHist = db.prepare('INSERT INTO vuelos_historial (vuelo_id, accion, antes, despues, usuario_id) VALUES (?, ?, ?, ?, ?)');
@@ -124,8 +105,8 @@ const qHist = db.prepare('INSERT INTO vuelos_historial (vuelo_id, accion, antes,
 const crear = db.transaction((input, actor) => {
   const { fila, avisos } = armar(input, actor);
   const r = db.prepare(`
-    INSERT INTO vuelos (piloto_id, avion_id, instructor_id, fecha, tac_inicial, tac_final, decimas, tipo, tarifa_id, precio_hora, importe, notas, cargado_por)
-    VALUES (@piloto_id, @avion_id, @instructor_id, @fecha, @tac_inicial, @tac_final, @decimas, @tipo, @tarifa_id, @precio_hora, @importe, @notas, @cargado_por)`)
+    INSERT INTO vuelos (piloto_id, avion_id, instructor_id, fecha, decimas, tipo, tarifa_id, precio_hora, importe, notas, cargado_por)
+    VALUES (@piloto_id, @avion_id, @instructor_id, @fecha, @decimas, @tipo, @tarifa_id, @precio_hora, @importe, @notas, @cargado_por)`)
     .run({ ...fila, cargado_por: actor.id });
   const id = Number(r.lastInsertRowid);
   qHist.run(id, 'alta', null, JSON.stringify(snapshot(fila)), actor.id);
@@ -148,7 +129,7 @@ const editar = db.transaction((id, input, actor) => {
   const { fila, avisos } = armar(input, actor, previo);
   db.prepare(`
     UPDATE vuelos SET piloto_id=@piloto_id, avion_id=@avion_id, instructor_id=@instructor_id, fecha=@fecha,
-      tac_inicial=@tac_inicial, tac_final=@tac_final, decimas=@decimas, tipo=@tipo, tarifa_id=@tarifa_id,
+      decimas=@decimas, tipo=@tipo, tarifa_id=@tarifa_id,
       precio_hora=@precio_hora, importe=@importe, notas=@notas, actualizado_en=datetime('now')
     WHERE id=@id`).run({ ...fila, id });
   const antes = snapshot(previo);
@@ -180,7 +161,7 @@ function listar(filtros = {}) {
   if (filtros.con_notas) where.push(`v.notas IS NOT NULL AND v.notas <> ''`);
   const limite = Math.min(Number(filtros.limite) || 500, 2000);
   return db.prepare(`${SELECT_VUELO} ${where.length ? 'WHERE ' + where.join(' AND ') : ''}
-    ORDER BY v.fecha DESC, v.tac_inicial DESC LIMIT ${limite}`).all(params);
+    ORDER BY v.fecha DESC, v.id DESC LIMIT ${limite}`).all(params);
 }
 
 function historial(id) {
