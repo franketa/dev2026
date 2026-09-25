@@ -324,7 +324,8 @@ p { margin: 0; }
   background: var(--tinta);
   color: #fff;
 }
-.saldo__ala { position: absolute; right: -40px; top: -30px; width: 330px; opacity: .95; pointer-events: none; }
+.saldo__ala { position: absolute; right: -90px; top: -46px; width: 300px; pointer-events: none; }
+@media (min-width: 640px) { .saldo__ala { right: -30px; top: -40px; width: 380px; } }
 .saldo__ala path { fill: var(--rojo); }
 .saldo > *:not(.saldo__ala) { position: relative; }
 .saldo__etiqueta { color: #B8C9E0; font-size: .95rem; font-weight: 500; }
@@ -388,7 +389,7 @@ p { margin: 0; }
 .tira__avion .matricula { font-size: 1rem; }
 .tira__avion small { color: var(--gris); font-size: .78rem; }
 .tira__linea1 { display: flex; gap: 8px; align-items: baseline; min-width: 0; }
-.tira__linea1 strong { font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.tira__linea1 strong { font-weight: 600; }
 .tira__linea2 { color: var(--gris); font-size: .86rem; display: flex; gap: 4px 12px; flex-wrap: wrap; }
 .tira__nota { grid-column: 2; color: var(--tinta-2); font-size: .86rem; display: flex; gap: 6px; align-items: flex-start; }
 .tira__nota svg { width: 15px; height: 15px; flex: none; margin-top: 2px; color: var(--ambar); }
@@ -512,7 +513,7 @@ p { margin: 0; }
 
 .hash { font-family: ui-monospace, 'SFMono-Regular', Consolas, monospace; font-size: .78rem; color: var(--gris); word-break: break-all; }
 
-.pestanas { display: flex; gap: 4px; border-bottom: 1px solid var(--linea); overflow-x: auto; }
+.pestanas { display: flex; gap: 4px; border-bottom: 1px solid var(--linea); overflow-x: auto; overflow-y: hidden; scrollbar-width: none; }
 .pestanas button { border: 0; background: none; padding: 10px 14px; font-weight: 600; color: var(--gris); border-bottom: 3px solid transparent; margin-bottom: -1px; cursor: pointer; white-space: nowrap; }
 .pestanas button[aria-selected="true"] { color: var(--tinta); border-color: var(--rojo); }
 
@@ -569,3 +570,26 @@ p { margin: 0; }
 
 .grilla--panel { grid-template-columns: 1fr; }
 @media (min-width: 1100px) { .grilla--panel { grid-template-columns: 2fr 1fr; } }
+.cierre-proximo { align-content: start; }
+.cierre-proximo > .btn, .cierre-proximo > .vista__acciones { justify-self: start; }
+@media (min-width: 960px) { .menu a, .menu button { min-height: 40px; } .lateral__marca .barra__club { font-size: 1rem; } }
+.menu .menu__cargar[aria-current="page"] { background: var(--rojo-osc); color: #fff; }
+.menu .menu__cargar[aria-current="page"] svg { color: #fff; }
+
+/* Los hijos de grilla no se estiran por contenido ancho (tablas): scrollean dentro de su caja. */
+.vista > *, .grilla > *, .pila > * { min-width: 0; }
+
+/* Tablas de gestión: en el celular cada fila es una tarjeta con sus acciones a mano. */
+@media (max-width: 640px) {
+  .tabla--tarjetas thead { display: none; }
+  .tabla--tarjetas, .tabla--tarjetas tbody { display: block; }
+  .tabla--tarjetas tr { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 14px; padding: 14px 0; border-bottom: 1px solid var(--linea-2); }
+  .tabla--tarjetas tr:last-child { border-bottom: 0; }
+  .tabla--tarjetas td { padding: 0; border: 0; }
+  .tabla--tarjetas td.num { text-align: left; }
+  .tabla--tarjetas td[data-label]::before { content: attr(data-label); display: block; font-size: .76rem; font-weight: 500; color: var(--gris); }
+  .tabla--tarjetas td.celda-ppal, .tabla--tarjetas td.celda-acciones { grid-column: 1 / -1; }
+  .tabla--tarjetas .tabla__acciones { justify-content: flex-start; }
+  .tabla--tarjetas .tabla__acciones .btn { flex: 1 1 auto; }
+  .tabla-caja:has(.tabla--tarjetas) { overflow: visible; }
+}

@@ -92,7 +92,7 @@ function pintarMenus(actual) {
       <span class="barra__club">Aeroclub 25 de Mayo<small>${esAdmin() ? 'Tesorería' : 'Socios'}</small></span>
     </a>
     <div class="menu">
-      ${esAdmin() ? html`${itemMenu(MENU_PILOTO[1], actual)}<div class="menu__grupo">Tesorería</div>${MENU_ADMIN.map(i => itemMenu(i, actual))}<div class="menu__grupo">Mi actividad</div>${menuPiloto.slice(1).map(i => itemMenu(i, actual))}` : menuPiloto.map(i => itemMenu(i, actual))}
+      ${esAdmin() ? html`${itemMenu(MENU_PILOTO[1], actual)}<div class="menu__grupo">Administración</div>${MENU_ADMIN.map(i => itemMenu(i, actual))}<div class="menu__grupo">Mi actividad</div>${menuPiloto.slice(1).map(i => itemMenu(i, actual))}` : menuPiloto.map(i => itemMenu(i, actual))}
     </div>
     <div class="lateral__pie">
       <a class="avatar" href="#/perfil" aria-label="Mi perfil">${iniciales(usuario.nombre, usuario.apellido)}</a>
@@ -107,7 +107,8 @@ function pintarMenus(actual) {
     if (it.mas) return html`<button type="button" data-cajon>${icono('menu')}<span>Más</span></button>`;
     const activo = actual === it.href.slice(1) || actual.startsWith(it.href.slice(1) + '/');
     if (it.cargar) return html`<a href="${it.href}" class="nav-inf__cargar" ${activo ? html`aria-current="page"` : ''}><span class="boton-central">${icono('mas')}</span><span>Cargar</span></a>`;
-    return html`<a href="${it.href}" ${activo ? html`aria-current="page"` : ''}>${icono(it.ic)}<span>${it.txt.replace('Mis ', '').replace('Mi ', '').replace('Cierres y cupones', 'Cierres')}</span></a>`;
+    const corto = { 'Mis vuelos': 'Vuelos', 'Mi cuenta': 'Cuenta', 'Cierres y cupones': 'Cierres' }[it.txt] || it.txt;
+    return html`<a href="${it.href}" ${activo ? html`aria-current="page"` : ''}>${icono(it.ic)}<span>${corto}</span></a>`;
   }));
   pintar(document.getElementById('barra-avatar'), iniciales(usuario.nombre, usuario.apellido));
 }
@@ -121,7 +122,7 @@ function abrirCajon() {
   cajon.setAttribute('role', 'dialog');
   cajon.setAttribute('aria-label', 'Todas las secciones');
   pintar(cajon, html`<div class="menu">
-    <div class="menu__grupo">Tesorería</div>${MENU_ADMIN.map(i => itemMenu(i, actual))}
+    <div class="menu__grupo">Administración</div>${MENU_ADMIN.map(i => itemMenu(i, actual))}
     <div class="menu__grupo">Mi actividad</div>
     ${itemMenu({ href: '#/inicio', txt: 'Mi resumen', ic: 'inicio' }, actual)}${itemMenu(MENU_PILOTO[2], actual)}${itemMenu(MENU_PILOTO[3], actual)}${itemMenu(MENU_PILOTO[4], actual)}
     <button type="button" data-salir>${icono('salir')}<span>Salir</span></button>

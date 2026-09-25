@@ -115,16 +115,16 @@ export async function detalleCierre(ctx) {
           <button type="button" role="tab" data-ver="impagos" aria-selected="${filtro === 'impagos'}">Sin cobrar</button>
         </div>
       </div>
-      ${visibles.length ? html`<div class="tabla-caja"><table class="tabla">
+      ${visibles.length ? html`<div class="tabla-caja"><table class="tabla tabla--tarjetas">
         <thead><tr><th>Socio</th><th class="num">Horas</th><th class="num">Total</th><th>Estado</th><th>Envío</th><th></th></tr></thead>
         <tbody>${visibles.map(c => html`<tr>
-          <td><a href="#/admin/cuentas/${c.usuario_id}"><strong>${c.apellido}, ${c.nombre}</strong></a><div class="muted chico">${c.numero}</div></td>
-          <td class="num">${horas(c.decimas)}</td>
-          <td class="num monto">${pesos(c.total)}</td>
-          <td>${chipCupon(c)}${c.restante && c.estado === 'parcial' ? html`<div class="muted chico">Faltan ${pesos(c.restante)}</div>` : ''}</td>
-          <td>${c.envios ? html`<span class="chip chip--ok">Enviado</span><div class="muted chico">${fechaHora(c.ultimo_envio)}</div>` : c.whatsapp ? html`<span class="muted chico">Sin enviar</span>` : html`<a class="chico" href="#/admin/socios">Falta el celular</a>`}</td>
-          <td><div class="tabla__acciones">
-            ${c.whatsapp && c.total > 0 ? html`<a class="btn btn--wa btn--chico" href="${c.whatsapp}" target="_blank" rel="noopener" data-enviar="${c.id}">${icono('wa')} WhatsApp</a>` : ''}
+          <td class="celda-ppal"><a href="#/admin/cuentas/${c.usuario_id}"><strong>${c.apellido}, ${c.nombre}</strong></a><div class="muted chico">${c.numero}</div></td>
+          <td class="num" data-label="Horas">${horas(c.decimas)}</td>
+          <td class="num monto" data-label="Total">${pesos(c.total)}</td>
+          <td data-label="Estado">${chipCupon(c)}${c.restante && c.estado === 'parcial' ? html`<div class="muted chico">Faltan ${pesos(c.restante)}</div>` : ''}</td>
+          <td data-label="Envío">${c.envios ? html`<span class="chip chip--ok">Enviado</span><div class="muted chico">${fechaHora(c.ultimo_envio)}</div>` : c.whatsapp ? html`<span class="muted chico">Sin enviar</span>` : html`<a class="chico" href="#/admin/socios">Falta el celular</a>`}</td>
+          <td class="celda-acciones"><div class="tabla__acciones">
+            ${c.whatsapp && c.restante > 0 ? html`<a class="btn btn--wa btn--chico" href="${c.whatsapp}" target="_blank" rel="noopener" data-enviar="${c.id}">${icono('wa')} WhatsApp</a>` : ''}
             <a class="btn btn--sec btn--chico" href="/api/admin/cupones/${c.id}/pdf" target="_blank" rel="noopener">${icono('pdf')} PDF</a>
             ${c.restante > 0 ? html`<button class="btn btn--sec btn--chico" type="button" data-pago="${c.id}">${icono('pago')} Pago</button>` : ''}
           </div></td></tr>`)}</tbody>

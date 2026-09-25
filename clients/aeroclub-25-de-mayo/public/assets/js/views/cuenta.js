@@ -23,15 +23,15 @@ function bloqueSaldo(d, { admin }) {
 
 function tablaCupones(cupones, { admin }) {
   if (!cupones.length) return html`<p class="muted">Todavía no hay cupones: se generan en el cierre de cada mes.</p>`;
-  return html`<div class="tabla-caja"><table class="tabla">
+  return html`<div class="tabla-caja"><table class="tabla tabla--tarjetas">
     <thead><tr><th>Mes</th><th>Cupón</th><th class="num">Horas</th><th class="num">Total</th><th>Estado</th><th></th></tr></thead>
     <tbody>${cupones.map(c => html`<tr>
-      <td style="text-transform:capitalize">${nombrePeriodo(c.periodo)}</td>
-      <td>${c.numero}<div class="muted chico">Vence ${fecha(c.vencimiento)}</div></td>
-      <td class="num">${horas(c.decimas)}</td>
-      <td class="num monto">${pesos(c.total)}</td>
-      <td>${chipCupon(c)}</td>
-      <td><div class="tabla__acciones">
+      <td class="celda-ppal" style="text-transform:capitalize"><strong>${nombrePeriodo(c.periodo)}</strong></td>
+      <td data-label="Cupón">${c.numero}<div class="muted chico">Vence ${fecha(c.vencimiento)}</div></td>
+      <td class="num" data-label="Horas">${horas(c.decimas)}</td>
+      <td class="num monto" data-label="Total">${pesos(c.total)}</td>
+      <td data-label="Estado">${chipCupon(c)}</td>
+      <td class="celda-acciones"><div class="tabla__acciones">
         <a class="btn btn--sec btn--chico" href="/api/${admin ? 'admin/' : ''}cupones/${c.id}/pdf" target="_blank" rel="noopener">${icono('pdf')} PDF</a>
       </div></td></tr>`)}</tbody></table></div>`;
 }

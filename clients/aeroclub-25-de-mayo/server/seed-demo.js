@@ -25,8 +25,8 @@ db.prepare(`UPDATE config SET valor = ? WHERE clave = 'pago_cuit'`).run('30-0000
 db.prepare(`UPDATE config SET valor = ? WHERE clave = 'pago_banco'`).run('Banco de la Provincia de Buenos Aires');
 
 // Flota y tarifas (precios de ejemplo)
-flota.guardarAvion({ matricula: 'LV-APH', modelo: 'Cessna 152', tac_base: 45213, proxima_inspeccion: 45800 }, admin, 1);
-flota.guardarAvion({ matricula: 'LV-XUG', modelo: 'Piper PA-11', tac_base: 22100, proxima_inspeccion: 22480 }, admin, 2);
+flota.guardarAvion({ matricula: 'LV-APH', modelo: 'Cessna 152', tac_base: 45213, proxima_inspeccion: 46050 }, admin, 1);
+flota.guardarAvion({ matricula: 'LV-XUG', modelo: 'Piper PA-11', tac_base: 22100, proxima_inspeccion: 22610 }, admin, 2);
 const desde = `${inicio}-01`;
 flota.nuevaTarifa(1, { tipo: 'solo', precio_hora: 9500000, vigente_desde: desde }, admin);
 flota.nuevaTarifa(1, { tipo: 'instruccion', precio_hora: 12000000, vigente_desde: desde }, admin);

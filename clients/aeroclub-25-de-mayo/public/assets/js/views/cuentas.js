@@ -23,15 +23,15 @@ export default async function cuentas(ctx) {
           <button type="button" role="tab" data-ver="deudores" aria-selected="${filtro === 'deudores'}">Con deuda</button>
         </div>
       </div>
-      <div class="tabla-caja"><table class="tabla">
+      <div class="tabla-caja"><table class="tabla tabla--tarjetas">
         <thead><tr><th>Socio</th><th class="num">Saldo</th><th class="num">A facturar</th><th>Último pago</th><th></th></tr></thead>
         <tbody>${lista.filter(c => filtro === 'todos' || c.saldo > 0).map(c => html`
           <tr data-href="#/admin/cuentas/${c.id}" data-nombre="${`${c.nombre} ${c.apellido} ${c.email}`.toLowerCase()}">
-            <td><strong>${c.apellido}, ${c.nombre}</strong>${c.activo ? '' : html` <span class="chip chip--neutro">Baja</span>`}<div class="muted chico">${c.rol === 'admin' ? 'Tesorería' : c.es_instructor ? 'Instructor' : 'Piloto'}</div></td>
-            <td class="num"><span class="monto ${c.saldo < 0 ? 'monto--neg' : ''}">${pesos(c.saldo)}</span></td>
-            <td class="num">${c.a_facturar ? html`${pesos(c.a_facturar)}<div class="muted chico">${horas(c.decimas_abiertas)}</div>` : html`<span class="muted">—</span>`}</td>
-            <td>${c.ultimo_pago ? fecha(c.ultimo_pago) : html`<span class="muted">—</span>`}</td>
-            <td><div class="tabla__acciones"><button class="btn btn--sec btn--chico" type="button" data-pago="${c.id}">${icono('pago')} Pago</button></div></td>
+            <td class="celda-ppal"><strong>${c.apellido}, ${c.nombre}</strong>${c.activo ? '' : html` <span class="chip chip--neutro">Baja</span>`}<div class="muted chico">${c.rol === 'admin' ? 'Tesorería' : c.es_instructor ? 'Instructor' : 'Piloto'}</div></td>
+            <td class="num" data-label="Saldo"><span class="monto ${c.saldo < 0 ? 'monto--neg' : ''}">${pesos(c.saldo)}</span></td>
+            <td class="num" data-label="A facturar">${c.a_facturar ? html`${pesos(c.a_facturar)}<div class="muted chico">${horas(c.decimas_abiertas)}</div>` : html`<span class="muted">—</span>`}</td>
+            <td data-label="Último pago">${c.ultimo_pago ? fecha(c.ultimo_pago) : html`<span class="muted">—</span>`}</td>
+            <td class="celda-acciones"><div class="tabla__acciones"><button class="btn btn--sec btn--chico" type="button" data-pago="${c.id}">${icono('pago')} Pago</button></div></td>
           </tr>`)}</tbody>
       </table></div>
     </section>

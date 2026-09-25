@@ -1,4 +1,7 @@
 const express = require('express');
+const fs = require('fs');
+const os = require('os');
+const path = require('path');
 const crypto = require('crypto');
 const bcrypt = require('bcryptjs');
 const { db, getConfig, auditar } = require('../db');
@@ -321,6 +324,16 @@ router.get('/libro', (req, res) => {
 });
 
 router.get('/integridad', (req, res) => res.json(ledger.verificarCadena()));
+
+// Copia completa de la base (consistente aunque haya escrituras en curso).
+router.get('/respaldo', async (req, res, next) => {
+  try {
+    const archivo = path.join(os.tmpdir(), `a25-respaldo-${Date.now()}.sqlite`);
+    await db.backup(archivo);
+    auditar(req.user.id, 'respaldo.descarga', 'Descargó una copia de seguridad de la base');
+    res.download(archivo, `aeroclub-respaldo-${hoy()}.sqlite`, () => fs.unlink(archivo, () => {}));
+  } catch (e) { next(e); }
+});
 
 // ── Configuración ───────────────────────────────────────────────────────────
 const EDITABLES = ['club_nombre', 'club_localidad', 'pago_alias', 'pago_cbu', 'pago_titular', 'pago_cuit', 'pago_banco', 'pago_instrucciones',

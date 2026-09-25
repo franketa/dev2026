@@ -119,7 +119,7 @@ export default async function cargar(ctx) {
     const opc = [['solo', 'Sin instructor', t.solo], ['instruccion', 'Con instructor', t.instruccion]];
     pintar($tipos, opc.map(([v, txt, precio]) => html`
       <label><input type="radio" name="tipo" value="${v}" ${estado.tipo === v ? raw('checked') : ''}>
-        <span>${txt}<small>${precio ? `${pesos(precio)} la hora` : 'Sin tarifa cargada'}</small></span></label>`));
+        <span>${txt}<small>${precio ? `${pesos(precio)} la hora` : avion() ? 'Sin tarifa cargada' : 'Elegí el avión'}</small></span></label>`));
     $campoInst.hidden = estado.tipo !== 'instruccion';
     // No te podés elegir a vos mismo como instructor.
     const yo = estado.pilotoId;
@@ -205,7 +205,7 @@ function listo(ctx, { vuelo: v, avisos }, editado) {
         </div>
         ${avisos.map(a => html`<p class="aviso">${icono('info')}<span>${a}</span></p>`)}
         <div class="listo__acciones">
-          <a class="btn btn--sec" href="#/vuelos">Ver mis vuelos</a>
+          <a class="btn btn--sec" href="${ctx.esAdmin ? '#/admin/vuelos' : '#/vuelos'}">${ctx.esAdmin ? 'Ver vuelos' : 'Ver mis vuelos'}</a>
           <a class="btn btn--principal" href="#/cargar" data-otro>${icono('mas')} Cargar otro</a>
         </div>
       </div>

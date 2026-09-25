@@ -83,14 +83,14 @@ export default async function socios(ctx) {
     </div>
     <section class="panel">
       <div class="panel__cab"><div class="buscador" style="flex:1">${icono('buscar')}<input class="input" type="search" id="buscar" placeholder="Buscar por nombre o email" aria-label="Buscar socio"></div></div>
-      <div class="tabla-caja"><table class="tabla">
+      <div class="tabla-caja"><table class="tabla tabla--tarjetas">
         <thead><tr><th>Socio</th><th>Contacto</th><th>Rol</th><th class="num">Saldo</th><th></th></tr></thead>
         <tbody>${usuarios.map(u => html`<tr data-nombre="${`${u.nombre} ${u.apellido} ${u.email}`.toLowerCase()}" ${u.activo ? '' : raw('style="opacity:.55"')}>
-          <td><strong>${u.apellido}, ${u.nombre}</strong>${u.activo ? '' : html` <span class="chip chip--neutro">Baja</span>`}</td>
-          <td><div>${u.email}</div><div class="muted chico">${u.telefono || 'Sin celular'}</div></td>
-          <td>${u.rol === 'admin' ? 'Tesorería' : 'Piloto'}${u.es_instructor ? html`<div class="muted chico">Instructor</div>` : ''}</td>
-          <td class="num"><a href="#/admin/cuentas/${u.id}" class="monto">${pesos(u.saldo)}</a></td>
-          <td><div class="tabla__acciones">
+          <td class="celda-ppal"><strong>${u.apellido}, ${u.nombre}</strong>${u.activo ? '' : html` <span class="chip chip--neutro">Baja</span>`}</td>
+          <td data-label="Contacto"><div>${u.email}</div><div class="muted chico">${u.telefono || 'Sin celular'}</div></td>
+          <td data-label="Rol">${u.rol === 'admin' ? 'Tesorería' : 'Piloto'}${u.es_instructor ? html`<div class="muted chico">Instructor</div>` : ''}</td>
+          <td class="num" data-label="Saldo"><a href="#/admin/cuentas/${u.id}" class="monto">${pesos(u.saldo)}</a></td>
+          <td class="celda-acciones"><div class="tabla__acciones">
             <button class="btn btn--sec btn--chico" type="button" data-editar="${u.id}">${icono('editar')} Editar</button>
             <button class="btn btn--fantasma btn--chico" type="button" data-reset="${u.id}">${icono('llave')} Nueva contraseña</button>
           </div></td></tr>`)}</tbody>

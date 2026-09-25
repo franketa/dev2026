@@ -9,7 +9,7 @@
     radial-gradient(120% 90% at 20% 0%, #EAF3F7 0%, transparent 60%),
     linear-gradient(180deg, #D6E7EE 0%, var(--celeste) 100%);
 }
-.ingreso__ala { position: absolute; left: -8%; bottom: -34%; width: 125%; max-width: none; }
+.ingreso__ala { position: absolute; left: -6%; bottom: -30%; width: 118%; max-width: none; }
 .ingreso__ala path { fill: var(--rojo); }
 
 /* Números de cabecera de pista, pintados como en el césped */
@@ -40,7 +40,7 @@
 
 @media (min-width: 900px) {
   .ingreso__marco { grid-template-rows: none; grid-template-columns: 1.15fr 1fr; }
-  .ingreso__ala { left: -10%; bottom: 8%; width: 120%; }
+  .ingreso__ala { left: -4%; bottom: 14%; width: 104%; }
   .ingreso__pista { left: 36px; top: 32px; font-size: 1.5rem; }
   .ingreso__panel { align-content: center; padding: 48px; }
   .ingreso__escudo { margin-top: 0; }
