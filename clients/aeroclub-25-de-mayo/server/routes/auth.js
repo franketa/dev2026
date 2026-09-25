@@ -1,7 +1,7 @@
 const express = require('express');
 const bcrypt = require('bcryptjs');
 const { db, auditar } = require('../db');
-const { requireAuth, emitirSesion, cerrarSesion, publico, limiteLogin } = require('../middleware/auth');
+const { requireAuth, emitirSesion, cerrarSesion, publico } = require('../middleware/auth');
 const { normalizarEmail } = require('../util');
 
 const router = express.Router();
@@ -12,18 +12,14 @@ const HASH_FALSO = bcrypt.hashSync('no-existe', 10);
 router.post('/login', (req, res) => {
   const email = normalizarEmail(req.body?.email);
   const password = String(req.body?.password || '');
-  const limite = limiteLogin(`${req.ip}|${email}`);
-  if (limite.bloqueado) return res.status(429).json({ error: 'Demasiados intentos. Esperá unos minutos y probá de nuevo.' });
 
   const u = db.prepare('SELECT * FROM usuarios WHERE email = ?').get(email);
   const ok = bcrypt.compareSync(password, u?.password_hash || HASH_FALSO);
   if (!u || !ok) {
-    limite.fallo();
     return res.status(401).json({ error: 'Email o contraseña incorrectos' });
   }
   if (!u.activo) return res.status(403).json({ error: 'Tu usuario está dado de baja. Consultá con tesorería.' });
 
-  limite.exito();
   db.prepare(`UPDATE usuarios SET ultimo_acceso = datetime('now') WHERE id = ?`).run(u.id);
   emitirSesion(res, u);
   res.json({ usuario: publico(u) });

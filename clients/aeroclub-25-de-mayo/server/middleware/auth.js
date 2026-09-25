@@ -82,19 +82,4 @@ function exigirOrigenPropio(req, res, next) {
   next();
 }
 
-// Límite de intentos de login por IP + email (en memoria, alcanza para un solo proceso).
-const intentos = new Map();
-const VENTANA_MS = 15 * 60 * 1000;
-const MAX_INTENTOS = 8;
-function limiteLogin(clave) {
-  const ahora = Date.now();
-  const lista = (intentos.get(clave) || []).filter(t => ahora - t < VENTANA_MS);
-  intentos.set(clave, lista);
-  return {
-    bloqueado: lista.length >= MAX_INTENTOS,
-    fallo() { lista.push(ahora); intentos.set(clave, lista); },
-    exito() { intentos.delete(clave); }
-  };
-}
-
-module.exports = { requireAuth, requireAdmin, exigirOrigenPropio, emitirSesion, cerrarSesion, publico, identificar, limiteLogin };
+module.exports = { requireAuth, requireAdmin, exigirOrigenPropio, emitirSesion, cerrarSesion, publico, identificar };
