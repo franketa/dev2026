@@ -50,7 +50,7 @@ function armar(input, actor, previo = null) {
   const fecha = input.fecha ?? previo?.fecha;
   if (!esFecha(fecha)) throw new ErrorNegocio('Fecha inválida');
   if (fecha > hoy()) throw new ErrorNegocio('La fecha del vuelo no puede ser futura');
-  if (!esAdmin && fecha < sumarDias(hoy(), -DIAS_ATRAS_PILOTO)) {
+  if (!esAdmin && fecha !== previo?.fecha && fecha < sumarDias(hoy(), -DIAS_ATRAS_PILOTO)) {
     throw new ErrorNegocio(`Sólo podés cargar vuelos de los últimos ${DIAS_ATRAS_PILOTO} días. Para uno más viejo, pedíselo al tesorero.`);
   }
 

@@ -50,10 +50,10 @@ function generarCupon({ cupon, movimientos, config, estado }) {
   // ── Cabecera: banda celeste con el ala del escudo ─────────────────────────────
   doc.rect(0, 0, W, 132).fill(C.celesteClaro);
   doc.save();
-  doc.translate(W - 330, -118).scale(0.5);
-  doc.path(ALA).fillOpacity(0.9).fill(C.rojo);
+  doc.rect(0, 0, W, 132).clip();           // sólo asoma la punta del ala dentro de la banda
+  doc.translate(W + 8 - 710 * 0.62, 110 - 305 * 0.62).scale(0.62);
+  doc.path(ALA).fill(C.rojo);
   doc.restore();
-  doc.fillOpacity(1);
   doc.image(ESCUDO, M, 30, { width: 72 });
   doc.font('CB').fontSize(21).fillColor(C.tinta).text(config.club_nombre, M + 88, 42, { width: 260 });
   doc.font('R').fontSize(10).fillColor(C.gris).text(config.club_localidad || '', M + 88, 68, { width: 260 });
