@@ -61,7 +61,7 @@ Orden de líneas = el del sitio web (Clásica, RTO640, MDNA, A3, A4, A4C, Barand
 | **Clásica** | Herrero | Alpros HE (42 códigos elegidos) + Alpros RV 1032 + Group ALG781 → **1029** + Group ALG046 (Escuadra de armado) → **Parte A**, al final | 45 |
 | **RTO640** | Rotonda 640 | Alpros RT (14 códigos: 1112-1113-1114-1115-1161-1162-1310-1311-1317-1325-1326-1800-1801-1913) + **Premarco Rotonda** = Alcenor 230 "Premarco TLT (LR)", al final, código **AR5-P640** | 15 |
 | **MDNA** | Modena | Alubon ALBM completo (43) + Alpros MD renumerados (1083→233, 1229→229, 1257→202, 1265→265 en orden — el 1264→262 **no**, alcanza con el 262 de Alubon; 1254→906, 1256→907, 1253→908, 1255→909 al final) + Group ALG3103 y ALG3104 al final | ~54 |
-| **A3** | Línea 30 | Alubon ALB3 completo (38, ya trae 044, 083, 068 y 073), **todo reordenado por número** + **050** (plano en "M22", pendiente) | 39 |
+| **A3** | Línea 30 | Alubon ALB3 completo (38, ya trae 044, 083, 068 y 073), **todo reordenado por número** + **050** = Aluar 6050 "A30 Contravidrio curvo ext.", 0,192 kg/m, 12×22 mm ([plano](https://tiendam22.com.ar/28215-large_default/6050-a30-contravidrio-curvo-ext-crudo-perfil-aluar.jpg), tiendam22.com.ar) | 39 |
 | **A4** | A40 | Alubon ALB4 tal cual, con **14 adelante** del código (AR5-14262) | 18 |
 | **A4C** | ALB4C | Alubon ALB4C tal cual | 12 |
 | **Baranda** | Baranda | Alubon ALBB (502, 503, 513, 514) + Group (476, 477, 468, 439) | 8 |
@@ -79,7 +79,7 @@ existen en el catálogo de Group (62 págs., bajado de su web).
 | # | Duda | Respuesta |
 |---|---|---|
 | 1 | Códigos repetidos entre líneas | **A4 lleva 14 adelante**: AR5-14262. Resuelve MDNA vs A4 y A3 vs A4. |
-| 2 | A3 050 sin plano | Buscarlo en **"M22"** (buscador por código en Google) con **6050**. No lo encontré todavía → pedirle link o captura. |
+| 2 | A3 050 sin plano | Está en **tiendam22.com.ar** (distribuidor Aluar): **6050 — A30 Contravidrio curvo ext., 0,192 kg/m, 12×22 mm**. Los otros dos que buscó en Google (6044, 6083) también son Aluar, pero Alubon ya los trae. |
 | 3 | A3 068 / 073 | Los catálogos "completos" van completos; **reordenar por número** todo lo que esté fuera de orden. |
 | 4 | Modena 262 duplicado | Es el mismo perfil: **alcanza con el de Alubon**. El Alpros 1264 no va. |
 | 5 | Premarco Rotonda | **AR5-P640**. |
