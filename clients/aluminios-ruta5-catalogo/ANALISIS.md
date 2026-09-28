@@ -12,8 +12,7 @@ Material original en `fuentes/` (fuera de git, 167 MB).
 ## 1. Transcripción de los audios, en orden de chat
 
 Los audios describen **lo que se mandó justo antes** (primero el link, después el audio que lo explica).
-`audio catalogo 12.ogg` es copia byte a byte del 11 → descartado. Falta el audio de Franco de 0:32
-(10:23), al que responde el 19.
+`audio catalogo 12.ogg` es copia byte a byte del 11 → descartado.
 
 | # | Hora | Dur. | Se refiere a | Transcripción |
 |---|---|---|---|---|
@@ -34,7 +33,7 @@ Los audios describen **lo que se mandó justo antes** (primero el link, después
 | 16 | 10:18 | 0:15 | Machete a mano | "Te mandé un machete que me había escrito, por las dudas. La mayoría de los catálogos están en **escala 1:1**, así que con eso no vamos a tener problema." |
 | 17 | 10:18 | 0:31 | Deco | "En Deco me faltaría el plano del **wall panel**: no lo tengo, se lo pedí a la extrusora y no lo tiene, capaz lo manda a hacer. Si tienen dudas, pregúntenme; pasale mi número a los chicos, no tengo drama." |
 | 18 | 10:19 | 0:59 | Códigos | "Los de Alpros dicen CA + código, los de Aluminium Group ALG + código, los de Alubon ALB + código. La idea es que diga **AR5- y el código**. Si ponemos CA, ALG y ALB se da cuenta que hicimos una mezcla de catálogos." |
-| — | 10:23 | 0:32 | *(Franco — no está)* | — |
+| F | 10:23 | 0:32 | *(Franco)* | "Fantástico, Nacho, impecable. Después de escuchar todos los audios, seguramente necesite un poquito de alineamiento de tu parte, o por lo menos un resumen para que le quede bien a los de diseño. Voy a tener que estar tanto con vos como con los de diseño cuando lo estén haciendo." |
 | 19 | 10:24 | 0:49 | ↩ Franco | "No es drama. Estoy re complicado. Si hay que pagarles algo extra a los chicos, entiendo que es un laburito, **consultame antes**: capaz me dicen 300 dólares y me largo a llorar. Me decís 'va a salir esto' y te digo mandale o lo pasamos para más adelante. **Quiero que quede definitivo**, por eso lo estoy haciendo tan completo." |
 
 ## 2. Machete escrito a mano (transcripción)
