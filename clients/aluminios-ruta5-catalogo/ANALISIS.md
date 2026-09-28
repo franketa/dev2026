@@ -59,44 +59,44 @@ Orden de líneas = el del sitio web (Clásica, RTO640, MDNA, A3, A4, A4C, Barand
 | Línea web | Nombre en el chat | Fuentes | Perfiles aprox. |
 |---|---|---|---|
 | **Clásica** | Herrero | Alpros HE (42 códigos elegidos) + Alpros RV 1032 + Group ALG781 → **1029** + Group ALG046 (Escuadra de armado) → **Parte A**, al final | 45 |
-| **RTO640** | Rotonda 640 | Alpros RT (14 códigos: 1112-1113-1114-1115-1161-1162-1310-1311-1317-1325-1326-1800-1801-1913) + **Premarco Rotonda** = Alcenor 230 "Premarco TLT (LR)", al final | 15 |
-| **MDNA** | Modena | Alubon ALBM completo (43) + Alpros MD renumerados (1083→233, 1229→229, 1257→202, 1264→262, 1265→265 en orden; 1254→906, 1256→907, 1253→908, 1255→909 al final) + Group ALG3103 y ALG3104 al final | ~54 |
-| **A3** | Línea 30 | Alubon ALB3 completo (38, ya trae 044, 083, 068 y 073) + **050** | 39 |
-| **A4** | A40 | Alubon ALB4 tal cual | 18 |
+| **RTO640** | Rotonda 640 | Alpros RT (14 códigos: 1112-1113-1114-1115-1161-1162-1310-1311-1317-1325-1326-1800-1801-1913) + **Premarco Rotonda** = Alcenor 230 "Premarco TLT (LR)", al final, código **AR5-P640** | 15 |
+| **MDNA** | Modena | Alubon ALBM completo (43) + Alpros MD renumerados (1083→233, 1229→229, 1257→202, 1265→265 en orden — el 1264→262 **no**, alcanza con el 262 de Alubon; 1254→906, 1256→907, 1253→908, 1255→909 al final) + Group ALG3103 y ALG3104 al final | ~54 |
+| **A3** | Línea 30 | Alubon ALB3 completo (38, ya trae 044, 083, 068 y 073), **todo reordenado por número** + **050** (plano en "M22", pendiente) | 39 |
+| **A4** | A40 | Alubon ALB4 tal cual, con **14 adelante** del código (AR5-14262) | 18 |
 | **A4C** | ALB4C | Alubon ALB4C tal cual | 12 |
 | **Baranda** | Baranda | Alubon ALBB (502, 503, 513, 514) + Group (476, 477, 468, 439) | 8 |
-| **FI** | "IBM" | Alubon ALBI Frente Integral (816, 817, 818, 819, 997) | 5 |
+| **FI** | "IBM" (nombre patentado, se usa FI) | Alubon ALBI Frente Integral (816, 817, 818, 819, 997) | 5 |
 | **Mampara** | Mampara | Alpros MP completo (1025, 1026, 1027, 1028, 1137, 1138) | 6 |
-| **Deco** | Deco | Alubon Estructurales (ángulos, U, tubos: 13 medidas) + Group tubos 110×25, 60×25, 25×25 + U blindex 40×15 + ALG085 como "Tubo 80×80" + wall panel (pendiente) | ~19 |
+| **Deco** | Deco | Alubon Estructurales (ángulos, U, tubos: 13 medidas) + Group tubos 110×25, 60×25, 25×25 + U blindex 40×15 + ALG085 como "Tubo 80×80" (reemplaza al viejo 1036) + wall panel (lo resuelve Nacho) | ~19 |
 
 **Total: ~220 perfiles.**
 
 Verificado: los 42 códigos de Herrero existen todos en el catálogo Alpros HE; los 9 perfiles de Group
 existen en el catálogo de Group (62 págs., bajado de su web).
 
-## 4. Problemas y dudas para Nacho
+## 4. Dudas — respuestas de Nacho (28/09/2026)
 
-1. **Códigos repetidos entre líneas.** Con la regla "AR5- + código", hay números que en dos líneas son
-   perfiles distintos:
-   - MDNA vs A4: 243, 257, 259, 260, 262 (ej. AR5-262 = acople 90° en MDNA y mosquitero en A4).
-   - A3 vs A4: 059, 062. A4C comparte 062, 264 y 073 con A4/A3 (a verificar si es el mismo perfil).
-   - Premarco Rotonda de Alcenor es el 230 → choca con MDNA 230 (quizá por eso "no le pongas código").
-   El catálogo viejo lo evitaba con códigos largos en A40 (14262, 14263…). Opciones: código con línea
-   (`AR5-A4-262`), o mantener los largos en A4.
-2. **262 en Modena duplicado:** Alubon ALBM ya trae 262 "Perfil de acople a 90°" y Alpros 1264 (→262) es
-   "Columna de acople 90°". ¿Van los dos? ¿Es el mismo?
-3. **A3 050:** no está en el PDF de Alubon. Lo mandó como búsqueda de Google "6050". Falta el plano.
-4. **A3 073:** Alubon lo trae al final y Nacho no lo mencionó (solo el 068). ¿Va, y en orden?
-5. **Premarco Rotonda:** ¿qué código lleva?
-6. **"IBM" vs "FI":** en el audio y el machete la llama IBM; en la web quedó "FI". Confirmar nombre.
-7. **Wall panel (Deco):** sin plano. ¿Se deja el espacio o sale sin él?
-8. **Deco "completo" vs "los seleccionados":** el chat dice completo, el machete "los seleccionados de
-   Alubon". Confirmar si van las 13 medidas.
-9. **Perfiles que estaban en el catálogo viejo y ahora no van:** 1035, 1036, 1068 (Herrero), 1210
-   (Rotonda). Nuevo que antes no estaba: 1515.
-10. **Nombres de línea:** Nacho dijo que quizá cambian nombres (lo habla con el padre). Hoy la web usa
-    Clásica/RTO640/MDNA/A3/A4/A4C/Baranda/FI/Mampara/Deco.
-11. **Presupuesto:** pidió que se le consulte el costo **antes** de hacerlo.
+| # | Duda | Respuesta |
+|---|---|---|
+| 1 | Códigos repetidos entre líneas | **A4 lleva 14 adelante**: AR5-14262. Resuelve MDNA vs A4 y A3 vs A4. |
+| 2 | A3 050 sin plano | Buscarlo en **"M22"** (buscador por código en Google) con **6050**. No lo encontré todavía → pedirle link o captura. |
+| 3 | A3 068 / 073 | Los catálogos "completos" van completos; **reordenar por número** todo lo que esté fuera de orden. |
+| 4 | Modena 262 duplicado | Es el mismo perfil: **alcanza con el de Alubon**. El Alpros 1264 no va. |
+| 5 | Premarco Rotonda | **AR5-P640**. |
+| 6 | Nombre IBM / FI | Nombres **de la web** (los otros están patentados): Clásica, RTO640, MDNA, A3, A4, A4C, Baranda, FI, Mampara, Deco. |
+| 7 | Deco completo vs seleccionados | **Pendiente**: lo pasa él. |
+| 8 | Wall panel | **Pendiente**: lo está resolviendo él (con ChatGPT). |
+| 9 | 1035, 1036, 1068, 1210 | 1035 y 1068 **no van**. 1036 (columna 75×75) se reemplaza por el **tubo 80×80** de Deco (ALG085). 1210 → era el **1310**, ya está en la lista. |
+| 10 | Nombres de línea | Los de la web, ya definidos. |
+
+### Quedan chicas por confirmar
+
+- **A4 con códigos que no son 2xx:** el catálogo viejo tenía 99346 y 17059, no 14346 / 14059. ¿Se respeta
+  el viejo o todo con 14?
+- **A4C comparte 062, 264 y 073** con A4/A3. ¿Llevan 14 también (AR5-14062) o otro criterio? El 073 de A4C
+  (zócalo y cabezal corrediza DVH) choca con el 073 de A3.
+- **Código del Tubo 80×80:** ¿AR5-1036 (el que reemplaza) u otro?
+- **Presupuesto:** pidió que se le consulte el costo **antes** de hacerlo.
 
 ## 5. Estado técnico de las fuentes (para unificar el diseño)
 
