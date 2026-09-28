@@ -84,7 +84,7 @@ existen en el catálogo de Group (62 págs., bajado de su web).
 | 4 | Modena 262 duplicado | Es el mismo perfil: **alcanza con el de Alubon**. El Alpros 1264 no va. |
 | 5 | Premarco Rotonda | **AR5-P640**. |
 | 6 | Nombre IBM / FI | Nombres **de la web** (los otros están patentados): Clásica, RTO640, MDNA, A3, A4, A4C, Baranda, FI, Mampara, Deco. |
-| 7 | Deco completo vs seleccionados | **Pendiente**: lo pasa él. |
+| 7 | Deco completo vs seleccionados | **Alubon Estructurales completo** + Group tubos 110×25, 60×25, 25×25 + ALG085 como tubo 80×80 + **U blindex 15×40** junto a las U. En las tablas se **saca "tiras por paquete"**; quedan medida A, medida B y kg/m (audio 28/09 12:07). |
 | 8 | Wall panel | **Pendiente**: lo está resolviendo él (con ChatGPT). |
 | 9 | 1035, 1036, 1068, 1210 | 1035 y 1068 **no van**. 1036 (columna 75×75) se reemplaza por el **tubo 80×80** de Deco (ALG085). 1210 → era el **1310**, ya está en la lista. |
 | 10 | Nombres de línea | Los de la web, ya definidos. |
