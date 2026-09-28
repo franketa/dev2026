@@ -89,12 +89,20 @@ existen en el catálogo de Group (62 págs., bajado de su web).
 | 9 | 1035, 1036, 1068, 1210 | 1035 y 1068 **no van**. 1036 (columna 75×75) se reemplaza por el **tubo 80×80** de Deco (ALG085). 1210 → era el **1310**, ya está en la lista. |
 | 10 | Nombres de línea | Los de la web, ya definidos. |
 
-### Quedan chicas por confirmar
+### Criterio de códigos (definido por nosotros, 28/09)
 
-- **A4 con códigos que no son 2xx:** el catálogo viejo tenía 99346 y 17059, no 14346 / 14059. ¿Se respeta
-  el viejo o todo con 14?
-- **A4C comparte 062, 264 y 073** con A4/A3. ¿Llevan 14 también (AR5-14062) o otro criterio? El 073 de A4C
-  (zócalo y cabezal corrediza DVH) choca con el 073 de A3.
+Regla general: **un perfil = un código**, igual en todas las líneas donde aparezca.
+
+- **A4:** todos llevan 14 adelante, sin excepciones: AR5-14262, AR5-14346, AR5-14059. Los 99346 y 17059
+  del catálogo viejo eran numeraciones anteriores de Alubon; se unifican con la regla para que sea una sola.
+- **A4C:** sus códigos propios ya son de 5 cifras y no chocan con nada → AR5-40667, AR5-40692, etc.
+  Los tres que comparte son el mismo perfil que en otra línea (verificado: misma descripción y peso),
+  así que llevan el código de esa línea:
+  - 062 (mosquitero) y 264 (guía corrediza mosquitero) = los de A4 → **AR5-14062, AR5-14264**.
+  - 073 (zócalo y cabezal corrediza p/DVH) = el de A3 → **AR5-073**.
+
+### Quedan por confirmar
+
 - **Código del Tubo 80×80:** ¿AR5-1036 (el que reemplaza) u otro?
 - **Presupuesto:** pidió que se le consulte el costo **antes** de hacerlo.
 
