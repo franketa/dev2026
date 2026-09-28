@@ -38,11 +38,29 @@ SOURCES = {
     "alubon-4c": ("alubon/ALB4C.pdf", range(2, 12), "outline", r"ALB4C-(\d+)"),
     "alubon-b": ("alubon/ALBB-baranda.pdf", range(2, 4), "outline", r"ALBB-(\d+)"),
     "alubon-i": ("alubon/ALBI-frente-integral.pdf", range(1, 4), "outline", r"ALBI-(\d+)"),
+    "group": ("group/aluminium-group-catalogo.pdf", [], "filled", r"ALG\s*(\d+)"),     # solo recortes
+    "alcenor": ("alcenor/230-premarco-tlt-lr.jpg", [], "filled", r"x"),
+    "aluar": ("aluar/6050-a30-contravidrio-curvo-ext.jpg", [], "filled", r"x"),
 }
 
 # Recortes manuales para los casos que la detección automática no resuelve:
 # fuente -> código -> (pdf, página, (x0, y0, x1, y1) en pt, modo[, {"ancho_mm"|"alto_mm": cota real | "escala": k}])
 OVERRIDES = {
+    # planos sueltos de la web (imagen): recorte en píxeles y escala por cota
+    "alcenor": {
+        "230": ("alcenor/230-premarco-tlt-lr.jpg", 0, (40, 255, 805, 610), "filled", {"ancho_mm": 49.26}),
+    },
+    # Aluminium Group: siluetas negras (imagen) en 1:1
+    "group": {
+        "046": ("group/aluminium-group-catalogo.pdf", 20, (291, 177, 524, 302), "filled", {"original": True}),
+        "781": ("group/aluminium-group-catalogo.pdf", 25, (129, 418, 462, 454), "filled", {"original": True}),
+        "3103": ("group/aluminium-group-catalogo.pdf", 34, (332, 291, 487, 361), "filled", {"original": True}),
+        "3104": ("group/aluminium-group-catalogo.pdf", 34, (135, 493, 292, 563), "filled", {"original": True}),
+        "476": ("group/aluminium-group-catalogo.pdf", 61, (135, 239, 249, 310), "filled", {"original": True}),
+        "477": ("group/aluminium-group-catalogo.pdf", 61, (349, 251, 476, 302), "filled", {"original": True}),
+        "468": ("group/aluminium-group-catalogo.pdf", 61, (166, 432, 234, 555), "filled", {"original": True}),
+        "439": ("group/aluminium-group-catalogo.pdf", 61, (383, 458, 453, 549), "filled", {"original": True}),
+    },
     # FI: dibujado al ~78 %; se lleva a las cotas del plano (60 mm de ancho las columnas, etc.)
     "alubon-i": {
         "816": ("alubon/ALBI-frente-integral.pdf", 2, (152, 160, 296, 466), "solid", {"ancho_mm": 60, "original": True, "nivel": 248}),
@@ -382,13 +400,34 @@ def crop_mask(pdf, pno, rect, mode, gap=None, original=False, nivel=None):
     return keep[ys.min():ys.max() + 1, xs.min():xs.max() + 1]
 
 
+def image_mask(path, rect_px, mode, nivel=None):
+    """Recorte de un archivo de imagen (planos sueltos de la web). La escala sale de "ancho_mm"/"alto_mm"."""
+    img = cv2.imread(str(SRC / path), cv2.IMREAD_GRAYSCALE)
+    x0, y0, x1, y1 = rect_px
+    img = img[y0:y1, x0:x1]
+    ink = (img < (nivel or 128)).astype(np.uint8)
+    # sacar líneas de cota (finas) y quedarse con la silueta
+    k = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (5, 5))
+    ink = cv2.morphologyEx(ink, cv2.MORPH_OPEN, k)
+    n, lab, st, _ = cv2.connectedComponentsWithStats(ink, connectivity=8)
+    if n < 2:
+        return None
+    i = 1 + int(np.argmax(st[1:, cv2.CC_STAT_AREA]))
+    x, y, w, h = st[i, :4]
+    m = lab[y:y + h, x:x + w] == i
+    return material_mask(m.astype(np.uint8), mode).astype(bool) if mode != "filled" else m
+
+
 def run_overrides(name):
     rep = []
     for code, spec in OVERRIDES.get(name, {}).items():
         pdf, pno, rect, mode = spec[:4]
         opts = spec[4] if len(spec) > 4 else {}
-        m = crop_mask(pdf, pno, rect, mode, opts.get("gap"), opts.get("original", False),
-                       opts.get("nivel"))
+        if pdf.lower().endswith((".jpg", ".jpeg", ".png")):
+            m = image_mask(pdf, rect, mode, opts.get("nivel"))
+        else:
+            m = crop_mask(pdf, pno, rect, mode, opts.get("gap"), opts.get("original", False),
+                          opts.get("nivel"))
         if m is not None and ("ancho_mm" in opts or "alto_mm" in opts or "escala" in opts):
             # el dibujo no está en 1:1: reescalar a la cota real (o por un factor conocido)
             if "escala" in opts:
@@ -418,7 +457,7 @@ def run_overrides(name):
 
 def run(name):
     pdf, pages, mode, pattern = SOURCES[name]
-    src = fitz.open(SRC / pdf)
+    src = fitz.open(SRC / pdf) if pages else None
     (OUT / name).mkdir(parents=True, exist_ok=True)
     for old in (OUT / name).glob("*.png"):      # nada de máscaras viejas de corridas anteriores
         old.unlink()
