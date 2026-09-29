@@ -77,6 +77,29 @@ function parsePesos(v) {
   return Math.round(Number(s) * 100);
 }
 
+// Cantidad de un servicio con hasta dos decimales: "40,5" | "1" | 2.25 → centésimas (4050, 100, 225).
+function parseCantidad(v) {
+  if (v == null || v === '') return null;
+  if (typeof v === 'number') v = String(v);
+  if (typeof v !== 'string') return null;
+  const s = v.trim().replace(',', '.');
+  if (!/^\d{1,6}(\.\d{1,2})?$/.test(s)) return null;
+  const [ent, dec = ''] = s.split('.');
+  return Number(ent) * 100 + Number(dec.padEnd(2, '0'));
+}
+
+const UNIDADES = { unidad: ['unidad', 'unidades'], hora: ['hora', 'horas'], litro: ['litro', 'litros'], dia: ['día', 'días'], mes: ['mes', 'meses'] };
+// 4050 litros → "40,5 litros"; 100 unidad → "1 unidad".
+function fmtCantidad(centesimas, unidad) {
+  const n = centesimas / 100;
+  const txt = new Intl.NumberFormat('es-AR', { maximumFractionDigits: 2 }).format(n);
+  const [uno, varios] = UNIDADES[unidad] || ['', ''];
+  return uno ? `${txt} ${n === 1 ? uno : varios}` : txt;
+}
+
+// Importe de un ítem: precio por unidad × cantidad (en centésimas), redondeado al centavo.
+function importeItem(precio, centesimas) { return Math.round((precio * centesimas) / 100); }
+
 const fmtNum = new Intl.NumberFormat('es-AR', { minimumFractionDigits: 0, maximumFractionDigits: 2 });
 function fmtPesos(centavos) {
   const neg = centavos < 0;
@@ -117,6 +140,11 @@ function normalizarEmail(v) {
   return String(v ?? '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/\s+/g, '').toLowerCase();
 }
 
+// Los externos pueden ser una empresa: sólo nombre (razón social), sin apellido.
+function nombreCompleto(u) { return [u.nombre, u.apellido].filter(Boolean).join(' '); }
+
+const MEDIOS = ['transferencia', 'efectivo', 'mercadopago', 'cheque', 'otro'];
+
 function limpiarTexto(v, max = 500) {
   if (v == null) return null;
   const s = String(v).replace(/\s+$/g, '').replace(/^\s+/g, '').slice(0, max);
@@ -126,5 +154,6 @@ function limpiarTexto(v, max = 500) {
 module.exports = {
   TZ, ErrorNegocio, hoy, fechaDeSqlite, horaAR, periodoDe, periodoActual, sumarMeses, ultimoDia, sumarDias, nombrePeriodo,
   esFecha, esPeriodo, parseHoras, parsePesos, fmtPesos, fmtHoras, fmtFechaCorta, importeVuelo,
-  telefonoWhatsApp, normalizarEmail, limpiarTexto, MESES
+  parseCantidad, fmtCantidad, importeItem, UNIDADES,
+  telefonoWhatsApp, normalizarEmail, limpiarTexto, nombreCompleto, MEDIOS, MESES
 };

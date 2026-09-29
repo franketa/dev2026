@@ -20,24 +20,47 @@ const INMUTABLES = ['tarifas', 'cupon_envios', 'vuelos_historial', 'auditoria'];
 // Triggers de versiones anteriores que ya no aplican (bases creadas antes del cambio).
 const TRIGGERS_VIEJOS = ['movimientos_no_update', 'movimientos_no_delete', 'cupones_no_update', 'cupones_no_delete', 'cierres_sellados'];
 
-const SCHEMA = `
+const DDL_USUARIOS = `
 CREATE TABLE IF NOT EXISTS usuarios (
   id INTEGER PRIMARY KEY,
   nombre TEXT NOT NULL,
-  apellido TEXT NOT NULL,
-  email TEXT NOT NULL UNIQUE COLLATE NOCASE,
+  apellido TEXT NOT NULL DEFAULT '',
+  -- Los externos (dueños de aeronaves de afuera) no entran al sistema: sin email ni contraseña.
+  email TEXT UNIQUE COLLATE NOCASE,
   telefono TEXT,
   dni TEXT,
   licencia TEXT,
-  rol TEXT NOT NULL DEFAULT 'piloto' CHECK (rol IN ('admin','piloto')),
+  rol TEXT NOT NULL DEFAULT 'piloto' CHECK (rol IN ('admin','consulta','rampa','piloto','externo')),
   es_instructor INTEGER NOT NULL DEFAULT 0 CHECK (es_instructor IN (0,1)),
   activo INTEGER NOT NULL DEFAULT 1 CHECK (activo IN (0,1)),
-  password_hash TEXT NOT NULL,
+  password_hash TEXT,
   debe_cambiar_password INTEGER NOT NULL DEFAULT 1,
   token_version INTEGER NOT NULL DEFAULT 0,
   creado_en TEXT NOT NULL DEFAULT (datetime('now')),
-  ultimo_acceso TEXT
-);
+  ultimo_acceso TEXT,
+  CHECK (rol = 'externo' OR (email IS NOT NULL AND password_hash IS NOT NULL))
+);`;
+
+const DDL_MOVIMIENTOS = `
+CREATE TABLE IF NOT EXISTS movimientos (
+  id INTEGER PRIMARY KEY,
+  usuario_id INTEGER NOT NULL REFERENCES usuarios(id),
+  tipo TEXT NOT NULL CHECK (tipo IN ('vuelo','servicio','pago','ajuste','saldo_inicial','anulacion')),
+  concepto TEXT NOT NULL,
+  importe INTEGER NOT NULL CHECK (importe <> 0),
+  fecha TEXT NOT NULL,
+  vuelo_id INTEGER UNIQUE REFERENCES vuelos(id),
+  cierre_id INTEGER REFERENCES cierres(id),
+  anula_id INTEGER UNIQUE REFERENCES movimientos(id),
+  medio TEXT,
+  creado_por INTEGER REFERENCES usuarios(id),
+  creado_en TEXT NOT NULL,
+  hash_anterior TEXT NOT NULL,
+  hash TEXT NOT NULL UNIQUE
+);`;
+
+const SCHEMA = `
+${DDL_USUARIOS}
 
 CREATE TABLE IF NOT EXISTS aviones (
   id INTEGER PRIMARY KEY,
@@ -67,6 +90,7 @@ CREATE TABLE IF NOT EXISTS cierres (
   cantidad_vuelos INTEGER NOT NULL DEFAULT 0,
   total_decimas INTEGER NOT NULL DEFAULT 0,
   total_vuelos INTEGER NOT NULL DEFAULT 0,
+  total_servicios INTEGER NOT NULL DEFAULT 0,
   cantidad_cupones INTEGER NOT NULL DEFAULT 0,
   total_cupones INTEGER NOT NULL DEFAULT 0,
   automatico INTEGER NOT NULL DEFAULT 0,
@@ -112,22 +136,7 @@ CREATE TABLE IF NOT EXISTS vuelos_historial (
 );
 CREATE INDEX IF NOT EXISTS idx_vh_vuelo ON vuelos_historial(vuelo_id);
 
-CREATE TABLE IF NOT EXISTS movimientos (
-  id INTEGER PRIMARY KEY,
-  usuario_id INTEGER NOT NULL REFERENCES usuarios(id),
-  tipo TEXT NOT NULL CHECK (tipo IN ('vuelo','pago','ajuste','saldo_inicial','anulacion')),
-  concepto TEXT NOT NULL,
-  importe INTEGER NOT NULL CHECK (importe <> 0),
-  fecha TEXT NOT NULL,
-  vuelo_id INTEGER UNIQUE REFERENCES vuelos(id),
-  cierre_id INTEGER REFERENCES cierres(id),
-  anula_id INTEGER UNIQUE REFERENCES movimientos(id),
-  medio TEXT,
-  creado_por INTEGER REFERENCES usuarios(id),
-  creado_en TEXT NOT NULL,
-  hash_anterior TEXT NOT NULL,
-  hash TEXT NOT NULL UNIQUE
-);
+${DDL_MOVIMIENTOS}
 CREATE INDEX IF NOT EXISTS idx_mov_usuario ON movimientos(usuario_id, id);
 
 CREATE TABLE IF NOT EXISTS cupones (
@@ -137,6 +146,7 @@ CREATE TABLE IF NOT EXISTS cupones (
   numero TEXT NOT NULL UNIQUE,
   saldo_anterior INTEGER NOT NULL,
   total_vuelos INTEGER NOT NULL,
+  total_servicios INTEGER NOT NULL DEFAULT 0,
   total_pagos INTEGER NOT NULL,
   total_ajustes INTEGER NOT NULL,
   total INTEGER NOT NULL,
@@ -168,6 +178,98 @@ CREATE TABLE IF NOT EXISTS auditoria (
   detalle TEXT,
   creado_en TEXT NOT NULL DEFAULT (datetime('now'))
 );
+
+-- Servicios que se cobran aparte de las horas de vuelo (hangaraje, combustible, etc.).
+-- El precio es por unidad; cada ticket congela el precio del día.
+CREATE TABLE IF NOT EXISTS servicios (
+  id INTEGER PRIMARY KEY,
+  codigo TEXT UNIQUE,
+  nombre TEXT NOT NULL UNIQUE COLLATE NOCASE,
+  unidad TEXT NOT NULL CHECK (unidad IN ('unidad','hora','litro','dia','mes')),
+  precio INTEGER NOT NULL DEFAULT 0 CHECK (precio >= 0),
+  activo INTEGER NOT NULL DEFAULT 1 CHECK (activo IN (0,1)),
+  orden INTEGER NOT NULL DEFAULT 0,
+  creado_en TEXT NOT NULL DEFAULT (datetime('now'))
+);
+
+-- Aeronaves que no son de la flota del club (de socios o de externos), para los tickets de rampa.
+CREATE TABLE IF NOT EXISTS aeronaves (
+  id INTEGER PRIMARY KEY,
+  matricula TEXT NOT NULL UNIQUE COLLATE NOCASE,
+  modelo TEXT,
+  propietario_id INTEGER NOT NULL REFERENCES usuarios(id),
+  notas TEXT,
+  creado_por INTEGER REFERENCES usuarios(id),
+  creado_en TEXT NOT NULL DEFAULT (datetime('now'))
+);
+
+-- Ticket de servicios: se carga a la cuenta de quien corresponda y entra en su cupón del mes.
+CREATE TABLE IF NOT EXISTS tickets (
+  id INTEGER PRIMARY KEY,
+  numero INTEGER NOT NULL UNIQUE,
+  usuario_id INTEGER NOT NULL REFERENCES usuarios(id),
+  aeronave_id INTEGER REFERENCES aeronaves(id),
+  matricula TEXT,
+  fecha TEXT NOT NULL,
+  origen TEXT NOT NULL CHECK (origen IN ('rampa','tesoreria','cierre')),
+  total INTEGER NOT NULL CHECK (total > 0),
+  notas TEXT,
+  movimiento_id INTEGER REFERENCES movimientos(id),
+  pago_movimiento_id INTEGER REFERENCES movimientos(id) ON DELETE SET NULL,
+  estado TEXT NOT NULL DEFAULT 'vigente' CHECK (estado IN ('vigente','anulado')),
+  motivo_anulacion TEXT,
+  token TEXT NOT NULL UNIQUE,
+  creado_por INTEGER REFERENCES usuarios(id),
+  creado_en TEXT NOT NULL DEFAULT (datetime('now'))
+);
+CREATE INDEX IF NOT EXISTS idx_tickets_fecha ON tickets(fecha);
+CREATE INDEX IF NOT EXISTS idx_tickets_usuario ON tickets(usuario_id);
+
+CREATE TABLE IF NOT EXISTS ticket_items (
+  id INTEGER PRIMARY KEY,
+  ticket_id INTEGER NOT NULL REFERENCES tickets(id),
+  servicio_id INTEGER REFERENCES servicios(id),
+  concepto TEXT NOT NULL,
+  unidad TEXT,
+  cantidad INTEGER NOT NULL CHECK (cantidad > 0),   -- en centésimas: 40,5 litros → 4050
+  precio INTEGER NOT NULL CHECK (precio >= 0),       -- centavos por unidad
+  importe INTEGER NOT NULL
+);
+CREATE INDEX IF NOT EXISTS idx_items_ticket ON ticket_items(ticket_id);
+
+-- Derecho de aeronave: una sola vez por piloto y por mes volado.
+CREATE TABLE IF NOT EXISTS derechos_aeronave (
+  usuario_id INTEGER NOT NULL REFERENCES usuarios(id),
+  periodo TEXT NOT NULL,
+  ticket_id INTEGER REFERENCES tickets(id),
+  PRIMARY KEY (usuario_id, periodo)
+);
+
+-- Pagos que informa el socio desde la app; tesorería los confirma (y recién ahí entran al libro).
+CREATE TABLE IF NOT EXISTS comprobantes (
+  id INTEGER PRIMARY KEY,
+  tipo TEXT NOT NULL,
+  datos BLOB NOT NULL,
+  creado_en TEXT NOT NULL DEFAULT (datetime('now'))
+);
+
+CREATE TABLE IF NOT EXISTS pagos_informados (
+  id INTEGER PRIMARY KEY,
+  usuario_id INTEGER NOT NULL REFERENCES usuarios(id),
+  importe INTEGER NOT NULL CHECK (importe > 0),
+  fecha TEXT NOT NULL,
+  medio TEXT NOT NULL,
+  nota TEXT,
+  comprobante_id INTEGER REFERENCES comprobantes(id),
+  estado TEXT NOT NULL DEFAULT 'pendiente' CHECK (estado IN ('pendiente','confirmado','rechazado')),
+  movimiento_id INTEGER REFERENCES movimientos(id) ON DELETE SET NULL,
+  revisado_por INTEGER REFERENCES usuarios(id),
+  revisado_en TEXT,
+  motivo_rechazo TEXT,
+  creado_en TEXT NOT NULL DEFAULT (datetime('now'))
+);
+CREATE INDEX IF NOT EXISTS idx_pinf_estado ON pagos_informados(estado, id);
+CREATE INDEX IF NOT EXISTS idx_pinf_usuario ON pagos_informados(usuario_id, id);
 
 -- Vuelos: nunca se borran. Se editan sólo mientras están abiertos (antes del cierre del mes).
 CREATE TRIGGER IF NOT EXISTS vuelos_no_delete BEFORE DELETE ON vuelos
@@ -206,9 +308,67 @@ const CONFIG_DEFAULT = {
   url_publica: ''
 };
 
+function sqlTabla(tabla) {
+  return db.prepare(`SELECT sql FROM sqlite_master WHERE type = 'table' AND name = ?`).get(tabla)?.sql || null;
+}
+function columnas(tabla) { return db.prepare(`PRAGMA table_info(${tabla})`).all().map(c => c.name); }
+
+// SQLite no deja cambiar un CHECK ni un NOT NULL: se crea la tabla nueva, se copian los
+// datos, se borra la vieja y se renombra la nueva (procedimiento recomendado por SQLite).
+function reconstruir(tabla, ddl) {
+  const temporal = `${tabla}__nueva`;
+  db.pragma('foreign_keys = OFF');
+  try {
+    db.transaction(() => {
+      db.exec(ddl.replace(`CREATE TABLE IF NOT EXISTS ${tabla} (`, `CREATE TABLE ${temporal} (`));
+      const nuevas = columnas(temporal);
+      const comunes = columnas(tabla).filter(c => nuevas.includes(c)).join(', ');
+      db.exec(`INSERT INTO ${temporal} (${comunes}) SELECT ${comunes} FROM ${tabla}`);
+      db.exec(`DROP TABLE ${tabla}`);
+      db.exec(`ALTER TABLE ${temporal} RENAME TO ${tabla}`);
+      const rotas = db.pragma('foreign_key_check');
+      if (rotas.length) throw new Error(`La migración de ${tabla} dejó referencias rotas: ${JSON.stringify(rotas.slice(0, 3))}`);
+    })();
+  } finally {
+    db.pragma('foreign_keys = ON');
+  }
+  console.log(`[db] tabla ${tabla} migrada`);
+}
+
+// Bases creadas con versiones anteriores del sistema.
+function migrar() {
+  const usuarios = sqlTabla('usuarios');
+  if (usuarios && !usuarios.includes("'externo'")) reconstruir('usuarios', DDL_USUARIOS);
+  const movimientos = sqlTabla('movimientos');
+  if (movimientos && !movimientos.includes("'servicio'")) reconstruir('movimientos', DDL_MOVIMIENTOS);
+  for (const tabla of ['cierres', 'cupones']) {
+    if (sqlTabla(tabla) && !columnas(tabla).includes('total_servicios')) {
+      db.exec(`ALTER TABLE ${tabla} ADD COLUMN total_servicios INTEGER NOT NULL DEFAULT 0`);
+    }
+  }
+}
+
+const SERVICIOS_INICIALES = [
+  // [codigo, nombre, unidad]
+  [null, 'Hangaraje', 'mes'],
+  [null, 'Combustible', 'litro'],
+  [null, 'Nocturno', 'hora'],
+  ['derecho_aeronave', 'Derecho de aeronave', 'mes'],
+  [null, 'Derecho de examen', 'unidad'],
+  [null, 'Hora de simulador', 'hora'],
+  [null, 'Limpieza de avión', 'unidad']
+];
+
 function initDB() {
   for (const t of TRIGGERS_VIEJOS) db.exec(`DROP TRIGGER IF EXISTS ${t}`);
+  migrar();
   db.exec(SCHEMA + triggersInmutables());
+
+  // Tabla de servicios inicial, sin precio: tesorería los completa en Flota y tarifas.
+  if (db.prepare('SELECT COUNT(*) n FROM servicios').get().n === 0) {
+    const ins = db.prepare('INSERT INTO servicios (codigo, nombre, unidad, orden) VALUES (?, ?, ?, ?)');
+    SERVICIOS_INICIALES.forEach(([codigo, nombre, unidad], i) => ins.run(codigo, nombre, unidad, i + 1));
+  }
 
   const setDefault = db.prepare('INSERT OR IGNORE INTO config (clave, valor) VALUES (?, ?)');
   for (const [k, v] of Object.entries(CONFIG_DEFAULT)) setDefault.run(k, v);

@@ -51,7 +51,7 @@ function identificar(req) {
   try {
     const p = jwt.verify(token, SECRETO);
     const u = qUsuario.get(p.uid);
-    if (!u || !u.activo || u.token_version !== p.v) return null;
+    if (!u || !u.activo || u.rol === 'externo' || u.token_version !== p.v) return null;
     return u;
   } catch { return null; }
 }
@@ -74,6 +74,26 @@ function requireAdmin(req, res, next) {
   next();
 }
 
+// Módulo de administración: tesorería lo usa entero; el usuario de consulta sólo puede mirar.
+function requireStaff(req, res, next) {
+  if (!['admin', 'consulta'].includes(req.user?.rol)) return res.status(403).json({ error: 'Sólo tesorería / administración puede ver esto' });
+  if (req.user.rol === 'consulta' && !['GET', 'HEAD'].includes(req.method)) {
+    return res.status(403).json({ error: 'Tu usuario es de sólo consulta: no puede hacer cambios' });
+  }
+  next();
+}
+
+function requireRampa(req, res, next) {
+  if (!['admin', 'rampa'].includes(req.user?.rol)) return res.status(403).json({ error: 'Sólo rampa o tesorería puede hacer esto' });
+  next();
+}
+
+// Lo de uso diario (vuelos, cuenta, cupones) es para socios; rampa sólo usa su perfil.
+function requireSocio(req, res, next) {
+  if (req.user?.rol === 'rampa' && req.path !== '/perfil') return res.status(403).json({ error: 'Tu usuario es de rampa: sólo carga tickets de servicios' });
+  next();
+}
+
 // CSRF: toda escritura tiene que venir del frontend propio, que agrega este encabezado.
 // Un formulario de otro sitio no puede setear encabezados personalizados.
 function exigirOrigenPropio(req, res, next) {
@@ -82,4 +102,4 @@ function exigirOrigenPropio(req, res, next) {
   next();
 }
 
-module.exports = { requireAuth, requireAdmin, exigirOrigenPropio, emitirSesion, cerrarSesion, publico, identificar };
+module.exports = { requireAuth, requireAdmin, requireStaff, requireRampa, requireSocio, exigirOrigenPropio, emitirSesion, cerrarSesion, publico, identificar };

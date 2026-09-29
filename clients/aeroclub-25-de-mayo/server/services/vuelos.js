@@ -82,7 +82,11 @@ function armar(input, actor, previo = null) {
   const igual = db.prepare(`
     SELECT id FROM vuelos WHERE piloto_id = ? AND avion_id = ? AND fecha = ? AND decimas = ? AND estado <> 'anulado' AND id <> ? LIMIT 1`)
     .get(pilotoId, avionId, fecha, decimas, previo?.id ?? 0);
-  if (igual) avisos.push(`Ya había otro vuelo igual (${avion.matricula}, ${fmtFechaCorta(fecha)}, ${fmtHoras(decimas)}). Si lo cargaste dos veces, anulá uno desde tus vuelos.`);
+  if (igual) {
+    avisos.push(esAdmin
+      ? `Ya había otro vuelo igual (${avion.matricula}, ${fmtFechaCorta(fecha)}, ${fmtHoras(decimas)}). Si se cargó dos veces, anulá uno.`
+      : `Ya había otro vuelo igual (${avion.matricula}, ${fmtFechaCorta(fecha)}, ${fmtHoras(decimas)}). Si lo cargaste dos veces, avisale a tesorería para que anule uno.`);
+  }
   if (periodoCerrado(periodoDe(fecha))) {
     avisos.push('Ese mes ya se cerró: el vuelo se va a cobrar en el próximo cupón.');
   }
@@ -113,13 +117,16 @@ const crear = db.transaction((input, actor) => {
   return { vuelo: getVuelo(id), avisos };
 });
 
+// Una vez aceptado, el piloto no puede modificar ni anular su vuelo: sólo tesorería.
 function puedeModificar(v, actor) {
+  if (actor.rol !== 'admin') {
+    throw new ErrorNegocio('Los vuelos no se pueden modificar una vez aceptados. Si hay un error, avisale a tesorería.', 403);
+  }
   if (v.estado !== 'abierto') {
     throw new ErrorNegocio(v.estado === 'anulado'
       ? 'Ese vuelo está anulado'
       : 'Ese vuelo ya entró en el cierre del mes. Si hay un error, tesorería lo corrige con un ajuste en tu cuenta.', 409);
   }
-  if (actor.rol !== 'admin' && v.piloto_id !== actor.id) throw new ErrorNegocio('Sólo podés modificar tus propios vuelos', 403);
 }
 
 const editar = db.transaction((id, input, actor) => {

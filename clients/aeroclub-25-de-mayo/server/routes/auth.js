@@ -13,7 +13,8 @@ router.post('/login', (req, res) => {
   const email = normalizarEmail(req.body?.email);
   const password = String(req.body?.password || '');
 
-  const u = db.prepare('SELECT * FROM usuarios WHERE email = ?').get(email);
+  // Los externos no tienen usuario: sólo cuenta corriente.
+  const u = db.prepare(`SELECT * FROM usuarios WHERE email = ? AND rol <> 'externo'`).get(email);
   const ok = bcrypt.compareSync(password, u?.password_hash || HASH_FALSO);
   if (!u || !ok) {
     return res.status(401).json({ error: 'Email o contraseña incorrectos' });

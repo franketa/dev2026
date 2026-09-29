@@ -30,24 +30,24 @@ const pesos = (c) => {
 };
 const horas = (d) => (d / 10).toFixed(1).replace('.', ',');
 
-function generarCupon({ cupon, movimientos, config, estado }) {
-  const doc = new PDFDocument({
-    size: 'A4', margin: 0,
-    info: { Title: `Cupón ${cupon.numero} · ${config.club_nombre}`, Author: config.club_nombre, Subject: `Resumen de ${nombrePeriodo(cupon.periodo)}` }
-  });
+const TNUM = { features: ['tnum'] };
+const W = 595.28;
+const M = 44;
+const ancho = W - M * 2;
+
+function nuevoDocumento(info) {
+  const doc = new PDFDocument({ size: 'A4', margin: 0, info });
   doc.registerFont('R', path.join(FONTS, 'Barlow-Regular.ttf'));
   doc.registerFont('M', path.join(FONTS, 'Barlow-Medium.ttf'));
   doc.registerFont('SB', path.join(FONTS, 'Barlow-SemiBold.ttf'));
   doc.registerFont('B', path.join(FONTS, 'Barlow-Bold.ttf'));
   doc.registerFont('C', path.join(FONTS, 'BarlowSemiCondensed-SemiBold.ttf'));
   doc.registerFont('CB', path.join(FONTS, 'BarlowSemiCondensed-Bold.ttf'));
-  const TNUM = { features: ['tnum'] };
+  return doc;
+}
 
-  const W = 595.28;
-  const M = 44;
-  const ancho = W - M * 2;
-
-  // ── Cabecera: banda celeste con el ala del escudo ─────────────────────────────
+// Banda celeste con el ala del escudo, el club a la izquierda y el documento a la derecha.
+function cabecera(doc, config, { tipo, numero, detalle }) {
   doc.rect(0, 0, W, 132).fill(C.celesteClaro);
   doc.save();
   doc.rect(0, 0, W, 132).clip();           // sólo asoma la punta del ala dentro de la banda
@@ -58,9 +58,47 @@ function generarCupon({ cupon, movimientos, config, estado }) {
   doc.font('CB').fontSize(21).fillColor(C.tinta).text(config.club_nombre, M + 88, 42, { width: 260 });
   doc.font('R').fontSize(10).fillColor(C.gris).text(config.club_localidad || '', M + 88, 68, { width: 260 });
 
-  doc.font('C').fontSize(10).fillColor(C.gris).text('Cupón de pago', W - M - 170, 36, { width: 170, align: 'right' });
-  doc.font('CB').fontSize(20).fillColor(C.tinta).text(`N.º ${cupon.numero}`, W - M - 170, 50, { width: 170, align: 'right', ...TNUM });
-  doc.font('M').fontSize(11).fillColor(C.azul).text(capital(nombrePeriodo(cupon.periodo)), W - M - 170, 76, { width: 170, align: 'right' });
+  doc.font('C').fontSize(10).fillColor(C.gris).text(tipo, W - M - 170, 36, { width: 170, align: 'right' });
+  doc.font('CB').fontSize(20).fillColor(C.tinta).text(`N.º ${numero}`, W - M - 170, 50, { width: 170, align: 'right', ...TNUM });
+  doc.font('M').fontSize(11).fillColor(C.azul).text(detalle, W - M - 170, 76, { width: 170, align: 'right' });
+}
+
+// Recuadro con los datos para pagar por transferencia.
+function cajaPago(doc, config, y) {
+  const alto = 116;
+  doc.roundedRect(M, y, ancho, alto, 6).lineWidth(1).strokeColor(C.celeste).stroke();
+  doc.rect(M, y, 5, alto).fill(C.rojo);
+  doc.font('CB').fontSize(12).fillColor(C.tinta).text('Cómo pagar', M + 20, y + 14);
+  doc.font('R').fontSize(9).fillColor(C.gris).text('Alias', M + 20, y + 36);
+  doc.font('CB').fontSize(17).fillColor(C.tinta).text(config.pago_alias || 'A confirmar con tesorería', M + 20, y + 47, { width: 250 });
+  const datos = [
+    ['CBU', config.pago_cbu], ['Titular', config.pago_titular], ['CUIT', config.pago_cuit], ['Banco', config.pago_banco]
+  ].filter(([, v]) => v);
+  let dy = y + 14;
+  for (const [k, v] of datos) {
+    doc.font('R').fontSize(9).fillColor(C.gris).text(k, M + 290, dy, { width: 50 });
+    doc.font('M').fontSize(10).fillColor(C.tinta).text(v, M + 334, dy - 0.5, { width: ancho - 334 + 0, ...TNUM });
+    dy += 17;
+  }
+  if (config.pago_instrucciones) {
+    doc.font('R').fontSize(9).fillColor(C.gris).text(config.pago_instrucciones, M + 20, y + 80, { width: 250 });
+  }
+  return y + alto;
+}
+
+// Sello girado (PAGADO, ANULADO…) sobre la zona del total.
+function sello(doc, texto, color) {
+  doc.save();
+  doc.rotate(-12, { origin: [W - 150, 225] });
+  doc.roundedRect(W - 232, 200, 164, 46, 6).lineWidth(2.5).strokeColor(color).strokeOpacity(0.85).stroke();
+  doc.font('CB').fontSize(24).fillColor(color).fillOpacity(0.85).text(texto, W - 232, 210, { width: 164, align: 'center' });
+  doc.restore();
+  doc.fillOpacity(1).strokeOpacity(1);
+}
+
+function generarCupon({ cupon, movimientos, config, estado }) {
+  const doc = nuevoDocumento({ Title: `Cupón ${cupon.numero} · ${config.club_nombre}`, Author: config.club_nombre, Subject: `Resumen de ${nombrePeriodo(cupon.periodo)}` });
+  cabecera(doc, config, { tipo: 'Cupón de pago', numero: cupon.numero, detalle: capital(nombrePeriodo(cupon.periodo)) });
 
   // ── Socio y total ─────────────────────────────────────────────────────────────
   let y = 158;
@@ -79,11 +117,12 @@ function generarCupon({ cupon, movimientos, config, estado }) {
   // ── Resumen de cuenta ─────────────────────────────────────────────────────────
   y = 256;
   const filasResumen = [
-    ['Saldo del cierre anterior', cupon.saldo_anterior],
-    [`Vuelos del período (${horas(cupon.decimas)} h)`, cupon.total_vuelos],
-    ['Pagos recibidos', cupon.total_pagos],
-    ['Ajustes', cupon.total_ajustes]
-  ].filter(([k, v], i) => i < 2 || v !== 0);
+    ['Saldo del cierre anterior', cupon.saldo_anterior, true],
+    [`Vuelos del período (${horas(cupon.decimas)} h)`, cupon.total_vuelos, cupon.decimas > 0 || cupon.total_vuelos !== 0 || !cupon.total_servicios],
+    ['Servicios y otros conceptos', cupon.total_servicios || 0, false],
+    ['Pagos recibidos', cupon.total_pagos, false],
+    ['Ajustes', cupon.total_ajustes, false]
+  ].filter(([, v, siempre]) => siempre || v !== 0);
   doc.font('CB').fontSize(12).fillColor(C.tinta).text('Resumen de cuenta', M, y);
   y += 22;
   for (const [k, v] of filasResumen) {
@@ -139,34 +178,11 @@ function generarCupon({ cupon, movimientos, config, estado }) {
   // ── Cómo pagar ────────────────────────────────────────────────────────────────
   y += 14;
   if (y > 640) { doc.addPage(); y = M; }
-  const alto = 116;
-  doc.roundedRect(M, y, ancho, alto, 6).lineWidth(1).strokeColor(C.celeste).stroke();
-  doc.rect(M, y, 5, alto).fill(C.rojo);
-  doc.font('CB').fontSize(12).fillColor(C.tinta).text('Cómo pagar', M + 20, y + 14);
-  doc.font('R').fontSize(9).fillColor(C.gris).text('Alias', M + 20, y + 36);
-  doc.font('CB').fontSize(17).fillColor(C.tinta).text(config.pago_alias || 'A confirmar con tesorería', M + 20, y + 47, { width: 250 });
-  const datos = [
-    ['CBU', config.pago_cbu], ['Titular', config.pago_titular], ['CUIT', config.pago_cuit], ['Banco', config.pago_banco]
-  ].filter(([, v]) => v);
-  let dy = y + 14;
-  for (const [k, v] of datos) {
-    doc.font('R').fontSize(9).fillColor(C.gris).text(k, M + 290, dy, { width: 50 });
-    doc.font('M').fontSize(10).fillColor(C.tinta).text(v, M + 334, dy - 0.5, { width: ancho - 334 + 0, ...TNUM });
-    dy += 17;
-  }
-  if (config.pago_instrucciones) {
-    doc.font('R').fontSize(9).fillColor(C.gris).text(config.pago_instrucciones, M + 20, y + 80, { width: 250 });
-  }
+  cajaPago(doc, config, y);
 
   // ── Sello de estado (se calcula al generar: refleja si ya se pagó) ────────────
   if (estado && ['pagado', 'sin_deuda'].includes(estado.estado)) {
-    doc.save();
-    doc.rotate(-12, { origin: [W - 150, 225] });
-    doc.roundedRect(W - 232, 200, 164, 46, 6).lineWidth(2.5).strokeColor(C.verde).strokeOpacity(0.85).stroke();
-    doc.font('CB').fontSize(24).fillColor(C.verde).fillOpacity(0.85)
-      .text(estado.estado === 'pagado' ? 'PAGADO' : 'SIN DEUDA', W - 232, 210, { width: 164, align: 'center' });
-    doc.restore();
-    doc.fillOpacity(1).strokeOpacity(1);
+    sello(doc, estado.estado === 'pagado' ? 'PAGADO' : 'SIN DEUDA', C.verde);
   }
 
   // ── Pie: sello de integridad ──────────────────────────────────────────────────
@@ -180,6 +196,83 @@ function generarCupon({ cupon, movimientos, config, estado }) {
   return doc;
 }
 
+// Ticket de servicios (hangaraje, combustible, etc.): lo arma rampa o tesorería.
+function generarTicket(t, config) {
+  const doc = nuevoDocumento({ Title: `Ticket ${t.numero_txt} · ${config.club_nombre}`, Author: config.club_nombre, Subject: 'Ticket de servicios' });
+  cabecera(doc, config, { tipo: 'Ticket de servicios', numero: t.numero_txt, detalle: fmtFechaCorta(t.fecha) });
+
+  // ── A cargo de / aeronave / total ─────────────────────────────────────────────
+  let y = 158;
+  const aCargo = [t.nombre, t.apellido].filter(Boolean).join(' ');
+  doc.font('R').fontSize(9.5).fillColor(C.gris).text(t.usuario_rol === 'externo' ? 'A cargo de (externo)' : 'A cargo de', M, y);
+  doc.font('SB').fontSize(15).fillColor(C.tinta).text(aCargo, M, y + 13, { width: 290 });
+  const datos = [t.dni ? `DNI/CUIT ${t.dni}` : null, t.telefono].filter(Boolean).join('   ');
+  doc.font('R').fontSize(9.5).fillColor(C.gris).text(datos, M, y + 33, { width: 290 });
+  if (t.matricula) {
+    doc.font('R').fontSize(9.5).fillColor(C.gris).text('Aeronave', M, y + 54);
+    doc.font('CB').fontSize(14).fillColor(C.tinta).text(`${t.matricula}${t.modelo ? `  ${t.modelo}` : ''}`, M, y + 67, { width: 290 });
+  }
+
+  const cajaX = W - M - 206;
+  doc.roundedRect(cajaX, y - 6, 206, 74, 6).fill(C.tinta);
+  doc.font('C').fontSize(10).fillColor('#BFD3E6').text('Total', cajaX + 16, y + 4);
+  doc.font('CB').fontSize(26).fillColor('#FFFFFF').text(pesos(t.total), cajaX + 16, y + 17, { width: 180, ...TNUM });
+  doc.font('R').fontSize(9.5).fillColor('#BFD3E6').text(
+    t.estado === 'anulado' ? 'Anulado' : t.pago_movimiento_id ? `Pagado en el acto (${t.pago_medio === 'mercadopago' ? 'Mercado Pago' : t.pago_medio})` : 'Se suma a la cuenta', cajaX + 16, y + 50);
+
+  // ── Ítems ─────────────────────────────────────────────────────────────────────
+  y = t.matricula ? 262 : 240;
+  doc.font('CB').fontSize(12).fillColor(C.tinta).text('Detalle', M, y);
+  y += 20;
+  const col = { concepto: M + 6, cantidad: M + 250, precio: M + 350, importe: M + 430 };
+  doc.rect(M, y - 4, ancho, 18).fill(C.celesteClaro);
+  doc.font('C').fontSize(8.5).fillColor(C.gris);
+  doc.text('Concepto', col.concepto, y);
+  doc.text('Cantidad', col.cantidad, y, { width: 90, align: 'right' });
+  doc.text('Precio', col.precio, y, { width: 70, align: 'right' });
+  doc.text('Importe', col.importe, y, { width: M + ancho - col.importe - 6, align: 'right' });
+  y += 20;
+  for (const i of t.items) {
+    doc.font('R').fontSize(10);
+    const alto = Math.max(14, doc.heightOfString(i.concepto, { width: 236 }));
+    doc.fillColor(C.tinta).text(i.concepto, col.concepto, y, { width: 236 });
+    doc.text(i.unidad ? i.cantidad_txt : i.cantidad_txt, col.cantidad, y, { width: 90, align: 'right', ...TNUM });
+    doc.fillColor(C.gris).text(pesos(i.precio), col.precio, y, { width: 70, align: 'right', ...TNUM });
+    doc.font('M').fillColor(C.tinta).text(pesos(i.importe), col.importe, y, { width: M + ancho - col.importe - 6, align: 'right', ...TNUM });
+    y += alto + 6;
+    doc.moveTo(M, y - 4).lineTo(M + ancho, y - 4).lineWidth(0.4).strokeColor(C.linea).stroke();
+  }
+  doc.font('SB').fontSize(11.5).fillColor(C.tinta).text('Total', M + 6, y + 2);
+  doc.font('B').fontSize(11.5).text(pesos(t.total), M, y + 2, { width: ancho - 6, align: 'right', ...TNUM });
+  y += 30;
+
+  if (t.notas) {
+    doc.font('R').fontSize(9.5).fillColor(C.gris).text('Notas', M, y);
+    doc.font('R').fontSize(10).fillColor(C.tinta).text(t.notas, M, y + 13, { width: ancho });
+    y += 20 + doc.heightOfString(t.notas, { width: ancho });
+  }
+
+  // ── Cómo pagar (si quedó a cuenta) ────────────────────────────────────────────
+  if (t.estado !== 'anulado' && !t.pago_movimiento_id) {
+    y += 10;
+    doc.font('R').fontSize(9.5).fillColor(C.gris)
+      .text('El importe se suma a la cuenta y se incluye en el cupón del mes. También se puede pagar ahora:', M, y, { width: ancho });
+    cajaPago(doc, config, y + 20);
+  }
+
+  if (t.estado === 'anulado') sello(doc, 'ANULADO', C.rojo);
+  else if (t.pago_movimiento_id) sello(doc, 'PAGADO', C.verde);
+
+  const pie = 800;
+  doc.moveTo(M, pie - 10).lineTo(M + ancho, pie - 10).lineWidth(0.5).strokeColor(C.linea).stroke();
+  const emitido = t.origen === 'cierre' ? 'Generado en el cierre del mes' : `Emitido por ${t.creado_por_nombre || 'tesorería'}`;
+  doc.font('R').fontSize(7.5).fillColor(C.gris)
+    .text(`${emitido} el ${fmtFechaCorta(fechaDeSqlite(t.creado_en))}. Documento no válido como factura.`, M, pie - 2, { width: ancho, lineBreak: false });
+
+  doc.end();
+  return doc;
+}
+
 function capital(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
 
-module.exports = { generarCupon, ALA };
+module.exports = { generarCupon, generarTicket, ALA };

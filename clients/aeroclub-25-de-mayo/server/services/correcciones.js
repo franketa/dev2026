@@ -5,15 +5,20 @@
 const { db, auditar } = require('../db');
 const ledger = require('./ledger');
 const cierres = require('./cierres');
-const { ErrorNegocio, hoy, esFecha, parsePesos, fmtPesos, fmtFechaCorta, limpiarTexto } = require('../util');
-
-const MEDIOS = ['transferencia', 'efectivo', 'mercadopago', 'cheque', 'otro'];
+const tickets = require('./tickets');
+const { ErrorNegocio, hoy, esFecha, parsePesos, fmtPesos, fmtFechaCorta, limpiarTexto, MEDIOS } = require('../util');
 
 function getMovimiento(id) {
   const m = db.prepare(`
     SELECT m.*, u.nombre || ' ' || u.apellido socio FROM movimientos m JOIN usuarios u ON u.id = m.usuario_id WHERE m.id = ?`).get(id);
   if (!m) throw new ErrorNegocio('Movimiento inexistente', 404);
   return m;
+}
+
+// El cargo de un ticket tiene que coincidir con sus ítems: se corrige anulando el ticket.
+function exigirQueNoSeaTicket(movimientoId) {
+  const t = tickets.ticketDeMovimiento(movimientoId);
+  if (t) throw new ErrorNegocio(`Es el cargo del ticket ${tickets.fmtNumero(t.numero)}: para corregirlo, anulá el ticket (y si hace falta, cargá uno nuevo).`);
 }
 
 function resumen(m) {
@@ -28,6 +33,7 @@ function despuesDeCorregir(desdeId, usuarioId) {
 
 const editar = db.transaction((id, input, actor) => {
   const m = getMovimiento(id);
+  exigirQueNoSeaTicket(id);
   const motivo = limpiarTexto(input.motivo, 200);
   if (!motivo) throw new ErrorNegocio('Contá brevemente por qué se corrige (queda en el registro)');
 
@@ -56,6 +62,7 @@ const editar = db.transaction((id, input, actor) => {
 
 const borrar = db.transaction((id, motivo, actor) => {
   const m = getMovimiento(id);
+  exigirQueNoSeaTicket(id);
   motivo = limpiarTexto(motivo, 200);
   if (!motivo) throw new ErrorNegocio('Contá brevemente por qué se borra (queda en el registro)');
 
@@ -70,4 +77,4 @@ const borrar = db.transaction((id, motivo, actor) => {
   return { saldo: ledger.saldo(m.usuario_id) };
 });
 
-module.exports = { editar, borrar };
+module.exports = { editar, borrar, exigirQueNoSeaTicket };
