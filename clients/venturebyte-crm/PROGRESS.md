@@ -7,7 +7,7 @@ Para retomar: leer este archivo, `NOTES.md`, `README.md` y `git log -- clients/v
 | Fase | Estado |
 |---|---|
 | 1. Reconocimiento | ✅ Hecha. Ver `NOTES.md` |
-| 2. Despliegue | 🟡 Compose listo y probado en local (Docker Desktop). **Falta desplegar en Coolify** (requiere OK de Franco) |
+| 2. Despliegue | ✅ Servicio Coolify `venturebyte-crm` (uuid `h8os848g8wk4socg8c84kc4o`) en My first project / production. HTTPS Let's Encrypt en `https://server-h8os848g8wk4socg8c84kc4o.77.42.35.93.sslip.io`. Backup diario 09:00 UTC (06:00 ART), retención 14 backups / 14 días / 1 GB; primer backup OK (753 KB). Falta: pasar a `crm.venturebyte.com.ar` cuando resuelva el DNS |
 | 3. Modelo de datos como código | 🟡 `scripts/schema.ts` probado en local: corrida limpia + segunda corrida sin cambios + filtros verificados en la UI. **Falta correrlo en prod** |
 | 4. Roles y acceso del bot | 🟡 `scripts/roles.ts` + `scripts/verify-bot.ts` probados en local (el bot crea/edita; borrar, destruir, esquema y roles denegados). MCP nativo probado con la key del bot. **Falta prod** |
 | 5. Automatizaciones | 🟡 `scripts/workflows.ts`: los dos workflows nativos probados de punta a punta en local (con delay de 1 minuto). **Falta prod** |
@@ -28,7 +28,8 @@ Para retomar: leer este archivo, `NOTES.md`, `README.md` y `git log -- clients/v
   cargan bajo demanda y respetan el rol. Es la opción de menos tokens; no se despliega MCP comunitario.
 - **D7 — API keys desde la UI**: Twenty no permite crear keys con otra key. Franco crea "setup" (Admin) y
   "grok-bot" (Bot).
-- **D8 — Backups**: diarios en el propio VPS (Coolify, retención 14 días). Offsite pendiente (decisión de Franco).
+- **D8 — Backups**: backup programado de Coolify sobre el `db` del servicio, diario 09:00 UTC, retención 14/14 días/1 GB, en el VPS. Un dump pesa <1 MB hoy. Offsite pendiente (decisión de Franco).
+- **D13 — Dominio https en Coolify**: la API no permite editar el dominio de un sub-servicio; el primer cambio (http→https sslip) se hizo con `php artisan tinker` replicando `EditDomain::submit` (fqdn + updateCompose + parse). Los cambios siguientes, desde la UI.
 - **D9 — Mínimo privilegio explícito en roles**: Desarrollo, Contenido y Redes parten sin acceso y el Bot parte de
   solo lectura; se habilita objeto por objeto. Así el Bot no puede editar workflows vía la API de registros.
   Nadie salvo Admin puede destruir registros (borrado definitivo).
@@ -42,7 +43,7 @@ Para retomar: leer este archivo, `NOTES.md`, `README.md` y `git log -- clients/v
 
 ## Pendiente de Franco
 
-- OK para desplegar en Coolify y correr los scripts en prod (ver resumen en el chat / sección siguiente).
+- ✅ OK para desplegar y correr scripts en prod, borrar datos demo y probar el bot (2026-09-29).
 - Crear su cuenta Admin apenas esté arriba la instancia, y las API keys "setup" (Admin) y "grok-bot" (Bot).
 - Registro A `crm.venturebyte.com.ar` → `77.42.35.93` en DonWeb.
 - Bucket externo para backups (pendiente).
