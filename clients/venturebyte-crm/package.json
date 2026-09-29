@@ -1,0 +1,18 @@
+{
+  "name": "venturebyte-crm",
+  "private": true,
+  "type": "module",
+  "description": "Esquema, roles y verificación del CRM de VentureByte sobre Twenty",
+  "scripts": {
+    "schema": "tsx scripts/schema.ts",
+    "roles": "tsx scripts/roles.ts",
+    "workflows": "tsx scripts/workflows.ts",
+    "verify-bot": "tsx scripts/verify-bot.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.0",
+    "tsx": "^4.20.0",
+    "typescript": "^5.9.0"
+  }
+}
