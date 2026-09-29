@@ -4,14 +4,16 @@
 //   1. Cada vuelo abierto con fecha hasta el último día del mes pasa al libro como cargo
 //      y queda cerrado (ya no se puede editar). Los vuelos cargados tarde de meses ya
 //      cerrados entran acá también, con su fecha real.
-//   2. Se genera un cupón por socio con: saldo del cierre anterior + movimientos del
-//      período (vuelos, pagos, ajustes) = total a pagar.
+//      Además se cobra el derecho de aeronave: una vez por piloto y por mes volado.
+//   2. Se genera un cupón por socio (o externo) con: saldo del cierre anterior + movimientos
+//      del período (vuelos, servicios, pagos, ajustes) = total a pagar.
 //   3. El cierre queda sellado con el rango de movimientos que abarca, así cualquier
 //      cupón se puede reconstruir y verificar después.
 
 const crypto = require('crypto');
 const { db, getConfig, auditar } = require('../db');
 const ledger = require('./ledger');
+const tickets = require('./tickets');
 const {
   ErrorNegocio, hoy, horaAR, periodoActual, sumarMeses, ultimoDia, sumarDias, esPeriodo, nombrePeriodo, fmtHoras, fmtFechaCorta, fmtPesos
 } = require('../util');
@@ -62,8 +64,9 @@ function totalesRango(usuarioId, desde, hasta) {
   return db.prepare(`
     SELECT
       COALESCE(SUM(CASE WHEN COALESCE(o.tipo, m.tipo) = 'vuelo' THEN m.importe END), 0) vuelos,
+      COALESCE(SUM(CASE WHEN COALESCE(o.tipo, m.tipo) = 'servicio' THEN m.importe END), 0) servicios,
       COALESCE(SUM(CASE WHEN COALESCE(o.tipo, m.tipo) = 'pago' THEN m.importe END), 0) pagos,
-      COALESCE(SUM(CASE WHEN COALESCE(o.tipo, m.tipo) NOT IN ('vuelo','pago') THEN m.importe END), 0) ajustes,
+      COALESCE(SUM(CASE WHEN COALESCE(o.tipo, m.tipo) NOT IN ('vuelo','servicio','pago') THEN m.importe END), 0) ajustes,
       COUNT(*) n
     FROM movimientos m LEFT JOIN movimientos o ON o.id = m.anula_id
     WHERE m.usuario_id = ? AND m.id > ? AND m.id <= ?`).get(usuarioId, desde, hasta);
@@ -100,6 +103,7 @@ const correrCierre = db.transaction((periodo, actor, simular) => {
     totalDecimas += v.decimas;
     totalVuelos += v.importe;
   }
+  const derechos = tickets.cobrarDerechos(vuelos, cierreId, actor);
 
   const hasta = db.prepare('SELECT COALESCE(MAX(id), 0) id FROM movimientos').get().id;
   const sello = ledger.ultimoHash();
@@ -113,20 +117,22 @@ const correrCierre = db.transaction((periodo, actor, simular) => {
     ORDER BY MIN(u.apellido), MIN(u.nombre)`).all(desde, hasta);
 
   const insCupon = db.prepare(`
-    INSERT INTO cupones (cierre_id, usuario_id, numero, saldo_anterior, total_vuelos, total_pagos, total_ajustes, total, decimas, vencimiento, token, sello)
-    VALUES (@cierre_id, @usuario_id, @numero, @saldo_anterior, @total_vuelos, @total_pagos, @total_ajustes, @total, @decimas, @vencimiento, @token, @sello)`);
+    INSERT INTO cupones (cierre_id, usuario_id, numero, saldo_anterior, total_vuelos, total_servicios, total_pagos, total_ajustes, total, decimas, vencimiento, token, sello)
+    VALUES (@cierre_id, @usuario_id, @numero, @saldo_anterior, @total_vuelos, @total_servicios, @total_pagos, @total_ajustes, @total, @decimas, @vencimiento, @token, @sello)`);
   // Aunque el cierre se haga tarde, el socio siempre tiene al menos una semana para pagar.
   const vencimiento = [vencimientoDe(periodo, cfg.vencimiento_dia), sumarDias(hoy(), DIAS_MINIMOS_PAGO)].sort().at(-1);
   let nro = 0;
   let totalCupones = 0;
+  let totalServicios = 0;
   for (const s of socios) {
     const saldoAnterior = ledger.saldo(s.usuario_id, desde);
     const t = totalesRango(s.usuario_id, desde, hasta);
-    const total = saldoAnterior + t.vuelos + t.pagos + t.ajustes;
+    const total = saldoAnterior + t.vuelos + t.servicios + t.pagos + t.ajustes;
     nro++;
+    totalServicios += t.servicios;
     insCupon.run({
       cierre_id: cierreId, usuario_id: s.usuario_id, numero: `${periodo.replace('-', '')}-${String(nro).padStart(3, '0')}`,
-      saldo_anterior: saldoAnterior, total_vuelos: t.vuelos, total_pagos: t.pagos, total_ajustes: t.ajustes, total,
+      saldo_anterior: saldoAnterior, total_vuelos: t.vuelos, total_servicios: t.servicios, total_pagos: t.pagos, total_ajustes: t.ajustes, total,
       decimas: decimasPorSocio.get(s.usuario_id) || 0, vencimiento,
       token: crypto.randomBytes(18).toString('base64url'), sello
     });
@@ -134,13 +140,13 @@ const correrCierre = db.transaction((periodo, actor, simular) => {
   }
 
   // 3. Sellado
-  db.prepare(`UPDATE cierres SET hasta_movimiento_id = ?, cantidad_vuelos = ?, total_decimas = ?, total_vuelos = ?, cantidad_cupones = ?, total_cupones = ? WHERE id = ?`)
-    .run(hasta, vuelos.length, totalDecimas, totalVuelos, nro, totalCupones, cierreId);
+  db.prepare(`UPDATE cierres SET hasta_movimiento_id = ?, cantidad_vuelos = ?, total_decimas = ?, total_vuelos = ?, total_servicios = ?, cantidad_cupones = ?, total_cupones = ? WHERE id = ?`)
+    .run(hasta, vuelos.length, totalDecimas, totalVuelos, totalServicios, nro, totalCupones, cierreId);
 
   const resultado = detalleCierre(cierreId);
   if (simular) throw new Simulacion(resultado);   // rollback: la vista previa es exactamente lo que va a pasar
   auditar(actor?.id ?? null, actor ? 'cierre.manual' : 'cierre.automatico',
-    `${nombrePeriodo(periodo)}: ${vuelos.length} vuelos, ${fmtHoras(totalDecimas)}, ${nro} cupones, ${fmtPesos(totalCupones)} a cobrar`);
+    `${nombrePeriodo(periodo)}: ${vuelos.length} vuelos, ${fmtHoras(totalDecimas)}${derechos ? `, ${derechos} derechos de aeronave` : ''}, ${nro} cupones, ${fmtPesos(totalCupones)} a cobrar`);
   return resultado;
 });
 
@@ -188,13 +194,15 @@ function recalcularCupones(usuarioId) {
   const cupones = db.prepare(`
     SELECT cu.id, cu.cierre_id, ci.desde_movimiento_id desde, ci.hasta_movimiento_id hasta
     FROM cupones cu JOIN cierres ci ON ci.id = cu.cierre_id WHERE cu.usuario_id = ? ORDER BY ci.periodo`).all(usuarioId);
-  const upd = db.prepare('UPDATE cupones SET saldo_anterior = ?, total_vuelos = ?, total_pagos = ?, total_ajustes = ?, total = ? WHERE id = ?');
-  const totalCierre = db.prepare(`UPDATE cierres SET total_cupones = (SELECT COALESCE(SUM(CASE WHEN total > 0 THEN total END), 0) FROM cupones WHERE cierre_id = ?) WHERE id = ?`);
+  const upd = db.prepare('UPDATE cupones SET saldo_anterior = ?, total_vuelos = ?, total_servicios = ?, total_pagos = ?, total_ajustes = ?, total = ? WHERE id = ?');
+  const totalCierre = db.prepare(`UPDATE cierres SET
+    total_cupones = (SELECT COALESCE(SUM(CASE WHEN total > 0 THEN total END), 0) FROM cupones WHERE cierre_id = @id),
+    total_servicios = (SELECT COALESCE(SUM(total_servicios), 0) FROM cupones WHERE cierre_id = @id) WHERE id = @id`);
   for (const c of cupones) {
     const anterior = ledger.saldo(usuarioId, c.desde);
     const t = totalesRango(usuarioId, c.desde, c.hasta);
-    upd.run(anterior, t.vuelos, t.pagos, t.ajustes, anterior + t.vuelos + t.pagos + t.ajustes, c.id);
-    totalCierre.run(c.cierre_id, c.cierre_id);
+    upd.run(anterior, t.vuelos, t.servicios, t.pagos, t.ajustes, anterior + t.vuelos + t.servicios + t.pagos + t.ajustes, c.id);
+    totalCierre.run({ id: c.cierre_id });
   }
 }
 
@@ -217,9 +225,10 @@ function datosCupon(cuponId) {
   if (!cupon) throw new ErrorNegocio('Cupón inexistente', 404);
   const movimientos = db.prepare(`
     SELECT m.*, COALESCE(o.tipo, m.tipo) clase, v.fecha vuelo_fecha, v.decimas, v.precio_hora, v.tipo vuelo_tipo,
-           a.matricula, i.nombre || ' ' || i.apellido instructor
+           a.matricula, i.nombre || ' ' || i.apellido instructor, t.id ticket_id
     FROM movimientos m
     LEFT JOIN movimientos o ON o.id = m.anula_id
+    LEFT JOIN tickets t ON t.movimiento_id = m.id
     LEFT JOIN vuelos v ON v.id = m.vuelo_id
     LEFT JOIN aviones a ON a.id = v.avion_id
     LEFT JOIN usuarios i ON i.id = v.instructor_id

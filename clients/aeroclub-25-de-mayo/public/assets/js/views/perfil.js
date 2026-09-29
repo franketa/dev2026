@@ -1,4 +1,4 @@
-import { post, put, html, pintar, icono, toast, error, conBoton, datosForm } from '../lib.js';
+import { post, put, html, pintar, icono, toast, error, conBoton, datosForm, rolTexto } from '../lib.js';
 
 export default async function perfil(ctx) {
   const u = ctx.usuario;
@@ -7,7 +7,7 @@ export default async function perfil(ctx) {
   pintar(ctx.el, html`
   <div class="vista" style="max-width:640px">
     <div class="vista__cab"><div><h1>${forzado ? 'Te damos la bienvenida' : 'Perfil'}</h1>
-      <p>${forzado ? 'Antes de empezar, elegí tu propia contraseña.' : `${u.nombre} ${u.apellido}, ${u.rol === 'admin' ? 'tesorería' : u.es_instructor ? 'piloto instructor' : 'piloto'}`}</p></div></div>
+      <p>${forzado ? 'Antes de empezar, elegí tu propia contraseña.' : `${u.nombre} ${u.apellido}, ${u.rol === 'piloto' && u.es_instructor ? 'piloto instructor' : rolTexto(u).toLowerCase()}`}</p></div></div>
 
     <section class="panel">
       <div class="panel__cab"><h2>${forzado ? 'Tu contraseña' : 'Cambiar contraseña'}</h2></div>
@@ -31,7 +31,7 @@ export default async function perfil(ctx) {
         </dl>
         <div class="campo"><label for="telefono">Celular (WhatsApp)</label>
           <input class="input" id="telefono" name="telefono" inputmode="tel" value="${u.telefono || ''}" placeholder="2345 401234">
-          <p class="campo__ayuda">Código de área sin 0 y número sin 15. Tesorería te manda el cupón a este número.</p></div>
+          <p class="campo__ayuda">Código de área sin 0 y número sin 15.${u.rol === 'rampa' ? '' : ' Tesorería te manda el cupón a este número.'}</p></div>
         <button class="btn btn--sec" type="submit">Guardar celular</button>
       </form>
       <p class="muted chico" style="margin-top:16px">Para cambiar tu nombre o email, pedíselo a tesorería.</p>
@@ -50,7 +50,7 @@ export default async function perfil(ctx) {
         const r = await post('/api/auth/password', { actual: d.actual, nueva: d.nueva });
         ctx.actualizarUsuario(r.usuario);
         toast('Contraseña actualizada', 'ok');
-        if (forzado) ctx.ir(r.usuario.rol === 'admin' ? '#/panel' : '#/inicio');
+        if (forzado) ctx.ir({ admin: '#/panel', consulta: '#/panel', rampa: '#/rampa' }[r.usuario.rol] || '#/inicio');
         else fp.reset();
       } catch (err) { error(err); }
     });

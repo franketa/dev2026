@@ -11,10 +11,16 @@ const cierres = require('../services/cierres');
 const cuentas = require('../services/cuentas');
 const ledger = require('../services/ledger');
 const correcciones = require('../services/correcciones');
-const { enviarPdf } = require('./app');
+const servicios = require('../services/servicios');
+const tickets = require('../services/tickets');
+const pagosInformados = require('../services/pagosInformados');
+const respaldos = require('../services/respaldos');
+const { requireAdmin } = require('../middleware/auth');
+const { enviarPdf, enviarComprobante } = require('./app');
+const { enviarTicket } = require('./rampa');
 const {
   ErrorNegocio, hoy, periodoActual, sumarMeses, esFecha, esPeriodo, parsePesos, fmtPesos, fmtHoras,
-  limpiarTexto, normalizarEmail, telefonoWhatsApp, nombrePeriodo, fmtFechaCorta
+  limpiarTexto, normalizarEmail, telefonoWhatsApp, nombrePeriodo, fmtFechaCorta, nombreCompleto, MEDIOS
 } = require('../util');
 
 const router = express.Router();
@@ -42,6 +48,9 @@ router.get('/panel', (req, res) => {
     periodo,
     por_avion: porAvion,
     por_dia: porDia,
+    servicios: tickets.resumenServicios(periodo),
+    servicios_sin_precio: db.prepare('SELECT COUNT(*) n FROM servicios WHERE activo = 1 AND precio = 0').get().n,
+    pagos_informados: pagosInformados.pendientes(),
     deuda,
     cobrado,
     novedades,
@@ -65,13 +74,13 @@ function leerSocio(body, existente = null) {
   if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) throw new ErrorNegocio('Email inválido');
   const telefono = limpiarTexto(body.telefono, 30);
   if (telefono && !telefonoWhatsApp(telefono)) throw new ErrorNegocio('Celular inválido: poné código de área y número (ej: 2345 401234)');
-  const rol = body.rol === 'admin' ? 'admin' : 'piloto';
+  const rol = ['admin', 'consulta', 'rampa'].includes(body.rol) ? body.rol : 'piloto';
   return {
     nombre, apellido, email, telefono,
     dni: limpiarTexto(body.dni, 12),
     licencia: limpiarTexto(body.licencia, 60),
     rol,
-    es_instructor: body.es_instructor ? 1 : 0,
+    es_instructor: body.es_instructor && rol !== 'rampa' ? 1 : 0,
     activo: body.activo === false || body.activo === 0 ? 0 : 1
   };
 }
@@ -94,10 +103,18 @@ router.post('/usuarios', (req, res) => {
   }
 });
 
+router.post('/externos', (req, res) => res.status(201).json({ id: tickets.crearExterno(req.body || {}, req.user) }));
+
+router.put('/externos/:id', (req, res) => {
+  tickets.editarExterno(Number(req.params.id), req.body || {}, req.user);
+  res.json({ ok: true });
+});
+
 router.put('/usuarios/:id', (req, res) => {
   const id = Number(req.params.id);
   const antes = db.prepare('SELECT * FROM usuarios WHERE id = ?').get(id);
   if (!antes) throw new ErrorNegocio('Socio inexistente', 404);
+  if (antes.rol === 'externo') throw new ErrorNegocio('Es un externo: se edita desde su ficha de externo');
   const s = leerSocio(req.body || {}, antes);
   if (id === req.user.id && (s.rol !== 'admin' || !s.activo)) throw new ErrorNegocio('No podés quitarte el rol de admin ni darte de baja a vos mismo');
   if (antes.rol === 'admin' && s.rol !== 'admin') {
@@ -123,6 +140,7 @@ router.put('/usuarios/:id', (req, res) => {
 router.post('/usuarios/:id/reset-password', (req, res) => {
   const u = db.prepare('SELECT * FROM usuarios WHERE id = ?').get(Number(req.params.id));
   if (!u) throw new ErrorNegocio('Socio inexistente', 404);
+  if (u.rol === 'externo') throw new ErrorNegocio('Los externos no entran al sistema');
   const temporal = passwordTemporal();
   db.prepare('UPDATE usuarios SET password_hash = ?, debe_cambiar_password = 1, token_version = token_version + 1 WHERE id = ?')
     .run(bcrypt.hashSync(temporal, 10), u.id);
@@ -146,6 +164,35 @@ router.post('/aviones/:id/tarifas', (req, res) => {
 });
 
 
+// ── Servicios ────────────────────────────────────────────────────────────────
+router.get('/servicios', (req, res) => res.json({ servicios: servicios.listar({ incluirInactivos: true }) }));
+
+function leerServicio(body) {
+  const precio = body.precio === '' || body.precio == null ? 0 : parsePesos(String(body.precio));
+  if (precio == null || precio < 0) throw new ErrorNegocio('Precio inválido');
+  return { ...body, precio };
+}
+router.post('/servicios', (req, res) => res.status(201).json({ id: servicios.guardar(leerServicio(req.body || {}), req.user) }));
+router.put('/servicios/:id', (req, res) => res.json({ id: servicios.guardar(leerServicio(req.body || {}), req.user, Number(req.params.id)) }));
+
+// ── Tickets de servicios ─────────────────────────────────────────────────────
+router.get('/tickets', (req, res) => {
+  res.json({ tickets: tickets.listar({ ...req.query, limite: 1000 }), aeronaves: tickets.listarAeronaves() });
+});
+router.get('/aeronaves', (req, res) => res.json({ aeronaves: tickets.listarAeronaves() }));
+router.get('/tickets/:id', (req, res) => res.json({ ticket: tickets.detalle(Number(req.params.id)) }));
+router.get('/tickets/:id/pdf', (req, res) => enviarTicket(res, tickets.detalle(Number(req.params.id)), req.query.descargar === '1'));
+router.post('/tickets', (req, res) => res.status(201).json({ ticket: tickets.crear(req.body || {}, req.user) }));
+router.post('/tickets/:id/anular', (req, res) => res.json({ ticket: tickets.anular(Number(req.params.id), req.body?.motivo, req.user) }));
+
+// ── Pagos informados por los socios ──────────────────────────────────────────
+router.get('/pagos-informados', (req, res) => {
+  res.json({ pagos: pagosInformados.listar({ estado: req.query.estado || null, limite: 200 }) });
+});
+router.get('/pagos-informados/:id/comprobante', (req, res) => enviarComprobante(res, pagosInformados.comprobante(Number(req.params.id))));
+router.post('/pagos-informados/:id/confirmar', (req, res) => res.json(pagosInformados.confirmar(Number(req.params.id), req.body || {}, req.user)));
+router.post('/pagos-informados/:id/rechazar', (req, res) => res.json({ pago: pagosInformados.rechazar(Number(req.params.id), req.body?.motivo, req.user) }));
+
 // ── Cuentas corrientes ──────────────────────────────────────────────────────
 router.get('/cuentas', (req, res) => res.json({ cuentas: cuentas.listarCuentas() }));
 router.get('/cuentas/:id', (req, res) => res.json(cuentas.estadoCuenta(Number(req.params.id))));
@@ -155,8 +202,6 @@ function socioActivo(id) {
   if (!u) throw new ErrorNegocio('Socio inexistente', 404);
   return u;
 }
-
-const MEDIOS = ['transferencia', 'efectivo', 'mercadopago', 'cheque', 'otro'];
 
 router.post('/pagos', (req, res) => {
   const u = socioActivo(req.body?.usuario_id);
@@ -191,6 +236,7 @@ router.post('/ajustes', (req, res) => {
 });
 
 router.post('/movimientos/:id/anular', (req, res) => {
+  correcciones.exigirQueNoSeaTicket(Number(req.params.id));
   const motivo = limpiarTexto(req.body?.motivo, 200);
   const m = ledger.anular(Number(req.params.id), motivo, req.user.id);
   auditar(req.user.id, 'movimiento.anulacion', `Movimiento #${req.params.id} anulado con #${m.id}: ${motivo}`);
@@ -270,7 +316,9 @@ function reporte(periodo) {
     por_instructor: db.prepare(`
       SELECT u.id, u.nombre, u.apellido, COUNT(*) vuelos, SUM(v.decimas) decimas, COUNT(DISTINCT v.piloto_id) alumnos
       FROM vuelos v JOIN usuarios u ON u.id = v.instructor_id WHERE ${filtro} GROUP BY u.id ORDER BY decimas DESC`).all({ periodo }),
-    vuelos: vuelos.listar({ periodo, limite: 2000 })
+    vuelos: vuelos.listar({ periodo, limite: 2000 }),
+    servicios: tickets.resumenServicios(periodo),
+    tickets: tickets.listar({ periodo, estado: 'vigente', limite: 1000 })
   };
 }
 
@@ -287,14 +335,24 @@ router.get('/reportes', (req, res) => {
   };
   const num = (d) => (d / 10).toFixed(1).replace('.', ',');
   const plata = (c) => (c / 100).toFixed(2).replace('.', ',');
-  const filas = [['Fecha', 'Avión', 'Piloto', 'Instructor', 'Horas', 'Precio/h', 'Importe', 'Estado', 'Novedades']];
-  for (const v of [...r.vuelos].reverse()) {
-    filas.push([v.fecha, v.matricula, v.piloto, v.instructor || '', num(v.decimas), plata(v.precio_hora), plata(v.importe), v.estado, v.notas || '']);
+  const deServicios = req.query.de === 'servicios';
+  const filas = deServicios
+    ? [['Fecha', 'Ticket', 'A cargo de', 'Aeronave', 'Detalle', 'Total', 'Cobro', 'Cargado por']]
+    : [['Fecha', 'Avión', 'Piloto', 'Instructor', 'Horas', 'Precio/h', 'Importe', 'Estado', 'Novedades']];
+  if (deServicios) {
+    for (const t of [...r.tickets].reverse()) {
+      filas.push([t.fecha, t.numero_txt, nombreCompleto(t), t.matricula || '', t.resumen || '', plata(t.total),
+        t.pago_movimiento_id ? `En el acto (${t.pago_medio})` : 'A cuenta', t.origen === 'cierre' ? 'Cierre automático' : (t.creado_por_nombre || '')]);
+    }
+  } else {
+    for (const v of [...r.vuelos].reverse()) {
+      filas.push([v.fecha, v.matricula, v.piloto, v.instructor || '', num(v.decimas), plata(v.precio_hora), plata(v.importe), v.estado, v.notas || '']);
+    }
   }
   // Separador ";" y BOM: Excel en español lo abre directo con acentos y columnas bien.
   const csv = '﻿' + filas.map(f => f.map(esc).join(';')).join('\r\n');
   res.setHeader('Content-Type', 'text/csv; charset=utf-8');
-  res.setHeader('Content-Disposition', `attachment; filename="vuelos-${periodo}.csv"`);
+  res.setHeader('Content-Disposition', `attachment; filename="${deServicios ? 'servicios' : 'vuelos'}-${periodo}.csv"`);
   res.send(csv);
 });
 
@@ -322,13 +380,21 @@ router.get('/libro', (req, res) => {
 router.get('/integridad', (req, res) => res.json(ledger.verificarCadena()));
 
 // Copia completa de la base (consistente aunque haya escrituras en curso).
-router.get('/respaldo', async (req, res, next) => {
+router.get('/respaldo', requireAdmin, async (req, res, next) => {
   try {
     const archivo = path.join(os.tmpdir(), `a25-respaldo-${Date.now()}.sqlite`);
     await db.backup(archivo);
     auditar(req.user.id, 'respaldo.descarga', 'Descargó una copia de seguridad de la base');
     res.download(archivo, `aeroclub-respaldo-${hoy()}.sqlite`, () => fs.unlink(archivo, () => {}));
   } catch (e) { next(e); }
+});
+
+// Copias mensuales automáticas (quedan las últimas 12 en el servidor).
+router.get('/respaldos', (req, res) => res.json({ respaldos: respaldos.listar() }));
+router.get('/respaldos/:nombre', requireAdmin, (req, res) => {
+  const archivo = respaldos.ruta(req.params.nombre);
+  auditar(req.user.id, 'respaldo.descarga', `Descargó la copia mensual ${req.params.nombre}`);
+  res.download(archivo, req.params.nombre);
 });
 
 // ── Configuración ───────────────────────────────────────────────────────────

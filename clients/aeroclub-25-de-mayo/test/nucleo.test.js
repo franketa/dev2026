@@ -85,21 +85,25 @@ test('carga de vuelos: horas, validaciones e instructor', () => {
   assert.equal(ajeno.vuelo.piloto_id, juan.id);
   // Cargar lo mismo dos veces avisa (no bloquea).
   const doble = vuelos.crear({ avion_id: 1, fecha: util.hoy(), horas: '0,5' }, juan);
-  assert.match(doble.avisos.join(' '), /otro vuelo igual/);
-  assert.throws(() => vuelos.anular(doble.vuelo.id, '', juan), /por qué/);
-  vuelos.anular(doble.vuelo.id, 'Duplicado', juan);
-  vuelos.anular(ajeno.vuelo.id, 'Prueba', juan);
-  assert.throws(() => vuelos.anular(ajeno.vuelo.id, 'Otra', juan), /anulado/);
+  assert.match(doble.avisos.join(' '), /otro vuelo igual.*tesorería/);
+  // Una vez aceptado, el piloto no puede anular ni corregir su vuelo: sólo tesorería.
+  assert.throws(() => vuelos.anular(doble.vuelo.id, 'Duplicado', juan), /no se pueden modificar una vez aceptados/);
+  assert.throws(() => vuelos.editar(doble.vuelo.id, { horas: '0,6' }, juan), /no se pueden modificar una vez aceptados/);
+  assert.throws(() => vuelos.anular(doble.vuelo.id, '', admin), /por qué/);
+  vuelos.anular(doble.vuelo.id, 'Duplicado', admin);
+  vuelos.anular(ajeno.vuelo.id, 'Prueba', admin);
+  assert.throws(() => vuelos.anular(ajeno.vuelo.id, 'Otra', admin), /anulado/);
 
   vuelos.crear({ avion_id: 1, fecha: '2026-07-12', horas: '1' }, admin);
 
-  // Un piloto no puede tocar vuelos ajenos.
-  assert.throws(() => vuelos.editar(v1.vuelo.id, { notas: 'x' }, juan), /tus propios vuelos/);
-  // Pero sí corregir el suyo mientras el mes está abierto, y queda en el historial.
-  const corregido = vuelos.editar(v1.vuelo.id, { horas: '1,3', notas: 'Presión de aceite baja' }, ana);
+  // Ningún piloto toca vuelos, ni ajenos ni propios.
+  assert.throws(() => vuelos.editar(v1.vuelo.id, { notas: 'x' }, juan), /no se pueden modificar/);
+  assert.throws(() => vuelos.editar(v1.vuelo.id, { notas: 'x' }, ana), /no se pueden modificar/);
+  // Tesorería sí lo corrige mientras el mes está abierto, y queda en el historial.
+  const corregido = vuelos.editar(v1.vuelo.id, { horas: '1,3', notas: 'Presión de aceite baja' }, admin);
   assert.equal(corregido.vuelo.importe, 12350000);
   assert.equal(vuelos.historial(v1.vuelo.id).length, 2);
-  vuelos.editar(v1.vuelo.id, { horas: '1,2' }, ana);
+  vuelos.editar(v1.vuelo.id, { horas: '1,2' }, admin);
 
   porTesoreria({ avion_id: 1, fecha: '2026-07-20', horas: '1' }, juan);
 });
@@ -138,7 +142,7 @@ test('cierre de julio: cupones correctos y vuelos congelados', () => {
 
   const v = db.prepare('SELECT * FROM vuelos WHERE piloto_id = ?').get(ana.id);
   assert.equal(v.estado, 'cerrado');
-  assert.throws(() => vuelos.editar(v.id, { notas: 'cambio' }, ana), /cierre del mes/);
+  assert.throws(() => vuelos.editar(v.id, { notas: 'cambio' }, admin), /cierre del mes/);
   assert.throws(() => db.prepare(`UPDATE vuelos SET importe = 1 WHERE id = ?`).run(v.id), /cerrado/);
   assert.throws(() => db.prepare(`DELETE FROM vuelos WHERE id = ?`).run(v.id), /no se borran/);
   assert.throws(() => cierres.cerrar('2026-07', admin), /ya está cerrado/);

@@ -36,6 +36,57 @@ function modalTarifa(a, ctx) {
   });
 }
 
+const UNIDADES = { unidad: 'Por unidad', hora: 'Por hora', litro: 'Por litro', dia: 'Por día', mes: 'Por mes' };
+
+function modalServicio(s, ctx) {
+  const nuevo = !s;
+  s = s || { activo: 1, unidad: 'unidad', precio: 0 };
+  const m = modal({
+    titulo: nuevo ? 'Agregar servicio' : `Editar ${s.nombre}`,
+    subtitulo: 'El precio nuevo se usa en los tickets que se hagan de ahora en más. Los ya hechos no cambian.',
+    contenido: html`<form class="form" novalidate>
+      <div class="campo"><label for="sv-nom">Nombre</label><input class="input" id="sv-nom" name="nombre" value="${s.nombre || ''}" required ${s.codigo ? raw('readonly') : raw('autofocus')}></div>
+      <div class="fila-campos">
+        <div class="campo"><label for="sv-precio">Precio</label><input class="input" id="sv-precio" name="precio" inputmode="decimal" value="${pesosInput(s.precio)}" placeholder="Ej.: 2.500" ${s.codigo ? raw('autofocus') : ''}></div>
+        <div class="campo"><label for="sv-uni">Se cobra</label><select class="select" id="sv-uni" name="unidad">${Object.entries(UNIDADES).map(([v, t]) => html`<option value="${v}" ${v === s.unidad ? raw('selected') : ''}>${t}</option>`)}</select></div>
+      </div>
+      ${s.codigo === 'derecho_aeronave' ? html`<p class="aviso aviso--info">${icono('info')}<span>Se cobra solo en el cierre: una vez por mes a cada piloto que voló. Con precio en cero, no se cobra.</span></p>` : ''}
+      ${nuevo ? '' : html`<label class="check"><input type="checkbox" name="activo" ${s.activo ? raw('checked') : ''}><span>Activo<br><small class="muted">Si lo das de baja, no aparece para cargar tickets. Lo ya cobrado se conserva.</small></span></label>`}
+      <div class="modal__acciones"><button class="btn btn--sec" type="button" data-cerrar>Cancelar</button><button class="btn btn--principal" type="submit">${nuevo ? 'Agregar' : 'Guardar'}</button></div>
+    </form>`
+  });
+  const form = m.el.querySelector('form');
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const d = datosForm(form);
+    if (!nuevo) d.activo = !!d.activo;
+    conBoton(form.querySelector('[type=submit]'), async () => {
+      try {
+        if (nuevo) await post('/api/admin/servicios', d); else await put(`/api/admin/servicios/${s.id}`, d);
+        toast(nuevo ? 'Servicio agregado' : 'Servicio actualizado', 'ok');
+        m.cerrar();
+        ctx.recargar();
+      } catch (err) { error(err); }
+    });
+  });
+}
+
+function seccionServicios(servicios) {
+  return html`<section class="panel" id="servicios">
+    <div class="panel__cab"><div><h2>Servicios</h2><p>Lo que se cobra aparte de las horas de vuelo: rampa los carga en tickets y tesorería los suma a la cuenta de cualquiera.</p></div>
+      <button class="btn btn--sec btn--chico" type="button" data-nuevo-servicio data-escritura>${icono('mas')} Agregar servicio</button></div>
+    <div class="tabla-caja"><table class="tabla tabla--tarjetas">
+      <thead><tr><th>Servicio</th><th class="num">Precio</th><th>Se cobra</th><th></th></tr></thead>
+      <tbody>${servicios.map(s => html`<tr ${s.activo ? '' : raw('style="opacity:.55"')}>
+        <td class="celda-ppal"><strong>${s.nombre}</strong>${s.activo ? '' : html` <span class="chip chip--neutro">Baja</span>`}${s.codigo === 'derecho_aeronave' ? html`<div class="muted chico">Automático en el cierre, una vez por mes por piloto</div>` : ''}</td>
+        <td class="num" data-label="Precio">${s.precio ? html`<span class="monto">${pesos(s.precio)}</span>` : html`<span class="chip chip--pend">Sin precio</span>`}</td>
+        <td data-label="Se cobra">${UNIDADES[s.unidad]}</td>
+        <td class="celda-acciones"><div class="tabla__acciones"><button class="btn btn--sec btn--chico" type="button" data-servicio="${s.id}" data-escritura>${icono('editar')} ${s.precio ? 'Cambiar precio' : 'Poner precio'}</button></div></td>
+      </tr>`)}</tbody>
+    </table></div>
+  </section>`;
+}
+
 function modalAvion(a, ctx) {
   const nuevo = !a;
   a = a || { activo: 1 };
@@ -67,20 +118,20 @@ function modalAvion(a, ctx) {
 }
 
 export async function flota(ctx) {
-  const { aviones } = await get('/api/admin/aviones');
+  const [{ aviones }, { servicios }] = await Promise.all([get('/api/admin/aviones'), get('/api/admin/servicios')]);
 
   pintar(ctx.el, html`
   <div class="vista">
     <div class="vista__cab">
-      <div><h1>Flota y tarifas</h1><p>Precios por hora, con nafta incluida. Cada cambio queda con fecha y autor.</p></div>
-      <div class="vista__acciones"><button class="btn btn--sec" type="button" data-nuevo>${icono('mas')} Agregar avión</button></div>
+      <div><h1>Flota y tarifas</h1><p>Precios por hora de vuelo, con nafta incluida, y precios de los servicios. Cada cambio queda con fecha y autor.</p></div>
+      <div class="vista__acciones"><button class="btn btn--sec" type="button" data-nuevo data-escritura>${icono('mas')} Agregar avión</button></div>
     </div>
     ${aviones.map(a => html`
       <section class="panel" style="--serie:${colorAvion(a.orden)}">
         <div class="avion__cab" style="margin-bottom:18px;flex-wrap:wrap">
           <span class="avion__marca" style="min-height:44px"></span>
           <div><span class="matricula" style="font-size:1.6rem">${a.matricula}</span><small>${a.modelo}${a.activo ? '' : ' (fuera de servicio)'}</small></div>
-          <button class="btn btn--fantasma btn--chico" type="button" data-editar="${a.id}" style="margin-left:auto">${icono('editar')} Editar avión</button>
+          <button class="btn btn--fantasma btn--chico" type="button" data-editar="${a.id}" data-escritura style="margin-left:auto">${icono('editar')} Editar avión</button>
         </div>
         <div class="grilla grilla--2">
           <div class="pila" style="gap:10px">
@@ -90,7 +141,7 @@ export async function flota(ctx) {
               <div><span>Con instructor</span><strong>${a.tarifas.instruccion ? pesos(a.tarifas.instruccion) : '—'}</strong><small>por hora</small></div>
             </div>
             ${!a.tarifas.solo || !a.tarifas.instruccion ? html`<p class="aviso">${icono('alerta')}<span>Falta cargar una tarifa: los pilotos no van a poder cargar ese tipo de vuelo.</span></p>` : ''}
-            <div class="vista__acciones"><button class="btn btn--principal btn--chico" type="button" data-tarifa="${a.id}">${icono('editar')} Cambiar tarifa</button></div>
+            <div class="vista__acciones" data-escritura><button class="btn btn--principal btn--chico" type="button" data-tarifa="${a.id}">${icono('editar')} Cambiar tarifa</button></div>
             ${a.historial_tarifas.length ? html`<details><summary class="chico" style="cursor:pointer;color:var(--azul);font-weight:600">Historial de tarifas (${a.historial_tarifas.length})</summary>
               <div class="tabla-caja" style="margin-top:8px"><table class="tabla"><thead><tr><th>Desde</th><th>Tipo</th><th class="num">Precio/h</th><th>Cargada por</th></tr></thead>
               <tbody>${a.historial_tarifas.map(t => html`<tr><td>${fecha(t.vigente_desde)}</td><td>${t.tipo === 'solo' ? 'Sin instructor' : 'Con instructor'}</td><td class="num">${pesos(t.precio_hora)}</td><td class="muted chico">${t.autor || '—'}</td></tr>`)}</tbody></table></div></details>` : ''}
@@ -106,9 +157,13 @@ export async function flota(ctx) {
           </div>
         </div>
       </section>`)}
+    ${seccionServicios(servicios)}
   </div>`);
 
   ctx.el.addEventListener('click', (e) => {
+    if (e.target.closest('[data-nuevo-servicio]')) return modalServicio(null, ctx);
+    const sv = e.target.closest('[data-servicio]');
+    if (sv) return modalServicio(servicios.find(s => s.id === Number(sv.dataset.servicio)), ctx);
     if (e.target.closest('[data-nuevo]')) return modalAvion(null, ctx);
     const t = e.target.closest('[data-tarifa]');
     if (t) return modalTarifa(aviones.find(a => a.id === Number(t.dataset.tarifa)), ctx);

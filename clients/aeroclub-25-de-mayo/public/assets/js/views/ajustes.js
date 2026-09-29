@@ -47,7 +47,7 @@ export default async function ajustes(ctx) {
         </div>
       </section>
 
-      <div><button class="btn btn--principal btn--grande" type="submit">${icono('check')} Guardar configuración</button></div>
+      <div data-escritura><button class="btn btn--principal btn--grande" type="submit">${icono('check')} Guardar configuración</button></div>
     </form>
   </div>`);
 

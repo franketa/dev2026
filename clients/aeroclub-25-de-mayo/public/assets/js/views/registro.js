@@ -1,15 +1,24 @@
-import { get, html, pintar, icono, pesos, fecha, fechaHora, error, conBoton } from '../lib.js';
+import { get, html, pintar, icono, pesos, fecha, fechaHora, error, conBoton, nombrePeriodo } from '../lib.js';
 
 const ACCIONES = {
   'usuario.alta': 'Alta de socio', 'usuario.edicion': 'Edición de socio', 'usuario.reset_password': 'Contraseña regenerada', 'usuario.password': 'Cambio de contraseña',
   'usuario.perfil': 'Actualizó su perfil', 'avion.alta': 'Alta de avión', 'avion.edicion': 'Edición de avión', 'tarifa.alta': 'Nueva tarifa',
   'pago.alta': 'Pago registrado', 'ajuste.alta': 'Ajuste manual', 'saldo_inicial.alta': 'Saldo inicial',
-  'movimiento.anulacion': 'Movimiento anulado', 'movimiento.edicion': 'Movimiento corregido', 'movimiento.borrado': 'Movimiento borrado', 'cierre.manual': 'Cierre manual', 'cierre.automatico': 'Cierre automático', 'config.edicion': 'Configuración', 'respaldo.descarga': 'Copia de seguridad'
+  'movimiento.anulacion': 'Movimiento anulado', 'movimiento.edicion': 'Movimiento corregido', 'movimiento.borrado': 'Movimiento borrado', 'cierre.manual': 'Cierre manual', 'cierre.automatico': 'Cierre automático', 'config.edicion': 'Configuración', 'respaldo.descarga': 'Copia de seguridad',
+  'respaldo.mensual': 'Copia mensual automática', 'servicio.alta': 'Nuevo servicio', 'servicio.edicion': 'Servicio modificado',
+  'ticket.alta': 'Ticket de servicios', 'ticket.anulacion': 'Ticket anulado', 'aeronave.alta': 'Alta de aeronave', 'aeronave.edicion': 'Edición de aeronave',
+  'externo.alta': 'Alta de externo', 'externo.edicion': 'Edición de externo', 'pago_informado.alta': 'Pago informado por el socio',
+  'pago_informado.confirmado': 'Pago informado confirmado', 'pago_informado.rechazado': 'Pago informado rechazado'
 };
+
+const tamano = (b) => (b > 1048576 ? `${(b / 1048576).toFixed(1).replace('.', ',')} MB` : `${Math.max(1, Math.round(b / 1024))} KB`);
 
 export default async function registro(ctx) {
   const pestana = ctx.query.ver === 'auditoria' ? 'auditoria' : 'libro';
-  const datos = pestana === 'libro' ? await get('/api/admin/libro') : await get('/api/admin/auditoria');
+  const [datos, { respaldos }] = await Promise.all([
+    pestana === 'libro' ? get('/api/admin/libro') : get('/api/admin/auditoria'),
+    get('/api/admin/respaldos')
+  ]);
 
   pintar(ctx.el, html`
   <div class="vista">
@@ -18,8 +27,20 @@ export default async function registro(ctx) {
     <section class="panel">
       <div class="panel__cab"><div><h2>Integridad del libro</h2><p>Cada movimiento de plata está encadenado con el anterior. Las correcciones hechas desde el sistema quedan en "Acciones de usuarios"; si alguien modificara la base por fuera, la verificación lo detecta.</p></div>
         <div class="vista__acciones"><button class="btn btn--sec" type="button" data-verificar>${icono('cadena')} Verificar ahora</button>
-        <a class="btn btn--fantasma" href="/api/admin/respaldo">${icono('descargar')} Copia de seguridad</a></div></div>
+        <a class="btn btn--fantasma" href="/api/admin/respaldo" data-escritura>${icono('descargar')} Copia de seguridad</a></div></div>
       <div id="verificacion"></div>
+    </section>
+
+    <section class="panel">
+      <div class="panel__cab"><div><h2>Copias mensuales</h2><p>El sistema guarda solo una copia completa de la base cada mes, después del cierre. Quedan las últimas 12. Conviene bajarlas y guardarlas también en otro lado.</p></div></div>
+      ${respaldos.length ? html`<div class="tabla-caja"><table class="tabla tabla--tarjetas">
+        <thead><tr><th>Mes</th><th>Generada</th><th class="num">Tamaño</th><th></th></tr></thead>
+        <tbody>${respaldos.map(r => html`<tr>
+          <td class="celda-ppal" style="text-transform:capitalize"><strong>${nombrePeriodo(r.periodo)}</strong></td>
+          <td data-label="Generada">${fechaHora(r.creado_en)}</td>
+          <td class="num" data-label="Tamaño">${tamano(r.bytes)}</td>
+          <td class="celda-acciones"><div class="tabla__acciones"><a class="btn btn--sec btn--chico" href="/api/admin/respaldos/${r.nombre}" data-escritura>${icono('descargar')} Descargar</a></div></td>
+        </tr>`)}</tbody></table></div>` : html`<p class="muted">Todavía no se generó ninguna. La primera se hace sola este mes.</p>`}
     </section>
 
     <div class="pestanas" role="tablist">

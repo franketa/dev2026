@@ -1,8 +1,9 @@
 import {
   get, post, put, html, raw, pintar, icono, pesos, horas, fecha, nombrePeriodo, chipCupon, modal, pedirTexto, toast, error, conBoton,
-  hoyAR, pesosInput, datosForm, ala
+  hoyAR, pesosInput, datosForm, ala, nombreCompleto, opcionesMedio, leerComprobante
 } from '../lib.js';
 import { listaMovimientos } from './comun.js';
+import { tablaInformes, revisarPago } from './pagos.js';
 
 function bloqueSaldo(d, { admin }) {
   const debe = d.saldo > 0;
@@ -14,10 +15,10 @@ function bloqueSaldo(d, { admin }) {
         <div class="saldo__monto">${pesos(Math.abs(d.saldo))}</div>
         <div class="saldo__estado">${debe ? html`<span class="chip chip--pend">Pendiente de pago</span>` : html`<span class="chip chip--ok">Al día</span>`}</div>
       </div>
-      <div class="saldo__pie">
+      ${d.usuario.rol === 'externo' ? '' : html`<div class="saldo__pie">
         <div><span>Vuelos a facturar en el próximo cierre</span><strong>${pesos(d.abiertos.importe)}</strong></div>
         <div><span>Horas sin facturar</span><strong>${horas(d.abiertos.decimas)}</strong></div>
-      </div>
+      </div>`}
     </section>`;
 }
 
@@ -38,30 +39,97 @@ function tablaCupones(cupones, { admin }) {
 
 export async function miCuenta(ctx) {
   const d = await get('/api/cuenta');
+  const informes = d.pagos_informados;
   pintar(ctx.el, html`
   <div class="vista">
-    <div class="vista__cab"><div><h1>Mi cuenta</h1><p>Tus cupones y todos los movimientos de tu cuenta en el club.</p></div></div>
+    <div class="vista__cab">
+      <div><h1>Mi cuenta</h1><p>Tus cupones y todos los movimientos de tu cuenta en el club.</p></div>
+      <div class="vista__acciones"><button class="btn btn--principal" type="button" data-informar>${icono('informar')} Informar un pago</button></div>
+    </div>
     ${bloqueSaldo(d, { admin: false })}
+    ${informes.length ? html`<section class="panel"><div class="panel__cab"><h2>Pagos que informaste</h2><p>Tesorería los revisa y, cuando los confirma, se descuentan de tu saldo.</p></div>${tablaInformes(informes, { socio: false })}</section>` : ''}
     <section class="panel"><div class="panel__cab"><h2>Cupones</h2></div>${tablaCupones(d.cupones, { admin: false })}</section>
     <section class="panel"><div class="panel__cab"><h2>Movimientos</h2><p>Los vuelos aparecen acá cuando entran en el cierre del mes.</p></div>${listaMovimientos(d.movimientos)}</section>
   </div>`);
+  ctx.el.addEventListener('click', (e) => {
+    if (e.target.closest('[data-informar]')) modalInformarPago(d.saldo, ctx.recargar);
+  });
+}
+
+// El socio avisa que pagó (con foto del comprobante si quiere). No toca el saldo hasta que tesorería lo confirma.
+function modalInformarPago(saldo, alTerminar) {
+  let comprobante = null;
+  const m = modal({
+    titulo: 'Informar un pago',
+    subtitulo: 'Avisale a tesorería que pagaste. Cuando lo confirmen, se descuenta de tu saldo.',
+    contenido: html`<form class="form" novalidate>
+      <div class="fila-campos">
+        <div class="campo"><label for="ip-imp">Importe</label><input class="input" id="ip-imp" name="importe" inputmode="decimal" value="${saldo > 0 ? pesosInput(saldo) : ''}" placeholder="0" required autofocus></div>
+        <div class="campo"><label for="ip-fecha">Fecha del pago</label><input class="input" id="ip-fecha" type="date" name="fecha" value="${hoyAR()}" max="${hoyAR()}" required></div>
+      </div>
+      <div class="campo"><label for="ip-medio">¿Cómo pagaste?</label><select class="select" id="ip-medio" name="medio">${opcionesMedio('transferencia')}</select></div>
+      <div class="campo"><label for="ip-nota">Nota <span class="muted">(opcional)</span></label><input class="input" id="ip-nota" name="nota" maxlength="300" placeholder="Ej.: transferí desde la cuenta de mi papá"></div>
+      <div class="campo">
+        <span class="campo__label">Comprobante <span class="muted">(opcional)</span></span>
+        <label class="adjuntar"><input type="file" name="archivo" accept="image/*,application/pdf" class="sr">${icono('foto')}<span data-adjunto>Sacale una foto o elegí la captura de la transferencia</span></label>
+        <div data-vista-previa></div>
+      </div>
+      <div class="modal__acciones"><button class="btn btn--sec" type="button" data-cerrar>Cancelar</button><button class="btn btn--principal" type="submit">${icono('check')} Informar pago</button></div>
+    </form>`
+  });
+  const form = m.el.querySelector('form');
+  form.archivo.addEventListener('change', async () => {
+    const archivo = form.archivo.files[0];
+    const $txt = m.el.querySelector('[data-adjunto]');
+    const $prev = m.el.querySelector('[data-vista-previa]');
+    comprobante = null;
+    pintar($prev, '');
+    if (!archivo) { $txt.textContent = 'Sacale una foto o elegí la captura de la transferencia'; return; }
+    try {
+      $txt.textContent = 'Preparando…';
+      comprobante = await leerComprobante(archivo);
+      $txt.textContent = archivo.name;
+      pintar($prev, comprobante.startsWith('data:image/')
+        ? html`<img class="comprobante" src="${comprobante}" alt="Vista previa del comprobante">`
+        : html`<p class="muted chico">${icono('pdf')} PDF listo para enviar</p>`);
+    } catch (err) {
+      $txt.textContent = 'Sacale una foto o elegí la captura de la transferencia';
+      form.archivo.value = '';
+      error(err);
+    }
+  });
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const d = datosForm(form);
+    conBoton(form.querySelector('[type=submit]'), async () => {
+      try {
+        await post('/api/pagos-informados', { importe: d.importe, fecha: d.fecha, medio: d.medio, nota: d.nota, comprobante });
+        toast('Listo: tesorería va a revisar tu pago', 'ok');
+        m.cerrar();
+        alTerminar?.();
+      } catch (err) { error(err); }
+    });
+  });
 }
 
 export async function cuentaSocio(ctx) {
   const id = Number(ctx.params.id);
   const d = await get(`/api/admin/cuentas/${id}`);
   const u = d.usuario;
+  const pendientes = d.pagos_informados.filter(p => p.estado === 'pendiente');
 
   pintar(ctx.el, html`
   <div class="vista">
     <div class="vista__cab">
-      <div><a class="volver" href="#/admin/cuentas">${icono('izq')} Cuentas</a><h1>${u.nombre} ${u.apellido}</h1>
-        <p>${[u.email, u.telefono, u.licencia].filter(Boolean).join(', ')}${u.activo ? '' : ' (dado de baja)'}</p></div>
+      <div><a class="volver" href="#/admin/cuentas">${icono('izq')} Cuentas</a><h1>${nombreCompleto(u)}</h1>
+        <p>${u.rol === 'externo' ? 'Externo. ' : ''}${[u.email, u.telefono, u.licencia, u.dni && u.rol === 'externo' ? `DNI/CUIT ${u.dni}` : null].filter(Boolean).join(', ')}${u.activo ? '' : ' (dado de baja)'}</p></div>
       <div class="vista__acciones">
-        <button class="btn btn--sec" type="button" data-ajuste>${icono('ajuste')} Ajuste manual</button>
-        <button class="btn btn--principal" type="button" data-pago>${icono('pago')} Registrar pago</button>
+        <a class="btn btn--sec" href="#/admin/tickets/nuevo?usuario=${u.id}" data-escritura>${icono('ticket')} Servicio u otro concepto</a>
+        <button class="btn btn--sec" type="button" data-ajuste data-escritura>${icono('ajuste')} Ajuste manual</button>
+        <button class="btn btn--principal" type="button" data-pago data-escritura>${icono('pago')} Registrar pago</button>
       </div>
     </div>
+    ${pendientes.length ? html`<section class="panel"><div class="panel__cab"><h2>Pagos informados por revisar</h2><p>No se descuentan del saldo hasta que los confirmes.</p></div>${tablaInformes(pendientes, { socio: false, revisar: true })}</section>` : ''}
     ${bloqueSaldo(d, { admin: true })}
     <section class="panel"><div class="panel__cab"><h2>Cupones</h2></div>${tablaCupones(d.cupones, { admin: true })}</section>
     <section class="panel">
@@ -71,6 +139,8 @@ export async function cuentaSocio(ctx) {
   </div>`);
 
   ctx.el.addEventListener('click', async (e) => {
+    const rev = e.target.closest('[data-revisar]');
+    if (rev) return revisarPago(pendientes.find(p => p.id === Number(rev.dataset.revisar)), ctx.recargar);
     if (e.target.closest('[data-pago]')) modalPago(u, d.saldo, ctx.recargar);
     if (e.target.closest('[data-ajuste]')) modalAjuste(u, ctx.recargar);
     const ed = e.target.closest('[data-editar-mov]');
@@ -115,9 +185,7 @@ function modalEditarMovimiento(m, alTerminar) {
         <div class="campo"><label for="em-imp">Importe</label><input class="input" id="em-imp" name="importe" inputmode="decimal" value="${pesosInput(Math.abs(m.importe))}" required></div>
         <div class="campo"><label for="em-fecha">Fecha</label><input class="input" id="em-fecha" type="date" name="fecha" value="${m.fecha}" max="${hoyAR()}" required></div>
       </div>
-      ${m.tipo === 'pago' ? html`<div class="campo"><label for="em-medio">Medio</label><select class="select" id="em-medio" name="medio">
-        ${['transferencia', 'efectivo', 'mercadopago', 'cheque', 'otro'].map(x => html`<option value="${x}" ${x === m.medio ? raw('selected') : ''}>${x === 'mercadopago' ? 'Mercado Pago' : x.charAt(0).toUpperCase() + x.slice(1)}</option>`)}
-      </select></div>` : ''}
+      ${m.tipo === 'pago' ? html`<div class="campo"><label for="em-medio">Medio</label><select class="select" id="em-medio" name="medio">${opcionesMedio(m.medio)}</select></div>` : ''}
       <div class="campo"><label for="em-mot">Motivo del cambio</label><textarea class="textarea" id="em-mot" name="motivo" maxlength="200" required placeholder="Ej.: el importe estaba mal tipeado"></textarea></div>
       <div class="modal__acciones"><button class="btn btn--sec" type="button" data-cerrar>Cancelar</button><button class="btn btn--principal" type="submit">Guardar cambios</button></div>
     </form>`
@@ -141,14 +209,14 @@ function modalEditarMovimiento(m, alTerminar) {
 export function modalPago(u, sugerido, alTerminar) {
   const m = modal({
     titulo: 'Registrar pago',
-    subtitulo: `${u.nombre} ${u.apellido}`,
+    subtitulo: nombreCompleto(u),
     contenido: html`<form class="form" novalidate>
       <div class="fila-campos">
         <div class="campo"><label for="p-imp">Importe</label><input class="input" id="p-imp" name="importe" inputmode="decimal" value="${sugerido > 0 ? pesosInput(sugerido) : ''}" placeholder="0" required autofocus></div>
         <div class="campo"><label for="p-fecha">Fecha</label><input class="input" id="p-fecha" type="date" name="fecha" value="${hoyAR()}" max="${hoyAR()}" required></div>
       </div>
       <div class="campo"><label for="p-medio">Medio</label>
-        <select class="select" id="p-medio" name="medio"><option value="transferencia">Transferencia</option><option value="efectivo">Efectivo</option><option value="mercadopago">Mercado Pago</option><option value="cheque">Cheque</option><option value="otro">Otro</option></select></div>
+        <select class="select" id="p-medio" name="medio">${opcionesMedio('transferencia')}</select></div>
       <div class="campo"><label for="p-nota">Nota <span class="muted">(opcional)</span></label><input class="input" id="p-nota" name="nota" maxlength="200" placeholder="Ej.: comprobante 00123"></div>
       <div class="modal__acciones"><button class="btn btn--sec" type="button" data-cerrar>Cancelar</button><button class="btn btn--principal" type="submit">${icono('check')} Registrar pago</button></div>
     </form>`
@@ -170,7 +238,7 @@ export function modalPago(u, sugerido, alTerminar) {
 function modalAjuste(u, alTerminar) {
   const m = modal({
     titulo: 'Ajuste manual',
-    subtitulo: `${u.nombre} ${u.apellido}`,
+    subtitulo: nombreCompleto(u),
     contenido: html`<form class="form" novalidate>
       <div class="segmentado">
         <label><input type="radio" name="sentido" value="cargo" checked><span>Cargo<small>Suma a lo que debe</small></span></label>

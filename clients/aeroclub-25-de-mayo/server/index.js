@@ -1,11 +1,14 @@
 const express = require('express');
 const path = require('path');
 const { db } = require('./db');
-const { requireAuth, requireAdmin, exigirOrigenPropio } = require('./middleware/auth');
+const { requireAuth, requireStaff, requireRampa, exigirOrigenPropio } = require('./middleware/auth');
 const authRouter = require('./routes/auth');
 const { router: appRouter, enviarPdf } = require('./routes/app');
 const adminRouter = require('./routes/admin');
+const { router: rampaRouter, enviarTicket } = require('./routes/rampa');
 const cierres = require('./services/cierres');
+const tickets = require('./services/tickets');
+const respaldos = require('./services/respaldos');
 const { ErrorNegocio } = require('./util');
 
 const app = express();
@@ -26,7 +29,7 @@ app.use((req, res, next) => {
     "script-src 'self'",
     "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
     "font-src https://fonts.gstatic.com",
-    "img-src 'self' data:",
+    "img-src 'self' data: blob:",
     "connect-src 'self'",
     "frame-ancestors 'none'",
     "base-uri 'self'",
@@ -36,6 +39,8 @@ app.use((req, res, next) => {
   next();
 });
 
+// El pago informado puede traer la foto del comprobante (hasta 3 MB, en base64).
+app.use('/api/pagos-informados', express.json({ limit: '5mb' }));
 app.use(express.json({ limit: '100kb' }));
 
 app.get('/salud', (req, res) => {
@@ -46,7 +51,8 @@ app.get('/salud', (req, res) => {
 // ── API ─────────────────────────────────────────────────────────────────────
 app.use('/api', exigirOrigenPropio);
 app.use('/api/auth', authRouter);
-app.use('/api/admin', requireAuth, requireAdmin, adminRouter);
+app.use('/api/admin', requireAuth, requireStaff, adminRouter);
+app.use('/api/rampa', requireAuth, requireRampa, rampaRouter);
 app.use('/api', requireAuth, appRouter);
 app.use('/api', (req, res) => res.status(404).json({ error: 'Ruta inexistente' }));
 
@@ -56,6 +62,13 @@ app.get('/c/:token', (req, res) => {
   if (!cupon) return res.status(404).type('text/plain; charset=utf-8').send('Cupón inexistente. Pedile el link actualizado a tesorería.');
   cierres.registrarEnvio(cupon.id, 'descarga', null);
   enviarPdf(res, cierres.datosCupon(cupon.id), false);
+});
+
+// Link público del ticket de servicios (para mandarlo por WhatsApp al dueño de la aeronave).
+app.get('/t/:token', (req, res) => {
+  const t = tickets.porToken(req.params.token);
+  if (!t) return res.status(404).type('text/plain; charset=utf-8').send('Ticket inexistente. Pedile el link actualizado a tesorería.');
+  enviarTicket(res, t, false);
 });
 
 // ── Páginas ─────────────────────────────────────────────────────────────────
@@ -82,6 +95,7 @@ app.use((err, req, res, next) => {
 // ── Cierre automático ───────────────────────────────────────────────────────
 function revisarCierre() {
   try { cierres.cierreAutomatico(); } catch (e) { console.error('[cierre] falló el cierre automático:', e.message); }
+  respaldos.respaldoMensual().catch(e => console.error('[respaldo] falló la copia mensual:', e.message));
 }
 
 if (require.main === module) {

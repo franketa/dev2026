@@ -8,10 +8,11 @@ export default async function reportes(ctx) {
   pintar(ctx.el, html`
   <div class="vista">
     <div class="vista__cab">
-      <div><h1>Reporte de <span style="text-transform:capitalize">${nombrePeriodo(periodo)}</span></h1><p>Lo que voló cada avión y cada piloto en el mes.</p></div>
+      <div><h1>Reporte de <span style="text-transform:capitalize">${nombrePeriodo(periodo)}</span></h1><p>Lo que voló cada avión y cada piloto en el mes, y los servicios facturados.</p></div>
       <div class="vista__acciones">
         ${selectorMes(periodo)}
-        <a class="btn btn--sec" href="/api/admin/reportes?periodo=${periodo}&formato=csv">${icono('descargar')} Excel (CSV)</a>
+        <a class="btn btn--sec" href="/api/admin/reportes?periodo=${periodo}&formato=csv">${icono('descargar')} Vuelos (CSV)</a>
+        <a class="btn btn--sec" href="/api/admin/reportes?periodo=${periodo}&formato=csv&de=servicios">${icono('descargar')} Servicios (CSV)</a>
         <button class="btn btn--sec" type="button" data-imprimir>${icono('imprimir')} Imprimir</button>
       </div>
     </div>
@@ -26,6 +27,15 @@ export default async function reportes(ctx) {
           <td class="num"><strong>${horas(a.decimas)}</strong></td><td class="num monto">${pesos(a.importe)}</td></tr>`)}</tbody>
         <tfoot><tr><td>Total</td><td class="num">${tot.vuelos}</td><td class="num">${horas(tot.solo)}</td><td class="num">${horas(tot.inst)}</td><td class="num">${horas(tot.decimas)}</td><td class="num">${pesos(tot.importe)}</td></tr></tfoot>
       </table></div>` : html`<p class="muted">No hay vuelos en ${nombrePeriodo(periodo)}.</p>`}
+    </section>
+
+    <section class="panel">
+      <div class="panel__cab"><h2>Servicios</h2><a class="btn btn--fantasma btn--chico" href="#/admin/tickets?periodo=${periodo}">Ver tickets</a></div>
+      ${r.servicios.length ? html`<div class="tabla-caja"><table class="tabla">
+        <thead><tr><th>Servicio</th><th class="num">Cantidad</th><th class="num">Tickets</th><th class="num">Importe</th></tr></thead>
+        <tbody>${r.servicios.map(s => html`<tr><td>${s.nombre}</td><td class="num">${s.cantidad_txt}</td><td class="num">${s.tickets}</td><td class="num monto">${pesos(s.importe)}</td></tr>`)}</tbody>
+        <tfoot><tr><td>Total</td><td></td><td class="num">${r.tickets.length}</td><td class="num">${pesos(r.servicios.reduce((s, x) => s + x.importe, 0))}</td></tr></tfoot>
+      </table></div>` : html`<p class="muted">No hubo servicios facturados en ${nombrePeriodo(periodo)}.</p>`}
     </section>
 
     <div class="grilla grilla--2">

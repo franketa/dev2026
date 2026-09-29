@@ -6,10 +6,15 @@ const vuelos = require('../services/vuelos');
 const cierres = require('../services/cierres');
 const cuentas = require('../services/cuentas');
 const ledger = require('../services/ledger');
+const tickets = require('../services/tickets');
+const pagosInformados = require('../services/pagosInformados');
 const { generarCupon } = require('../services/pdf');
+const { requireSocio } = require('../middleware/auth');
+const { enviarTicket } = require('./rampa');
 const { ErrorNegocio, periodoActual, esPeriodo, limpiarTexto, telefonoWhatsApp } = require('../util');
 
 const router = express.Router();
+router.use(requireSocio);
 
 router.get('/inicio', (req, res) => {
   const uid = req.user.id;
@@ -93,6 +98,33 @@ router.get('/cupones/:id/pdf', (req, res) => {
   enviarPdf(res, datos, req.query.descargar === '1');
 });
 
+// Ticket de servicios cargado a la cuenta del socio (o cualquiera, si es tesorería).
+router.get('/tickets/:id/pdf', (req, res) => {
+  const t = tickets.detalle(Number(req.params.id));
+  if (!['admin', 'consulta'].includes(req.user.rol) && t.usuario_id !== req.user.id) throw new ErrorNegocio('No tenés acceso a ese ticket', 403);
+  enviarTicket(res, t, req.query.descargar === '1');
+});
+
+// ── Pagos informados por el socio ─────────────────────────────────────────────
+router.get('/pagos-informados', (req, res) => res.json({ pagos: pagosInformados.listar({ usuarioId: req.user.id }) }));
+
+router.post('/pagos-informados', (req, res) => {
+  res.status(201).json({ pago: pagosInformados.informar(req.body || {}, req.user) });
+});
+
+router.get('/pagos-informados/:id/comprobante', (req, res) => {
+  const c = pagosInformados.comprobante(Number(req.params.id));
+  if (!['admin', 'consulta'].includes(req.user.rol) && c.usuario_id !== req.user.id) throw new ErrorNegocio('No tenés acceso a ese comprobante', 403);
+  enviarComprobante(res, c);
+});
+
+function enviarComprobante(res, c) {
+  res.setHeader('Content-Type', c.tipo);
+  res.setHeader('Content-Disposition', 'inline');
+  res.setHeader('Cache-Control', 'private, no-store');
+  res.send(c.datos);
+}
+
 function enviarPdf(res, datos, descargar) {
   const nombre = `cupon-${datos.cupon.numero}-${datos.cupon.apellido}`.normalize('NFD').replace(/[^\w-]/g, '').toLowerCase();
   res.setHeader('Content-Type', 'application/pdf');
@@ -101,4 +133,4 @@ function enviarPdf(res, datos, descargar) {
   generarCupon(datos).pipe(res);
 }
 
-module.exports = { router, enviarPdf };
+module.exports = { router, enviarPdf, enviarComprobante };
