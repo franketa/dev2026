@@ -9,7 +9,7 @@ Para retomar: leer este archivo, `NOTES.md`, `README.md` y `git log -- clients/v
 | 1. Reconocimiento | ✅ Hecha. Ver `NOTES.md` |
 | 2. Despliegue | ✅ Servicio Coolify `venturebyte-crm` (uuid `h8os848g8wk4socg8c84kc4o`) en My first project / production. HTTPS Let's Encrypt en **https://crm.venturebyte.com.ar**. Backup diario 09:00 UTC (06:00 ART), retención 14 backups / 14 días / 1 GB; primer backup OK (753 KB). |
 | 3. Modelo de datos como código | ✅ Aplicado en prod (2026-09-29) sin errores; segunda corrida sin cambios. Datos demo de Twenty destruidos: el CRM arranca vacío |
-| 4. Roles y acceso del bot | ✅ Roles en prod. Key `grok-bot` (rol Bot) verificada en prod: crea y edita; soft delete, destroy, esquema y roles denegados; catálogo MCP sin tools de borrado. MCP nativo en `https://crm.venturebyte.com.ar/mcp` |
+| 4. Roles y acceso del bot | ✅ Roles en prod. Bot "casi full" (D15) verificado en prod: crea, edita, papelera y restaura; destroy, esquema y roles denegados; catálogo MCP sin tools de borrado definitivo. MCP en `https://crm.venturebyte.com.ar/mcp`; guía en `GROKBOT.md` (flujos probados en prod) |
 | 5. Automatizaciones | ✅ Los dos workflows activos en prod; los 2 workflows demo de Twenty destruidos. "Ganada → Proyecto" probado en prod con registros [TEST] (destruidos) |
 | 6. Runbook | ✅ `README.md` |
 
@@ -39,6 +39,7 @@ Para retomar: leer este archivo, `NOTES.md`, `README.md` y `git log -- clients/v
   espera 3 días (DELAY) desde que la oportunidad entra en Propuesta enviada y verifica que siga en esa etapa con
   el mismo `updatedAt`. Cualquier edición de la oportunidad cuenta como actividad; notas y tareas no.
 - **D14 — Bot sin borrado en objetos de sistema**: Twenty da acceso total a los objetos de sistema salvo excepción explícita (ver NOTES). El rol Bot tiene `systemObjects: read` + edición solo en noteTarget/taskTarget (para vincular notas y tareas). `verify-bot` comprueba que el catálogo MCP no tenga tools de borrado. Los roles humanos (Comercial, Desarrollo, Contenido y Redes) siguen con el default de Twenty en objetos de sistema (pueden borrar adjuntos, etc. desde la UI), que es lo razonable para usuarios.
+- **D15 — Bot "casi full"** (pedido de Franco, 2026-09-29, reemplaza la política "no borra" del prompt original y D14): el Bot puede mandar a la papelera cualquier registro, incluidos objetos de sistema, y usar las tools de usuario. Sigue sin poder destruir definitivamente ni tocar configuración/esquema/roles/workflows. `verify-bot` refleja esta política.
 - **D12 — Datos demo**: Twenty crea al activar el workspace empresas/personas/oportunidades de ejemplo y dos
   workflows activos ("Create company when adding a new person", "Quick Lead"). En prod se borran (con OK).
 

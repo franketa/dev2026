@@ -2,9 +2,10 @@
 //
 //   npm run verify-bot                 (contra la instancia de .env)
 //
-// Crea una oportunidad "[TEST] verify-bot ...", la edita, intenta borrarla/destruirla y tocar el esquema
-// (las tres cosas tienen que fallar). La oportunidad de prueba queda creada: si hay TWENTY_ADMIN_API_KEY
-// y se pasa --cleanup, la destruye con la key de admin.
+// Política del rol Bot ("casi full"): crea, edita y manda a la papelera; NO destruye definitivamente ni toca
+// esquema ni roles. Crea una oportunidad "[TEST] verify-bot ...", la edita, la manda a la papelera, la restaura
+// e intenta destruirla y tocar el esquema/roles (eso tiene que fallar). La oportunidad de prueba queda creada:
+// si hay TWENTY_ADMIN_API_KEY y se pasa --cleanup, la destruye con la key de admin.
 import { GraphQLError, gql, requireEnv } from './lib/twenty.ts';
 
 const BOT = requireEnv('TWENTY_BOT_API_KEY');
@@ -50,9 +51,11 @@ const id: string | undefined = created?.createOpportunity.id;
 if (id) {
   await mustSucceed('editar oportunidad', () =>
     gql('graphql', BOT, `mutation($id: UUID!) { updateOpportunity(id: $id, data: { stage: SCREENING }) { id } }`, { id }));
-  await mustBeDenied('borrar oportunidad (soft delete)', () =>
+  await mustSucceed('mandar a la papelera (soft delete)', () =>
     gql('graphql', BOT, `mutation($id: UUID!) { deleteOpportunity(id: $id) { id } }`, { id }));
-  await mustBeDenied('destruir oportunidad', () =>
+  await mustSucceed('restaurar de la papelera', () =>
+    gql('graphql', BOT, `mutation($id: UUID!) { restoreOpportunity(id: $id) { id } }`, { id }));
+  await mustBeDenied('destruir oportunidad (borrado definitivo)', () =>
     gql('graphql', BOT, `mutation($id: UUID!) { destroyOpportunity(id: $id) { id } }`, { id }));
 }
 
@@ -68,8 +71,8 @@ await mustBeDenied('crear un rol', () =>
   gql('metadata', BOT, `mutation($input: CreateRoleInput!) { createOneRole(createRoleInput: $input) { id } }`,
     { input: { label: 'Bot no debería' } }));
 
-// El catálogo del MCP (lo que ve Grok Bot) no tiene que ofrecer ninguna tool de borrado.
-await mustSucceed('catálogo MCP sin tools de borrado', async () => {
+// El catálogo del MCP (lo que ve Grok Bot) no tiene que ofrecer ninguna tool de borrado definitivo.
+await mustSucceed('catálogo MCP sin tools de borrado definitivo', async () => {
   const res = await fetch(`${process.env.TWENTY_URL}/mcp`, {
     method: 'POST',
     headers: { 'content-type': 'application/json', accept: 'application/json, text/event-stream', authorization: `Bearer ${BOT}` },
@@ -77,8 +80,8 @@ await mustSucceed('catálogo MCP sin tools de borrado', async () => {
   });
   const raw = await res.text();
   const body = JSON.parse((raw.split('\n').find((l) => l.startsWith('data: ')) ?? raw).replace(/^data: /, ''));
-  const deletes = [...new Set<string>(body.result.content[0].text.match(/\b(delete|destroy)_(one|many)_[a-z_]+/g) ?? [])];
-  if (deletes.length) throw new Error(`el bot puede usar: ${deletes.join(', ')}`);
+  const destroys = [...new Set<string>(body.result.content[0].text.match(/\bdestroy_(one|many)_[a-z_]+/g) ?? [])];
+  if (destroys.length) throw new Error(`el bot puede usar: ${destroys.join(', ')}`);
 });
 
 if (id && cleanup) {

@@ -79,12 +79,14 @@ El script nunca borra campos ni opciones: para eso, hacerlo a mano en Settings �
 | Comercial | Todos los registros; puede borrar (papelera). Workflows solo lectura |
 | Desarrollo | Ve Companies y People (sin facturación anual), edita Proyectos, notas y tareas. No ve Opportunities ni Abonos |
 | Contenido y Redes | Edita Companies, People, Opportunities (usar la vista *Pipeline Venture Studio UGC*); Proyectos, notas y tareas |
-| Bot | Lee todo; crea y edita Companies, People, Opportunities, notas y tareas (y las vincula). No borra nada, ni siquiera adjuntos o historial; no toca configuración |
+| Bot | Casi full: lee, crea, edita y manda a la papelera cualquier registro. No destruye definitivamente ni toca configuración, esquema, roles ni workflows |
 
 Invitar gente: Settings → Members → Invite, eligiendo el rol. Ojo: el rol por defecto de Twenty ("Member")
 puede borrar todo; asignar siempre uno de los roles de arriba.
 
 ## API key del bot (Grok Bot)
+
+Guía completa de conexión e instrucciones para pegar en Grok Bot: **`GROKBOT.md`**.
 
 Crear: Settings → APIs & Webhooks → **+ Create key** → nombre `grok-bot`, rol **Bot**, vencimiento 1 año.
 Copiarla (se ve una sola vez) a la config de Grok Bot y a `TWENTY_BOT_API_KEY` del `.env` local, y correr

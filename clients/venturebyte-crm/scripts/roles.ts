@@ -54,22 +54,14 @@ const ROLES: RoleDef[] = [
   },
   {
     label: 'Bot',
-    description: 'Grok Bot vía API/MCP: crea y edita, nunca borra ni toca configuración',
+    // "Casi full" (pedido de Franco, 2026-09-29): todo sobre los registros, incluido mandar a la papelera
+    // (recuperable). Lo único que no puede: destruir definitivamente y tocar configuración/esquema/roles/workflows.
+    description: 'Grok Bot vía API/MCP: todo sobre los registros salvo borrado definitivo; sin configuración',
     icon: 'IconRobot',
     forApiKeys: true,
-    tools: false,
-    base: 'read',
-    systemObjects: 'read',
-    objects: {
-      company: 'edit',
-      person: 'edit',
-      opportunity: 'edit',
-      note: 'edit',
-      task: 'edit',
-      // Vincular notas y tareas a registros (crear el vínculo; desvincular no, porque es un borrado).
-      noteTarget: 'edit',
-      taskTarget: 'edit',
-    },
+    tools: true,
+    base: 'full',
+    systemObjects: 'full', // sin esto Twenty le permitiría destruir objetos de sistema (ver NOTES)
   },
 ];
 
@@ -164,6 +156,12 @@ for (const def of ROLES) {
     }
   }
   Object.assign(accessByObject, def.objects);
+  // Excepciones que existen en Twenty pero ya no están declaradas (ej. de una versión anterior del rol):
+  // se llevan al acceso por defecto para que no queden permisos viejos pegados.
+  for (const p of role.objectPermissions) {
+    const o = objects.find((x: any) => x.id === p.objectMetadataId);
+    if (o && !(o.nameSingular in accessByObject)) accessByObject[o.nameSingular] = o.isSystem ? (def.systemObjects ?? 'full') : def.base;
+  }
   const wanted = Object.entries(accessByObject).map(([name, access]) => ({ name, access, objectMetadataId: objectId(name), ...flags(access) }));
   const stale = wanted.filter((w) => {
     const current = role.objectPermissions.find((p: any) => p.objectMetadataId === w.objectMetadataId);
