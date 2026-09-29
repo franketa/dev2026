@@ -179,6 +179,7 @@ router.put('/servicios/:id', (req, res) => res.json({ id: servicios.guardar(leer
 router.get('/tickets', (req, res) => {
   res.json({ tickets: tickets.listar({ ...req.query, limite: 1000 }), aeronaves: tickets.listarAeronaves() });
 });
+router.get('/aeronaves', (req, res) => res.json({ aeronaves: tickets.listarAeronaves() }));
 router.get('/tickets/:id', (req, res) => res.json({ ticket: tickets.detalle(Number(req.params.id)) }));
 router.get('/tickets/:id/pdf', (req, res) => enviarTicket(res, tickets.detalle(Number(req.params.id)), req.query.descargar === '1'));
 router.post('/tickets', (req, res) => res.status(201).json({ ticket: tickets.crear(req.body || {}, req.user) }));

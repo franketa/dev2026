@@ -100,6 +100,32 @@ export function parsePesos(v) {
 export const pesosInput = (c) => c == null ? '' : (c % 100 === 0 ? String(c / 100) : (c / 100).toFixed(2).replace('.', ','));
 export const iniciales = (n, a) => `${(n || '?')[0]}${(a || '')[0] || ''}`.toUpperCase();
 
+// Los externos pueden ser una empresa (sólo nombre): "Pérez, Juan" o "Agroaérea del Sur SA".
+export const nombreLista = (u) => (u.apellido ? `${u.apellido}, ${u.nombre}` : u.nombre);
+export const nombreCompleto = (u) => [u.nombre, u.apellido].filter(Boolean).join(' ');
+
+export const ROLES = { admin: 'Tesorería', consulta: 'Consulta', rampa: 'Rampa', piloto: 'Piloto', externo: 'Externo' };
+export const rolTexto = (u) => (u.rol === 'piloto' && u.es_instructor ? 'Instructor' : ROLES[u.rol] || u.rol);
+
+export const MEDIOS = { transferencia: 'Transferencia', efectivo: 'Efectivo', mercadopago: 'Mercado Pago', cheque: 'Cheque', otro: 'Otro' };
+export const opcionesMedio = (actual = 'transferencia') =>
+  Object.entries(MEDIOS).map(([v, t]) => html`<option value="${v}" ${v === actual ? raw('selected') : ''}>${t}</option>`);
+
+// Celular → número de wa.me (Argentina: 54 9 + área sin 0 + número sin 15). null si no es válido.
+export function telWa(tel) {
+  let d = String(tel || '').replace(/\D/g, '');
+  if (!d) return null;
+  if (d.startsWith('00')) d = d.slice(2);
+  if (d.startsWith('54')) { d = d.slice(2); if (d.startsWith('9')) d = d.slice(1); }
+  if (d.startsWith('0')) d = d.slice(1);
+  if (d.length === 12) for (const n of [2, 3, 4]) if (d.slice(n, n + 2) === '15') { d = d.slice(0, n) + d.slice(n + 2); break; }
+  return d.length === 10 ? `549${d}` : null;
+}
+export function linkWa(tel, texto) {
+  const n = telWa(tel);
+  return n ? `https://wa.me/${n}?text=${encodeURIComponent(texto)}` : null;
+}
+
 // Color de identidad de cada avión (por orden en la flota, fijo, nunca por ranking).
 export function colorAvion(orden) { return `var(--serie-${Math.min(Math.max(orden || 1, 1), 3)})`; }
 
@@ -129,6 +155,15 @@ export function chipCupon(c) {
     parcial: ['pend', 'Pago parcial'], pendiente: [c.vencido ? 'mal' : 'pend', c.vencido ? 'Vencido' : 'Pendiente']
   };
   const [clase, txt] = mapa[c.estado] || ['neutro', c.estado];
+  return html`<span class="chip chip--${clase}">${txt}</span>`;
+}
+export function chipTicket(t) {
+  if (t.estado === 'anulado') return html`<span class="chip chip--neutro">Anulado</span>`;
+  if (t.pago_movimiento_id) return html`<span class="chip chip--ok">Cobrado en el acto</span>`;
+  return html`<span class="chip">A cuenta</span>`;
+}
+export function chipInforme(p) {
+  const [clase, txt] = { pendiente: ['pend', 'En revisión'], confirmado: ['ok', 'Confirmado'], rechazado: ['mal', 'Rechazado'] }[p.estado] || ['neutro', p.estado];
   return html`<span class="chip chip--${clase}">${txt}</span>`;
 }
 export function chipVuelo(v) {
@@ -179,11 +214,11 @@ export function modal({ titulo, subtitulo, contenido, ancho = false, alCerrar })
   return { el: fondo.querySelector('.modal'), cerrar };
 }
 
-export function confirmar({ titulo, texto, boton = 'Confirmar', peligro = false }) {
+export function confirmar({ titulo, texto, contenido = null, boton = 'Confirmar', peligro = false }) {
   return new Promise((ok) => {
     const m = modal({
       titulo, alCerrar: (v) => ok(!!v),
-      contenido: html`<div class="pila"><p>${texto}</p>
+      contenido: html`<div class="pila">${contenido || html`<p>${texto}</p>`}
         <div class="modal__acciones">
           <button class="btn btn--sec" data-cerrar type="button">Cancelar</button>
           <button class="btn ${peligro ? 'btn--peligro' : 'btn--principal'}" data-si type="button">${boton}</button>
@@ -244,6 +279,34 @@ export function selectorMes(periodo, { max = periodoHoy(), min = null } = {}) {
 
 export const cargando = () => html`<div class="cargando" aria-label="Cargando"></div>`;
 
+// Foto o PDF del comprobante → data URL. Las fotos se achican (máx. 1600 px, JPEG) para que
+// suban rápido con poca señal; los PDF van tal cual (hasta 3 MB).
+export async function leerComprobante(archivo) {
+  const leer = (blob) => new Promise((ok, mal) => {
+    const r = new FileReader();
+    r.onload = () => ok(r.result);
+    r.onerror = () => mal(new Error('No se pudo leer el archivo'));
+    r.readAsDataURL(blob);
+  });
+  if (archivo.type === 'application/pdf') {
+    if (archivo.size > 3 * 1024 * 1024) throw new Error('El PDF es muy pesado (máximo 3 MB)');
+    return leer(archivo);
+  }
+  if (!archivo.type.startsWith('image/')) throw new Error('Elegí una foto o un PDF');
+  const url = URL.createObjectURL(archivo);
+  try {
+    const img = await new Promise((ok, mal) => { const i = new Image(); i.onload = () => ok(i); i.onerror = () => mal(new Error('No se pudo abrir la foto')); i.src = url; });
+    const escala = Math.min(1, 1600 / Math.max(img.naturalWidth, img.naturalHeight));
+    const lienzo = document.createElement('canvas');
+    lienzo.width = Math.round(img.naturalWidth * escala);
+    lienzo.height = Math.round(img.naturalHeight * escala);
+    lienzo.getContext('2d').drawImage(img, 0, 0, lienzo.width, lienzo.height);
+    return lienzo.toDataURL('image/jpeg', 0.8);
+  } finally {
+    URL.revokeObjectURL(url);
+  }
+}
+
 // ── Íconos (trazo 2px, estilo propio) ───────────────────────────────────────
 const P = {
   inicio: '<path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/><path d="M10 20v-6h4v6"/>',
@@ -281,7 +344,11 @@ const P = {
   reloj: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/>',
   instructor: '<path d="M22 10L12 5 2 10l10 5z"/><path d="M6 12v5c3 2 9 2 12 0v-5"/>',
   cadena: '<path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7"/><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/>',
-  imprimir: '<path d="M6 9V2h12v7M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/>'
+  imprimir: '<path d="M6 9V2h12v7M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/>',
+  ticket: '<path d="M3 7a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v3a2 2 0 0 0 0 4v3a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-3a2 2 0 0 0 0-4z"/><path d="M14 5v2M14 11v2M14 17v2"/>',
+  foto: '<path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/>',
+  informar: '<path d="M4 4h16v12H8l-4 4z"/><path d="M12 7v3M12 13h.01"/>',
+  basura: '<path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14"/>'
 };
 export function icono(nombre) {
   return raw(`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${P[nombre] || ''}</svg>`);

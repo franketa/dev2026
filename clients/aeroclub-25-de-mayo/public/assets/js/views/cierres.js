@@ -1,21 +1,21 @@
-import { get, post, html, pintar, icono, pesos, horas, fecha, fechaHora, nombrePeriodo, chipCupon, modal, confirmar, toast, error, conBoton } from '../lib.js';
+import { get, post, html, pintar, icono, pesos, horas, fecha, fechaHora, nombrePeriodo, chipCupon, modal, confirmar, toast, error, conBoton, nombreLista } from '../lib.js';
 import { modalPago } from './cuenta.js';
 
 function tablaSimulacion(r) {
   return html`<div class="tabla-caja"><table class="tabla">
-    <thead><tr><th>Socio</th><th class="num">Horas</th><th class="num">Saldo anterior</th><th class="num">Vuelos</th><th class="num">Pagos</th><th class="num">Ajustes</th><th class="num">Total</th></tr></thead>
+    <thead><tr><th>Socio</th><th class="num">Horas</th><th class="num">Saldo anterior</th><th class="num">Vuelos</th><th class="num">Servicios</th><th class="num">Pagos</th><th class="num">Ajustes</th><th class="num">Total</th></tr></thead>
     <tbody>${r.cupones.map(c => html`<tr>
-      <td>${c.apellido}, ${c.nombre}</td><td class="num">${horas(c.decimas)}</td><td class="num">${pesos(c.saldo_anterior)}</td>
-      <td class="num">${pesos(c.total_vuelos)}</td><td class="num">${pesos(c.total_pagos)}</td><td class="num">${pesos(c.total_ajustes)}</td>
+      <td>${nombreLista(c)}</td><td class="num">${horas(c.decimas)}</td><td class="num">${pesos(c.saldo_anterior)}</td>
+      <td class="num">${pesos(c.total_vuelos)}</td><td class="num">${pesos(c.total_servicios)}</td><td class="num">${pesos(c.total_pagos)}</td><td class="num">${pesos(c.total_ajustes)}</td>
       <td class="num monto">${pesos(c.total)}</td></tr>`)}</tbody>
-    <tfoot><tr><td>${r.cupones.length} cupones</td><td class="num">${horas(r.cierre.total_decimas)}</td><td></td><td class="num">${pesos(r.cierre.total_vuelos)}</td><td></td><td></td><td class="num">${pesos(r.cierre.total_cupones)}</td></tr></tfoot>
+    <tfoot><tr><td>${r.cupones.length} cupones</td><td class="num">${horas(r.cierre.total_decimas)}</td><td></td><td class="num">${pesos(r.cierre.total_vuelos)}</td><td class="num">${pesos(r.cierre.total_servicios)}</td><td></td><td></td><td class="num">${pesos(r.cierre.total_cupones)}</td></tr></tfoot>
   </table></div>`;
 }
 
 async function cerrarMes(periodo, ctx) {
   const ok = await confirmar({
     titulo: `Cerrar ${nombrePeriodo(periodo)}`,
-    texto: 'Los vuelos del mes quedan facturados y ya no se pueden editar. Se genera un cupón por socio. Esta acción no se deshace.',
+    texto: 'Los vuelos del mes quedan facturados y ya no se pueden editar. Se cobra el derecho de aeronave a cada piloto que voló y se genera un cupón por socio (y por externo con saldo). Esta acción no se deshace.',
     boton: `Cerrar ${nombrePeriodo(periodo).split(' ')[0]}`
   });
   if (!ok) return;
@@ -41,7 +41,7 @@ export async function cierres(ctx) {
           ${proximo.pendientes.length > 1 ? ` Hay ${proximo.pendientes.length} meses pendientes: se cierran en orden.` : ''}</p>
         <div class="vista__acciones">
           <button class="btn btn--sec" type="button" data-simular="${pendiente}">${icono('lista')} Ver cómo quedaría</button>
-          <button class="btn btn--principal" type="button" data-cerrar-mes="${pendiente}">${icono('cierre')} Cerrar ahora</button>
+          <button class="btn btn--principal" type="button" data-cerrar-mes="${pendiente}" data-escritura>${icono('cierre')} Cerrar ahora</button>
         </div>`
       : html`
         <div><p class="muted">Mes en curso</p><h2 style="text-transform:capitalize">${nombrePeriodo(proximo.periodo)}</h2></div>
@@ -51,12 +51,12 @@ export async function cierres(ctx) {
     <section class="panel">
       <div class="panel__cab"><h2>Cierres anteriores</h2></div>
       ${lista.length ? html`<div class="tabla-caja"><table class="tabla">
-        <thead><tr><th>Mes</th><th>Cerrado</th><th class="num">Vuelos</th><th class="num">Horas</th><th class="num">Cupones</th><th class="num">A cobrar</th></tr></thead>
+        <thead><tr><th>Mes</th><th>Cerrado</th><th class="num">Vuelos</th><th class="num">Horas</th><th class="num">Servicios</th><th class="num">Cupones</th><th class="num">A cobrar</th></tr></thead>
         <tbody>${lista.map(c => html`<tr data-href="#/admin/cierres/${c.id}">
           <td style="text-transform:capitalize"><strong>${nombrePeriodo(c.periodo)}</strong></td>
           <td>${fechaHora(c.creado_en)}<div class="muted chico">${c.automatico ? 'Automático' : `Por ${c.cerrado_por_nombre}`}</div></td>
           <td class="num">${c.cantidad_vuelos}</td><td class="num">${horas(c.total_decimas)}</td>
-          <td class="num">${c.cantidad_cupones}</td><td class="num monto">${pesos(c.total_cupones)}</td></tr>`)}</tbody>
+          <td class="num">${pesos(c.total_servicios || 0)}</td><td class="num">${c.cantidad_cupones}</td><td class="num monto">${pesos(c.total_cupones)}</td></tr>`)}</tbody>
       </table></div>` : html`<p class="muted">Todavía no hubo ningún cierre.</p>`}
     </section>
   </div>`);
@@ -76,7 +76,7 @@ export async function cierres(ctx) {
             subtitulo: `${r.cierre.cantidad_vuelos} vuelos, ${horas(r.cierre.total_decimas)}. Es una vista previa: todavía no se guardó nada.`,
             ancho: true,
             contenido: html`<div class="pila">${r.cupones.length ? tablaSimulacion(r) : html`<p class="muted">No hay vuelos ni saldos: no se generaría ningún cupón.</p>`}
-              <div class="modal__acciones"><button class="btn btn--sec" type="button" data-cerrar>Volver</button><button class="btn btn--principal" type="button" data-confirmar>${icono('cierre')} Cerrar el mes</button></div></div>`
+              <div class="modal__acciones"><button class="btn btn--sec" type="button" data-cerrar>Volver</button><button class="btn btn--principal" type="button" data-confirmar data-escritura>${icono('cierre')} Cerrar el mes</button></div></div>`
           });
           m.el.querySelector('[data-confirmar]').addEventListener('click', () => { m.cerrar(); cerrarMes(sim.dataset.simular, ctx); });
         } catch (err) { error(err); }
@@ -118,15 +118,15 @@ export async function detalleCierre(ctx) {
       ${visibles.length ? html`<div class="tabla-caja"><table class="tabla tabla--tarjetas">
         <thead><tr><th>Socio</th><th class="num">Horas</th><th class="num">Total</th><th>Estado</th><th>Envío</th><th></th></tr></thead>
         <tbody>${visibles.map(c => html`<tr>
-          <td class="celda-ppal"><a href="#/admin/cuentas/${c.usuario_id}"><strong>${c.apellido}, ${c.nombre}</strong></a><div class="muted chico">${c.numero}</div></td>
+          <td class="celda-ppal"><a href="#/admin/cuentas/${c.usuario_id}"><strong>${nombreLista(c)}</strong></a><div class="muted chico">${c.numero}</div></td>
           <td class="num" data-label="Horas">${horas(c.decimas)}</td>
           <td class="num monto" data-label="Total">${pesos(c.total)}</td>
           <td data-label="Estado">${chipCupon(c)}${c.restante && c.estado === 'parcial' ? html`<div class="muted chico">Faltan ${pesos(c.restante)}</div>` : ''}</td>
           <td data-label="Envío">${c.envios ? html`<span class="chip chip--ok">Enviado</span><div class="muted chico">${fechaHora(c.ultimo_envio)}</div>` : c.whatsapp ? html`<span class="muted chico">Sin enviar</span>` : html`<a class="chico" href="#/admin/socios">Falta el celular</a>`}</td>
           <td class="celda-acciones"><div class="tabla__acciones">
-            ${c.whatsapp && c.restante > 0 ? html`<a class="btn btn--wa btn--chico" href="${c.whatsapp}" target="_blank" rel="noopener" data-enviar="${c.id}">${icono('wa')} WhatsApp</a>` : ''}
+            ${c.whatsapp && c.restante > 0 ? html`<a class="btn btn--wa btn--chico" href="${c.whatsapp}" target="_blank" rel="noopener" data-enviar="${c.id}" data-escritura>${icono('wa')} WhatsApp</a>` : ''}
             <a class="btn btn--sec btn--chico" href="/api/admin/cupones/${c.id}/pdf" target="_blank" rel="noopener">${icono('pdf')} PDF</a>
-            ${c.restante > 0 ? html`<button class="btn btn--sec btn--chico" type="button" data-pago="${c.id}">${icono('pago')} Pago</button>` : ''}
+            ${c.restante > 0 ? html`<button class="btn btn--sec btn--chico" type="button" data-pago="${c.id}" data-escritura>${icono('pago')} Pago</button>` : ''}
           </div></td></tr>`)}</tbody>
       </table></div>` : html`<p class="muted">No hay cupones en esta lista.</p>`}
     </section>

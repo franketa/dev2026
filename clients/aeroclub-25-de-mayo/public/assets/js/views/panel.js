@@ -58,15 +58,23 @@ export default async function panel(ctx) {
   const totalDec = d.por_avion.reduce((s, a) => s + a.decimas, 0);
   const totalImp = d.por_avion.reduce((s, a) => s + a.importe, 0);
   const totalVuelos = d.por_avion.reduce((s, a) => s + a.vuelos, 0);
+  const totalServ = d.servicios.reduce((s, x) => s + x.importe, 0);
+  const pi = d.pagos_informados;
   const g = grafico(periodo, d.por_dia, d.por_avion.map(a => ({ ...a, orden: orden[a.id] })));
   const pc = d.proximo_cierre;
   pintar(ctx.el, html`
   <div class="vista">
     <div class="vista__cab"><div><h1>Panel</h1><p>Cómo viene el mes en el aeroclub.</p></div>${selectorMes(periodo)}</div>
 
+    ${pi.n || d.servicios_sin_precio ? html`<div class="pila" style="gap:8px">
+      ${pi.n ? html`<a class="aviso aviso--info aviso--link" href="#/admin/pagos">${icono('informar')}<span><b>${pi.n} ${pi.n === 1 ? 'pago informado' : 'pagos informados'} por revisar</b> (${pesos(pi.importe)}). Confirmalos cuando veas la plata en la cuenta.</span></a>` : ''}
+      ${d.servicios_sin_precio ? html`<a class="aviso aviso--link" href="#/admin/flota">${icono('alerta')}<span>${d.servicios_sin_precio} ${d.servicios_sin_precio === 1 ? 'servicio no tiene' : 'servicios no tienen'} precio cargado, así que no se ${d.servicios_sin_precio === 1 ? 'puede' : 'pueden'} cobrar. Completalos en Flota y tarifas.</span></a>` : ''}
+    </div>` : ''}
+
     <div class="cifras">
       <div class="cifra"><span>Horas voladas</span><strong>${horas(totalDec)}</strong><small>${totalVuelos} vuelos de ${d.pilotos_activos} ${d.pilotos_activos === 1 ? 'piloto' : 'pilotos'}</small></div>
       <div class="cifra"><span>Facturación de vuelos</span><strong>${pesos(totalImp)}</strong></div>
+      <div class="cifra"><span>Servicios facturados</span><strong>${pesos(totalServ)}</strong><small><a href="#/admin/tickets?periodo=${periodo}">Ver tickets</a></small></div>
       <div class="cifra"><span>Cobrado en ${nombrePeriodo(periodo).split(' ')[0]}</span><strong>${pesos(d.cobrado.total)}</strong><small>${d.cobrado.pagos} ${d.cobrado.pagos === 1 ? 'pago' : 'pagos'}</small></div>
       <div class="cifra"><span>Deuda de socios hoy</span><strong>${pesos(d.deuda.total)}</strong><small><a href="#/admin/cuentas?ver=deudores">${d.deuda.socios} ${d.deuda.socios === 1 ? 'socio' : 'socios'} con saldo</a></small></div>
     </div>
@@ -87,6 +95,21 @@ export default async function panel(ctx) {
         <a class="btn ${pc.pendientes.length ? 'btn--principal' : 'btn--sec'}" href="#/admin/cierres">${icono('cierre')} ${pc.pendientes.length ? 'Revisar y cerrar' : 'Ver cierres'}</a>
       </section>
     </div>
+
+    <section class="panel">
+      <div class="panel__cab"><div><h2>Resumen valorizado del mes</h2><p>Horas de vuelo y servicios facturados en ${nombrePeriodo(periodo)}.</p></div><a class="btn btn--fantasma btn--chico" href="#/admin/reportes?periodo=${periodo}">Ver reporte</a></div>
+      <div class="tabla-caja"><table class="tabla">
+        <thead><tr><th>Concepto</th><th class="num">Cantidad</th><th class="num">Importe</th></tr></thead>
+        <tbody>
+          <tr class="fila--grupo"><td colspan="3">Horas de vuelo</td></tr>
+          ${d.por_avion.map(a => html`<tr><td><span class="matricula">${a.matricula}</span> <span class="muted chico">${a.modelo}</span></td><td class="num">${horas(a.decimas)}</td><td class="num monto">${pesos(a.importe)}</td></tr>`)}
+          <tr class="fila--grupo"><td colspan="3">Servicios</td></tr>
+          ${d.servicios.length ? d.servicios.map(s => html`<tr><td>${s.nombre}</td><td class="num">${s.cantidad_txt}</td><td class="num monto">${pesos(s.importe)}</td></tr>`)
+            : html`<tr><td colspan="3" class="muted">Sin servicios facturados en el mes.</td></tr>`}
+        </tbody>
+        <tfoot><tr><td>Total</td><td class="num">${horas(totalDec)}</td><td class="num">${pesos(totalImp + totalServ)}</td></tr></tfoot>
+      </table></div>
+    </section>
 
     <div class="grilla grilla--2">
       <section class="pila"><h2>La flota</h2>${d.aviones.map(a => tarjetaAvion(a))}</section>

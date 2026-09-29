@@ -253,9 +253,12 @@ const anular = db.transaction((id, motivo, actor) => {
   return detalle(id);
 });
 
-// Si un movimiento es el cargo de un ticket, se corrige anulando el ticket (así no quedan desparejos).
+// Si un movimiento es el cargo de un ticket (o su anulación), se corrige desde el ticket: así
+// el libro y el ticket nunca quedan desparejos.
 function ticketDeMovimiento(movimientoId) {
-  return db.prepare('SELECT id, numero FROM tickets WHERE movimiento_id = ?').get(movimientoId) || null;
+  return db.prepare(`
+    SELECT id, numero FROM tickets
+    WHERE movimiento_id = @id OR movimiento_id = (SELECT anula_id FROM movimientos WHERE id = @id)`).get({ id: movimientoId }) || null;
 }
 
 const SELECT_TICKET = `

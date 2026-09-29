@@ -127,6 +127,9 @@ test('un ticket se corrige anulándolo, no editando su movimiento', () => {
   assert.equal(anulado.estado, 'anulado');
   assert.equal(ledger.saldo(beto.id), 0);
   assert.throws(() => tickets.anular(t.id, 'otra vez', admin), /ya está anulado/);
+  // Tampoco se puede borrar la anulación (volvería el cargo con el ticket anulado).
+  const contra = db.prepare('SELECT id FROM movimientos WHERE anula_id = ?').get(t.movimiento_id);
+  assert.throws(() => correcciones.borrar(contra.id, 'x', admin), /anulá el ticket/);
   assert.equal(ledger.verificarCadena().ok, true);
 });
 

@@ -1,15 +1,13 @@
-import { get, post, put, html, raw, pintar, icono, pesos, modal, confirmar, toast, error, conBoton, datosForm, fechaHora } from '../lib.js';
+import {
+  get, post, put, html, raw, pintar, icono, pesos, modal, confirmar, toast, error, conBoton, datosForm, fechaHora, linkWa, nombreLista, rolTexto
+} from '../lib.js';
+
+const PARA_QUE = {
+  piloto: 'cargar tus vuelos', admin: 'administrar el club', consulta: 'consultar la administración del club', rampa: 'cargar tickets de servicios en la rampa'
+};
 
 function waCredenciales(u, password) {
-  let d = String(u.telefono || '').replace(/\D/g, '');
-  if (!d) return null;
-  if (d.startsWith('54')) d = d.slice(2);
-  if (d.startsWith('9')) d = d.slice(1);
-  if (d.startsWith('0')) d = d.slice(1);
-  if (d.length === 12) for (const n of [2, 3, 4]) if (d.slice(n, n + 2) === '15') { d = d.slice(0, n) + d.slice(n + 2); break; }
-  if (d.length !== 10) return null;
-  const texto = `Hola ${u.nombre}. Ya tenés usuario en el sistema del Aeroclub 25 de Mayo para cargar tus vuelos.\n\nEntrá en ${location.origin}\nEmail: ${u.email}\nContraseña temporal: ${password}\n\nAl entrar te va a pedir que elijas una propia.`;
-  return `https://wa.me/549${d}?text=${encodeURIComponent(texto)}`;
+  return linkWa(u.telefono, `Hola ${u.nombre}. Ya tenés usuario en el sistema del Aeroclub 25 de Mayo para ${PARA_QUE[u.rol] || PARA_QUE.piloto}.\n\nEntrá en ${location.origin}\nEmail: ${u.email}\nContraseña temporal: ${password}\n\nAl entrar te va a pedir que elijas una propia.`);
 }
 
 function mostrarCredencial(u, password, titulo) {
@@ -40,20 +38,31 @@ function formSocio(u = {}) {
       <div class="campo"><label for="s-dni">DNI</label><input class="input" id="s-dni" name="dni" inputmode="numeric" value="${u.dni || ''}"></div>
     </div>
     <div class="campo"><label for="s-lic">Licencia</label><input class="input" id="s-lic" name="licencia" value="${u.licencia || ''}" placeholder="Ej.: Alumno, PPA, PCA"></div>
-    <label class="check"><input type="checkbox" name="es_instructor" ${sel(u.es_instructor)}><span>Es instructor de vuelo<br><small class="muted">Aparece en la lista cuando un alumno carga un vuelo con instructor.</small></span></label>
-    <label class="check"><input type="checkbox" name="admin" ${sel(u.rol === 'admin')}><span>Es administrador (tesorería)<br><small class="muted">Puede cambiar tarifas, registrar pagos, hacer ajustes y cerrar el mes.</small></span></label>
+    <div class="campo"><label for="s-rol">Qué puede hacer</label>
+      <select class="select" id="s-rol" name="rol">
+        ${[['piloto', 'Piloto o alumno: carga sus vuelos, ve su cuenta e informa pagos'],
+           ['admin', 'Tesorería: administra todo (tarifas, pagos, ajustes, cierres)'],
+           ['consulta', 'Consulta: ve toda la administración, sin poder cambiar nada'],
+           ['rampa', 'Rampa: registra aeronaves y carga tickets de servicios']]
+          .map(([v, t]) => html`<option value="${v}" ${(u.rol || 'piloto') === v ? raw('selected') : ''}>${t}</option>`)}
+      </select>
+      <p class="campo__ayuda">Tesorería y consulta también pueden cargar sus propios vuelos.</p></div>
+    <label class="check" data-instructor><input type="checkbox" name="es_instructor" ${sel(u.es_instructor)}><span>Es instructor de vuelo<br><small class="muted">Aparece en la lista cuando un alumno carga un vuelo con instructor.</small></span></label>
     ${u.id ? html`<label class="check"><input type="checkbox" name="activo" ${sel(u.activo)}><span>Activo<br><small class="muted">Si lo das de baja, no puede entrar ni cargar vuelos. Su historial se conserva.</small></span></label>` : ''}
     <div class="modal__acciones"><button class="btn btn--sec" type="button" data-cerrar>Cancelar</button><button class="btn btn--principal" type="submit">${u.id ? 'Guardar cambios' : 'Dar de alta'}</button></div>
   </form>`;
 }
 
 function abrirForm(ctx, u = null) {
-  const m = modal({ titulo: u ? 'Editar socio' : 'Nuevo socio', contenido: formSocio(u || { activo: 1 }) });
+  const m = modal({ titulo: u ? 'Editar usuario' : 'Nuevo usuario', contenido: formSocio(u || { activo: 1 }) });
   const form = m.el.querySelector('form');
+  const instructor = () => { m.el.querySelector('[data-instructor]').hidden = form.rol.value === 'rampa'; };
+  form.rol.addEventListener('change', instructor);
+  instructor();
   form.addEventListener('submit', (e) => {
     e.preventDefault();
     const d = datosForm(form);
-    const cuerpo = { ...d, rol: d.admin ? 'admin' : 'piloto', activo: u ? d.activo : true };
+    const cuerpo = { ...d, activo: u ? d.activo : true };
     conBoton(form.querySelector('[type=submit]'), async () => {
       try {
         if (u) {
@@ -71,30 +80,76 @@ function abrirForm(ctx, u = null) {
   });
 }
 
+// Externos: dueños de aeronaves de afuera. Tienen cuenta corriente pero no entran al sistema.
+function abrirExterno(ctx, u = null) {
+  const x = u || { activo: 1 };
+  const m = modal({
+    titulo: u ? 'Editar externo' : 'Nuevo externo',
+    subtitulo: 'Persona o empresa de afuera del club que usa sus servicios. No tiene usuario para entrar.',
+    contenido: html`<form class="form" novalidate>
+      <div class="fila-campos">
+        <div class="campo"><label for="x-nom">Nombre o razón social</label><input class="input" id="x-nom" name="nombre" value="${x.nombre || ''}" required autofocus></div>
+        <div class="campo"><label for="x-ape">Apellido <span class="muted">(si es persona)</span></label><input class="input" id="x-ape" name="apellido" value="${x.apellido || ''}"></div>
+      </div>
+      <div class="fila-campos">
+        <div class="campo"><label for="x-tel">Celular (WhatsApp)</label><input class="input" id="x-tel" name="telefono" inputmode="tel" value="${x.telefono || ''}" placeholder="2345 401234"></div>
+        <div class="campo"><label for="x-dni">DNI o CUIT</label><input class="input" id="x-dni" name="dni" value="${x.dni || ''}"></div>
+      </div>
+      <div class="campo"><label for="x-mail">Email <span class="muted">(opcional)</span></label><input class="input" id="x-mail" name="email" type="email" value="${x.email || ''}"></div>
+      ${u ? html`<label class="check"><input type="checkbox" name="activo" ${x.activo ? raw('checked') : ''}><span>Activo<br><small class="muted">Si lo das de baja, no se le pueden cargar tickets nuevos. Su historial se conserva.</small></span></label>` : ''}
+      <div class="modal__acciones"><button class="btn btn--sec" type="button" data-cerrar>Cancelar</button><button class="btn btn--principal" type="submit">${u ? 'Guardar' : 'Dar de alta'}</button></div>
+    </form>`
+  });
+  const form = m.el.querySelector('form');
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const d = datosForm(form);
+    conBoton(form.querySelector('[type=submit]'), async () => {
+      try {
+        if (u) await put(`/api/admin/externos/${u.id}`, { ...d, activo: !!d.activo });
+        else await post('/api/admin/externos', d);
+        toast(u ? 'Externo actualizado' : 'Externo dado de alta', 'ok');
+        m.cerrar();
+        ctx.recargar();
+      } catch (err) { error(err); }
+    });
+  });
+}
+
 export default async function socios(ctx) {
-  const { usuarios } = await get('/api/admin/usuarios');
-  const activos = usuarios.filter(u => u.activo);
+  const { usuarios: todos } = await get('/api/admin/usuarios');
+  const pestana = ctx.query.ver === 'externos' ? 'externos' : 'socios';
+  const usuarios = todos.filter(u => (pestana === 'externos') === (u.rol === 'externo'));
+  const activos = todos.filter(u => u.activo && u.rol !== 'externo');
 
   pintar(ctx.el, html`
   <div class="vista">
     <div class="vista__cab">
-      <div><h1>Socios</h1><p>${activos.length} activos, ${activos.filter(u => u.es_instructor).length} instructores.</p></div>
-      <div class="vista__acciones"><button class="btn btn--principal" type="button" data-nuevo>${icono('mas')} Nuevo socio</button></div>
+      <div><h1>Socios</h1><p>${activos.length} usuarios activos, ${activos.filter(u => u.es_instructor).length} instructores, ${todos.filter(u => u.rol === 'externo').length} externos.</p></div>
+      <div class="vista__acciones">${pestana === 'externos'
+        ? html`<button class="btn btn--principal" type="button" data-nuevo-externo data-escritura>${icono('mas')} Nuevo externo</button>`
+        : html`<button class="btn btn--principal" type="button" data-nuevo data-escritura>${icono('mas')} Nuevo usuario</button>`}</div>
+    </div>
+    <div class="pestanas" role="tablist">
+      <button type="button" role="tab" data-ver="socios" aria-selected="${pestana === 'socios'}">Socios y usuarios</button>
+      <button type="button" role="tab" data-ver="externos" aria-selected="${pestana === 'externos'}">Externos</button>
     </div>
     <section class="panel">
-      <div class="panel__cab"><div class="buscador" style="flex:1">${icono('buscar')}<input class="input" type="search" id="buscar" placeholder="Buscar por nombre o email" aria-label="Buscar socio"></div></div>
-      <div class="tabla-caja"><table class="tabla tabla--tarjetas">
-        <thead><tr><th>Socio</th><th>Contacto</th><th>Rol</th><th class="num">Saldo</th><th></th></tr></thead>
-        <tbody>${usuarios.map(u => html`<tr data-nombre="${`${u.nombre} ${u.apellido} ${u.email}`.toLowerCase()}" ${u.activo ? '' : raw('style="opacity:.55"')}>
-          <td class="celda-ppal"><strong>${u.apellido}, ${u.nombre}</strong>${u.activo ? '' : html` <span class="chip chip--neutro">Baja</span>`}</td>
-          <td data-label="Contacto"><div>${u.email}</div><div class="muted chico">${u.telefono || 'Sin celular'}</div></td>
-          <td data-label="Rol">${u.rol === 'admin' ? 'Tesorería' : 'Piloto'}${u.es_instructor ? html`<div class="muted chico">Instructor</div>` : ''}</td>
-          <td class="num" data-label="Saldo"><a href="#/admin/cuentas/${u.id}" class="monto">${pesos(u.saldo)}</a></td>
+      <div class="panel__cab"><div class="buscador" style="flex:1">${icono('buscar')}<input class="input" type="search" id="buscar" placeholder="Buscar por nombre o email" aria-label="Buscar"></div></div>
+      ${usuarios.length ? html`<div class="tabla-caja"><table class="tabla tabla--tarjetas">
+        <thead><tr><th>${pestana === 'externos' ? 'Externo' : 'Socio'}</th><th>Contacto</th><th>Rol</th><th class="num">Saldo</th><th></th></tr></thead>
+        <tbody>${usuarios.map(u => html`<tr data-nombre="${`${u.nombre} ${u.apellido} ${u.email || ''} ${u.dni || ''}`.toLowerCase()}" ${u.activo ? '' : raw('style="opacity:.55"')}>
+          <td class="celda-ppal"><strong>${nombreLista(u)}</strong>${u.activo ? '' : html` <span class="chip chip--neutro">Baja</span>`}</td>
+          <td data-label="Contacto"><div>${u.email || (u.rol === 'externo' && u.dni ? `DNI/CUIT ${u.dni}` : '')}</div><div class="muted chico">${u.telefono || 'Sin celular'}</div></td>
+          <td data-label="Rol">${rolTexto(u)}${u.rol !== 'piloto' && u.es_instructor ? html`<div class="muted chico">Instructor</div>` : ''}</td>
+          <td class="num" data-label="Saldo">${u.rol === 'rampa' ? html`<span class="muted">—</span>` : html`<a href="#/admin/cuentas/${u.id}" class="monto">${pesos(u.saldo)}</a>`}</td>
           <td class="celda-acciones"><div class="tabla__acciones">
-            <button class="btn btn--sec btn--chico" type="button" data-editar="${u.id}">${icono('editar')} Editar</button>
-            <button class="btn btn--fantasma btn--chico" type="button" data-reset="${u.id}">${icono('llave')} Nueva contraseña</button>
+            ${u.rol === 'externo'
+              ? html`<button class="btn btn--sec btn--chico" type="button" data-editar-externo="${u.id}" data-escritura>${icono('editar')} Editar</button>`
+              : html`<button class="btn btn--sec btn--chico" type="button" data-editar="${u.id}" data-escritura>${icono('editar')} Editar</button>
+            <button class="btn btn--fantasma btn--chico" type="button" data-reset="${u.id}" data-escritura>${icono('llave')} Nueva contraseña</button>`}
           </div></td></tr>`)}</tbody>
-      </table></div>
+      </table></div>` : html`<p class="muted">${pestana === 'externos' ? 'Todavía no hay externos. Se dan de alta solos cuando rampa registra una aeronave de afuera.' : 'No hay usuarios.'}</p>`}
     </section>
   </div>`);
 
@@ -105,6 +160,11 @@ export default async function socios(ctx) {
   });
 
   ctx.el.addEventListener('click', async (e) => {
+    const ver = e.target.closest('[data-ver]');
+    if (ver) return ctx.ir(`#/admin/socios${ver.dataset.ver === 'externos' ? '?ver=externos' : ''}`);
+    if (e.target.closest('[data-nuevo-externo]')) return abrirExterno(ctx);
+    const ex = e.target.closest('[data-editar-externo]');
+    if (ex) return abrirExterno(ctx, usuarios.find(u => u.id === Number(ex.dataset.editarExterno)));
     if (e.target.closest('[data-nuevo]')) return abrirForm(ctx);
     const ed = e.target.closest('[data-editar]');
     if (ed) return abrirForm(ctx, usuarios.find(u => u.id === Number(ed.dataset.editar)));

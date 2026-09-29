@@ -4,7 +4,7 @@ import {
   colorAvion, pedirTexto, toast, error, conBoton
 } from '../lib.js';
 
-const TIPOS_MOV = { vuelo: 'avion', pago: 'pago', ajuste: 'ajuste', saldo_inicial: 'ajuste', anulacion: 'anular' };
+const TIPOS_MOV = { vuelo: 'avion', servicio: 'ticket', pago: 'pago', ajuste: 'ajuste', saldo_inicial: 'ajuste', anulacion: 'anular' };
 
 export function tiraVuelo(v, { piloto = false, ordenAvion = {} } = {}) {
   const quien = piloto ? v.piloto : (v.tipo === 'instruccion' ? `Con ${v.instructor}` : 'Sin instructor');
@@ -61,7 +61,8 @@ export async function abrirVuelo(id, ctx, { alCambiar } = {}) {
   let datos;
   try { datos = await get(`/api/vuelos/${id}`); } catch (e) { error(e); return; }
   const { vuelo: v, historial } = datos;
-  const puedeModificar = v.estado === 'abierto' && (ctx.esAdmin || v.piloto_id === ctx.usuario.id);
+  // Una vez aceptado, sólo tesorería corrige o anula un vuelo.
+  const puedeModificar = v.estado === 'abierto' && ctx.esAdmin;
   const m = modal({
     titulo: html`<span class="matricula">${v.matricula}</span> el ${fecha(v.fecha)}`,
     subtitulo: `${v.piloto}${v.tipo === 'instruccion' ? ` con ${v.instructor}` : ', sin instructor'}`,
@@ -81,7 +82,8 @@ export async function abrirVuelo(id, ctx, { alCambiar } = {}) {
       ${puedeModificar ? html`<div class="modal__acciones">
           <button class="btn btn--peligro" type="button" data-anular>${icono('anular')} Anular</button>
           <a class="btn btn--sec" href="#/vuelos/${v.id}/editar">${icono('editar')} Corregir</a>
-        </div>` : v.estado === 'cerrado' ? html`<p class="aviso aviso--info">${icono('info')}<span>Este vuelo ya entró en el cierre del mes. Si hay un error, tesorería lo corrige con un ajuste en la cuenta.</span></p>` : ''}
+        </div>` : v.estado === 'cerrado' ? html`<p class="aviso aviso--info">${icono('info')}<span>Este vuelo ya entró en el cierre del mes. Si hay un error, tesorería lo corrige con un ajuste en la cuenta.</span></p>`
+        : v.estado === 'abierto' && !ctx.esStaff ? html`<p class="aviso aviso--info">${icono('info')}<span>Los vuelos no se pueden modificar una vez aceptados. Si hay un error, avisale a tesorería.</span></p>` : ''}
     </div>`
   });
   m.el.querySelector('a[href*="editar"]')?.addEventListener('click', () => m.cerrar());
@@ -105,10 +107,13 @@ export function listaMovimientos(movs, { admin = false } = {}) {
       <div class="mov__texto"><strong>${m.concepto}</strong>
         <small>${fecha(m.fecha)}${m.cierre_periodo ? `, cierre ${m.cierre_periodo}` : ''}${admin && m.autor ? `, cargado por ${m.autor}` : ''}, movimiento #${m.id}${m.anulado_por ? `, anulado por #${m.anulado_por}` : ''}</small></div>
       <span class="monto ${m.importe < 0 ? 'monto--neg' : ''}">${pesos(m.importe, { signo: true })}</span>
-      ${admin ? html`<div class="mov__acciones">
-        <button class="btn btn--fantasma btn--chico" type="button" data-editar-mov="${m.id}">${icono('editar')} Editar</button>
-        ${!m.anulado_por && m.tipo !== 'anulacion' ? html`<button class="btn btn--fantasma btn--chico" type="button" data-anular-mov="${m.id}">${icono('anular')} Anular</button>` : ''}
-        <button class="btn btn--fantasma btn--chico" type="button" data-borrar-mov="${m.id}" style="color:var(--peligro)">${icono('x')} Borrar</button>
+      ${m.ticket_id || (admin && m.tipo !== 'servicio') ? html`<div class="mov__acciones">
+        ${m.ticket_id ? html`<a class="btn btn--fantasma btn--chico" href="/api/tickets/${m.ticket_id}/pdf" target="_blank" rel="noopener">${icono('pdf')} Ticket</a>` : ''}
+        ${admin && m.ticket_id ? html`<a class="btn btn--fantasma btn--chico" href="#/admin/tickets?periodo=${m.fecha.slice(0, 7)}" data-escritura>${icono('anular')} Anular desde Tickets</a>` : ''}
+        ${admin && !m.ticket_id ? html`
+          <button class="btn btn--fantasma btn--chico" type="button" data-editar-mov="${m.id}" data-escritura>${icono('editar')} Editar</button>
+          ${!m.anulado_por && m.tipo !== 'anulacion' ? html`<button class="btn btn--fantasma btn--chico" type="button" data-anular-mov="${m.id}" data-escritura>${icono('anular')} Anular</button>` : ''}
+          <button class="btn btn--fantasma btn--chico" type="button" data-borrar-mov="${m.id}" data-escritura style="color:var(--peligro)">${icono('x')} Borrar</button>` : ''}
       </div>` : ''}
     </div>`)}</div>`;
 }

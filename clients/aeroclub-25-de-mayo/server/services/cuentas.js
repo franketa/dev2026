@@ -12,7 +12,7 @@ function estadoCuenta(usuarioId) {
     SELECT m.id, m.tipo, m.concepto, m.importe, m.fecha, m.medio, m.vuelo_id, m.anula_id, m.creado_en,
            u.nombre || ' ' || u.apellido autor,
            (SELECT a.id FROM movimientos a WHERE a.anula_id = m.id) anulado_por,
-           (SELECT t.id FROM tickets t WHERE t.movimiento_id = m.id) ticket_id,
+           (SELECT t.id FROM tickets t WHERE t.movimiento_id IN (m.id, m.anula_id)) ticket_id,
            ci.periodo cierre_periodo
     FROM movimientos m LEFT JOIN usuarios u ON u.id = m.creado_por LEFT JOIN cierres ci ON ci.id = m.cierre_id
     WHERE m.usuario_id = ? ORDER BY m.id DESC LIMIT 400`).all(usuarioId);

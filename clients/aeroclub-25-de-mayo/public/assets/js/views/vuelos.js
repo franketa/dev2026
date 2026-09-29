@@ -38,7 +38,7 @@ export async function misVuelos(ctx) {
   pintar(ctx.el, html`
   <div class="vista">
     <div class="vista__cab">
-      <div><h1>${como === 'instructor' ? 'Vuelos como instructor' : 'Mis vuelos'}</h1><p>Tocá un vuelo para ver el detalle o corregirlo.</p></div>
+      <div><h1>${como === 'instructor' ? 'Vuelos como instructor' : 'Mis vuelos'}</h1><p>Tocá un vuelo para ver el detalle.</p></div>
       ${selectorMes(periodo)}
     </div>
     ${ctx.usuario.es_instructor ? html`<div class="pestanas" role="tablist">
@@ -78,7 +78,7 @@ export async function vuelosAdmin(ctx) {
       <div><h1>Vuelos</h1><p>Todos los vuelos cargados por los socios.</p></div>
       <div class="vista__acciones">
         <a class="btn btn--sec" href="/api/admin/reportes?periodo=${q.periodo}&formato=csv">${icono('descargar')} Excel (CSV)</a>
-        <a class="btn btn--principal" href="#/cargar">${icono('mas')} Cargar para un socio</a>
+        <a class="btn btn--principal" href="#/cargar" data-escritura>${icono('mas')} Cargar para un socio</a>
       </div>
     </div>
     <form class="filtros" id="filtros">

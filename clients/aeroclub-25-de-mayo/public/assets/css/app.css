@@ -597,3 +597,49 @@ p { margin: 0; }
 /* Tiempo de vuelo: campo grande con pasos de 0,1 h a los costados */
 .horas-carga { display: grid; grid-template-columns: auto 1fr auto; gap: 10px; align-items: stretch; }
 .horas-carga .btn { min-height: 60px; min-width: 64px; font-size: 1.05rem; font-family: var(--f-titulo); }
+
+/* ── Usuario de consulta: ve todo, sin los botones que cambian cosas ─────── */
+.solo-lectura [data-escritura] { display: none !important; }
+
+/* Avisos que llevan a otra sección */
+a.aviso--link { text-decoration: none; }
+a.aviso--link:hover { filter: brightness(.97); }
+a.aviso--link span { color: inherit; }
+
+/* Tablas: filas de grupo y filas anuladas */
+.tabla .fila--grupo td { padding-top: 16px; font-size: .78rem; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; color: var(--gris); border-bottom-color: var(--linea); }
+.tabla .fila--anulada td { color: var(--gris); }
+.tabla .fila--anulada .monto { text-decoration: line-through; }
+
+/* ── Ticket de servicios ─────────────────────────────────────────────────── */
+.opciones-ae { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.opcion-ae { display: grid; gap: 1px; min-width: 132px; padding: 10px 14px; border: 1px solid var(--linea); border-radius: var(--r-m); background: var(--blanco); text-align: left; cursor: pointer; transition: border-color .15s, box-shadow .15s; }
+.opcion-ae small { color: var(--gris); font-size: .8rem; line-height: 1.25; }
+.opcion-ae[aria-pressed="true"] { border-color: var(--azul); box-shadow: 0 0 0 2px var(--azul) inset; background: var(--celeste-2); }
+.opcion-ae:focus-visible { outline: 3px solid var(--anillo); }
+
+.chips-servicio { display: flex; flex-wrap: wrap; gap: 8px; }
+.items { display: grid; gap: 10px; }
+.item {
+  display: grid; gap: 8px 12px; align-items: center; padding: 12px; border-radius: var(--r-m); background: var(--blanco); border: 1px solid var(--linea-2);
+  grid-template-columns: 1fr auto; grid-template-areas: "concepto quitar" "cant precio" "importe importe";
+}
+.item__concepto { grid-area: concepto; min-width: 0; }
+.item__cant { grid-area: cant; display: flex; align-items: center; gap: 8px; }
+.item__cant .input { width: 96px; text-align: right; font-family: var(--f-titulo); font-size: 1.15rem; }
+.item__cant small, .item__precio small { color: var(--gris); font-size: .82rem; }
+.item__precio { grid-area: precio; display: flex; align-items: center; gap: 8px; justify-content: flex-end; text-align: right; }
+.item__precio .input { width: 120px; text-align: right; }
+.item__importe { grid-area: importe; justify-self: end; font-family: var(--f-titulo); font-size: 1.2rem; }
+.item__quitar { grid-area: quitar; }
+@media (min-width: 720px) {
+  .item { grid-template-columns: minmax(140px, 1fr) auto auto 120px auto; grid-template-areas: "concepto cant precio importe quitar"; }
+}
+
+/* ── Comprobante del pago informado ──────────────────────────────────────── */
+.adjuntar { display: flex; align-items: center; gap: 10px; min-height: 56px; padding: 10px 14px; border: 1px dashed var(--anillo); border-radius: var(--r-m); background: var(--celeste-2); color: var(--tinta-2); cursor: pointer; font-weight: 500; }
+.adjuntar svg { width: 22px; height: 22px; flex: none; color: var(--azul); }
+.adjuntar:focus-within { outline: 3px solid var(--anillo); }
+.comprobante { display: block; max-width: 100%; max-height: 320px; border-radius: var(--r-m); border: 1px solid var(--linea); overflow: hidden; }
+.comprobante img { display: block; width: 100%; max-height: 320px; object-fit: contain; background: var(--papel); }
+img.comprobante { object-fit: contain; background: var(--papel); }

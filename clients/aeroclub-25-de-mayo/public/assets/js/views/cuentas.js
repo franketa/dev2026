@@ -1,8 +1,10 @@
-import { get, html, pintar, icono, pesos, horas, fecha } from '../lib.js';
+import { get, html, pintar, icono, pesos, horas, fecha, nombreLista, rolTexto } from '../lib.js';
 import { modalPago } from './cuenta.js';
 
 export default async function cuentas(ctx) {
-  const { cuentas: lista } = await get('/api/admin/cuentas');
+  const [{ cuentas: todas }, { pagos: informados }] = await Promise.all([get('/api/admin/cuentas'), get('/api/admin/pagos-informados?estado=pendiente')]);
+  // Rampa no tiene cuenta corriente; los externos sí (dueños de aeronaves de afuera).
+  const lista = todas.filter(c => c.rol !== 'rampa');
   const conDeuda = lista.filter(c => c.saldo > 0);
   const totalDeuda = conDeuda.reduce((s, c) => s + c.saldo, 0);
   const aFacturar = lista.reduce((s, c) => s + c.a_facturar, 0);
@@ -10,7 +12,8 @@ export default async function cuentas(ctx) {
 
   pintar(ctx.el, html`
   <div class="vista">
-    <div class="vista__cab"><div><h1>Cuentas</h1><p>Saldo de cada socio. Tocá una fila para ver sus movimientos.</p></div></div>
+    <div class="vista__cab"><div><h1>Cuentas</h1><p>Saldo de cada socio y de cada externo. Tocá una fila para ver sus movimientos.</p></div></div>
+    ${informados.length ? html`<a class="aviso aviso--info aviso--link" href="#/admin/pagos">${icono('informar')}<span><b>${informados.length} ${informados.length === 1 ? 'pago informado' : 'pagos informados'} por revisar.</b> No se descuentan del saldo hasta que los confirmes.</span></a>` : ''}
     <div class="cifras">
       <div class="cifra"><span>Deuda total</span><strong>${pesos(totalDeuda)}</strong><small>${conDeuda.length} ${conDeuda.length === 1 ? 'socio' : 'socios'} con saldo pendiente</small></div>
       <div class="cifra"><span>A facturar en el próximo cierre</span><strong>${pesos(aFacturar)}</strong></div>
@@ -21,17 +24,18 @@ export default async function cuentas(ctx) {
         <div class="pestanas" role="tablist" style="border:0">
           <button type="button" role="tab" data-ver="todos" aria-selected="${filtro === 'todos'}">Todos</button>
           <button type="button" role="tab" data-ver="deudores" aria-selected="${filtro === 'deudores'}">Con deuda</button>
+          <button type="button" role="tab" data-ver="externos" aria-selected="${filtro === 'externos'}">Externos</button>
         </div>
       </div>
       <div class="tabla-caja"><table class="tabla tabla--tarjetas">
         <thead><tr><th>Socio</th><th class="num">Saldo</th><th class="num">A facturar</th><th>Último pago</th><th></th></tr></thead>
-        <tbody>${lista.filter(c => filtro === 'todos' || c.saldo > 0).map(c => html`
-          <tr data-href="#/admin/cuentas/${c.id}" data-nombre="${`${c.nombre} ${c.apellido} ${c.email}`.toLowerCase()}">
-            <td class="celda-ppal"><strong>${c.apellido}, ${c.nombre}</strong>${c.activo ? '' : html` <span class="chip chip--neutro">Baja</span>`}<div class="muted chico">${c.rol === 'admin' ? 'Tesorería' : c.es_instructor ? 'Instructor' : 'Piloto'}</div></td>
+        <tbody>${lista.filter(c => filtro === 'todos' || (filtro === 'deudores' && c.saldo > 0) || (filtro === 'externos' && c.rol === 'externo')).map(c => html`
+          <tr data-href="#/admin/cuentas/${c.id}" data-nombre="${`${c.nombre} ${c.apellido} ${c.email || ''}`.toLowerCase()}">
+            <td class="celda-ppal"><strong>${nombreLista(c)}</strong>${c.activo ? '' : html` <span class="chip chip--neutro">Baja</span>`}<div class="muted chico">${rolTexto(c)}</div></td>
             <td class="num" data-label="Saldo"><span class="monto ${c.saldo < 0 ? 'monto--neg' : ''}">${pesos(c.saldo)}</span></td>
             <td class="num" data-label="A facturar">${c.a_facturar ? html`${pesos(c.a_facturar)}<div class="muted chico">${horas(c.decimas_abiertas)}</div>` : html`<span class="muted">—</span>`}</td>
             <td data-label="Último pago">${c.ultimo_pago ? fecha(c.ultimo_pago) : html`<span class="muted">—</span>`}</td>
-            <td class="celda-acciones"><div class="tabla__acciones"><button class="btn btn--sec btn--chico" type="button" data-pago="${c.id}">${icono('pago')} Pago</button></div></td>
+            <td class="celda-acciones"><div class="tabla__acciones"><button class="btn btn--sec btn--chico" type="button" data-pago="${c.id}" data-escritura>${icono('pago')} Pago</button></div></td>
           </tr>`)}</tbody>
       </table></div>
     </section>

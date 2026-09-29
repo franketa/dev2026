@@ -1,5 +1,6 @@
 import {
-  get, post, put, html, raw, pintar, icono, pesos, horas, horasInput, parseHoras, tambor, rodar, hoyAR, colorAvion, error, conBoton, nombrePeriodo, datosForm
+  get, post, put, html, raw, pintar, icono, pesos, horas, horasInput, parseHoras, tambor, rodar, hoyAR, colorAvion, error, conBoton, nombrePeriodo, datosForm,
+  fecha, confirmar
 } from '../lib.js';
 
 export default async function cargar(ctx) {
@@ -36,7 +37,7 @@ export default async function cargar(ctx) {
     <div class="vista__cab"><div>
       ${editando ? html`<a class="volver" href="#/vuelos">${icono('izq')} Mis vuelos</a>` : ''}
       <h1>${editando ? 'Corregir vuelo' : 'Cargar vuelo'}</h1>
-      <p>${editando ? 'Podés corregirlo hasta el cierre del mes. El cambio queda registrado.' : 'Cargalo apenas bajes del avión.'}</p>
+      <p>${editando ? 'Se puede corregir hasta el cierre del mes. El cambio queda registrado.' : ctx.esAdmin ? 'Cargalo apenas bajes del avión.' : 'Cargalo apenas bajes del avión. Revisalo bien: una vez aceptado, no se puede modificar.'}</p>
     </div></div>
 
     <form class="carga" id="form-vuelo" novalidate>
@@ -173,6 +174,30 @@ export default async function cargar(ctx) {
       notas: d.notas
     };
     if (ctx.esAdmin) cuerpo.piloto_id = estado.pilotoId;
+
+    // El piloto no puede corregir ni anular después: se lo mostramos entero antes de aceptar.
+    if (!ctx.esAdmin) {
+      const a = avion();
+      const dec = parseHoras(d.horas);
+      const precio = a?.tarifas?.[estado.tipo];
+      const inst = estado.tipo === 'instruccion' ? form.instructor_id.selectedOptions[0]?.textContent : null;
+      const ok = await confirmar({
+        titulo: 'Revisá tu vuelo',
+        contenido: html`<div class="pila" style="gap:12px">
+          <dl class="detalle">
+            <dt>Avión</dt><dd><strong class="matricula">${a.matricula}</strong> ${a.modelo}</dd>
+            <dt>Fecha</dt><dd>${fecha(d.fecha)}</dd>
+            <dt>Tiempo de vuelo</dt><dd><strong>${horas(dec)}</strong> (${dec * 6} minutos)</dd>
+            <dt>Instructor</dt><dd>${inst || 'Sin instructor'}</dd>
+            ${precio ? html`<dt>Importe</dt><dd>${pesos(Math.round(precio * dec / 10))}</dd>` : ''}
+            ${d.notas ? html`<dt>Novedades</dt><dd>${d.notas}</dd>` : ''}
+          </dl>
+          <p class="aviso">${icono('alerta')}<span><b>Asegurate de que los datos ingresados sean correctos:</b> una vez aceptados, no podrán ser modificados.</span></p>
+        </div>`,
+        boton: 'Aceptar y guardar'
+      });
+      if (!ok) return;
+    }
 
     await conBoton(form.querySelector('[type=submit]'), async () => {
       try {
