@@ -59,6 +59,18 @@ CREATE TABLE IF NOT EXISTS movimientos (
   hash TEXT NOT NULL UNIQUE
 );`;
 
+const DDL_SERVICIOS = `
+CREATE TABLE IF NOT EXISTS servicios (
+  id INTEGER PRIMARY KEY,
+  codigo TEXT UNIQUE,
+  nombre TEXT NOT NULL UNIQUE COLLATE NOCASE,
+  unidad TEXT NOT NULL CHECK (unidad IN ('unidad','hora','litro','noche','dia','mes')),
+  precio INTEGER NOT NULL DEFAULT 0 CHECK (precio >= 0),
+  activo INTEGER NOT NULL DEFAULT 1 CHECK (activo IN (0,1)),
+  orden INTEGER NOT NULL DEFAULT 0,
+  creado_en TEXT NOT NULL DEFAULT (datetime('now'))
+);`;
+
 const SCHEMA = `
 ${DDL_USUARIOS}
 
@@ -181,16 +193,7 @@ CREATE TABLE IF NOT EXISTS auditoria (
 
 -- Servicios que se cobran aparte de las horas de vuelo (hangaraje, combustible, etc.).
 -- El precio es por unidad; cada ticket congela el precio del día.
-CREATE TABLE IF NOT EXISTS servicios (
-  id INTEGER PRIMARY KEY,
-  codigo TEXT UNIQUE,
-  nombre TEXT NOT NULL UNIQUE COLLATE NOCASE,
-  unidad TEXT NOT NULL CHECK (unidad IN ('unidad','hora','litro','dia','mes')),
-  precio INTEGER NOT NULL DEFAULT 0 CHECK (precio >= 0),
-  activo INTEGER NOT NULL DEFAULT 1 CHECK (activo IN (0,1)),
-  orden INTEGER NOT NULL DEFAULT 0,
-  creado_en TEXT NOT NULL DEFAULT (datetime('now'))
-);
+${DDL_SERVICIOS}
 
 -- Aeronaves que no son de la flota del club (de socios o de externos), para los tickets de rampa.
 CREATE TABLE IF NOT EXISTS aeronaves (
@@ -341,6 +344,12 @@ function migrar() {
   if (usuarios && !usuarios.includes("'externo'")) reconstruir('usuarios', DDL_USUARIOS);
   const movimientos = sqlTabla('movimientos');
   if (movimientos && !movimientos.includes("'servicio'")) reconstruir('movimientos', DDL_MOVIMIENTOS);
+  const tablaServicios = sqlTabla('servicios');
+  if (tablaServicios && !tablaServicios.includes("'noche'")) {
+    reconstruir('servicios', DDL_SERVICIOS);
+    // El nocturno se cobra por noche (antes se había cargado por hora).
+    db.prepare("UPDATE servicios SET unidad = 'noche' WHERE nombre = 'Nocturno' AND unidad = 'hora'").run();
+  }
   for (const tabla of ['cierres', 'cupones']) {
     if (sqlTabla(tabla) && !columnas(tabla).includes('total_servicios')) {
       db.exec(`ALTER TABLE ${tabla} ADD COLUMN total_servicios INTEGER NOT NULL DEFAULT 0`);
@@ -352,7 +361,7 @@ const SERVICIOS_INICIALES = [
   // [codigo, nombre, unidad]
   [null, 'Hangaraje', 'mes'],
   [null, 'Combustible', 'litro'],
-  [null, 'Nocturno', 'hora'],
+  [null, 'Nocturno', 'noche'],
   ['derecho_aeronave', 'Derecho de aeronave', 'mes'],
   [null, 'Derecho de examen', 'unidad'],
   [null, 'Hora de simulador', 'hora'],

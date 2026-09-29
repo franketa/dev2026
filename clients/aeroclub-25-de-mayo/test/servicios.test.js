@@ -69,6 +69,8 @@ test('utilidades de cantidades', () => {
   assert.equal(util.parseCantidad('-1'), null);
   assert.equal(util.fmtCantidad(4050, 'litro'), '40,5 litros');
   assert.equal(util.fmtCantidad(100, 'mes'), '1 mes');
+  assert.equal(util.fmtCantidad(300, 'noche'), '3 noches');
+  assert.equal(servicio('Nocturno').unidad, 'noche');
   assert.equal(util.importeItem(250000, 4050), 10125000);   // 40,5 L × $2.500
 });
 

@@ -6,7 +6,7 @@ import {
 } from '../lib.js';
 import { vacio } from './comun.js';
 
-const UNIDADES = { unidad: ['unidad', 'unidades'], hora: ['hora', 'horas'], litro: ['litro', 'litros'], dia: ['día', 'días'], mes: ['mes', 'meses'] };
+const UNIDADES = { unidad: ['unidad', 'unidades'], hora: ['hora', 'horas'], litro: ['litro', 'litros'], noche: ['noche', 'noches'], dia: ['día', 'días'], mes: ['mes', 'meses'] };
 const unidadPlural = (u) => UNIDADES[u]?.[1] || '';
 
 // "40,5" → 4050 (centésimas); null si no es válido.

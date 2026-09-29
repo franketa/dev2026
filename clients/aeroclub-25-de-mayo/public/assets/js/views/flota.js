@@ -36,7 +36,7 @@ function modalTarifa(a, ctx) {
   });
 }
 
-const UNIDADES = { unidad: 'Por unidad', hora: 'Por hora', litro: 'Por litro', dia: 'Por día', mes: 'Por mes' };
+const UNIDADES = { unidad: 'Por unidad', hora: 'Por hora', litro: 'Por litro', noche: 'Por noche', dia: 'Por día', mes: 'Por mes' };
 
 function modalServicio(s, ctx) {
   const nuevo = !s;

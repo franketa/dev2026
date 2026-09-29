@@ -88,7 +88,7 @@ function parseCantidad(v) {
   return Number(ent) * 100 + Number(dec.padEnd(2, '0'));
 }
 
-const UNIDADES = { unidad: ['unidad', 'unidades'], hora: ['hora', 'horas'], litro: ['litro', 'litros'], dia: ['día', 'días'], mes: ['mes', 'meses'] };
+const UNIDADES = { unidad: ['unidad', 'unidades'], hora: ['hora', 'horas'], litro: ['litro', 'litros'], noche: ['noche', 'noches'], dia: ['día', 'días'], mes: ['mes', 'meses'] };
 // 4050 litros → "40,5 litros"; 100 unidad → "1 unidad".
 function fmtCantidad(centesimas, unidad) {
   const n = centesimas / 100;
