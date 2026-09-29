@@ -1,0 +1,4 @@
+# Cualquier archivo de entorno con secretos (.env, .env.local, .env.prod, ...). El ejemplo sí va al repo.
+.env*
+!.env.example
+node_modules/
