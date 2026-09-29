@@ -78,3 +78,22 @@ Fuente: código y docs del tag `twenty/v2.43.0` en github.com/twentyhq/twenty (`
 - Expone 3 meta-tools (`get_tool_catalog`, `learn_tools`, `execute_tool`) y carga las demás bajo demanda.
   Es la opción de menos tokens: el cliente no recibe el esquema de decenas de tools en cada llamada.
   → No se despliega ningún MCP comunitario.
+
+## Verificado en la instancia local (v2.43.0)
+
+- Crear una vista KANBAN con `mainGroupByFieldMetadataId` genera las columnas solas, y cambiar las opciones del
+  campo las sincroniza (renombrar un `value` conserva la columna en su posición original → el script la reordena).
+- Los filtros de vista usan: SELECT `IS` con value `'["VALOR"]'`; BOOLEAN `IS` con `'true'`/`'false'`.
+- Workspace nuevo = datos demo (Airbnb, Stripe, Figma…) + 2 workflows activos ("Create company when adding a new
+  person", "Quick Lead"). Onboarding de la UI: install apps → profile → invite team (todos salteables).
+- Registros: GraphQL en `/graphql` no acepta dos aliases del mismo resolver en una mutation; usar las bulk
+  (`createCompanies`, `createOpportunities`).
+- MCP: `tools/list` devuelve 7 meta-tools (~3,9 KB). Las tools reales se llaman con
+  `execute_tool {toolName, arguments}`; `find_many_*` exige `select`. El catálogo ya viene filtrado por el rol
+  (el Bot no tiene `delete_*` sobre registros ni `create_*` sobre Proyectos/Abonos).
+- Workflows por API: `create_complete_workflow` vía MCP con key Admin funciona (crea, valida y activa).
+  En eventos `*.updated` el registro está en `{{trigger.properties.after.<campo>}}` y el id en
+  `{{trigger.recordId}}` (`{{trigger.object.*}}` es solo para `*.created`). El filtro del trigger usa esas mismas
+  rutas. "Buscar registros" filtra por `fieldMetadataId` (no por nombre); UUID `IS` con value `'["<id>"]'`.
+- Relaciones en CREATE_RECORD: `{ "empresa": { "id": "..." } }`. Vincular una tarea: crear `taskTarget` con
+  `{ task: { id }, targetOpportunity: { id } }`.
