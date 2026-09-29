@@ -1,8 +1,9 @@
-# Twenty v2.43.0 para Coolify (recurso tipo "Docker Compose Empty" / service).
+# Twenty v2.43.0 para Coolify. Mantener este archivo en ASCII puro (la API de Coolify rechaza otro encoding).
+# (recurso tipo "Docker Compose Empty" / service).
 # Basado en packages/twenty-docker/docker-compose.yml del tag twenty/v2.43.0.
 #
 # Las variables SERVICE_* son "magic variables" de Coolify: las genera el server la primera vez y quedan
-# guardadas en Coolify. Ningún secreto vive en el repo. Para correrlo fuera de Coolify, ver .env.example.
+# guardadas en Coolify. Ningun secreto vive en el repo. Para correrlo fuera de Coolify, ver .env.example.
 
 services:
   server:
