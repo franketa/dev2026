@@ -7,7 +7,7 @@ Para retomar: leer este archivo, `NOTES.md`, `README.md` y `git log -- clients/v
 | Fase | Estado |
 |---|---|
 | 1. Reconocimiento | ✅ Hecha. Ver `NOTES.md` |
-| 2. Despliegue | ✅ Servicio Coolify `venturebyte-crm` (uuid `h8os848g8wk4socg8c84kc4o`) en My first project / production. HTTPS Let's Encrypt en `https://server-h8os848g8wk4socg8c84kc4o.77.42.35.93.sslip.io`. Backup diario 09:00 UTC (06:00 ART), retención 14 backups / 14 días / 1 GB; primer backup OK (753 KB). Falta: pasar a `crm.venturebyte.com.ar` cuando resuelva el DNS |
+| 2. Despliegue | ✅ Servicio Coolify `venturebyte-crm` (uuid `h8os848g8wk4socg8c84kc4o`) en My first project / production. HTTPS Let's Encrypt en **https://crm.venturebyte.com.ar**. Backup diario 09:00 UTC (06:00 ART), retención 14 backups / 14 días / 1 GB; primer backup OK (753 KB). |
 | 3. Modelo de datos como código | 🟡 `scripts/schema.ts` probado en local: corrida limpia + segunda corrida sin cambios + filtros verificados en la UI. **Falta correrlo en prod** |
 | 4. Roles y acceso del bot | 🟡 `scripts/roles.ts` + `scripts/verify-bot.ts` probados en local (el bot crea/edita; borrar, destruir, esquema y roles denegados). MCP nativo probado con la key del bot. **Falta prod** |
 | 5. Automatizaciones | 🟡 `scripts/workflows.ts`: los dos workflows nativos probados de punta a punta en local (con delay de 1 minuto). **Falta prod** |
@@ -16,7 +16,7 @@ Para retomar: leer este archivo, `NOTES.md`, `README.md` y `git log -- clients/v
 ## Decisiones
 
 - **D1 — Versión fija `v2.43.0`**, no `latest`: un redeploy no tiene que actualizar Twenty sin que nadie lo decida.
-- **D2 — Dominio provisorio**: URL sslip de Coolify. El DNS de venturebyte.com.ar está en DonWeb (no Cloudflare);
+- **D2 — Dominio**: arrancó en una URL sslip de Coolify y el mismo día pasó a `crm.venturebyte.com.ar`. El DNS de venturebyte.com.ar está en DonWeb (no Cloudflare);
   Franco apunta `crm.venturebyte.com.ar` → 77.42.35.93 cuando pueda. Pasos en README → Cambiar de dominio.
 - **D3 — Monto con CURRENCY nativo** (amountMicros + currencyCode por registro; ARS y USD verificados).
   Default ARS en oportunidades y abonos.
@@ -45,7 +45,7 @@ Para retomar: leer este archivo, `NOTES.md`, `README.md` y `git log -- clients/v
 
 - ✅ OK para desplegar y correr scripts en prod, borrar datos demo y probar el bot (2026-09-29).
 - Crear su cuenta Admin apenas esté arriba la instancia, y las API keys "setup" (Admin) y "grok-bot" (Bot).
-- Registro A `crm.venturebyte.com.ar` → `77.42.35.93` en DonWeb.
+- ✅ Registro A `crm.venturebyte.com.ar` → `77.42.35.93` (DonWeb), dominio activo desde 2026-09-29.
 - Bucket externo para backups (pendiente).
 - Emails del equipo y rol de cada uno para las invitaciones.
 

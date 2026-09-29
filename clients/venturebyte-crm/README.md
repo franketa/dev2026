@@ -5,8 +5,8 @@ Estado y decisiones: `PROGRESS.md`. Qué soporta Twenty y qué no: `NOTES.md`.
 
 | Qué | Dónde |
 |---|---|
-| Instancia | `SERVER_URL` del servicio `venturebyte-crm` en Coolify (hoy sslip, después `crm.venturebyte.com.ar`) |
-| MCP para Grok Bot | `<SERVER_URL>/mcp` · header `Authorization: Bearer <API key del bot>` |
+| Instancia | https://crm.venturebyte.com.ar (servicio `venturebyte-crm` en Coolify) |
+| MCP para Grok Bot | `https://crm.venturebyte.com.ar/mcp` · header `Authorization: Bearer <API key del bot>` |
 | Stack | `docker-compose.yml`: server + worker + Postgres 16 + Redis |
 | Esquema, roles, workflows | `scripts/` (TypeScript, idempotentes, con `--dry-run`) |
 
