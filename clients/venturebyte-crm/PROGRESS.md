@@ -8,9 +8,9 @@ Para retomar: leer este archivo, `NOTES.md`, `README.md` y `git log -- clients/v
 |---|---|
 | 1. Reconocimiento | ✅ Hecha. Ver `NOTES.md` |
 | 2. Despliegue | ✅ Servicio Coolify `venturebyte-crm` (uuid `h8os848g8wk4socg8c84kc4o`) en My first project / production. HTTPS Let's Encrypt en **https://crm.venturebyte.com.ar**. Backup diario 09:00 UTC (06:00 ART), retención 14 backups / 14 días / 1 GB; primer backup OK (753 KB). |
-| 3. Modelo de datos como código | 🟡 `scripts/schema.ts` probado en local: corrida limpia + segunda corrida sin cambios + filtros verificados en la UI. **Falta correrlo en prod** |
-| 4. Roles y acceso del bot | 🟡 `scripts/roles.ts` + `scripts/verify-bot.ts` probados en local (el bot crea/edita; borrar, destruir, esquema y roles denegados). MCP nativo probado con la key del bot. **Falta prod** |
-| 5. Automatizaciones | 🟡 `scripts/workflows.ts`: los dos workflows nativos probados de punta a punta en local (con delay de 1 minuto). **Falta prod** |
+| 3. Modelo de datos como código | ✅ Aplicado en prod (2026-09-29) sin errores; segunda corrida sin cambios. Datos demo de Twenty destruidos: el CRM arranca vacío |
+| 4. Roles y acceso del bot | 🟡 Roles creados en prod (segunda corrida sin cambios). **Falta**: Franco crea la key `grok-bot` con rol Bot → `npm run verify-bot -- --env .env.prod --cleanup` |
+| 5. Automatizaciones | ✅ Los dos workflows activos en prod; los 2 workflows demo de Twenty destruidos. "Ganada → Proyecto" probado en prod con registros [TEST] (destruidos) |
 | 6. Runbook | ✅ `README.md` |
 
 ## Decisiones
@@ -44,7 +44,9 @@ Para retomar: leer este archivo, `NOTES.md`, `README.md` y `git log -- clients/v
 ## Pendiente de Franco
 
 - ✅ OK para desplegar y correr scripts en prod, borrar datos demo y probar el bot (2026-09-29).
-- Crear su cuenta Admin apenas esté arriba la instancia, y las API keys "setup" (Admin) y "grok-bot" (Bot).
+- ✅ Cuenta Admin creada (contacto@venturebyte.com.ar, también admin del servidor) y key "setup" (Admin).
+- Crear la key "grok-bot" con rol Bot.
+- Regenerar la key "setup" (pasó por el chat) y actualizar `.env.prod`.
 - ✅ Registro A `crm.venturebyte.com.ar` → `77.42.35.93` (DonWeb), dominio activo desde 2026-09-29.
 - Bucket externo para backups (pendiente).
 - Emails del equipo y rol de cada uno para las invitaciones.
