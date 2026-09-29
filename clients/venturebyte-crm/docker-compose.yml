@@ -1,0 +1,85 @@
+# Twenty v2.43.0 para Coolify (recurso tipo "Docker Compose Empty" / service).
+# Basado en packages/twenty-docker/docker-compose.yml del tag twenty/v2.43.0.
+#
+# Las variables SERVICE_* son "magic variables" de Coolify: las genera el server la primera vez y quedan
+# guardadas en Coolify. Ningún secreto vive en el repo. Para correrlo fuera de Coolify, ver .env.example.
+
+services:
+  server:
+    image: twentycrm/twenty:${TWENTY_TAG:-v2.43.0}
+    volumes:
+      - server-local-data:/app/packages/twenty-server/.local-storage
+    environment:
+      - SERVICE_URL_SERVER_3000
+      - NODE_PORT=3000
+      - SERVER_URL=${SERVICE_URL_SERVER}
+      - PG_DATABASE_URL=postgres://postgres:${SERVICE_PASSWORD_POSTGRES}@db:5432/twenty
+      - REDIS_URL=redis://redis:6379
+      - ENCRYPTION_KEY=${SERVICE_BASE64_64_ENCRYPTION}
+      - STORAGE_TYPE=local
+      - IS_MULTIWORKSPACE_ENABLED=false
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "http://localhost:3000/healthz"]
+      interval: 10s
+      timeout: 5s
+      retries: 30
+      start_period: 60s
+    restart: always
+
+  worker:
+    image: twentycrm/twenty:${TWENTY_TAG:-v2.43.0}
+    command: ["yarn", "worker:prod"]
+    volumes:
+      - server-local-data:/app/packages/twenty-server/.local-storage
+    environment:
+      - SERVER_URL=${SERVICE_URL_SERVER}
+      - PG_DATABASE_URL=postgres://postgres:${SERVICE_PASSWORD_POSTGRES}@db:5432/twenty
+      - REDIS_URL=redis://redis:6379
+      - ENCRYPTION_KEY=${SERVICE_BASE64_64_ENCRYPTION}
+      - STORAGE_TYPE=local
+      - IS_MULTIWORKSPACE_ENABLED=false
+      - DISABLE_DB_MIGRATIONS=true
+      - DISABLE_CRON_JOBS_REGISTRATION=true
+    depends_on:
+      db:
+        condition: service_healthy
+      server:
+        condition: service_healthy
+    restart: always
+
+  db:
+    image: postgres:16
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=${SERVICE_PASSWORD_POSTGRES}
+      - POSTGRES_DB=twenty
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -h localhost -d twenty"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    restart: always
+
+  redis:
+    image: redis:7-alpine
+    command: ["redis-server", "--maxmemory-policy", "noeviction", "--appendonly", "yes"]
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    restart: always
+
+volumes:
+  server-local-data:
+  db-data:
+  redis-data:
