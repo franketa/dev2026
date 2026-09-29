@@ -19,7 +19,11 @@ type RoleDef = {
   forApiKeys?: boolean;
   tools: boolean; // herramientas de usuario: subir archivos, importar/exportar CSV, vistas, IA, etc.
   base: Access; // acceso por defecto a todos los objetos
-  objects?: Record<string, Access>; // excepciones por objeto
+  // OJO: `base` NO aplica a los objetos de sistema (adjuntos, historial, mensajes, calendario, vínculos de
+  // notas/tareas...). Twenty les da acceso total, incluido destruir, salvo excepción explícita. `systemObjects`
+  // genera esa excepción para todos. Workflows y miembros del workspace ya los controla Twenty con sus flags.
+  systemObjects?: Access;
+  objects?: Record<string, Access>; // excepciones por objeto (también sirven para objetos de sistema)
   hiddenFields?: string[]; // "objeto.campo" que el rol no ve
 };
 
@@ -30,7 +34,6 @@ const ROLES: RoleDef[] = [
     icon: 'IconBriefcase',
     tools: true,
     base: 'full',
-    objects: { workflow: 'read' },
   },
   {
     label: 'Desarrollo',
@@ -56,7 +59,17 @@ const ROLES: RoleDef[] = [
     forApiKeys: true,
     tools: false,
     base: 'read',
-    objects: { company: 'edit', person: 'edit', opportunity: 'edit', note: 'edit', task: 'edit' },
+    systemObjects: 'read',
+    objects: {
+      company: 'edit',
+      person: 'edit',
+      opportunity: 'edit',
+      note: 'edit',
+      task: 'edit',
+      // Vincular notas y tareas a registros (crear el vínculo; desvincular no, porque es un borrado).
+      noteTarget: 'edit',
+      taskTarget: 'edit',
+    },
   },
 ];
 
@@ -142,19 +155,27 @@ for (const def of ROLES) {
     }
   }
 
-  // Excepciones por objeto: solo se mandan las que difieren de lo que hay.
-  const wanted = Object.entries(def.objects ?? {}).map(([name, access]) => ({ name, objectMetadataId: objectId(name), ...flags(access) }));
+  // Excepciones por objeto: las declaradas + una por cada objeto de sistema si el rol define `systemObjects`.
+  const accessByObject: Record<string, Access> = {};
+  if (def.systemObjects) {
+    for (const o of objects) {
+      const gatedByTwenty = o.nameSingular === 'workspaceMember' || o.nameSingular.startsWith('workflow');
+      if (o.isSystem && !gatedByTwenty) accessByObject[o.nameSingular] = def.systemObjects;
+    }
+  }
+  Object.assign(accessByObject, def.objects);
+  const wanted = Object.entries(accessByObject).map(([name, access]) => ({ name, access, objectMetadataId: objectId(name), ...flags(access) }));
   const stale = wanted.filter((w) => {
     const current = role.objectPermissions.find((p: any) => p.objectMetadataId === w.objectMetadataId);
     return !current || (['canReadObjectRecords', 'canUpdateObjectRecords', 'canSoftDeleteObjectRecords', 'canDestroyObjectRecords'] as const)
       .some((k) => current[k] !== w[k]);
   });
   if (stale.length) {
-    log.update(`permisos por objeto: ${stale.map((s) => `${s.name}=${def.objects![s.name]}`).join(', ')}`);
+    log.update(`permisos por objeto: ${stale.map((s) => `${s.name}=${s.access}`).join(', ')}`);
     if (!DRY_RUN) {
       await gql('metadata', API_KEY,
         `mutation($input: UpsertObjectPermissionsInput!) { upsertObjectPermissions(upsertObjectPermissionsInput: $input) { objectMetadataId } }`,
-        { input: { roleId: role.id, objectPermissions: wanted.map(({ name, ...p }) => p) } });
+        { input: { roleId: role.id, objectPermissions: wanted.map(({ name, access, ...p }) => p) } });
     }
   } else if (wanted.length) {
     log.ok(`permisos por objeto (${wanted.length})`);

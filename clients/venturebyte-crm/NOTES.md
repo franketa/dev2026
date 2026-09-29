@@ -97,3 +97,8 @@ Fuente: código y docs del tag `twenty/v2.43.0` en github.com/twentyhq/twenty (`
   rutas. "Buscar registros" filtra por `fieldMetadataId` (no por nombre); UUID `IS` con value `'["<id>"]'`.
 - Relaciones en CREATE_RECORD: `{ "empresa": { "id": "..." } }`. Vincular una tarea: crear `taskTarget` con
   `{ task: { id }, targetOpportunity: { id } }`.
+- **Objetos de sistema y permisos** (`workspace-roles-permissions-cache.service.js`): el acceso "por defecto" de
+  un rol (`canReadAllObjectRecords`, etc.) NO aplica a los objetos de sistema (adjuntos, timelineActivity,
+  mensajes, calendario, noteTarget/taskTarget...): sin excepción explícita tienen acceso total, incluido destruir.
+  Workflows (flag WORKFLOWS) y workspaceMember (flag WORKSPACE_MEMBERS) se controlan aparte. `upsertObjectPermissions`
+  sí acepta excepciones sobre objetos de sistema → `roles.ts` las genera con `systemObjects`.

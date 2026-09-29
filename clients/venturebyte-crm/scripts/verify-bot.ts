@@ -68,6 +68,19 @@ await mustBeDenied('crear un rol', () =>
   gql('metadata', BOT, `mutation($input: CreateRoleInput!) { createOneRole(createRoleInput: $input) { id } }`,
     { input: { label: 'Bot no debería' } }));
 
+// El catálogo del MCP (lo que ve Grok Bot) no tiene que ofrecer ninguna tool de borrado.
+await mustSucceed('catálogo MCP sin tools de borrado', async () => {
+  const res = await fetch(`${process.env.TWENTY_URL}/mcp`, {
+    method: 'POST',
+    headers: { 'content-type': 'application/json', accept: 'application/json, text/event-stream', authorization: `Bearer ${BOT}` },
+    body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'get_tool_catalog', arguments: {} } }),
+  });
+  const raw = await res.text();
+  const body = JSON.parse((raw.split('\n').find((l) => l.startsWith('data: ')) ?? raw).replace(/^data: /, ''));
+  const deletes = [...new Set<string>(body.result.content[0].text.match(/\b(delete|destroy)_(one|many)_[a-z_]+/g) ?? [])];
+  if (deletes.length) throw new Error(`el bot puede usar: ${deletes.join(', ')}`);
+});
+
 if (id && cleanup) {
   const admin = requireEnv('TWENTY_ADMIN_API_KEY');
   await gql('graphql', admin, `mutation($id: UUID!) { destroyOpportunity(id: $id) { id } }`, { id });
