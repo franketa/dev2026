@@ -103,7 +103,8 @@ con `learn_tools` / `execute_tool` y ya vienen filtradas por los permisos del ro
 
 - **Oportunidad ganada → Proyecto**: al pasar a *Ganado*, crea un Proyecto en *Kickoff* vinculado a la
   oportunidad y a la empresa. Si una oportunidad vuelve a *Ganado* dos veces, crea dos proyectos.
-- **Propuesta sin movimiento → tarea**: al entrar en *Propuesta enviada* espera 3 días; si la oportunidad sigue
+- **Propuesta sin movimiento → tarea** (dos workflows: uno cuando la oportunidad *pasa* a Propuesta enviada y otro
+  cuando se *crea* directamente ahí): espera 3 días; si la oportunidad sigue
   en esa etapa y nadie la modificó, crea una tarea de seguimiento asignada al responsable y vinculada.
   "Sin actividad" = sin cambios en la oportunidad (notas o tareas nuevas no cuentan).
 

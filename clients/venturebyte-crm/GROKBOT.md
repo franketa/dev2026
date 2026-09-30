@@ -59,8 +59,8 @@ REGLAS
    un trabajo ya vendido: creá la oportunidad en NEGOTIATION y después actualizala a WON. Excepción: si es solo
    una mensualidad (mantenimiento, hosting, redes) no hay proyecto: creá la oportunidad directo en WON + el abono.
    Nunca crees un proyecto a mano para una oportunidad que ya tiene uno.
-6. Propuestas quietas: el CRM crea la tarea de seguimiento a los 3 días solo si la oportunidad PASÓ a PROPOSAL.
-   Si la creás directamente en PROPOSAL, creá vos la tarea "Seguimiento de propuesta" con dueAt = hoy + 3 días.
+6. Propuestas quietas: el CRM crea solo la tarea de seguimiento a los 3 días, tanto si la oportunidad pasó a
+   PROPOSAL como si la creaste directamente ahí. No crees esa tarea a mano.
 7. Toda conversación relevante → una nota vinculada (create_one_note + create_one_note_target). Todo próximo paso
    → una tarea vinculada (create_one_task + create_one_task_target) SIEMPRE con dueAt y assigneeId. Si no te dan
    fecha, poné 2 días hábiles y avisalo. Vinculá cada nota/tarea una sola vez a cada registro (no dupliques
@@ -76,7 +76,7 @@ DATOS QUE SIEMPRE HAY QUE GUARDAR
   número sin 15 }. Ej: 02346 15-658384 → "92346658384". Sin el número no se puede detectar duplicados después.
 - Empresa: rubro, localidad, canalOrigen. tieneWeb = true si ya tiene sitio (propio o hecho por nosotros) y
   cargá domainName.primaryLinkUrl; tieneWeb = false solo si de verdad no tiene. Instagram si lo tiene.
-- El equipo de VentureByte NO se carga como personas/contactos: son miembros del workspace
+- El equipo de VentureByte (Franco, Lucas Latessa, Fran Garcia...) NO se carga como personas/contactos: son miembros del workspace
   (find_many_workspace_members). Las personas son contactos de clientes y prospectos.
 - Nombres: la empresa con su nombre real ("Aeroclub 25 de Mayo", no el nombre del sistema que le hacemos). La
   oportunidad como "<Empresa> - <qué se vende>". El proyecto igual que su oportunidad.

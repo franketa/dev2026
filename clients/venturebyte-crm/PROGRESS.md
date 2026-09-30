@@ -10,7 +10,7 @@ Para retomar: leer este archivo, `NOTES.md`, `README.md` y `git log -- clients/v
 | 2. Despliegue | ✅ Servicio Coolify `venturebyte-crm` (uuid `h8os848g8wk4socg8c84kc4o`) en My first project / production. HTTPS Let's Encrypt en **https://crm.venturebyte.com.ar**. Backup diario 09:00 UTC (06:00 ART), retención 14 backups / 14 días / 1 GB; primer backup OK (753 KB). |
 | 3. Modelo de datos como código | ✅ Aplicado en prod (2026-09-29) sin errores; segunda corrida sin cambios. Datos demo de Twenty destruidos: el CRM arranca vacío |
 | 4. Roles y acceso del bot | ✅ Roles en prod. Bot "casi full" (D15) verificado en prod: crea, edita, papelera y restaura; destroy, esquema y roles denegados; catálogo MCP sin tools de borrado definitivo. MCP en `https://crm.venturebyte.com.ar/mcp`; guía en `GROKBOT.md` (flujos probados en prod) |
-| 5. Automatizaciones | ✅ Los dos workflows activos en prod; los 2 workflows demo de Twenty destruidos. "Ganada → Proyecto" probado en prod con registros [TEST] (destruidos) |
+| 5. Automatizaciones | ✅ Tres workflows activos en prod: "Ganada → Proyecto" (probado en prod) y "Propuesta sin movimiento → tarea" con dos disparadores (pasa a / se crea en Propuesta enviada; el de create se agregó el 2026-09-30 porque Grok crea oportunidades directo en esa etapa; probado en local). Workflows demo de Twenty destruidos |
 | 6. Runbook | ✅ `README.md` |
 
 ## Decisiones
@@ -53,6 +53,17 @@ Para retomar: leer este archivo, `NOTES.md`, `README.md` y `git log -- clients/v
 - ✅ Registro A `crm.venturebyte.com.ar` → `77.42.35.93` (DonWeb), dominio activo desde 2026-09-29.
 - Bucket externo para backups (pendiente).
 - Emails del equipo y rol de cada uno para las invitaciones.
+
+## Carga inicial (2026-09-30)
+
+- Grok Bot cargó 9 empresas, 13 personas, 10 oportunidades, 3 abonos, 18 notas y 9 tareas.
+- Corregido a mano: web de 6 empresas (tieneWeb + dominio), empresa "Sistema Integral 25 de Mayo" → "Aeroclub 25 de
+  Mayo", proyectos con responsable/estado/stack/links, nombre de Nacho, servicios de la propuesta de Garrahan.
+- Pendiente de datos de Franco: teléfonos (los carga Grok), fechaInicio de los 3 abonos, clientes hosteados en
+  Coolify que no están en el CRM (¿con mensualidad o demos?). Lucas Latessa y Fran Garcia quedaron como contactos de
+  la empresa VentureByte: al invitarlos como miembros, mandarlos a la papelera. Bronco: dejar como está.
+- Guía para Grok: `GROKBOT.md` (completa, para instalar de cero) y `GROKBOT-TIPS.md` (complemento para el prompt
+  que Grok ya tenía).
 
 ## Sugerencias fuera de alcance
 

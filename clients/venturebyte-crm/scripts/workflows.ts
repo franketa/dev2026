@@ -76,19 +76,26 @@ function wonToProject() {
 // Twenty no tiene aritmética de fechas en filtros, así que en vez de un cron que busque "updatedAt < hoy-3d"
 // se espera 3 días desde que la oportunidad entra en Propuesta enviada y se verifica que no cambió nada
 // (misma etapa y mismo updatedAt que cuando entró).
+// Un workflow tiene un solo disparador, así que hay dos copias: una para cuando la oportunidad PASA a Propuesta
+// enviada (update) y otra para cuando se CREA directamente ahí (típico de Grok Bot cargando algo ya avanzado).
+// En ambos eventos el registro está en trigger.properties.after y el id en trigger.recordId.
 
-function staleProposalTask(opportunityIdFieldId: string) {
+function staleProposalTask(opportunityIdFieldId: string, event: 'updated' | 'created') {
   const [wait, find, check, task, link] = [randomUUID(), randomUUID(), randomUUID(), randomUUID(), randomUUID()];
   const group = randomUUID();
   return {
-    name: 'Propuesta sin movimiento → tarea de seguimiento',
-    description: 'Si una oportunidad sigue en Propuesta enviada 3 días después de entrar, sin ninguna modificación, crea una tarea de seguimiento para su responsable.',
+    name: event === 'updated'
+      ? 'Propuesta sin movimiento → tarea de seguimiento'
+      : 'Propuesta creada sin movimiento → tarea de seguimiento',
+    description: event === 'updated'
+      ? 'Si una oportunidad sigue en Propuesta enviada 3 días después de entrar, sin ninguna modificación, crea una tarea de seguimiento para su responsable.'
+      : 'Igual que el anterior, para oportunidades creadas directamente en Propuesta enviada.',
     trigger: {
-      name: 'Oportunidad pasa a Propuesta enviada',
+      name: event === 'updated' ? 'Oportunidad pasa a Propuesta enviada' : 'Oportunidad creada en Propuesta enviada',
       type: 'DATABASE_EVENT',
       settings: {
-        eventName: 'opportunity.updated',
-        fields: ['stage'],
+        eventName: `opportunity.${event}`,
+        ...(event === 'updated' ? { fields: ['stage'] } : {}),
         outputSchema: {},
         filter: triggerFilterStageIs('PROPOSAL'),
       },
@@ -223,7 +230,13 @@ const meta = await gql('metadata', API_KEY, `{ objects(paging: { first: 200 }) {
 const opportunity = meta.objects.edges.find((e: any) => e.node.nameSingular === 'opportunity').node;
 const opportunityIdFieldId = opportunity.fields.edges.find((e: any) => e.node.name === 'id').node.id;
 
-for (const workflow of [wonToProject(), staleProposalTask(opportunityIdFieldId)]) {
+const WORKFLOWS = [
+  wonToProject(),
+  staleProposalTask(opportunityIdFieldId, 'updated'),
+  staleProposalTask(opportunityIdFieldId, 'created'),
+];
+
+for (const workflow of WORKFLOWS) {
   const existing = await gql('graphql', API_KEY,
     `query($name: String!) { workflows(filter: { name: { eq: $name } }) { edges { node { id statuses } } } }`,
     { name: workflow.name });
