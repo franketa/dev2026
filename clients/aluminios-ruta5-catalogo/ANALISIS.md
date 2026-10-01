@@ -119,3 +119,15 @@ Regla general: **un perfil = un código**, igual en todas las líneas donde apar
 La inconsistencia del catálogo viejo viene de pegar cada fuente con su estilo original. La propuesta es
 extraer los vectores de cada perfil y re-renderizarlos todos igual (misma escala 1:1, mismo trazo/relleno,
 misma ficha: código AR5, nombre, kg/m).
+
+## 6. Correcciones de Nacho sobre la primera versión (28/09/2026)
+
+- **A4C:** se suma el **074** de A30, al final de la línea.
+- **050:** sale del catálogo Aluar *A30 New* (6050, contravidrio curvo lado ext. puerta de rebatir, 0,192 kg/m).
+- **P640:** 0,28 kg/m.
+- **A4:** 14270 y 14271 al final de la línea, solos en la última hoja, y limpios (sin restos de accesorios ni
+  líneas punteadas).
+- **Baranda:** una hoja por baranda (Group: 439, 468, 476, 477 / Alubon: 502, 503, 513, 514).
+- **Wall panel:** se usa el dibujo del "098 Revestimiento acanalado" de la foto de un proveedor, pero **se llama
+  Wall panel** y pesa **1,30 kg/m**; el 098 y los otros revestimientos de esa hoja no van. Código provisorio
+  **AR5-WP** (a confirmar). Reconstrucción en `tools/wallpanel.py` (169,2 × 23,5 mm; el área da el peso).

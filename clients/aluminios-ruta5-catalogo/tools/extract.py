@@ -40,15 +40,19 @@ SOURCES = {
     "alubon-i": ("alubon/ALBI-frente-integral.pdf", range(1, 4), "outline", r"ALBI-(\d+)"),
     "group": ("group/aluminium-group-catalogo.pdf", [], "filled", r"ALG\s*(\d+)"),     # solo recortes
     "alcenor": ("alcenor/230-premarco-tlt-lr.jpg", [], "filled", r"x"),
-    "aluar": ("aluar/6050-a30-contravidrio-curvo-ext.jpg", [], "filled", r"x"),
+    "aluar": ("aluar/A30new-catalogo-tecnico.pdf", [], "outline", r"x"),
 }
 
 # Recortes manuales para los casos que la detección automática no resuelve:
 # fuente -> código -> (pdf, página, (x0, y0, x1, y1) en pt, modo[, {"ancho_mm"|"alto_mm": cota real | "escala": k}])
 OVERRIDES = {
     # planos sueltos de la web (imagen): recorte en píxeles y escala por cota
+    "aluar": {   # catálogo A30 New de Aluar (vector, 1:1)
+        "6050": ("aluar/A30new-catalogo-tecnico.pdf", 10, (176, 405, 230, 491), "outline"),
+    },
     "alcenor": {
-        "230": ("alcenor/230-premarco-tlt-lr.jpg", 0, (40, 255, 805, 610), "filled", {"ancho_mm": 49.26}),
+        "230": ("alcenor/230-premarco-tlt-lr.jpg", 0, (40, 255, 805, 610), "filled",
+                {"ancho_mm": 49.26, "afinar_peso": 0.28}),
     },
     # Aluminium Group: siluetas negras (imagen) en 1:1
     "group": {
@@ -124,8 +128,8 @@ OVERRIDES = {
         "262": ("alubon/ALB4-a40.pdf", 5, (106, 333, 392, 446), "solid"),
         "283": ("alubon/ALB4-a40.pdf", 5, (90, 508, 248, 642), "solid"),
         "284": ("alubon/ALB4-a40.pdf", 5, (308, 560, 450, 628), "solid"),
-        "270": ("alubon/ALB4-a40.pdf", 6, (150, 210, 284, 455), "solid"),
-        "271": ("alubon/ALB4-a40.pdf", 6, (126, 515, 306, 660), "solid"),
+        "270": ("alubon/ALB4-a40.pdf", 6, (150, 210, 284, 455), "solid", {"solo_perfil": True}),
+        "271": ("alubon/ALB4-a40.pdf", 6, (126, 515, 306, 660), "solid", {"solo_perfil": True}),
         "263": ("alubon/ALB4-a40.pdf", 5, (104, 172, 392, 300), "solid"),
     },
 }
@@ -439,6 +443,25 @@ def run_overrides(name):
             m8 = cv2.resize(m.astype(np.uint8) * 255, (max(1, round(m.shape[1] * k)), max(1, round(m.shape[0] * k))),
                             interpolation=cv2.INTER_AREA)
             m = m8 > 127
+        if m is not None and opts.get("solo_perfil"):
+            # quedarse con la pieza principal: fuera restos de accesorios, felpas y líneas punteadas
+            n, lab, st, _ = cv2.connectedComponentsWithStats(m.astype(np.uint8), connectivity=8)
+            if n > 1:
+                i = 1 + int(np.argmax(st[1:, cv2.CC_STAT_AREA]))
+                m = lab == i
+                ys, xs = np.nonzero(m)
+                m = m[ys.min():ys.max() + 1, xs.min():xs.max() + 1]
+        if m is not None and "afinar_peso" in opts:
+            # paredes dibujadas más gruesas que las reales (perfil de pared pareja): afinar al kg/m
+            objetivo = opts["afinar_peso"] / 0.0027 / PX2MM ** 2
+            k3 = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (3, 3))
+            cur = m.astype(np.uint8)
+            while cur.sum() > objetivo:
+                nxt = cv2.erode(cur, k3)
+                if nxt.sum() < objetivo * 0.95:
+                    break
+                cur = nxt
+            m = cur > 0
         if m is not None and "escala_peso" in opts:
             # sin cota ni fuente en 1:1: escalar para que el área de la sección dé el kg/m real
             objetivo = opts["escala_peso"] / 0.0027

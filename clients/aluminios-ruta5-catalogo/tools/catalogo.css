@@ -50,6 +50,7 @@ html, body { background: #fff; color: var(--ink); font-family: var(--body); -web
 /* ---------- Deco ---------- */
 .deco { display: flex; gap: 10mm; align-items: flex-start; padding: 6mm 0; border-bottom: .2mm solid var(--alu-200); }
 .deco:last-child { border-bottom: 0; }
+.deco--perfil .fila { justify-content: center; margin: 4mm 0 0; }
 .deco__dib { flex: none; color: var(--alu-700); }
 .deco__dib .dib { fill: var(--perfil); }
 .deco__dib .lbl { font-family: var(--display); font-weight: 700; font-size: 4px; fill: var(--blue); }

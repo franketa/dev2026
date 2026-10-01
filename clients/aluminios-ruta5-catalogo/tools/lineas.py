@@ -44,7 +44,7 @@ clasica.append(otro("PARTE A", "Escuadra de armado", 0.690, "group/046", orden="
 # ---------------------------------------------------------------- RTO640 (Rotonda)
 RT = "1112 1113 1114 1115 1161 1162 1310 1311 1317 1325 1326 1800 1801 1913"
 rto = por_numero([alpros("03-RT-rotonda", c) for c in RT.split()])
-rto.append(otro("P640", "Premarco rotonda", None, "alcenor/230"))
+rto.append(otro("P640", "Premarco rotonda", 0.28, "alcenor/230"))
 
 # ---------------------------------------------------------------- MDNA (Modena)
 ALBM = [
@@ -125,7 +125,7 @@ ALB3 = [
     ("172", "Parante central DVH", 1.124), ("965", "Encuentro central corrediza de 4 hojas", 0.288),
 ]
 a3 = [alubon("alubon-3", c, n, k) for c, n, k in ALB3]
-a3.append(otro("050", "Contravidrio curvo exterior", 0.192, "aluar/6050", orden="050"))
+a3.append(otro("050", "Contravidrio curvo lado ext. puerta de rebatir", 0.192, "aluar/6050", orden="050"))
 a3 = por_numero(a3)
 
 # ---------------------------------------------------------------- A4 (A40): 14 adelante
@@ -141,6 +141,8 @@ ALB4 = [
     ("378", "Adaptador vidrio simple para hoja a 90°", 0.263), ("934", "Premarco", 0.900),
 ]
 a4 = [alubon("alubon-4", c, n, k, nuevo="14" + c) for c, n, k in ALB4]
+# Nacho: el 14270 y el 14271 al final de la línea, solos en la última hoja
+a4 = [p for p in a4 if p["orden"] not in ("14270", "14271")] +      [{**p, "hoja_nueva": p["orden"] == "14270"} for p in a4 if p["orden"] in ("14270", "14271")]
 
 # ---------------------------------------------------------------- A4C (compartidos llevan el código de su línea)
 ALB4C = [
@@ -155,14 +157,16 @@ a4c.append(alubon("alubon-4", "062", "Perfil de mosquitero", 0.888, nuevo="14062
 a4c.append(alubon("alubon-4", "264", "Guía corrediza mosquitero", 0.350, nuevo="14264"))
 a4c.append(alubon("alubon-3", "073", "Zócalo y cabezal corrediza p/DVH", 0.861))
 a4c = por_numero(a4c)
+a4c.append(alubon("alubon-3", "074", "Zócalo alto corrediza p/DVH", 1.412))   # agregado por Nacho, al final
 
-# ---------------------------------------------------------------- Baranda (Alubon + Group)
-baranda = por_numero([
-    alubon("alubon-b", "502", "Columna", 0.834), alubon("alubon-b", "503", "Tapa inferior pasamanos", 0.267),
-    alubon("alubon-b", "513", "Pasamanos recto", 1.364), alubon("alubon-b", "514", "Guía inferior", 0.435),
+# ---------------------------------------------------------------- Baranda: una hoja por baranda (Group, después Alubon)
+baranda = [
     otro("439", "Pasamanos baranda", 1.005, "group/439"), otro("468", "Portavidrio baranda", 0.530, "group/468"),
     otro("476", "Parante angosto baranda", 0.597, "group/476"), otro("477", "Base baranda", 0.572, "group/477"),
-])
+    {**alubon("alubon-b", "502", "Columna", 0.834), "hoja_nueva": True},
+    alubon("alubon-b", "503", "Tapa inferior pasamanos", 0.267),
+    alubon("alubon-b", "513", "Pasamanos recto", 1.364), alubon("alubon-b", "514", "Guía inferior", 0.435),
+]
 
 # ---------------------------------------------------------------- FI (Frente Integral)
 fi = [
@@ -191,6 +195,9 @@ DECO = [
         ("T40X20", 40, 20, 0.375), ("T50X25", 50, 25, 0.440), ("T60X25", 60, 25, 0.660),
         ("T75X25", 75, 25, 0.693), ("T100X50", 100, 50, 1.600), ("T110X25", 110, 25, 1.160)]},
 ]
+
+# Wall panel (Deco): plano de un proveedor, reconstruido en tools/wallpanel.py. Código a confirmar.
+WALL_PANEL = {"codigo": "AR5-WP", "nombre": "Wall panel", "kg": 1.30, "mask": "wallpanel/wp", "orden": "WP"}
 
 LINEAS = [
     {"nombre": "Clásica", "perfiles": clasica},

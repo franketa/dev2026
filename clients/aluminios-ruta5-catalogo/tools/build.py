@@ -13,7 +13,7 @@ import cv2
 import numpy as np
 
 sys.path.insert(0, str(Path(__file__).parent))
-from lineas import DECO, LINEAS  # noqa: E402
+from lineas import DECO, LINEAS, WALL_PANEL  # noqa: E402
 
 ROOT = Path(__file__).resolve().parent.parent
 MASKS = ROOT / "build" / "masks"
@@ -84,36 +84,45 @@ def svg_perfil(v):
 # ------------------------------------------------------------------ armado de hojas
 def paginate(perfiles, first_extra):
     """Filas en orden de catálogo, armadas según el lugar que queda en la hoja: si el próximo perfil
-    no entra de alto, la fila (o la hoja) se cierra ahí, sin alterar el orden numérico."""
-    pages, page = [], []
+    no entra de alto, la fila (o la hoja) se cierra ahí, sin alterar el orden numérico.
+    Un perfil con "hoja_nueva" arranca hoja (pedidos puntuales del cliente)."""
+    pages, page, row = [], [], []
     avail = PAGE_H - TOP - BOTTOM - first_extra
-    used = 0
-    i = 0
-    while i < len(perfiles):
-        rem = avail - used - (GAP_Y if page else 0)
+    used, row_w = 0, 0
+
+    def row_h(r):
+        return max(p["v"]["h"] for p in r) + LABEL_H
+
+    def close_row():
+        nonlocal row, row_w, used
+        if row:
+            used += (GAP_Y if page else 0) + row_h(row)
+            page.append(row)
         row, row_w = [], 0
-        while i < len(perfiles):
-            p = perfiles[i]
-            cw = max(p["v"]["w"], CELL_MIN_W)
-            if row and row_w + GAP_X + cw > CONTENT_W:
-                break
-            if p["v"]["h"] + LABEL_H > rem:
-                break
-            row.append(p)
-            row_w += (GAP_X if len(row) > 1 else 0) + cw
-            i += 1
-        if not row:
-            if not page:           # ni en hoja vacía entra: se pone igual (no debería pasar)
-                page.append([perfiles[i]])
-                i += 1
+
+    def close_page():
+        nonlocal page, used, avail
+        close_row()
+        if page:
             pages.append(page)
-            page, used = [], 0
-            avail = PAGE_H - TOP - BOTTOM
-            continue
-        page.append(row)
-        used += (GAP_Y if len(page) > 1 else 0) + max(p["v"]["h"] for p in row) + LABEL_H
-    if page:
-        pages.append(page)
+        page, used = [], 0
+        avail = PAGE_H - TOP - BOTTOM
+
+    for p in perfiles:
+        if p.get("hoja_nueva") and (page or row):          # pedido del cliente
+            close_page()
+        cw = max(p["v"]["w"], CELL_MIN_W)
+        if row and row_w + GAP_X + cw > CONTENT_W:          # no entra de ancho
+            close_row()
+        rem = avail - used - (GAP_Y if page else 0)
+        if row and max(p["v"]["h"], max(q["v"]["h"] for q in row)) + LABEL_H > rem:
+            close_row()                                     # con este perfil la fila no entra de alto
+            rem = avail - used - GAP_Y
+        if not row and page and p["v"]["h"] + LABEL_H > rem:
+            close_page()                                    # no entra en lo que queda de la hoja
+        row.append(p)
+        row_w += (GAP_X if len(row) > 1 else 0) + cw
+    close_page()
     return pages
 
 
@@ -193,7 +202,11 @@ def deco_pages(start):
   <div class="deco__tabla"><h3>{html.escape(fam["familia"])}</h3>
   <table><thead><tr><th>Código</th><th>A (mm)</th><th>B (mm)</th><th>kg/m</th></tr></thead><tbody>{rows}</tbody></table></div>
 </div>''')
-    # dos hojas: 3 + 2 familias
+    # wall panel: dibujo en 1:1 como el resto de los perfiles
+    wp = {**WALL_PANEL, "v": vectorize(WALL_PANEL["mask"])}
+    blocks.append(f'<div class="deco deco--perfil"><div class="deco__tabla"><h3>Wall panel</h3>'
+                  f'<div class="fila fila--sola">{perfil_html(wp)}</div></div></div>')
+    # dos hojas: 3 familias + (2 familias y wall panel)
     return [chrome("Deco", start, "".join(blocks[:3]), first=True),
             chrome("Deco", start + 1, "".join(blocks[3:]))]
 
@@ -224,12 +237,13 @@ def build():
                 for p in r:
                     indice.append((p["codigo"], p["nombre"], l["nombre"], n))
             n += 1
-    toc.append(("Deco", n, sum(len(f["items"]) for f in DECO)))
+    toc.append(("Deco", n, sum(len(f["items"]) for f in DECO) + 1))
     pages_html += deco_pages(n)
     for fam in DECO:
         for c, a, b, kg in fam["items"]:
             indice.append(("AR5-" + c, f'{fam["familia"][:-1] if fam["familia"].endswith("s") else fam["familia"]} {a}×{b}',
                            "Deco", n if fam in DECO[:3] else n + 1))
+    indice.append((WALL_PANEL["codigo"], WALL_PANEL["nombre"], "Deco", n + 1))
     n += 2
 
     # índice por código (4 columnas)
