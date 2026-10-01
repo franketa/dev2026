@@ -39,8 +39,8 @@ function tablaTickets(ctx, lista, { anular = false } = {}) {
   return html`<div class="tabla-caja"><table class="tabla tabla--tarjetas">
     <thead><tr><th>Ticket</th><th>A cargo de</th><th>Detalle</th><th class="num">Total</th><th>Cobro</th><th></th></tr></thead>
     <tbody>${lista.map(t => html`<tr class="${t.estado === 'anulado' ? 'fila--anulada' : ''}">
-      <td class="celda-ppal"><strong>${t.numero_txt}</strong> ${t.matricula ? html`<span class="matricula">${t.matricula}</span>` : ''}<div class="muted chico">${fecha(t.fecha)}${t.origen === 'cierre' ? ', cierre del mes' : t.creado_por_nombre ? `, ${t.creado_por_nombre}` : ''}</div></td>
-      <td data-label="A cargo de">${nombreLista(t)}${t.usuario_rol === 'externo' ? html` <span class="chip chip--neutro">Externo</span>` : ''}</td>
+      <td class="celda-ppal"><strong>${t.numero_txt}</strong> ${t.matricula ? html`<span class="matricula">${t.matricula}</span>` : ''}${t.piloto ? html`<div class="chico">Piloto: ${t.piloto}</div>` : ''}<div class="muted chico">${fecha(t.fecha)}${t.origen === 'cierre' ? ', cierre del mes' : t.creado_por_nombre ? `, ${t.creado_por_nombre}` : ''}</div></td>
+      <td data-label="A cargo de">${t.transitos ? html`<span class="chip chip--neutro">Tránsito</span>` : html`${nombreLista(t)}${t.usuario_rol === 'externo' ? html` <span class="chip chip--neutro">Externo</span>` : ''}`}</td>
       <td data-label="Detalle" class="chico">${t.resumen}${t.motivo_anulacion ? html`<div class="muted">Anulado: ${t.motivo_anulacion}</div>` : ''}</td>
       <td class="num monto" data-label="Total">${pesos(t.total)}</td>
       <td data-label="Cobro">${chipTicket(t)}</td>
@@ -48,101 +48,100 @@ function tablaTickets(ctx, lista, { anular = false } = {}) {
     </tr>`)}</tbody></table></div>`;
 }
 
-// ── Alta / edición de aeronave (con propietario socio o externo nuevo) ────────
+// ── Alta / edición de aeronave ───────────────────────────────────────────────
+// Sin dueño registrado queda como tránsito; si es de un socio (o de un externo ya cargado), sus
+// tickets van a esa cuenta.
 export function modalAeronave({ aeronave = null, cuentas, matricula = '' }, alGuardar) {
   const a = aeronave || {};
+  const transitos = cuentas.find(c => c.transitos)?.id;
+  const conDueno = aeronave && a.propietario_id !== transitos;
   const m = modal({
-    titulo: aeronave ? `Editar ${a.matricula}` : 'Registrar aeronave',
-    subtitulo: 'Aeronaves que no son de la flota del club. Los tickets van a la cuenta del propietario.',
+    titulo: aeronave ? `Editar ${a.matricula}` : 'Registrar matrícula',
+    subtitulo: 'Aeronaves que no son de la flota del club.',
     contenido: html`<form class="form" novalidate>
       <div class="fila-campos">
         <div class="campo"><label for="ae-mat">Matrícula</label><input class="input" id="ae-mat" name="matricula" value="${a.matricula || matricula}" placeholder="LV-ABC" autocapitalize="characters" required autofocus></div>
-        <div class="campo"><label for="ae-mod">Modelo <span class="muted">(opcional)</span></label><input class="input" id="ae-mod" name="modelo" value="${a.modelo || ''}" placeholder="Piper PA-18"></div>
+        <div class="campo"><label for="ae-mod">Modelo <span class="muted">(opcional)</span></label><input class="input" id="ae-mod" name="modelo" value="${a.modelo || ''}" placeholder="Cessna 172"></div>
       </div>
-      <fieldset class="campo" style="border:0;padding:0;margin:0"><legend class="sr">Propietario</legend>
+      <fieldset class="campo" style="border:0;padding:0;margin:0"><legend class="sr">De quién es</legend>
         <div class="segmentado">
-          <label><input type="radio" name="quien" value="existente" ${aeronave ? raw('checked') : ''}><span>Ya está cargado<small>Socio o externo</small></span></label>
-          <label><input type="radio" name="quien" value="nuevo" ${aeronave ? '' : raw('checked')}><span>Propietario nuevo<small>De afuera del club</small></span></label>
+          <label><input type="radio" name="quien" value="transito" ${conDueno ? '' : raw('checked')}><span>Tránsito<small>De paso, se cobra en el acto</small></span></label>
+          <label><input type="radio" name="quien" value="existente" ${conDueno ? raw('checked') : ''}><span>De un socio<small>O de un externo cargado</small></span></label>
         </div>
       </fieldset>
       <div class="campo" data-bloque="existente" hidden><label for="ae-prop">Propietario</label>
         <select class="select" id="ae-prop" name="propietario_id"><option value="">Elegí</option>
-          ${cuentas.map(c => html`<option value="${c.id}" ${c.id === a.propietario_id ? raw('selected') : ''}>${nombreLista(c)} (${rolTexto(c).toLowerCase()})</option>`)}
+          ${cuentas.filter(c => !c.transitos).map(c => html`<option value="${c.id}" ${c.id === a.propietario_id ? raw('selected') : ''}>${nombreLista(c)} (${rolTexto(c).toLowerCase()})</option>`)}
         </select></div>
-      <div class="pila" data-bloque="nuevo" style="gap:14px">
-        <div class="fila-campos">
-          <div class="campo"><label for="ex-nom">Nombre o razón social</label><input class="input" id="ex-nom" name="ex_nombre" placeholder="Juan / Agroaérea del Sur SA"></div>
-          <div class="campo"><label for="ex-ape">Apellido <span class="muted">(si es persona)</span></label><input class="input" id="ex-ape" name="ex_apellido"></div>
-        </div>
-        <div class="fila-campos">
-          <div class="campo"><label for="ex-tel">Celular (WhatsApp)</label><input class="input" id="ex-tel" name="ex_telefono" inputmode="tel" placeholder="2345 401234"></div>
-          <div class="campo"><label for="ex-dni">DNI o CUIT</label><input class="input" id="ex-dni" name="ex_dni" inputmode="numeric"></div>
-        </div>
-        <div class="campo"><label for="ex-mail">Email <span class="muted">(opcional)</span></label><input class="input" id="ex-mail" name="ex_email" type="email"></div>
-        <p class="campo__ayuda">Queda como externo: tiene cuenta corriente en el club pero no entra al sistema.</p>
-      </div>
       <div class="campo"><label for="ae-notas">Notas <span class="muted">(opcional)</span></label><input class="input" id="ae-notas" name="notas" value="${a.notas || ''}" maxlength="300" placeholder="Ej.: hangar 2, del fondo"></div>
       <div class="modal__acciones"><button class="btn btn--sec" type="button" data-cerrar>Cancelar</button><button class="btn btn--principal" type="submit">${aeronave ? 'Guardar' : 'Registrar'}</button></div>
     </form>`
   });
   const form = m.el.querySelector('form');
-  const bloques = () => {
-    const quien = form.quien.value;
-    form.querySelectorAll('[data-bloque]').forEach(b => { b.hidden = b.dataset.bloque !== quien; });
-  };
+  const bloques = () => { form.querySelector('[data-bloque]').hidden = form.quien.value !== 'existente'; };
   form.addEventListener('change', (e) => { if (e.target.name === 'quien') bloques(); });
   bloques();
   form.addEventListener('submit', (e) => {
     e.preventDefault();
     const d = datosForm(form);
-    const cuerpo = { matricula: d.matricula, modelo: d.modelo, notas: d.notas };
-    if (d.quien === 'nuevo') cuerpo.externo = { nombre: d.ex_nombre, apellido: d.ex_apellido, telefono: d.ex_telefono, dni: d.ex_dni, email: d.ex_email };
-    else cuerpo.propietario_id = Number(d.propietario_id);
+    if (d.quien === 'existente' && !d.propietario_id) { form.propietario_id.setAttribute('aria-invalid', 'true'); form.propietario_id.focus(); return; }
+    const cuerpo = { matricula: d.matricula, modelo: d.modelo, notas: d.notas, propietario_id: d.quien === 'existente' ? Number(d.propietario_id) : transitos };
     conBoton(form.querySelector('[type=submit]'), async () => {
       try {
         const r = aeronave ? await put(`/api/rampa/aeronaves/${a.id}`, cuerpo) : await post('/api/rampa/aeronaves', cuerpo);
         toast(aeronave ? 'Aeronave actualizada' : `${r.aeronave.matricula} registrada`, 'ok');
-        m.cerrar();
+        m.cerrar(true);
         alGuardar?.(r.aeronave);
       } catch (err) { error(err); }
     });
   });
+  return m;
 }
 
 // ── Nuevo ticket ────────────────────────────────────────────────────────────
 export async function nuevoTicket(ctx) {
   const datos = await get('/api/rampa/datos');
   const admin = ctx.esAdmin;
+  // La matrícula elegida: 'ae:ID' (aeronave registrada), 'av:ID' (flota del club) o '' (sin aeronave).
   const estado = {
-    aeronaveId: Number(ctx.query.aeronave) || null,
+    clave: ctx.query.aeronave ? `ae:${ctx.query.aeronave}` : '',
     usuarioId: Number(ctx.query.usuario) || null,
     items: [],
     cobrado: false
   };
   let sig = 1;
-  const aeronave = () => datos.aeronaves.find(a => a.id === estado.aeronaveId) || null;
+  const aeronave = () => (estado.clave.startsWith('ae:') ? datos.aeronaves.find(a => a.id === Number(estado.clave.slice(3))) || null : null);
+  const avion = () => (estado.clave.startsWith('av:') ? datos.aviones.find(a => a.id === Number(estado.clave.slice(3))) || null : null);
+  const cuenta = () => datos.cuentas.find(c => c.id === estado.usuarioId) || null;
   const servicio = (id) => datos.servicios.find(s => s.id === Number(id));
-  if (estado.aeronaveId && !estado.usuarioId) estado.usuarioId = aeronave()?.propietario_id ?? null;
+  if (aeronave() && !estado.usuarioId) estado.usuarioId = aeronave().propietario_id;
+
+  const opcionesMatricula = () => html`
+    <option value="">${admin ? 'Sin aeronave' : 'Elegí la matrícula'}</option>
+    ${datos.aeronaves.length ? html`<optgroup label="Aeronaves registradas">${datos.aeronaves.map(a => html`<option value="ae:${a.id}" ${estado.clave === `ae:${a.id}` ? raw('selected') : ''}>${a.matricula}${a.modelo ? ` · ${a.modelo}` : ''} · ${a.propietario_id === datos.cuentas.find(c => c.transitos)?.id ? 'tránsito' : nombreCompleto({ nombre: a.prop_nombre, apellido: a.prop_apellido })}</option>`)}</optgroup>` : ''}
+    <optgroup label="Flota del club">${datos.aviones.map(a => html`<option value="av:${a.id}" ${estado.clave === `av:${a.id}` ? raw('selected') : ''}>${a.matricula} · ${a.modelo}</option>`)}</optgroup>
+    <option value="nueva">+ Registrar otra matrícula…</option>`;
+  const opcionesCargo = () => html`
+    <option value="">Elegí la cuenta</option>
+    ${datos.cuentas.map(c => html`<option value="${c.id}" ${c.id === estado.usuarioId ? raw('selected') : ''}>${c.transitos ? 'Tránsitos (aeronave de paso)' : `${nombreLista(c)}${c.rol === 'externo' ? ' (externo)' : ''}`}</option>`)}`;
 
   pintar(ctx.el, html`
   <div class="vista">
     <div class="vista__cab"><div>
-      ${admin ? html`<a class="volver" href="${estado.usuarioId && ctx.query.usuario ? `#/admin/cuentas/${estado.usuarioId}` : '#/admin/tickets'}">${icono('izq')} Volver</a>` : ''}
+      ${admin ? html`<a class="volver" href="${ctx.query.usuario ? `#/admin/cuentas/${ctx.query.usuario}` : '#/admin/tickets'}">${icono('izq')} Volver</a>` : ''}
       <h1>Nuevo ticket</h1>
-      <p>${admin ? 'Servicios u otros conceptos a la cuenta de un socio o externo. Entra en su cupón del mes.' : 'Servicios a una aeronave. Va a la cuenta del propietario o se cobra en el momento.'}</p>
+      <p>${admin ? 'Servicios u otros conceptos a la cuenta de un socio o externo. Si es a cuenta, entra en su cupón del mes.' : 'Servicios a una aeronave. A los socios se les puede dejar a cuenta; a externos y tránsitos se les cobra en el momento.'}</p>
     </div></div>
     <form class="carga" id="form-ticket" novalidate>
       <div class="carga__paso">
-        <h2><span class="num">1</span> Aeronave${admin ? html` <span class="muted chico" style="font-weight:500">(opcional)</span>` : ''}</h2>
-        <div class="buscador">${icono('buscar')}<input class="input" id="buscar-ae" type="search" placeholder="Buscar matrícula" autocomplete="off" autocapitalize="characters" aria-label="Buscar matrícula"></div>
-        <div id="aeronaves" class="opciones-ae"></div>
+        <h2><span class="num">1</span> <label for="matricula">Matrícula</label>${admin ? html` <span class="muted chico" style="font-weight:500">(opcional)</span>` : ''}</h2>
+        <select class="select" id="matricula" name="matricula">${opcionesMatricula()}</select>
+        <div class="campo"><label for="piloto">Piloto al mando <span class="muted" id="piloto-req"></span></label>
+          <input class="input" id="piloto" name="piloto" maxlength="80" autocomplete="off" placeholder="Nombre y apellido"></div>
       </div>
       <div class="carga__paso">
         <h2><span class="num">2</span> <label for="a-cargo">A cargo de</label></h2>
-        <select class="select" id="a-cargo" name="usuario_id">
-          <option value="">Elegí la cuenta</option>
-          ${datos.cuentas.map(c => html`<option value="${c.id}">${nombreLista(c)}${c.rol === 'externo' ? ' (externo)' : ''}</option>`)}
-        </select>
+        <select class="select" id="a-cargo" name="usuario_id">${opcionesCargo()}</select>
         <p class="campo__ayuda" id="ayuda-cargo"></p>
       </div>
       <div class="carga__paso">
@@ -159,6 +158,7 @@ export async function nuevoTicket(ctx) {
           <label><input type="radio" name="cobro" value="cuenta" checked><span>A cuenta<small>Entra en el cupón del mes</small></span></label>
           <label><input type="radio" name="cobro" value="ahora"><span>Pagó ahora<small>Queda registrado el pago</small></span></label>
         </div>
+        <p class="campo__ayuda" id="ayuda-cobro" hidden>A externos y tránsitos se les cobra siempre en el momento.</p>
         <div class="campo" id="campo-medio" hidden><label for="medio">¿Cómo pagó?</label><select class="select" id="medio" name="medio">${opcionesMedio('efectivo')}</select></div>
       </div>
       <details class="carga__paso"><summary class="chico" style="cursor:pointer;color:var(--azul);font-weight:600">Fecha y notas</summary>
@@ -174,33 +174,33 @@ export async function nuevoTicket(ctx) {
   </div>`);
 
   const form = ctx.el.querySelector('#form-ticket');
-  const $aes = ctx.el.querySelector('#aeronaves');
-  const $buscar = ctx.el.querySelector('#buscar-ae');
+  const $mat = form.matricula;
   const $cargo = form.usuario_id;
   const $items = ctx.el.querySelector('#items');
   const $total = ctx.el.querySelector('#total-ticket');
   const $err = ctx.el.querySelector('#error-ticket');
 
-  function pintarAeronaves() {
-    const q = $buscar.value.trim().toUpperCase().replace(/\s/g, '');
-    const sel = aeronave();
-    const lista = datos.aeronaves.filter(a => !q || a.matricula.replace('-', '').includes(q.replace('-', ''))).slice(0, q ? 12 : 6);
-    if (sel && !lista.includes(sel)) lista.unshift(sel);
-    pintar($aes, html`
-      ${lista.map(a => html`<button type="button" class="opcion-ae" data-ae="${a.id}" aria-pressed="${a.id === estado.aeronaveId}">
-        <span class="matricula">${a.matricula}</span><small>${a.modelo || ''}</small><small>${nombreCompleto({ nombre: a.prop_nombre, apellido: a.prop_apellido })}</small></button>`)}
-      ${q && !lista.length ? html`<p class="muted chico">No hay ninguna aeronave con esa matrícula.</p>` : ''}
-      <button type="button" class="btn btn--sec btn--chico" data-nueva-ae>${icono('mas')} Registrar ${q && !datos.aeronaves.some(a => a.matricula.replace('-', '') === q.replace('-', '')) ? q : 'aeronave nueva'}</button>
-      ${admin && estado.aeronaveId ? html`<button type="button" class="btn btn--fantasma btn--chico" data-sin-ae>Sin aeronave</button>` : ''}`);
-  }
-
+  // A cargo de, piloto obligatorio (tránsitos) y cobro forzado (externos) dependen de la cuenta elegida.
   function pintarCargo() {
     $cargo.value = estado.usuarioId ? String(estado.usuarioId) : '';
     const a = aeronave();
+    const c = cuenta();
     const ayuda = ctx.el.querySelector('#ayuda-cargo');
-    ayuda.textContent = a
-      ? (a.propietario_id === estado.usuarioId ? `Propietario de ${a.matricula}. Si lo paga otra persona (por ejemplo, el piloto), cambialo.` : `Ojo: el propietario de ${a.matricula} es ${nombreCompleto({ nombre: a.prop_nombre, apellido: a.prop_apellido })}.`)
+    ayuda.textContent = avion() ? `${avion().matricula} es de la flota del club: elegí a nombre de quién va.`
+      : a && c?.transitos ? `${a.matricula} está registrada como tránsito.`
+      : a ? (a.propietario_id === estado.usuarioId ? `Propietario de ${a.matricula}. Si lo paga otra persona, cambialo.` : `Ojo: el propietario de ${a.matricula} es ${nombreCompleto({ nombre: a.prop_nombre, apellido: a.prop_apellido })}.`)
       : '';
+    ctx.el.querySelector('#piloto-req').textContent = c?.transitos ? '(obligatorio en tránsitos)' : '(opcional)';
+    const externo = c?.rol === 'externo';
+    const $cuenta = form.querySelector('input[name=cobro][value=cuenta]');
+    // Externos y tránsitos: sólo "pagó ahora". Al volver a un socio, se vuelve a "a cuenta".
+    if (externo) form.querySelector('input[name=cobro][value=ahora]').checked = true;
+    else if ($cuenta.disabled) $cuenta.checked = true;
+    $cuenta.disabled = externo;
+    estado.cobrado = form.cobro.value === 'ahora';
+    ctx.el.querySelector('#ayuda-cobro').hidden = !externo;
+    ctx.el.querySelector('#campo-medio').hidden = !estado.cobrado;
+    calcular();
   }
 
   function filaItem(it) {
@@ -249,27 +249,6 @@ export async function nuevoTicket(ctx) {
   });
 
   ctx.el.addEventListener('click', (e) => {
-    const ae = e.target.closest('[data-ae]');
-    if (ae) {
-      estado.aeronaveId = Number(ae.dataset.ae);
-      estado.usuarioId = aeronave().propietario_id;
-      pintarAeronaves(); pintarCargo();
-      return;
-    }
-    if (e.target.closest('[data-sin-ae]')) { estado.aeronaveId = null; pintarAeronaves(); pintarCargo(); return; }
-    if (e.target.closest('[data-nueva-ae]')) {
-      const q = $buscar.value.trim().toUpperCase();
-      return modalAeronave({ cuentas: datos.cuentas, matricula: q }, async (nueva) => {
-        const frescos = await get('/api/rampa/datos').catch(() => null);
-        if (frescos) Object.assign(datos, frescos);
-        estado.aeronaveId = nueva.id;
-        estado.usuarioId = nueva.propietario_id;
-        $buscar.value = '';
-        // El propietario nuevo tiene que aparecer en la lista de cuentas.
-        pintar($cargo, html`<option value="">Elegí la cuenta</option>${datos.cuentas.map(c => html`<option value="${c.id}">${nombreLista(c)}${c.rol === 'externo' ? ' (externo)' : ''}</option>`)}`);
-        pintarAeronaves(); pintarCargo();
-      });
-    }
     const ag = e.target.closest('[data-agregar]');
     if (ag) {
       const s = ag.dataset.agregar === 'otro' ? null : servicio(ag.dataset.agregar);
@@ -285,8 +264,31 @@ export async function nuevoTicket(ctx) {
     if (q) { estado.items = estado.items.filter(x => x.k !== Number(q.dataset.quitar)); pintarItems(); }
   });
 
-  $buscar.addEventListener('input', pintarAeronaves);
+  function elegirMatricula(clave) {
+    estado.clave = clave;
+    const a = aeronave();
+    if (a) estado.usuarioId = a.propietario_id;
+    // Un avión del club no tiene dueño: que elijan la cuenta (salvo que vengan desde la cuenta de un socio).
+    else if (avion()) estado.usuarioId = Number(ctx.query.usuario) || null;
+    pintarCargo();
+  }
+
   form.addEventListener('change', (e) => {
+    if (e.target === $mat) {
+      if ($mat.value !== 'nueva') return elegirMatricula($mat.value);
+      $mat.value = estado.clave;     // si cancela el alta, queda la que estaba
+      modalAeronave({ cuentas: datos.cuentas }, async (nueva) => {
+        const frescos = await get('/api/rampa/datos').catch(() => null);
+        if (frescos) Object.assign(datos, frescos);
+        else datos.aeronaves.push(nueva);
+        pintar($mat, opcionesMatricula());
+        pintar($cargo, opcionesCargo());
+        elegirMatricula(`ae:${nueva.id}`);
+        $mat.value = estado.clave;
+        form.piloto.focus();
+      });
+      return;
+    }
     if (e.target === $cargo) { estado.usuarioId = Number($cargo.value) || null; pintarCargo(); }
     if (e.target.name === 'cobro') { estado.cobrado = e.target.value === 'ahora'; ctx.el.querySelector('#campo-medio').hidden = !estado.cobrado; }
     calcular();
@@ -296,8 +298,9 @@ export async function nuevoTicket(ctx) {
     e.preventDefault();
     $err.hidden = true;
     const d = datosForm(form);
-    const falta = !admin && !estado.aeronaveId ? 'Elegí o registrá la aeronave.'
+    const falta = !admin && !estado.clave ? 'Elegí la matrícula (o registrá una nueva).'
       : !estado.usuarioId ? 'Elegí a nombre de quién va el ticket.'
+      : cuenta()?.transitos && !d.piloto.trim() ? 'Escribí el piloto al mando: en los tránsitos es lo que identifica el ticket.'
       : !estado.items.length ? 'Agregá al menos un servicio.'
       : estado.items.some(it => !parseCantidad(it.cantidad)) ? 'Revisá las cantidades: números con hasta dos decimales (ej.: 40,5).'
       : estado.items.some(it => !it.servicio_id && !String(it.concepto || '').trim()) ? 'Escribí el concepto.'
@@ -305,8 +308,8 @@ export async function nuevoTicket(ctx) {
       : null;
     if (falta) { $err.textContent = falta; $err.hidden = false; $err.scrollIntoView({ block: 'center', behavior: 'smooth' }); return; }
     const cuerpo = {
-      aeronave_id: estado.aeronaveId, usuario_id: estado.usuarioId, fecha: d.fecha, notas: d.notas,
-      cobrado: estado.cobrado, medio: estado.cobrado ? d.medio : null,
+      aeronave_id: aeronave()?.id ?? null, avion_id: avion()?.id ?? null, usuario_id: estado.usuarioId, piloto: d.piloto,
+      fecha: d.fecha, notas: d.notas, cobrado: estado.cobrado, medio: estado.cobrado ? d.medio : null,
       items: estado.items.map(it => ({ servicio_id: it.servicio_id, concepto: it.concepto, cantidad: it.cantidad, precio: admin ? pesosInput(it.precio) : undefined }))
     };
     await conBoton(form.querySelector('[type=submit]'), async () => {
@@ -321,7 +324,6 @@ export async function nuevoTicket(ctx) {
     });
   });
 
-  pintarAeronaves();
   pintarCargo();
   pintarItems();
 }
@@ -335,7 +337,7 @@ function listo(ctx, t) {
         <h1>Ticket ${t.numero_txt}</h1>
         <div class="listo__resumen">
           <p><strong class="monto" style="font-size:1.6rem">${pesos(t.total)}</strong></p>
-          <p>${t.matricula ? html`<strong class="matricula">${t.matricula}</strong>, ` : ''}${t.items.map(i => i.cantidad === 100 ? i.concepto : `${i.concepto} ${i.cantidad_txt}`).join(', ')}</p>
+          <p>${t.matricula ? html`<strong class="matricula">${t.matricula}</strong>${t.piloto ? `, piloto ${t.piloto}` : ''}, ` : ''}${t.items.map(i => i.cantidad === 100 ? i.concepto : `${i.concepto} ${i.cantidad_txt}`).join(', ')}</p>
           <p class="muted">${t.pago_movimiento_id ? `Pagado en el acto (${MEDIOS[t.pago_medio]}).` : `A cuenta de ${nombreCompleto(t)}: entra en su cupón del mes.`}</p>
         </div>
         <div class="listo__acciones">
@@ -343,7 +345,7 @@ function listo(ctx, t) {
           <a class="btn btn--sec" href="${urlTicketPdf(ctx, t)}" target="_blank" rel="noopener">${icono('pdf')} Ver PDF</a>
           <a class="btn btn--principal" href="${ctx.usuario.rol === 'rampa' ? '#/rampa' : '#/admin/tickets/nuevo'}" data-otro>${icono('mas')} Otro ticket</a>
         </div>
-        ${!wa && t.estado !== 'anulado' ? html`<p class="muted chico">${nombreCompleto(t)} no tiene celular cargado: mandale el PDF por otro medio.</p>` : ''}
+        ${!wa && !t.transitos && t.estado !== 'anulado' ? html`<p class="muted chico">${nombreCompleto(t)} no tiene celular cargado: mandale el PDF por otro medio.</p>` : ''}
       </div>
     </div>`);
   ctx.el.querySelector('[data-otro]').addEventListener('click', (e) => {
@@ -451,16 +453,16 @@ export async function aeronaves(ctx) {
       ${lista.length ? html`<div class="tabla-caja"><table class="tabla tabla--tarjetas">
         <thead><tr><th>Aeronave</th><th>Propietario</th><th class="num">Tickets</th><th>Último</th><th></th></tr></thead>
         <tbody>${lista.map(a => html`<tr data-texto="${`${a.matricula} ${a.modelo || ''} ${a.prop_nombre} ${a.prop_apellido}`.toLowerCase()}">
-          <td class="celda-ppal"><span class="matricula">${a.matricula}</span><div class="muted chico">${a.modelo || ''}${a.notas ? ` · ${a.notas}` : ''}</div></td>
-          <td data-label="Propietario">${ctx.esStaff ? html`<a href="#/admin/cuentas/${a.propietario_id}">${nombreCompleto({ nombre: a.prop_nombre, apellido: a.prop_apellido })}</a>` : nombreCompleto({ nombre: a.prop_nombre, apellido: a.prop_apellido })}
-            <div class="muted chico">${a.prop_rol === 'externo' ? 'Externo' : 'Socio'}${a.prop_telefono ? ` · ${a.prop_telefono}` : ''}</div></td>
+          <td class="celda-ppal"><span class="matricula">${a.matricula}</span><div class="muted chico">${[a.modelo, a.notas].filter(Boolean).join(' · ')}</div></td>
+          <td data-label="Propietario">${a.transitos ? html`<span class="chip chip--neutro">Tránsito</span>` : html`${ctx.esStaff ? html`<a href="#/admin/cuentas/${a.propietario_id}">${nombreCompleto({ nombre: a.prop_nombre, apellido: a.prop_apellido })}</a>` : nombreCompleto({ nombre: a.prop_nombre, apellido: a.prop_apellido })}
+            <div class="muted chico">${a.prop_rol === 'externo' ? 'Externo' : 'Socio'}${a.prop_telefono ? ` · ${a.prop_telefono}` : ''}</div>`}</td>
           <td class="num" data-label="Tickets">${a.tickets}</td>
           <td data-label="Último">${a.ultimo_ticket ? fecha(a.ultimo_ticket) : html`<span class="muted">—</span>`}</td>
           <td class="celda-acciones"><div class="tabla__acciones">
             ${puedeEditar ? html`<a class="btn btn--sec btn--chico" href="${urlTicket(a)}" data-escritura>${icono('ticket')} Ticket</a>
             <button class="btn btn--fantasma btn--chico" type="button" data-editar="${a.id}" data-escritura>${icono('editar')} Editar</button>` : ''}
           </div></td></tr>`)}</tbody></table></div>`
-      : vacio('Todavía no hay aeronaves registradas. Se registran al hacer el primer ticket.')}
+      : vacio('Todavía no hay aeronaves registradas. Se registran desde el ticket, con "Registrar otra matrícula".')}
     </section>
   </div>`);
 

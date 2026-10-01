@@ -143,7 +143,8 @@ function normalizarEmail(v) {
 // Los externos pueden ser una empresa: sólo nombre (razón social), sin apellido.
 function nombreCompleto(u) { return [u.nombre, u.apellido].filter(Boolean).join(' '); }
 
-const MEDIOS = ['transferencia', 'efectivo', 'mercadopago', 'cheque', 'otro'];
+// Medios de pago que se pueden elegir (v1.002: se sacó el cheque; los pagos viejos con cheque quedan como están).
+const MEDIOS = ['transferencia', 'efectivo', 'mercadopago', 'otro'];
 
 function limpiarTexto(v, max = 500) {
   if (v == null) return null;

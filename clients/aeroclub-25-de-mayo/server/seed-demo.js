@@ -38,7 +38,7 @@ flota.nuevaTarifa(1, { tipo: 'solo', precio_hora: 10200000, vigente_desde: `${su
 
 // Precios de los servicios (de ejemplo)
 const PRECIOS = {
-  Hangaraje: 8000000, Combustible: 280000, Nocturno: 2500000, 'Derecho de aeronave': 1500000,
+  'Hangaraje mensual': 8000000, 'Hangaraje diario': 500000, Combustible: 280000, Nocturno: 2500000, 'Derecho de aeronave': 1500000,
   'Derecho de examen': 4000000, 'Hora de simulador': 3500000, 'Limpieza de avión': 2000000
 };
 const servicioId = {};
@@ -83,7 +83,8 @@ conRol('Norma', 'Villalba', 'comision@demo.com', 'consulta');
 const aeronaves = [
   tickets.guardarAeronave({ matricula: 'LV-ZKD', modelo: 'Piper PA-25 Pawnee', externo: { nombre: 'Agroaérea del Salado SRL', telefono: '2345 409911', dni: '30-71234567-8' } }, rampa),
   tickets.guardarAeronave({ matricula: 'LV-BRC', modelo: 'Cessna 182', externo: { nombre: 'Ramiro', apellido: 'Castaño', telefono: '2346 412233' } }, rampa),
-  tickets.guardarAeronave({ matricula: 'LV-HNT', modelo: 'Aeronca Champ', propietario_id: pilotos[2].id, notas: 'Hangar 2' }, rampa)
+  tickets.guardarAeronave({ matricula: 'LV-HNT', modelo: 'Aeronca Champ', propietario_id: pilotos[2].id, notas: 'Hangar 2' }, rampa),
+  tickets.guardarAeronave({ matricula: 'LV-GRT', modelo: 'Cessna 172' }, rampa)          // tránsito
 ];
 
 // Vuelos: generador determinístico
@@ -122,10 +123,12 @@ const ticket = (actor, aeronave, fecha, items, extra = {}) =>
 const ticketsDelMes = (periodo, actor) => {
   // Rampa sólo carga tickets de los últimos días; los de meses pasados los carga tesorería.
   const dia = (d) => (actor.rol === 'rampa' ? sumarDias(hoy(), -Number(d)) : [`${periodo}-${d}`, hoy()].sort()[0]);
-  ticket(actor, aeronaves[0], dia('02'), [['Hangaraje', '1']]);
-  ticket(actor, aeronaves[0], dia('06'), [['Combustible', '120']]);
+  // Externos y tránsitos pagan en el acto; al socio (LV-HNT) se le deja a cuenta.
+  ticket(actor, aeronaves[0], dia('02'), [['Hangaraje mensual', '1']], { cobrado: true, medio: 'transferencia' });
+  ticket(actor, aeronaves[0], dia('06'), [['Combustible', '120']], { cobrado: true, medio: 'transferencia' });
   ticket(actor, aeronaves[1], dia('04'), [['Combustible', '85,5'], ['Limpieza de avión', '1']], { cobrado: true, medio: 'efectivo' });
-  ticket(actor, aeronaves[2], dia('03'), [['Hangaraje', '1']]);
+  ticket(actor, aeronaves[2], dia('03'), [['Hangaraje mensual', '1']]);
+  ticket(actor, aeronaves[3], dia('05'), [['Hangaraje diario', '2'], ['Nocturno', '2']], { cobrado: true, medio: 'efectivo', piloto: 'Diego Ferrari' });
 };
 ticketsDelMes(inicio, admin);
 tickets.crear({ usuario_id: alumnos[0].id, fecha: `${inicio}-20`, items: [{ servicio_id: servicioId['Hora de simulador'], cantidad: '2' }] }, admin);

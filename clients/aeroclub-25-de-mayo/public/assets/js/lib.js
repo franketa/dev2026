@@ -107,9 +107,11 @@ export const nombreCompleto = (u) => [u.nombre, u.apellido].filter(Boolean).join
 export const ROLES = { admin: 'Tesorería', consulta: 'Consulta', rampa: 'Rampa', piloto: 'Piloto', externo: 'Externo' };
 export const rolTexto = (u) => (u.rol === 'piloto' && u.es_instructor ? 'Instructor' : ROLES[u.rol] || u.rol);
 
-export const MEDIOS = { transferencia: 'Transferencia', efectivo: 'Efectivo', mercadopago: 'Mercado Pago', cheque: 'Cheque', otro: 'Otro' };
+// Etiquetas de todos los medios (incluye el cheque de pagos viejos); para elegir, el cheque ya no se ofrece.
+export const MEDIOS = { transferencia: 'Transferencia', efectivo: 'Efectivo', mercadopago: 'Mercado Pago', otro: 'Otro', cheque: 'Cheque' };
 export const opcionesMedio = (actual = 'transferencia') =>
-  Object.entries(MEDIOS).map(([v, t]) => html`<option value="${v}" ${v === actual ? raw('selected') : ''}>${t}</option>`);
+  Object.entries(MEDIOS).filter(([v]) => v !== 'cheque' || actual === 'cheque')
+    .map(([v, t]) => html`<option value="${v}" ${v === actual ? raw('selected') : ''}>${t}</option>`);
 
 // Celular → número de wa.me (Argentina: 54 9 + área sin 0 + número sin 15). null si no es válido.
 export function telWa(tel) {

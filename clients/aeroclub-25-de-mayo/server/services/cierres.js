@@ -11,7 +11,7 @@
 //      cupón se puede reconstruir y verificar después.
 
 const crypto = require('crypto');
-const { db, getConfig, auditar } = require('../db');
+const { db, getConfig, auditar, cuentaTransitos } = require('../db');
 const ledger = require('./ledger');
 const tickets = require('./tickets');
 const {
@@ -108,13 +108,14 @@ const correrCierre = db.transaction((periodo, actor, simular) => {
   const hasta = db.prepare('SELECT COALESCE(MAX(id), 0) id FROM movimientos').get().id;
   const sello = ledger.ultimoHash();
 
-  // 2. Cupones: socios con saldo distinto de cero o con movimientos en el período.
+  // 2. Cupones: socios con saldo distinto de cero o con movimientos en el período. La cuenta de
+  //    tránsitos (todo cobrado en el acto) sólo recibe cupón si por algún error le quedó saldo.
   const socios = db.prepare(`
     SELECT m.usuario_id, SUM(m.importe) saldo, SUM(CASE WHEN m.id > ? THEN 1 ELSE 0 END) nuevos
     FROM movimientos m JOIN usuarios u ON u.id = m.usuario_id
     WHERE m.id <= ? GROUP BY m.usuario_id
-    HAVING saldo <> 0 OR nuevos > 0
-    ORDER BY MIN(u.apellido), MIN(u.nombre)`).all(desde, hasta);
+    HAVING saldo <> 0 OR (nuevos > 0 AND m.usuario_id <> ?)
+    ORDER BY MIN(u.apellido), MIN(u.nombre)`).all(desde, hasta, cuentaTransitos());
 
   const insCupon = db.prepare(`
     INSERT INTO cupones (cierre_id, usuario_id, numero, saldo_anterior, total_vuelos, total_servicios, total_pagos, total_ajustes, total, decimas, vencimiento, token, sello)

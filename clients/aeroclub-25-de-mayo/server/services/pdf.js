@@ -212,6 +212,10 @@ function generarTicket(t, config) {
     doc.font('R').fontSize(9.5).fillColor(C.gris).text('Aeronave', M, y + 54);
     doc.font('CB').fontSize(14).fillColor(C.tinta).text(`${t.matricula}${t.modelo ? `  ${t.modelo}` : ''}`, M, y + 67, { width: 290 });
   }
+  if (t.piloto) {
+    doc.font('R').fontSize(9.5).fillColor(C.gris).text('Piloto al mando', M, y + 90);
+    doc.font('SB').fontSize(12).fillColor(C.tinta).text(t.piloto, M, y + 103, { width: 290 });
+  }
 
   const cajaX = W - M - 206;
   doc.roundedRect(cajaX, y - 6, 206, 74, 6).fill(C.tinta);
@@ -221,7 +225,7 @@ function generarTicket(t, config) {
     t.estado === 'anulado' ? 'Anulado' : t.pago_movimiento_id ? `Pagado en el acto (${t.pago_medio === 'mercadopago' ? 'Mercado Pago' : t.pago_medio})` : 'Se suma a la cuenta', cajaX + 16, y + 50);
 
   // ── Ítems ─────────────────────────────────────────────────────────────────────
-  y = t.matricula ? 262 : 240;
+  y = t.piloto ? 292 : t.matricula ? 262 : 240;
   doc.font('CB').fontSize(12).fillColor(C.tinta).text('Detalle', M, y);
   y += 20;
   const col = { concepto: M + 6, cantidad: M + 250, precio: M + 350, importe: M + 430 };

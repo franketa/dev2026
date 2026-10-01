@@ -40,7 +40,8 @@ let ana, beto, rampa, consulta;
 
 test('tabla de servicios inicial, sin precio', () => {
   const lista = servicios.listar();
-  assert.deepEqual(lista.map(s => s.nombre), ['Hangaraje', 'Combustible', 'Nocturno', 'Derecho de aeronave', 'Derecho de examen', 'Hora de simulador', 'Limpieza de avión']);
+  assert.deepEqual(lista.map(s => s.nombre), ['Hangaraje mensual', 'Hangaraje diario', 'Combustible', 'Nocturno', 'Derecho de aeronave', 'Derecho de examen', 'Hora de simulador', 'Limpieza de avión']);
+  assert.equal(servicio('Hangaraje diario').unidad, 'dia');
   assert.ok(lista.every(s => s.precio === 0));
   assert.equal(servicios.derechoAeronave(), null);          // sin precio no se cobra
 });
@@ -49,7 +50,7 @@ test('preparación: tarifas, precios de servicios y usuarios', () => {
   db.prepare(`UPDATE config SET valor = ? WHERE clave = 'periodo_inicio'`).run(INICIO);
   flota.nuevaTarifa(1, { tipo: 'solo', precio_hora: 10000000, vigente_desde: '2020-01-01' }, admin);
   flota.nuevaTarifa(2, { tipo: 'solo', precio_hora: 8000000, vigente_desde: '2020-01-01' }, admin);
-  const precios = { Hangaraje: 5000000, Combustible: 250000, 'Derecho de aeronave': 1500000, 'Derecho de examen': 3000000, 'Limpieza de avión': 2000000 };
+  const precios = { 'Hangaraje mensual': 5000000, 'Hangaraje diario': 400000, Combustible: 250000, 'Derecho de aeronave': 1500000, 'Derecho de examen': 3000000, 'Limpieza de avión': 2000000 };
   for (const [nombre, precio] of Object.entries(precios)) {
     const s = servicio(nombre);
     servicios.guardar({ nombre, unidad: s.unidad, precio }, admin, s.id);
@@ -76,7 +77,7 @@ test('utilidades de cantidades', () => {
 
 let externo, aeronave;
 
-test('rampa registra una aeronave de un externo y le arma un ticket', () => {
+test('rampa registra una aeronave de un externo y le arma un ticket (externos pagan en el acto)', () => {
   aeronave = tickets.guardarAeronave({ matricula: 'lv-zzz', modelo: 'Piper PA-18', externo: { nombre: 'Agroaérea del Sur SA', telefono: '2345 409999', dni: '30-12345678-9' } }, rampa);
   externo = aeronave.propietario_id;
   assert.equal(aeronave.matricula, 'LV-ZZZ');
@@ -84,30 +85,61 @@ test('rampa registra una aeronave de un externo y le arma un ticket', () => {
   assert.throws(() => tickets.guardarAeronave({ matricula: 'LV-ZZZ', propietario_id: ana.id }, rampa), /ya está registrada/);
   assert.throws(() => tickets.guardarAeronave({ matricula: 'LV-APH', propietario_id: ana.id }, rampa), /flota del club/);
 
-  const hang = servicio('Hangaraje');
+  const hang = servicio('Hangaraje mensual');
   const comb = servicio('Combustible');
+  const items = [{ servicio_id: hang.id, cantidad: '1', precio: '1' }, { servicio_id: comb.id, cantidad: '40,5' }];
   // Rampa no carga "otros conceptos" ni servicios sin precio, ni cambia precios.
-  assert.throws(() => tickets.crear({ aeronave_id: aeronave.id, items: [{ concepto: 'Propina', precio: '1000' }] }, rampa), /servicio de la lista/);
-  assert.throws(() => tickets.crear({ aeronave_id: aeronave.id, items: [{ servicio_id: servicio('Nocturno').id }] }, rampa), /no tiene precio/);
-  assert.throws(() => tickets.crear({ items: [{ servicio_id: hang.id }] }, rampa), /aeronave/);
+  assert.throws(() => tickets.crear({ aeronave_id: aeronave.id, items: [{ concepto: 'Propina', precio: '1000' }], cobrado: true, medio: 'efectivo' }, rampa), /servicio de la lista/);
+  assert.throws(() => tickets.crear({ aeronave_id: aeronave.id, items: [{ servicio_id: servicio('Nocturno').id }], cobrado: true, medio: 'efectivo' }, rampa), /no tiene precio/);
+  assert.throws(() => tickets.crear({ items: [{ servicio_id: hang.id }] }, rampa), /matrícula/);
+  // A un externo no se le fía, y el cheque ya no es un medio de pago.
+  assert.throws(() => tickets.crear({ aeronave_id: aeronave.id, items }, rampa), /se cobran en el momento/);
+  assert.throws(() => tickets.crear({ aeronave_id: aeronave.id, items, cobrado: true, medio: 'cheque' }, rampa), /cómo pagó/);
 
-  const t = tickets.crear({
-    aeronave_id: aeronave.id, fecha: util.hoy(),
-    items: [{ servicio_id: hang.id, cantidad: '1', precio: '1' }, { servicio_id: comb.id, cantidad: '40,5' }]
-  }, rampa);
+  const t = tickets.crear({ aeronave_id: aeronave.id, fecha: util.hoy(), items, cobrado: true, medio: 'transferencia' }, rampa);
   assert.equal(t.usuario_id, externo);                                  // va a la cuenta del dueño
   assert.equal(t.items[0].precio, 5000000);                             // rampa no cambia el precio
   assert.equal(t.total, 5000000 + 10125000);
   assert.equal(t.numero_txt, 'T-00001');
-  assert.equal(ledger.saldo(externo), t.total);
+  assert.ok(t.pago_movimiento_id);
+  assert.equal(ledger.saldo(externo), 0);                               // cargo y pago en el mismo acto
   const mov = db.prepare('SELECT * FROM movimientos WHERE id = ?').get(t.movimiento_id);
   assert.equal(mov.tipo, 'servicio');
-  assert.match(mov.concepto, /T-00001 \(LV-ZZZ\): Hangaraje, Combustible 40,5 litros/);
+  assert.match(mov.concepto, /T-00001 \(LV-ZZZ\): Hangaraje mensual, Combustible 40,5 litros/);
 
-  // Cobrado en el acto: queda el pago y el saldo en cero.
-  const t2 = tickets.crear({ aeronave_id: aeronave.id, items: [{ servicio_id: servicio('Limpieza de avión').id }], cobrado: true, medio: 'efectivo' }, rampa);
-  assert.ok(t2.pago_movimiento_id);
-  assert.equal(ledger.saldo(externo), t.total);
+  tickets.crear({ aeronave_id: aeronave.id, items: [{ servicio_id: servicio('Limpieza de avión').id }], cobrado: true, medio: 'efectivo' }, rampa);
+  assert.equal(ledger.saldo(externo), 0);
+});
+
+test('tránsitos: matrícula y piloto al mando, sin asociarlo a un socio', () => {
+  const { cuentaTransitos } = require('../server/db');
+  const transitos = cuentaTransitos();
+  const paso = tickets.guardarAeronave({ matricula: 'LV-PAS', modelo: 'Cessna 172' }, rampa);
+  assert.equal(paso.propietario_id, transitos);                          // sin dueño: queda en tránsitos
+  const items = [{ servicio_id: servicio('Hangaraje diario').id, cantidad: '2' }];
+  assert.throws(() => tickets.crear({ aeronave_id: paso.id, items, cobrado: true, medio: 'efectivo' }, rampa), /piloto al mando/);
+  const t = tickets.crear({ aeronave_id: paso.id, piloto: 'Juan Gómez', items, cobrado: true, medio: 'efectivo' }, rampa);
+  assert.equal(t.piloto, 'Juan Gómez');
+  assert.equal(t.total, 800000);                                          // 2 días × $4.000
+  assert.match(db.prepare('SELECT concepto FROM movimientos WHERE id = ?').get(t.movimiento_id).concepto, /LV-PAS, piloto Juan Gómez\): Hangaraje diario 2 días/);
+  assert.equal(ledger.saldo(transitos), 0);
+  assert.equal(tickets.listar({ creado_por: rampa.id }).find(x => x.id === t.id).piloto, 'Juan Gómez');
+});
+
+test('a un socio se le puede dejar a cuenta, y tesorería elige un avión de la flota', () => {
+  const carla = usuario('Carla');
+  const propia = tickets.guardarAeronave({ matricula: 'LV-CAR', propietario_id: carla.id }, rampa);
+  const t = tickets.crear({ aeronave_id: propia.id, items: [{ servicio_id: servicio('Hangaraje mensual').id }] }, rampa);
+  assert.equal(t.pago_movimiento_id, null);
+  assert.equal(ledger.saldo(carla.id), 5000000);
+  // Un avión de la flota no tiene dueño: hay que elegir la cuenta.
+  assert.throws(() => tickets.crear({ avion_id: 1, items: [{ servicio_id: servicio('Limpieza de avión').id }] }, admin), /a nombre de quién/);
+  const f = tickets.crear({ avion_id: 1, usuario_id: carla.id, items: [{ servicio_id: servicio('Limpieza de avión').id }] }, admin);
+  assert.equal(f.matricula, 'LV-APH');
+  assert.equal(f.aeronave_id, null);
+  // Se deja en cero para no alterar las cuentas de los tests siguientes.
+  tickets.anular(t.id, 'prueba', admin);
+  tickets.anular(f.id, 'prueba', admin);
 });
 
 test('tesorería agrega otros conceptos al ticket de un alumno', () => {
@@ -149,11 +181,14 @@ test('derecho de aeronave: una vez por mes por piloto que voló', () => {
   // entró al libro antes del cierre: los cupones toman los movimientos por orden de carga.
   assert.equal(cupAna.total_servicios, 1500000 + 4200000);
   assert.equal(db.prepare(`SELECT COUNT(*) n FROM derechos_aeronave WHERE usuario_id = ?`).get(ana.id).n, 1);
-  // El externo también recibe su cupón con los tickets de rampa.
+  // El externo también recibe su cupón con los tickets de rampa, en cero porque pagó en el acto.
   const cupExt = r.cupones.find(c => c.usuario_id === externo);
   assert.equal(cupExt.total_servicios, 5000000 + 10125000 + 2000000);
-  assert.equal(cupExt.total, 5000000 + 10125000);             // el ticket cobrado en el acto se compensa con su pago
-  assert.equal(r.cierre.total_servicios, cupAna.total_servicios + cupExt.total_servicios);
+  assert.equal(cupExt.total, 0);
+  // La cuenta de tránsitos no recibe cupón (todo se cobró en el acto).
+  assert.equal(r.cupones.find(c => c.usuario_id === require('../server/db').cuentaTransitos()), undefined);
+  const totalServicios = r.cupones.reduce((s, c) => s + c.total_servicios, 0);
+  assert.equal(r.cierre.total_servicios, totalServicios);
 
   // Un vuelo de INICIO cargado tarde entra en el cierre de MES2 y no vuelve a cobrar el derecho de INICIO a Ana…
   volar(ana, 1, `${INICIO}-28`);
@@ -174,7 +209,8 @@ test('servicios valorizados del mes', () => {
   assert.equal(porNombre.Combustible.cantidad, 4050);
   assert.equal(porNombre.Combustible.cantidad_txt, '40,5 litros');
   assert.equal(porNombre['Otros conceptos'].importe, 1200000);   // el ticket anulado no cuenta
-  assert.equal(porNombre.Hangaraje.importe, 5000000);
+  assert.equal(porNombre['Hangaraje mensual'].importe, 5000000);
+  assert.equal(porNombre['Hangaraje diario'].cantidad_txt, '2 días');
 });
 
 const PNG = 'data:image/png;base64,' + Buffer.from('89504e470d0a1a0a0000000d49484452', 'hex').toString('base64');
@@ -254,7 +290,7 @@ test('roles: consulta sólo mira, rampa sólo tickets, el piloto no toca vuelos,
   assert.equal((await r('GET', '/api/admin/panel')).status, 403);
   const datos = await (await r('GET', '/api/rampa/datos')).json();
   assert.ok(!datos.servicios.some(s => s.codigo === 'derecho_aeronave'));   // lo cobra el cierre, no rampa
-  const nuevo = await r('POST', '/api/rampa/tickets', { aeronave_id: aeronave.id, items: [{ servicio_id: servicio('Hangaraje').id }] });
+  const nuevo = await r('POST', '/api/rampa/tickets', { aeronave_id: aeronave.id, items: [{ servicio_id: servicio('Hangaraje mensual').id }], cobrado: true, medio: 'efectivo' });
   assert.equal(nuevo.status, 201);
   const { ticket } = await nuevo.json();
   const pdf = await fetch(`${base}/t/${ticket.token}`);

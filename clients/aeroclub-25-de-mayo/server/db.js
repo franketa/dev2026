@@ -213,6 +213,7 @@ CREATE TABLE IF NOT EXISTS tickets (
   usuario_id INTEGER NOT NULL REFERENCES usuarios(id),
   aeronave_id INTEGER REFERENCES aeronaves(id),
   matricula TEXT,
+  piloto TEXT,                    -- piloto al mando (sobre todo en tránsitos)
   fecha TEXT NOT NULL,
   origen TEXT NOT NULL CHECK (origen IN ('rampa','tesoreria','cierre')),
   total INTEGER NOT NULL CHECK (total > 0),
@@ -350,6 +351,7 @@ function migrar() {
     // El nocturno se cobra por noche (antes se había cargado por hora).
     db.prepare("UPDATE servicios SET unidad = 'noche' WHERE nombre = 'Nocturno' AND unidad = 'hora'").run();
   }
+  if (sqlTabla('tickets') && !columnas('tickets').includes('piloto')) db.exec('ALTER TABLE tickets ADD COLUMN piloto TEXT');
   for (const tabla of ['cierres', 'cupones']) {
     if (sqlTabla(tabla) && !columnas(tabla).includes('total_servicios')) {
       db.exec(`ALTER TABLE ${tabla} ADD COLUMN total_servicios INTEGER NOT NULL DEFAULT 0`);
@@ -359,7 +361,8 @@ function migrar() {
 
 const SERVICIOS_INICIALES = [
   // [codigo, nombre, unidad]
-  [null, 'Hangaraje', 'mes'],
+  [null, 'Hangaraje mensual', 'mes'],
+  [null, 'Hangaraje diario', 'dia'],
   [null, 'Combustible', 'litro'],
   [null, 'Nocturno', 'noche'],
   ['derecho_aeronave', 'Derecho de aeronave', 'mes'],
@@ -377,6 +380,15 @@ function initDB() {
   if (db.prepare('SELECT COUNT(*) n FROM servicios').get().n === 0) {
     const ins = db.prepare('INSERT INTO servicios (codigo, nombre, unidad, orden) VALUES (?, ?, ?, ?)');
     SERVICIOS_INICIALES.forEach(([codigo, nombre, unidad], i) => ins.run(codigo, nombre, unidad, i + 1));
+  }
+  // v1.002: el hangaraje se cobra mensual o diario (bases que tenían un solo "Hangaraje").
+  const hangaraje = db.prepare(`SELECT * FROM servicios WHERE nombre = 'Hangaraje'`).get();
+  if (hangaraje && !db.prepare(`SELECT 1 FROM servicios WHERE nombre = 'Hangaraje mensual'`).get()) {
+    db.prepare(`UPDATE servicios SET nombre = 'Hangaraje mensual', unidad = 'mes' WHERE id = ?`).run(hangaraje.id);
+  }
+  if (!db.prepare(`SELECT 1 FROM servicios WHERE nombre = 'Hangaraje diario'`).get()) {
+    const orden = db.prepare(`SELECT orden FROM servicios WHERE nombre = 'Hangaraje mensual'`).get()?.orden ?? 0;
+    db.prepare(`INSERT INTO servicios (nombre, unidad, orden) VALUES ('Hangaraje diario', 'dia', ?)`).run(orden);
   }
 
   const setDefault = db.prepare('INSERT OR IGNORE INTO config (clave, valor) VALUES (?, ?)');
@@ -416,7 +428,18 @@ function auditar(usuarioId, accion, detalle) {
     .run(usuarioId ?? null, accion, detalle == null ? null : (typeof detalle === 'string' ? detalle : JSON.stringify(detalle)));
 }
 
+// Cuenta única de tránsitos: aeronaves de paso sin dueño registrado. Sus tickets se cobran en el acto,
+// así que el saldo siempre queda en cero; sirve para individualizar matrícula y piloto en el listado.
+function cuentaTransitos() {
+  const id = Number(db.prepare(`SELECT valor FROM config WHERE clave = 'cuenta_transitos'`).get()?.valor);
+  if (id && db.prepare('SELECT 1 FROM usuarios WHERE id = ?').get(id)) return id;
+  const r = db.prepare(`INSERT INTO usuarios (nombre, apellido, rol, password_hash, debe_cambiar_password) VALUES ('Tránsitos', '', 'externo', NULL, 0)`).run();
+  db.prepare(`INSERT INTO config (clave, valor) VALUES ('cuenta_transitos', ?) ON CONFLICT(clave) DO UPDATE SET valor = excluded.valor`).run(String(r.lastInsertRowid));
+  return Number(r.lastInsertRowid);
+}
+
 // Se inicializa al cargar el módulo: los servicios preparan sus consultas apenas se importan.
 initDB();
+cuentaTransitos();
 
-module.exports = { db, getConfig, auditar, DATA_DIR };
+module.exports = { db, getConfig, auditar, cuentaTransitos, DATA_DIR };

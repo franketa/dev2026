@@ -1,7 +1,7 @@
 // Rampa: registra aeronaves (de socios o externos) y arma tickets de servicios.
 // Tesorería también puede usar estas rutas.
 const express = require('express');
-const { getConfig } = require('../db');
+const { db, getConfig } = require('../db');
 const servicios = require('../services/servicios');
 const tickets = require('../services/tickets');
 const { generarTicket } = require('../services/pdf');
@@ -14,6 +14,7 @@ router.get('/datos', (req, res) => {
   res.json({
     servicios: servicios.listar().filter(s => req.user.rol === 'admin' || s.codigo !== servicios.CODIGO_DERECHO),
     aeronaves: tickets.listarAeronaves(),
+    aviones: db.prepare('SELECT id, matricula, modelo FROM aviones WHERE activo = 1 ORDER BY orden, matricula').all(),
     cuentas: tickets.cuentasParaTicket()
   });
 });
