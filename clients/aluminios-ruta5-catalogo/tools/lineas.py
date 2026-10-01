@@ -40,6 +40,7 @@ clasica.append(alpros("10-RV-revestimientos", "1032"))
 clasica.append(otro("1029", "Revestimiento tubular", 0.894, "group/781"))            # ALG781 → 1029
 clasica = por_numero(clasica)
 clasica.append(otro("PARTE A", "Escuadra de armado", 0.690, "group/046", orden="99999"))  # ALG046, último
+clasica.append(otro("901", "Marco ventana corrediza", 0.650, "group/N1P", orden="99999"))    # ALG N1/P, al lado de Parte A
 
 # ---------------------------------------------------------------- RTO640 (Rotonda)
 RT = "1112 1113 1114 1115 1161 1162 1310 1311 1317 1325 1326 1800 1801 1913"

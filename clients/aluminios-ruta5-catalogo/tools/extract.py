@@ -56,6 +56,7 @@ OVERRIDES = {
     },
     # Aluminium Group: siluetas negras (imagen) en 1:1
     "group": {
+        "N1P": ("group/aluminium-group-catalogo.pdf", 17, (66, 476, 300, 600), "filled", {"original": True}),
         "046": ("group/aluminium-group-catalogo.pdf", 20, (291, 177, 524, 302), "filled", {"original": True}),
         "781": ("group/aluminium-group-catalogo.pdf", 25, (129, 418, 462, 454), "filled", {"original": True}),
         "3103": ("group/aluminium-group-catalogo.pdf", 34, (332, 291, 487, 361), "filled", {"original": True}),
@@ -111,6 +112,10 @@ OVERRIDES = {
         "230": ("alubon/ALBM-modena.pdf", 5, (100, 274, 193, 332), "outline"),
         "232": ("alubon/ALBM-modena.pdf", 5, (421, 274, 494, 332), "outline"),
         "237": ("alubon/ALBM-modena.pdf", 5, (158, 455, 210, 513), "outline"),
+        # contravidrios de la hoja 5 que la asignación automática cruzaba (corrección de Nacho)
+        "257": ("alubon/ALBM-modena.pdf", 5, (354, 455, 463, 509), "outline"),
+        "225": ("alubon/ALBM-modena.pdf", 5, (150, 631, 220, 703), "outline"),
+        "226": ("alubon/ALBM-modena.pdf", 5, (362, 639, 425, 710), "outline"),
         "246": ("alubon/ALBM-modena.pdf", 7, (360, 606, 428, 730), "hull", {"gap": 45}),  # contorno abierto, sin cámaras
     },
     "alpros-he": {   # Alpros no trae el dibujo; sale del catálogo viejo AR5 (vector, ampliado)
@@ -118,20 +123,25 @@ OVERRIDES = {
         "1178": ("cliente/catalogo-viejo-AR5.pdf", 6, (400, 420, 518, 512), "filled", {"escala_peso": 0.272}),
         "1179": ("cliente/catalogo-viejo-AR5.pdf", 6, (106, 595, 205, 681), "filled", {"escala_peso": 0.332}),
     },
-    "alubon-4": {
+    "alubon-4": {   # varias hojas de A40 no están en 1:1 aunque lo digan: se llevan a la cota del plano
         "062": ("alubon/ALB4-a40.pdf", 2, (98, 525, 190, 726), "solid"),
-        "378": ("alubon/ALB4-a40.pdf", 2, (348, 634, 506, 716), "solid"),
-        "059": ("alubon/ALB4-a40.pdf", 4, (238, 655, 290, 710), "solid"),
+        "378": ("alubon/ALB4-a40.pdf", 2, (348, 634, 506, 716), "solid", {"ancho_mm": 34.7}),
+        "059": ("alubon/ALB4-a40.pdf", 4, (238, 655, 290, 710), "solid", {"ancho_mm": 14.2, "solo_perfil": True}),
         "264": ("alubon/ALB4-a40.pdf", 4, (158, 163, 233, 302), "solid"),
         "346": ("alubon/ALB4-a40.pdf", 4, (108, 434, 426, 484), "solid"),
-        "934": ("alubon/ALB4-a40.pdf", 4, (152, 566, 410, 618), "solid"),
-        "262": ("alubon/ALB4-a40.pdf", 5, (106, 333, 392, 446), "solid"),
-        "283": ("alubon/ALB4-a40.pdf", 5, (90, 508, 248, 642), "solid"),
-        "284": ("alubon/ALB4-a40.pdf", 5, (308, 560, 450, 628), "solid"),
+        "934": ("alubon/ALB4-a40.pdf", 4, (152, 566, 410, 618), "solid", {"ancho_mm": 100}),
+        "262": ("alubon/ALB4-a40.pdf", 5, (106, 333, 392, 446), "solid", {"ancho_mm": 114}),
+        "283": ("alubon/ALB4-a40.pdf", 5, (90, 508, 248, 642), "solid", {"ancho_mm": 59.3}),
+        "284": ("alubon/ALB4-a40.pdf", 5, (308, 560, 450, 628), "solid", {"ancho_mm": 56}),
         "270": ("alubon/ALB4-a40.pdf", 6, (150, 210, 284, 455), "solid", {"solo_perfil": True}),
         "271": ("alubon/ALB4-a40.pdf", 6, (126, 515, 306, 660), "solid", {"solo_perfil": True}),
-        "263": ("alubon/ALB4-a40.pdf", 5, (104, 172, 392, 300), "solid"),
+        "263": ("alubon/ALB4-a40.pdf", 5, (104, 172, 392, 300), "solid", {"ancho_mm": 114}),
     },
+}
+
+# Perfiles de detección automática dibujados fuera de escala: se llevan a la cota del plano
+COTAS = {
+    "alubon-b": {"502": {"ancho_mm": 34}, "503": {"ancho_mm": 54}, "513": {"ancho_mm": 77}, "514": {"alto_mm": 43}},
 }
 
 # zona útil de la página (pt): fuera quedan encabezado y pie
@@ -432,6 +442,14 @@ def run_overrides(name):
         else:
             m = crop_mask(pdf, pno, rect, mode, opts.get("gap"), opts.get("original", False),
                           opts.get("nivel"))
+        if m is not None and opts.get("solo_perfil"):
+            # quedarse con la pieza principal: fuera restos de accesorios, felpas y líneas punteadas
+            n, lab, st, _ = cv2.connectedComponentsWithStats(m.astype(np.uint8), connectivity=8)
+            if n > 1:
+                i = 1 + int(np.argmax(st[1:, cv2.CC_STAT_AREA]))
+                m = lab == i
+                ys, xs = np.nonzero(m)
+                m = m[ys.min():ys.max() + 1, xs.min():xs.max() + 1]
         if m is not None and ("ancho_mm" in opts or "alto_mm" in opts or "escala" in opts):
             # el dibujo no está en 1:1: reescalar a la cota real (o por un factor conocido)
             if "escala" in opts:
@@ -443,14 +461,6 @@ def run_overrides(name):
             m8 = cv2.resize(m.astype(np.uint8) * 255, (max(1, round(m.shape[1] * k)), max(1, round(m.shape[0] * k))),
                             interpolation=cv2.INTER_AREA)
             m = m8 > 127
-        if m is not None and opts.get("solo_perfil"):
-            # quedarse con la pieza principal: fuera restos de accesorios, felpas y líneas punteadas
-            n, lab, st, _ = cv2.connectedComponentsWithStats(m.astype(np.uint8), connectivity=8)
-            if n > 1:
-                i = 1 + int(np.argmax(st[1:, cv2.CC_STAT_AREA]))
-                m = lab == i
-                ys, xs = np.nonzero(m)
-                m = m[ys.min():ys.max() + 1, xs.min():xs.max() + 1]
         if m is not None and "afinar_peso" in opts:
             # paredes dibujadas más gruesas que las reales (perfil de pared pareja): afinar al kg/m
             objetivo = opts["afinar_peso"] / 0.0027 / PX2MM ** 2
@@ -522,6 +532,21 @@ def run(name):
                 report.append({"src": name, "page": pno, "code": l["code"], "missing": True})
         small = cv2.resize(qa, (qa.shape[1] // 6, qa.shape[0] // 6), interpolation=cv2.INTER_AREA)
         cv2.imwrite(str(QA / f"{name}-p{pno:02d}.png"), small)
+        # control contra el original: la página tal cual, con el código que asignamos sobre cada dibujo
+        CTRL_DPI = 110
+        opm = page.get_pixmap(dpi=CTRL_DPI, clip=clip)
+        ctrl = cv2.cvtColor(np.frombuffer(opm.samples, np.uint8).reshape(opm.height, opm.width, opm.n)[:, :, :3],
+                            cv2.COLOR_RGB2BGR).copy()
+        k = CTRL_DPI / DPI
+        for ci, c in enumerate(cls):
+            code, _ = match.get(ci, (None, None))
+            if code is None or code in OVERRIDES.get(name, {}):
+                continue
+            x0, yy0, x1, yy1 = [int(v * k) for v in c["bbox"]]
+            cv2.rectangle(ctrl, (x0, yy0), (x1, yy1), (0, 0, 230), 1)
+            cv2.putText(ctrl, code, (x0, yy1 + 14), cv2.FONT_HERSHEY_SIMPLEX, 0.55, (0, 0, 230), 2)
+        (QA.parent / "control").mkdir(exist_ok=True)
+        cv2.imwrite(str(QA.parent / "control" / f"{name}-p{pno:02d}.png"), ctrl)
     return report
 
 
@@ -530,6 +555,15 @@ if __name__ == "__main__":
     allrep = []
     for n in names:
         rep = run(n)
+        for code, o in COTAS.get(n, {}).items():
+            f = OUT / n / f"{code}.png"
+            m = cv2.imread(str(f), cv2.IMREAD_GRAYSCALE) < 128
+            ys, xs = np.nonzero(m)
+            m = m[ys.min():ys.max() + 1, xs.min():xs.max() + 1]
+            k = o["ancho_mm"] / (m.shape[1] * PX2MM) if "ancho_mm" in o else o["alto_mm"] / (m.shape[0] * PX2MM)
+            m = cv2.resize(m.astype(np.uint8) * 255, (round(m.shape[1] * k), round(m.shape[0] * k)),
+                           interpolation=cv2.INTER_AREA) > 127
+            cv2.imwrite(str(f), 255 - m.astype(np.uint8) * 255)
         over = run_overrides(n)
         fixed = {r["code"] for r in over if not r.get("missing")}
         rep = [r for r in rep if r["code"] not in fixed] + over

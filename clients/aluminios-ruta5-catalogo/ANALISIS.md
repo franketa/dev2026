@@ -131,3 +131,18 @@ misma ficha: código AR5, nombre, kg/m).
 - **Wall panel:** se usa el dibujo del "098 Revestimiento acanalado" de la foto de un proveedor, pero **se llama
   Wall panel** y pesa **1,30 kg/m**; el 098 y los otros revestimientos de esa hoja no van. Código provisorio
   **AR5-WP** (a confirmar). Reconstrucción en `tools/wallpanel.py` (169,2 × 23,5 mm; el área da el peso).
+
+## 7. Correcciones de Nacho (01/10/2026) y revisión general
+
+- **MDNA:** el 225, 226 y 257 mostraban el dibujo de otro contravidrio (la asignación automática se cruzó
+  en la hoja 5 de Alubon). Ahora salen por recorte manual.
+- **AR5-901** = ALG N1/P "Marco ventana corrediza" (Group, 0,650 kg/m), en Clásica al lado de Parte A.
+
+Revisión general (sin cambios de contenido, solo exactitud):
+- Control contra el original de **todas** las asignaciones automáticas (`build/control/`): sin otros cruces.
+- Control de medidas contra las cotas impresas: varias hojas de **A40** no estaban en 1:1 aunque lo dijeran
+  (934, 262, 263, 283, 284 al 85 %; 378 al 153 %; 059 con restos de cota) → llevados a la cota real.
+  **Baranda Alubon** estaba al 97 % → corregida. A30, A4C, FI, Alpros, Group y Aluar coinciden con sus cotas.
+- Los avisos que quedan en `check_scale.py` (1066, 1515, Parte A, 1913, 205, 40693, 439, 468, 477, 1027) son
+  perfiles con medidas exteriores correctas cuyo dibujo original tiene paredes más gruesas o finas que las
+  reales; no son errores de escala.
