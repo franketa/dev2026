@@ -1,4 +1,4 @@
-import { post, put, html, pintar, icono, toast, error, conBoton, datosForm, rolTexto } from '../lib.js';
+import { post, put, html, pintar, icono, toast, error, conBoton, datosForm, rolTexto, verContrasenas } from '../lib.js';
 
 export default async function perfil(ctx) {
   const u = ctx.usuario;
@@ -40,6 +40,7 @@ export default async function perfil(ctx) {
   </div>`);
 
   const fp = ctx.el.querySelector('#form-pass');
+  verContrasenas(fp);
   fp.addEventListener('submit', (e) => {
     e.preventDefault();
     const d = datosForm(fp);

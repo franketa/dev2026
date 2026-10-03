@@ -1,8 +1,9 @@
-import { get, post } from './lib.js';
+import { get, post, verContrasenas } from './lib.js';
 
 const form = document.getElementById('form-ingreso');
 const aviso = document.getElementById('ingreso-error');
 const sesion = document.getElementById('sesion-abierta');
+verContrasenas(form);
 
 // Si el celular ya tiene una sesión (por ejemplo, la de tesorería), se avisa con quién
 // y se ofrece cambiar de usuario, en vez de entrar directo.

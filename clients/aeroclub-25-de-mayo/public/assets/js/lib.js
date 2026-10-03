@@ -350,10 +350,31 @@ const P = {
   ticket: '<path d="M3 7a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v3a2 2 0 0 0 0 4v3a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-3a2 2 0 0 0 0-4z"/><path d="M14 5v2M14 11v2M14 17v2"/>',
   foto: '<path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/>',
   informar: '<path d="M4 4h16v12H8l-4 4z"/><path d="M12 7v3M12 13h.01"/>',
-  basura: '<path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14"/>'
+  basura: '<path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14"/>',
+  ojo: '<path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>',
+  ojoNo: '<path d="M10.6 5.1A10 10 0 0 1 12 5c6.5 0 10 7 10 7a17 17 0 0 1-2.2 3.2M6.6 6.6C3.7 8.4 2 12 2 12s3.5 7 10 7a9.7 9.7 0 0 0 5.4-1.6"/><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2M3 3l18 18"/>'
 };
 export function icono(nombre) {
   return raw(`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${P[nombre] || ''}</svg>`);
+}
+
+// Agrega a cada campo de contraseña un ojito para ver lo que se está escribiendo.
+export function verContrasenas(raiz) {
+  raiz.querySelectorAll('input[type=password]').forEach((input) => {
+    const caja = document.createElement('div');
+    caja.className = 'input-pass';
+    input.replaceWith(caja);
+    caja.append(input);
+    caja.insertAdjacentHTML('beforeend', `<button class="input-pass__ver" type="button" aria-label="Mostrar contraseña" aria-pressed="false">${icono('ojo')}</button>`);
+    const btn = caja.lastElementChild;
+    btn.addEventListener('click', () => {
+      const ver = input.type === 'password';
+      input.type = ver ? 'text' : 'password';
+      btn.setAttribute('aria-pressed', String(ver));
+      btn.setAttribute('aria-label', ver ? 'Ocultar contraseña' : 'Mostrar contraseña');
+      btn.innerHTML = String(icono(ver ? 'ojoNo' : 'ojo'));
+    });
+  });
 }
 
 // Ala roja del escudo (trazada del logo original).
