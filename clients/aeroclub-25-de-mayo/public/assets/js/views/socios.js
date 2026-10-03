@@ -10,13 +10,14 @@ function waCredenciales(u, password) {
   return linkWa(u.telefono, `Hola ${u.nombre}. Ya tenés usuario en el sistema del Aeroclub 25 de Mayo para ${PARA_QUE[u.rol] || PARA_QUE.piloto}.\n\nEntrá en ${location.origin}\nEmail: ${u.email}\nContraseña temporal: ${password}\n\nAl entrar te va a pedir que elijas una propia.`);
 }
 
-function mostrarCredencial(u, password, titulo) {
+function mostrarCredencial(u, password, titulo, mail = false) {
   const wa = waCredenciales(u, password);
   modal({
     titulo,
     subtitulo: `${u.nombre} ${u.apellido}`,
     contenido: html`<div class="pila">
       <div class="credencial"><span class="muted">Contraseña temporal</span><strong>${password}</strong><span class="muted chico">Usuario: ${u.email}</span></div>
+      ${mail ? html`<p class="aviso aviso--info">${icono('check')}<span>Le mandamos un mail a ${u.email} con estos datos.</span></p>` : ''}
       <p class="muted">Anotala ahora: por seguridad no se vuelve a mostrar. Al entrar por primera vez, el sistema le pide que elija una propia.</p>
       <div class="modal__acciones">
         <button class="btn btn--sec" type="button" data-cerrar>Listo</button>
@@ -72,7 +73,7 @@ function abrirForm(ctx, u = null) {
         } else {
           const r = await post('/api/admin/usuarios', cuerpo);
           m.cerrar();
-          mostrarCredencial({ ...cuerpo, id: r.id }, r.password_temporal, 'Socio dado de alta');
+          mostrarCredencial({ ...cuerpo, id: r.id }, r.password_temporal, 'Socio dado de alta', r.mail);
         }
         ctx.recargar();
       } catch (err) { error(err); }

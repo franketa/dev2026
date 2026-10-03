@@ -38,6 +38,8 @@ Usuarios de la demo: `tesoreria@aeroclub25demayo.com.ar` / `demo1234` (tesorerí
 | `ADMIN_EMAIL` | Email del primer administrador (sólo se usa si la base está vacía) |
 | `ADMIN_PASSWORD` | Su contraseña temporal; al entrar se le pide cambiarla |
 | `JWT_SECRET` | Opcional. Si no está, se genera uno y se guarda en el volumen |
+| `RESEND_API_KEY` | Opcional. Con la clave de Resend, al dar de alta un socio se le manda un mail con su usuario y contraseña temporal |
+| `MAIL_FROM` | Remitente de esos mails, de un dominio verificado en Resend (ej.: `Aeroclub 25 de Mayo <no-responder@dominio>`) |
 
 - Healthcheck: `GET /salud`.
 - Después del primer deploy, en **Configuración**: alias, CBU, titular y la dirección pública del sistema (se usa en los links de WhatsApp).

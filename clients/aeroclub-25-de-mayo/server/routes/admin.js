@@ -15,6 +15,7 @@ const servicios = require('../services/servicios');
 const tickets = require('../services/tickets');
 const pagosInformados = require('../services/pagosInformados');
 const respaldos = require('../services/respaldos');
+const mail = require('../services/mail');
 const { requireAdmin } = require('../middleware/auth');
 const { enviarPdf, enviarComprobante } = require('./app');
 const { enviarTicket } = require('./rampa');
@@ -93,17 +94,20 @@ router.get('/usuarios', (req, res) => res.json({ usuarios: cuentas.listarCuentas
 router.post('/usuarios', (req, res) => {
   const s = leerSocio(req.body || {});
   const temporal = passwordTemporal();
+  let r;
   try {
-    const r = db.prepare(`
+    r = db.prepare(`
       INSERT INTO usuarios (nombre, apellido, email, telefono, dni, licencia, rol, es_instructor, activo, password_hash, debe_cambiar_password)
       VALUES (@nombre, @apellido, @email, @telefono, @dni, @licencia, @rol, @es_instructor, 1, @hash, 1)`)
       .run({ ...s, hash: bcrypt.hashSync(temporal, 10) });
-    auditar(req.user.id, 'usuario.alta', `${s.nombre} ${s.apellido} (${s.email}), rol ${s.rol}${s.es_instructor ? ', instructor' : ''}`);
-    res.status(201).json({ id: Number(r.lastInsertRowid), password_temporal: temporal });
   } catch (e) {
     if (String(e.message).includes('UNIQUE')) throw new ErrorNegocio('Ya hay un socio con ese email');
     throw e;
   }
+  auditar(req.user.id, 'usuario.alta', `${s.nombre} ${s.apellido} (${s.email}), rol ${s.rol}${s.es_instructor ? ', instructor' : ''}`);
+  // El mail de confirmación no frena el alta: si no sale, se pasa la contraseña por WhatsApp.
+  mail.bienvenida(s, temporal, `${req.protocol}://${req.get('host')}`)
+    .then(enviado => res.status(201).json({ id: Number(r.lastInsertRowid), password_temporal: temporal, mail: enviado }));
 });
 
 router.post('/externos', (req, res) => res.status(201).json({ id: tickets.crearExterno(req.body || {}, req.user) }));
