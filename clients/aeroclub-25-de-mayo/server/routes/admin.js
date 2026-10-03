@@ -41,7 +41,10 @@ router.get('/panel', (req, res) => {
     WHERE estado <> 'anulado' AND substr(fecha,1,7) = ? GROUP BY fecha, avion_id ORDER BY fecha`).all(periodo);
   const deuda = db.prepare(`SELECT COALESCE(SUM(s),0) total, COUNT(*) socios FROM (SELECT SUM(importe) s FROM movimientos GROUP BY usuario_id HAVING s > 0)`).get();
   const cobrado = db.prepare(`
-    SELECT COALESCE(-SUM(m.importe),0) total, COUNT(*) pagos FROM movimientos m LEFT JOIN movimientos o ON o.id = m.anula_id
+    SELECT COALESCE(-SUM(m.importe),0) total,
+      -- Los pagos anulados y sus anulaciones descuentan del total pero no cuentan como pagos.
+      COALESCE(SUM(m.tipo = 'pago' AND NOT EXISTS (SELECT 1 FROM movimientos a WHERE a.anula_id = m.id)),0) pagos
+    FROM movimientos m LEFT JOIN movimientos o ON o.id = m.anula_id
     WHERE COALESCE(o.tipo, m.tipo) = 'pago' AND substr(m.fecha,1,7) = ?`).get(periodo);
   const novedades = vuelos.listar({ con_notas: true, limite: 8 });
   res.json({
@@ -183,7 +186,7 @@ router.get('/aeronaves', (req, res) => res.json({ aeronaves: tickets.listarAeron
 router.get('/tickets/:id', (req, res) => res.json({ ticket: tickets.detalle(Number(req.params.id)) }));
 router.get('/tickets/:id/pdf', (req, res) => enviarTicket(res, tickets.detalle(Number(req.params.id)), req.query.descargar === '1'));
 router.post('/tickets', (req, res) => res.status(201).json({ ticket: tickets.crear(req.body || {}, req.user) }));
-router.post('/tickets/:id/anular', (req, res) => res.json({ ticket: tickets.anular(Number(req.params.id), req.body?.motivo, req.user) }));
+router.post('/tickets/:id/anular', (req, res) => res.json({ ticket: tickets.anular(Number(req.params.id), req.body?.motivo, req.user, { mantenerPago: req.body?.mantener_pago === true }) }));
 
 // ── Pagos informados por los socios ──────────────────────────────────────────
 router.get('/pagos-informados', (req, res) => {

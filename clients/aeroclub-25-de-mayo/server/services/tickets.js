@@ -254,17 +254,31 @@ const crear = db.transaction((input, actor) => {
   return detalle(t.id);
 });
 
-const anular = db.transaction((id, motivo, actor) => {
+// Si se cobró en el acto, el pago se anula junto con el ticket (se devolvió la plata o se
+// rehace el ticket). Sólo a un socio se le puede dejar como saldo a favor, con `mantenerPago`:
+// a externos y tránsitos no, porque nadie usaría ese saldo.
+const anular = db.transaction((id, motivo, actor, { mantenerPago = false } = {}) => {
   const t = db.prepare('SELECT * FROM tickets WHERE id = ?').get(id);
   if (!t) throw new ErrorNegocio('Ticket inexistente', 404);
   if (t.estado === 'anulado') throw new ErrorNegocio('Ese ticket ya está anulado');
   motivo = limpiarTexto(motivo, 200);
   if (!motivo) throw new ErrorNegocio('Contá brevemente por qué se anula (queda en el registro)');
-  if (t.movimiento_id && !db.prepare('SELECT 1 FROM movimientos WHERE anula_id = ?').get(t.movimiento_id)) {
+  const yaAnulado = (movId) => db.prepare('SELECT 1 FROM movimientos WHERE anula_id = ?').get(movId);
+  if (t.movimiento_id && !yaAnulado(t.movimiento_id)) {
     ledger.anular(t.movimiento_id, `ticket anulado: ${motivo}`, actor.id);
   }
+  const u = db.prepare('SELECT rol FROM usuarios WHERE id = ?').get(t.usuario_id);
+  const quedaAFavor = !!t.pago_movimiento_id && mantenerPago && u.rol !== 'externo' && t.usuario_id !== cuentaTransitos();
+  let pago = '';
+  if (t.pago_movimiento_id) {
+    if (quedaAFavor) pago = '. El pago en el acto queda como saldo a favor.';
+    else if (!yaAnulado(t.pago_movimiento_id)) {
+      ledger.anular(t.pago_movimiento_id, `ticket ${fmtNumero(t.numero)} anulado: ${motivo}`, actor.id);
+      pago = '. También se anuló el pago en el acto.';
+    }
+  }
   db.prepare(`UPDATE tickets SET estado = 'anulado', motivo_anulacion = ? WHERE id = ?`).run(motivo, id);
-  auditar(actor.id, 'ticket.anulacion', `${fmtNumero(t.numero)} (${fmtPesos(t.total)}): ${motivo}${t.pago_movimiento_id ? '. El pago en el acto queda como saldo a favor.' : ''}`);
+  auditar(actor.id, 'ticket.anulacion', `${fmtNumero(t.numero)} (${fmtPesos(t.total)}): ${motivo}${pago}`);
   return detalle(id);
 });
 

@@ -167,6 +167,32 @@ test('un ticket se corrige anulándolo, no editando su movimiento', () => {
   assert.equal(ledger.verificarCadena().ok, true);
 });
 
+test('al anular un ticket cobrado en el acto se anula también el pago', () => {
+  const { cuentaTransitos } = require('../server/db');
+  const items = [{ concepto: 'Prueba', precio: '1000' }];
+  const pagoAnulado = (t) => !!db.prepare('SELECT 1 FROM movimientos WHERE anula_id = ?').get(t.pago_movimiento_id);
+
+  // Por defecto el pago se anula: la cuenta queda en cero y deja de contar como cobrado.
+  const dani = usuario('Dani');
+  const t1 = tickets.crear({ usuario_id: dani.id, items, cobrado: true, medio: 'efectivo' }, admin);
+  tickets.anular(t1.id, 'Se devolvió', admin);
+  assert.ok(pagoAnulado(t1));
+  assert.equal(ledger.saldo(dani.id), 0);
+
+  // A un socio se le puede dejar como saldo a favor.
+  const t2 = tickets.crear({ usuario_id: dani.id, items, cobrado: true, medio: 'efectivo' }, admin);
+  tickets.anular(t2.id, 'Lo rehacemos a cuenta', admin, { mantenerPago: true });
+  assert.equal(pagoAnulado(t2), false);
+  assert.equal(ledger.saldo(dani.id), -100000);
+
+  // A tránsitos (y externos) no: el pago se anula aunque se pida dejarlo.
+  const t3 = tickets.crear({ usuario_id: cuentaTransitos(), piloto: 'Juan Gómez', avion_id: 1, items, cobrado: true, medio: 'efectivo' }, admin);
+  tickets.anular(t3.id, 'Cargado dos veces', admin, { mantenerPago: true });
+  assert.ok(pagoAnulado(t3));
+  assert.equal(ledger.saldo(cuentaTransitos()), 0);
+  assert.equal(ledger.verificarCadena().ok, true);
+});
+
 test('derecho de aeronave: una vez por mes por piloto que voló', () => {
   // Ana vuela los dos aviones en INICIO; Beto vuela en MES2. Tesorería carga porque son vuelos viejos.
   const volar = (p, avion, fecha) => vuelos.crear({ piloto_id: p.id, avion_id: avion, fecha, horas: '1' }, admin);
