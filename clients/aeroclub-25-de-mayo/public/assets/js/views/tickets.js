@@ -1,7 +1,7 @@
 // Tickets de servicios (hangaraje, combustible, etc.) y registro de aeronaves de terceros.
 // Rampa arma tickets con los servicios de la tabla; tesorería además agrega otros conceptos.
 import {
-  get, post, put, html, raw, pintar, icono, pesos, fecha, hoyAR, periodoHoy, selectorMes, modal, pedirTexto, toast, error,
+  get, post, put, html, raw, pintar, icono, pesos, fecha, hoyAR, periodoHoy, selectorMes, modal, pedirTexto, confirmar, toast, error,
   conBoton, datosForm, parsePesos, pesosInput, nombreLista, nombreCompleto, rolTexto, chipTicket, linkWa, opcionesMedio, MEDIOS
 } from '../lib.js';
 import { vacio } from './comun.js';
@@ -307,6 +307,38 @@ export async function nuevoTicket(ctx) {
       : estado.items.some(it => !it.precio) ? 'Falta el precio de algún ítem.'
       : null;
     if (falta) { $err.textContent = falta; $err.hidden = false; $err.scrollIntoView({ block: 'center', behavior: 'smooth' }); return; }
+
+    // Un ticket no se edita: se lo mostramos entero antes de generarlo (como al cargar un vuelo).
+    const mat = aeronave()?.matricula || avion()?.matricula;
+    const c = cuenta();
+    const lineas = estado.items.map((it) => {
+      const s = it.servicio_id ? servicio(it.servicio_id) : null;
+      const cant = parseCantidad(it.cantidad);
+      const unidad = s ? (cant === 100 ? UNIDADES[s.unidad][0] : unidadPlural(s.unidad)) : (cant === 100 ? 'unidad' : 'unidades');
+      return html`<div>${s ? s.nombre : it.concepto.trim()}: ${it.cantidad} ${unidad} × ${pesos(it.precio)} = <strong>${pesos(Math.round(it.precio * cant / 100))}</strong></div>`;
+    });
+    const total = estado.items.reduce((s, it) => s + Math.round(it.precio * parseCantidad(it.cantidad) / 100), 0);
+    const ok = await confirmar({
+      titulo: 'Revisá el ticket',
+      contenido: html`<div class="pila" style="gap:12px">
+        <dl class="detalle">
+          <dt>Matrícula</dt><dd>${mat ? html`<strong class="matricula">${mat}</strong>` : 'Sin aeronave'}</dd>
+          ${d.piloto.trim() ? html`<dt>Piloto al mando</dt><dd>${d.piloto.trim()}</dd>` : ''}
+          <dt>A cargo de</dt><dd>${c.transitos ? 'Tránsitos (aeronave de paso)' : nombreCompleto(c)}</dd>
+          <dt>Servicios</dt><dd>${lineas}</dd>
+          <dt>Total</dt><dd><strong>${pesos(total)}</strong></dd>
+          <dt>Cobro</dt><dd>${estado.cobrado ? `Pagó ahora (${MEDIOS[d.medio]})` : 'A cuenta, entra en el cupón del mes'}</dd>
+          <dt>Fecha</dt><dd>${fecha(d.fecha)}</dd>
+          ${d.notas.trim() ? html`<dt>Notas</dt><dd>${d.notas.trim()}</dd>` : ''}
+        </dl>
+        <p class="aviso">${icono('alerta')}<span><b>Asegurate de que los datos ingresados sean correctos:</b> ${admin
+          ? 'una vez generado, el ticket no se puede modificar. Si hay un error, hay que anularlo y hacer uno nuevo.'
+          : 'una vez generado, el ticket no se puede modificar. Si hay un error, sólo tesorería puede anularlo.'}</span></p>
+      </div>`,
+      boton: 'Aceptar y generar'
+    });
+    if (!ok) return;
+
     const cuerpo = {
       aeronave_id: aeronave()?.id ?? null, avion_id: avion()?.id ?? null, usuario_id: estado.usuarioId, piloto: d.piloto,
       fecha: d.fecha, notas: d.notas, cobrado: estado.cobrado, medio: estado.cobrado ? d.medio : null,
