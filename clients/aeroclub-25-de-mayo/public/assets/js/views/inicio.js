@@ -8,6 +8,8 @@ export default async function inicio(ctx) {
   const debe = d.saldo > 0;
   const cup = d.ultimo_cupon;
   const cierre = d.proximo_cierre;
+  // Sólo los aviones en los que el piloto voló este mes, con sus horas (no las del avión).
+  const volados = d.aviones.filter(a => a.mes_vuelos > 0);
 
   pintar(ctx.el, html`
   <div class="vista">
@@ -53,10 +55,10 @@ export default async function inicio(ctx) {
       </section>
     </div>
 
-    <section class="pila">
-      <h2>La flota</h2>
-      <div class="grilla grilla--2">${d.aviones.map(a => tarjetaAvion(a))}</div>
-    </section>
+    ${volados.length ? html`<section class="pila">
+      <h2>Tus horas por avión</h2>
+      <div class="grilla grilla--2">${volados.map(a => tarjetaAvion(a, { propio: true }))}</div>
+    </section>` : ''}
   </div>`);
 
   ctx.el.addEventListener('click', (e) => {

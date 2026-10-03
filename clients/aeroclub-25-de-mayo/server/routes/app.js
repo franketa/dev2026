@@ -33,12 +33,12 @@ router.get('/inicio', (req, res) => {
     instruccion,
     ultimo_cupon: ultimoCupon ? { ...ultimoCupon, ...cierres.estadoCupon(ultimoCupon) } : null,
     ultimos_vuelos: vuelos.listar({ piloto_id: uid, limite: 5 }),
-    aviones: flota.listarAviones(),
+    aviones: flota.listarAviones({ pilotoId: uid }),
     proximo_cierre: cierres.proximoCierreAutomatico()
   });
 });
 
-router.get('/aviones', (req, res) => res.json({ aviones: flota.listarAviones() }));
+router.get('/aviones', (req, res) => res.json({ aviones: flota.listarAviones({ pilotoId: req.user.id }) }));
 
 router.get('/instructores', (req, res) => {
   res.json({

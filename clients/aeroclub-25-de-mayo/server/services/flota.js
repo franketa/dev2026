@@ -21,14 +21,16 @@ function getAvion(id) {
   return a;
 }
 
-function listarAviones({ incluirInactivos = false } = {}) {
+// Con pilotoId, las horas son sólo las de ese piloto: los socios no ven el total de vuelo de cada avión.
+function listarAviones({ incluirInactivos = false, pilotoId = null } = {}) {
   const periodo = periodoActual();
   const aviones = db.prepare(`SELECT * FROM aviones ${incluirInactivos ? '' : 'WHERE activo = 1'} ORDER BY activo DESC, orden, matricula`).all();
-  const qMes = db.prepare(`SELECT COALESCE(SUM(decimas),0) d, COUNT(*) n FROM vuelos WHERE avion_id = ? AND estado <> 'anulado' AND substr(fecha,1,7) = ?`);
-  const qTotal = db.prepare(`SELECT COALESCE(SUM(decimas),0) d, MAX(fecha) ultimo FROM vuelos WHERE avion_id = ? AND estado <> 'anulado'`);
+  const delPiloto = pilotoId ? 'AND piloto_id = @piloto' : '';
+  const qMes = db.prepare(`SELECT COALESCE(SUM(decimas),0) d, COUNT(*) n FROM vuelos WHERE avion_id = @avion AND estado <> 'anulado' AND substr(fecha,1,7) = @periodo ${delPiloto}`);
+  const qTotal = db.prepare(`SELECT COALESCE(SUM(decimas),0) d, MAX(fecha) ultimo FROM vuelos WHERE avion_id = @avion AND estado <> 'anulado' ${delPiloto}`);
   return aviones.map(a => {
-    const mes = qMes.get(a.id, periodo);
-    const total = qTotal.get(a.id);
+    const mes = qMes.get({ avion: a.id, periodo, ...(pilotoId && { piloto: pilotoId }) });
+    const total = qTotal.get({ avion: a.id, ...(pilotoId && { piloto: pilotoId }) });
     return {
       ...a,
       tarifas: tarifasVigentes(a.id),

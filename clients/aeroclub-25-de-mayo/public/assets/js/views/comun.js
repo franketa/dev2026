@@ -28,16 +28,17 @@ export function mapaOrden(aviones) {
   return Object.fromEntries((aviones || []).map((a, i) => [a.id, a.orden || i + 1]));
 }
 
-export function tarjetaAvion(a) {
+// propio: las horas son las del piloto que mira, no el total del avión.
+export function tarjetaAvion(a, { propio = false } = {}) {
   return html`
     <article class="avion" style="--serie:${colorAvion(a.orden)}">
       <div class="avion__cab">
         <span class="avion__marca"></span>
         <div><span class="matricula">${a.matricula}</span><small>${a.modelo}</small></div>
-        ${tambor(a.mes_decimas, { tam: 'chico', enteros: 3, etiqueta: 'Horas voladas este mes' })}
+        ${tambor(a.mes_decimas, { tam: 'chico', enteros: 3, etiqueta: propio ? 'Tus horas en este avión este mes' : 'Horas voladas este mes' })}
       </div>
       <div class="avion__datos">
-        <span>Este mes <b>${horas(a.mes_decimas)}</b> en ${a.mes_vuelos} ${a.mes_vuelos === 1 ? 'vuelo' : 'vuelos'}</span>
+        <span>${propio ? 'Volaste' : 'Este mes'} <b>${horas(a.mes_decimas)}</b> en ${a.mes_vuelos} ${a.mes_vuelos === 1 ? 'vuelo' : 'vuelos'}${propio ? ' este mes' : ''}</span>
         ${a.tarifas?.solo ? html`<span>Solo <b>${pesos(a.tarifas.solo)}</b>/h</span>` : ''}
         ${a.tarifas?.instruccion ? html`<span>Con instructor <b>${pesos(a.tarifas.instruccion)}</b>/h</span>` : ''}
       </div>
