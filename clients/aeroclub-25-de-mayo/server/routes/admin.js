@@ -4,7 +4,7 @@ const os = require('os');
 const path = require('path');
 const crypto = require('crypto');
 const bcrypt = require('bcryptjs');
-const { db, getConfig, auditar } = require('../db');
+const { db, getConfig, auditar, cuentaTransitos } = require('../db');
 const flota = require('../services/flota');
 const vuelos = require('../services/vuelos');
 const cierres = require('../services/cierres');
@@ -84,7 +84,8 @@ function leerSocio(body, existente = null) {
     licencia: limpiarTexto(body.licencia, 60),
     rol,
     es_instructor: body.es_instructor && rol !== 'rampa' ? 1 : 0,
-    activo: body.activo === false || body.activo === 0 ? 0 : 1
+    // La baja y la reactivación van por sus propias rutas (con motivo), no por la edición.
+    activo: existente ? existente.activo : 1
   };
 }
 
@@ -137,6 +138,58 @@ router.put('/usuarios/:id', (req, res) => {
   }
   const cambios = Object.keys(s).filter(k => String(s[k] ?? '') !== String(antes[k] ?? '')).map(k => `${k}: ${antes[k] ?? '—'} → ${s[k] ?? '—'}`);
   if (cambios.length) auditar(req.user.id, 'usuario.edicion', `${s.nombre} ${s.apellido}: ${cambios.join('; ')}`);
+  res.json({ ok: true });
+});
+
+// ── Baja y bloqueo ──────────────────────────────────────────────────────────
+// Nada se borra: el socio sale de las listas pero sus vuelos, cupones y movimientos quedan,
+// y cada cambio queda en Registro con el motivo.
+function usuarioParaEstado(id) {
+  const u = db.prepare('SELECT * FROM usuarios WHERE id = ?').get(id);
+  if (!u) throw new ErrorNegocio('Socio inexistente', 404);
+  return u;
+}
+const describir = (u) => `${u.nombre} ${u.apellido}`.trim();
+
+router.post('/usuarios/:id/baja', (req, res) => {
+  const u = usuarioParaEstado(Number(req.params.id));
+  if (!u.activo) throw new ErrorNegocio('Ya está dado de baja');
+  if (u.id === req.user.id) throw new ErrorNegocio('No podés darte de baja a vos mismo');
+  if (u.id === cuentaTransitos()) throw new ErrorNegocio('La cuenta de tránsitos no se puede dar de baja');
+  if (u.rol === 'admin' && db.prepare(`SELECT COUNT(*) n FROM usuarios WHERE rol = 'admin' AND activo = 1`).get().n <= 1) {
+    throw new ErrorNegocio('Tiene que quedar al menos un administrador activo');
+  }
+  const motivo = limpiarTexto(req.body?.motivo, 200);
+  if (!motivo) throw new ErrorNegocio('Contá brevemente por qué se da de baja (queda en el registro)');
+  const saldo = ledger.saldo(u.id);
+  db.prepare('UPDATE usuarios SET activo = 0, baja_motivo = ?, token_version = token_version + 1 WHERE id = ?').run(motivo, u.id);
+  auditar(req.user.id, 'usuario.baja', `${describir(u)}: ${motivo}${saldo ? `. Saldo al darlo de baja: ${fmtPesos(saldo)}` : ''}`);
+  res.json({ ok: true });
+});
+
+router.post('/usuarios/:id/reactivar', (req, res) => {
+  const u = usuarioParaEstado(Number(req.params.id));
+  if (u.activo) throw new ErrorNegocio('Ya está activo');
+  db.prepare('UPDATE usuarios SET activo = 1, baja_motivo = NULL WHERE id = ?').run(u.id);
+  auditar(req.user.id, 'usuario.reactivacion', describir(u));
+  res.json({ ok: true });
+});
+
+router.post('/usuarios/:id/bloquear', (req, res) => {
+  const u = usuarioParaEstado(Number(req.params.id));
+  if (u.rol !== 'piloto') throw new ErrorNegocio('Sólo se bloquea a socios pilotos');
+  if (u.bloqueado) throw new ErrorNegocio('Ya está bloqueado');
+  const motivo = limpiarTexto(req.body?.motivo, 200) || 'Falta de pago';
+  db.prepare('UPDATE usuarios SET bloqueado = 1, bloqueo_motivo = ? WHERE id = ?').run(motivo, u.id);
+  auditar(req.user.id, 'usuario.bloqueo', `${describir(u)}: ${motivo}. Saldo: ${fmtPesos(ledger.saldo(u.id))}`);
+  res.json({ ok: true });
+});
+
+router.post('/usuarios/:id/desbloquear', (req, res) => {
+  const u = usuarioParaEstado(Number(req.params.id));
+  if (!u.bloqueado) throw new ErrorNegocio('No está bloqueado');
+  db.prepare('UPDATE usuarios SET bloqueado = 0, bloqueo_motivo = NULL WHERE id = ?').run(u.id);
+  auditar(req.user.id, 'usuario.desbloqueo', `${describir(u)}. Saldo: ${fmtPesos(ledger.saldo(u.id))}`);
   res.json({ ok: true });
 });
 

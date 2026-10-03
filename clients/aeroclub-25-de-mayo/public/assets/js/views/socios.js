@@ -1,5 +1,5 @@
 import {
-  get, post, put, html, raw, pintar, icono, pesos, modal, confirmar, toast, error, conBoton, datosForm, fechaHora, linkWa, nombreLista, rolTexto
+  get, post, put, html, raw, pintar, icono, pesos, modal, confirmar, pedirTexto, toast, error, conBoton, datosForm, fechaHora, linkWa, nombreLista, rolTexto
 } from '../lib.js';
 
 const PARA_QUE = {
@@ -48,7 +48,6 @@ function formSocio(u = {}) {
       </select>
       <p class="campo__ayuda">Tesorería y consulta también pueden cargar sus propios vuelos.</p></div>
     <label class="check" data-instructor><input type="checkbox" name="es_instructor" ${sel(u.es_instructor)}><span>Es instructor de vuelo<br><small class="muted">Aparece en la lista cuando un alumno carga un vuelo con instructor.</small></span></label>
-    ${u.id ? html`<label class="check"><input type="checkbox" name="activo" ${sel(u.activo)}><span>Activo<br><small class="muted">Si lo das de baja, no puede entrar ni cargar vuelos. Su historial se conserva.</small></span></label>` : ''}
     <div class="modal__acciones"><button class="btn btn--sec" type="button" data-cerrar>Cancelar</button><button class="btn btn--principal" type="submit">${u.id ? 'Guardar cambios' : 'Dar de alta'}</button></div>
   </form>`;
 }
@@ -62,7 +61,7 @@ function abrirForm(ctx, u = null) {
   form.addEventListener('submit', (e) => {
     e.preventDefault();
     const d = datosForm(form);
-    const cuerpo = { ...d, activo: u ? d.activo : true };
+    const cuerpo = d;
     conBoton(form.querySelector('[type=submit]'), async () => {
       try {
         if (u) {
@@ -96,7 +95,6 @@ function abrirExterno(ctx, u = null) {
         <div class="campo"><label for="x-dni">DNI o CUIT</label><input class="input" id="x-dni" name="dni" value="${x.dni || ''}"></div>
       </div>
       <div class="campo"><label for="x-mail">Email <span class="muted">(opcional)</span></label><input class="input" id="x-mail" name="email" type="email" value="${x.email || ''}"></div>
-      ${u ? html`<label class="check"><input type="checkbox" name="activo" ${x.activo ? raw('checked') : ''}><span>Activo<br><small class="muted">Si lo das de baja, no se le pueden cargar tickets nuevos. Su historial se conserva.</small></span></label>` : ''}
       <div class="modal__acciones"><button class="btn btn--sec" type="button" data-cerrar>Cancelar</button><button class="btn btn--principal" type="submit">${u ? 'Guardar' : 'Dar de alta'}</button></div>
     </form>`
   });
@@ -106,7 +104,7 @@ function abrirExterno(ctx, u = null) {
     const d = datosForm(form);
     conBoton(form.querySelector('[type=submit]'), async () => {
       try {
-        if (u) await put(`/api/admin/externos/${u.id}`, { ...d, activo: !!d.activo });
+        if (u) await put(`/api/admin/externos/${u.id}`, d);
         else await post('/api/admin/externos', d);
         toast(u ? 'Externo actualizado' : 'Externo dado de alta', 'ok');
         m.cerrar();
@@ -116,16 +114,56 @@ function abrirExterno(ctx, u = null) {
   });
 }
 
+// Bloquear / habilitar por falta de pago, dar de baja / reactivar. Todo queda en Registro.
+export async function cambiarEstado(ctx, boton, usuarios) {
+  const [accion, id] = Object.entries(boton.dataset).find(([k]) => ['bloquear', 'desbloquear', 'baja', 'reactivar'].includes(k));
+  const u = usuarios.find(x => x.id === Number(id));
+  const nombre = `${u.nombre} ${u.apellido}`.trim();
+  const deuda = u.saldo > 0 ? ` Debe ${pesos(u.saldo)}.` : '';
+  let cuerpo = {};
+  if (accion === 'baja') {
+    const motivo = await pedirTexto({
+      titulo: `Dar de baja a ${nombre}`,
+      texto: `Sale de las listas y no puede entrar ni ${u.rol === 'externo' ? 'recibir tickets' : 'cargar vuelos'}. Sus vuelos, cupones y pagos quedan en el historial y se puede reactivar.${deuda}`,
+      label: 'Motivo (queda en el registro)', placeholder: 'Ej.: renunció como socio', boton: 'Dar de baja', peligro: true
+    });
+    if (!motivo) return;
+    cuerpo = { motivo };
+  } else {
+    const textos = {
+      bloquear: ['Bloquear por falta de pago', `${nombre} va a poder entrar, ver su cuenta e informar pagos, pero no va a poder cargar vuelos ni dejar servicios a cuenta hasta que lo habilites.${deuda}`, 'Bloquear'],
+      desbloquear: ['Habilitar', `${nombre} vuelve a poder cargar vuelos.${deuda}`, 'Habilitar'],
+      reactivar: ['Reactivar', `${nombre} vuelve a las listas${u.rol === 'externo' ? '' : ' y puede entrar con su contraseña de siempre'}.`, 'Reactivar']
+    }[accion];
+    const ok = await confirmar({ titulo: textos[0], texto: textos[1], boton: textos[2], peligro: accion === 'bloquear' });
+    if (!ok) return;
+  }
+  try {
+    await post(`/api/admin/usuarios/${u.id}/${accion}`, cuerpo);
+    toast({ bloquear: `${nombre} quedó bloqueado`, desbloquear: `${nombre} quedó habilitado`, baja: `${nombre} quedó dado de baja`, reactivar: `${nombre} quedó activo` }[accion], 'ok');
+    ctx.recargar();
+  } catch (err) { error(err); }
+}
+
 export default async function socios(ctx) {
   const { usuarios: todos } = await get('/api/admin/usuarios');
   const pestana = ctx.query.ver === 'externos' ? 'externos' : 'socios';
-  const usuarios = todos.filter(u => (pestana === 'externos') === (u.rol === 'externo'));
+  const verBajas = ctx.query.bajas === '1';
+  const dePestana = todos.filter(u => (pestana === 'externos') === (u.rol === 'externo'));
+  // Los dados de baja no se borran: quedan ocultos, con su historial, y se pueden reactivar.
+  const bajas = dePestana.filter(u => !u.activo).length;
+  const usuarios = dePestana.filter(u => verBajas || u.activo);
+  const url = (cambios) => {
+    const q = new URLSearchParams({ ...(pestana === 'externos' && { ver: 'externos' }), ...(verBajas && { bajas: '1' }), ...cambios });
+    for (const [k, v] of [...q]) if (!v) q.delete(k);
+    return `#/admin/socios${q.size ? `?${q}` : ''}`;
+  };
   const activos = todos.filter(u => u.activo && u.rol !== 'externo');
 
   pintar(ctx.el, html`
   <div class="vista">
     <div class="vista__cab">
-      <div><h1>Socios</h1><p>${activos.length} usuarios activos, ${activos.filter(u => u.es_instructor).length} instructores, ${todos.filter(u => u.rol === 'externo').length} externos.</p></div>
+      <div><h1>Socios</h1><p>${activos.length} usuarios activos, ${activos.filter(u => u.es_instructor).length} instructores, ${todos.filter(u => u.rol === 'externo' && u.activo).length} externos.${activos.some(u => u.bloqueado) ? ` ${activos.filter(u => u.bloqueado).length} bloqueados por falta de pago.` : ''}</p></div>
       <div class="vista__acciones">${pestana === 'externos'
         ? html`<button class="btn btn--principal" type="button" data-nuevo-externo data-escritura>${icono('mas')} Nuevo externo</button>`
         : html`<button class="btn btn--principal" type="button" data-nuevo data-escritura>${icono('mas')} Nuevo usuario</button>`}</div>
@@ -135,11 +173,13 @@ export default async function socios(ctx) {
       <button type="button" role="tab" data-ver="externos" aria-selected="${pestana === 'externos'}">Externos</button>
     </div>
     <section class="panel">
-      <div class="panel__cab"><div class="buscador" style="flex:1">${icono('buscar')}<input class="input" type="search" id="buscar" placeholder="Buscar por nombre o email" aria-label="Buscar"></div></div>
+      <div class="panel__cab"><div class="buscador" style="flex:1">${icono('buscar')}<input class="input" type="search" id="buscar" placeholder="Buscar por nombre o email" aria-label="Buscar"></div>
+        ${bajas ? html`<a class="btn btn--fantasma btn--chico" href="${url({ bajas: verBajas ? '' : '1' })}">${verBajas ? 'Ocultar dados de baja' : `Ver dados de baja (${bajas})`}</a>` : ''}</div>
       ${usuarios.length ? html`<div class="tabla-caja"><table class="tabla tabla--tarjetas">
         <thead><tr><th>${pestana === 'externos' ? 'Externo' : 'Socio'}</th><th>Contacto</th><th>Rol</th><th class="num">Saldo</th><th></th></tr></thead>
         <tbody>${usuarios.map(u => html`<tr data-nombre="${`${u.nombre} ${u.apellido} ${u.email || ''} ${u.dni || ''}`.toLowerCase()}" ${u.activo ? '' : raw('style="opacity:.55"')}>
-          <td class="celda-ppal"><strong>${nombreLista(u)}</strong>${u.activo ? '' : html` <span class="chip chip--neutro">Baja</span>`}</td>
+          <td class="celda-ppal"><strong>${nombreLista(u)}</strong>${u.activo ? '' : html` <span class="chip chip--neutro">Baja</span>`}${u.activo && u.bloqueado ? html` <span class="chip chip--mal">Bloqueado</span>` : ''}
+            ${!u.activo && u.baja_motivo ? html`<div class="muted chico">Baja: ${u.baja_motivo}</div>` : u.bloqueado ? html`<div class="muted chico">${u.bloqueo_motivo || 'Falta de pago'}</div>` : ''}</td>
           <td data-label="Contacto"><div>${u.email || (u.rol === 'externo' && u.dni ? `DNI/CUIT ${u.dni}` : '')}</div><div class="muted chico">${u.telefono || 'Sin celular'}</div></td>
           <td data-label="Rol">${rolTexto(u)}${u.rol !== 'piloto' && u.es_instructor ? html`<div class="muted chico">Instructor</div>` : ''}</td>
           <td class="num" data-label="Saldo">${u.rol === 'rampa' ? html`<span class="muted">—</span>` : html`<a href="#/admin/cuentas/${u.id}" class="monto">${pesos(u.saldo)}</a>`}</td>
@@ -148,6 +188,12 @@ export default async function socios(ctx) {
               ? html`<button class="btn btn--sec btn--chico" type="button" data-editar-externo="${u.id}" data-escritura>${icono('editar')} Editar</button>`
               : html`<button class="btn btn--sec btn--chico" type="button" data-editar="${u.id}" data-escritura>${icono('editar')} Editar</button>
             <button class="btn btn--fantasma btn--chico" type="button" data-reset="${u.id}" data-escritura>${icono('llave')} Nueva contraseña</button>`}
+            ${u.activo && u.rol === 'piloto' ? (u.bloqueado
+              ? html`<button class="btn btn--sec btn--chico" type="button" data-desbloquear="${u.id}" data-escritura>${icono('check')} Habilitar</button>`
+              : html`<button class="btn btn--fantasma btn--chico" type="button" data-bloquear="${u.id}" data-escritura>${icono('candado')} Bloquear</button>`) : ''}
+            ${u.activo
+              ? (u.id === ctx.usuario.id || u.transitos ? '' : html`<button class="btn btn--fantasma btn--chico" type="button" data-baja="${u.id}" data-escritura style="color:var(--peligro)">${icono('x')} Dar de baja</button>`)
+              : html`<button class="btn btn--sec btn--chico" type="button" data-reactivar="${u.id}" data-escritura>${icono('check')} Reactivar</button>`}
           </div></td></tr>`)}</tbody>
       </table></div>` : html`<p class="muted">${pestana === 'externos' ? 'Todavía no hay externos. Se dan de alta solos cuando rampa registra una aeronave de afuera.' : 'No hay usuarios.'}</p>`}
     </section>
@@ -162,6 +208,8 @@ export default async function socios(ctx) {
   ctx.el.addEventListener('click', async (e) => {
     const ver = e.target.closest('[data-ver]');
     if (ver) return ctx.ir(`#/admin/socios${ver.dataset.ver === 'externos' ? '?ver=externos' : ''}`);
+    const accion = e.target.closest('[data-bloquear],[data-desbloquear],[data-baja],[data-reactivar]');
+    if (accion) return cambiarEstado(ctx, accion, usuarios);
     if (e.target.closest('[data-nuevo-externo]')) return abrirExterno(ctx);
     const ex = e.target.closest('[data-editar-externo]');
     if (ex) return abrirExterno(ctx, usuarios.find(u => u.id === Number(ex.dataset.editarExterno)));

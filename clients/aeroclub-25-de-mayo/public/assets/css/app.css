@@ -356,6 +356,7 @@ p { margin: 0; }
   box-shadow: 0 8px 24px rgba(212, 59, 47, .28);
 }
 .cta-cargar:hover { background: var(--rojo-osc); }
+.cta-cargar--bloqueada, .cta-cargar--bloqueada:hover { background: var(--linea-2); color: var(--gris); box-shadow: none; cursor: not-allowed; }
 .cta-cargar strong { font-family: var(--f-titulo); font-size: 1.3rem; display: block; }
 .cta-cargar span { opacity: .88; font-size: .92rem; }
 .cta-cargar svg { width: 30px; height: 30px; flex: none; }

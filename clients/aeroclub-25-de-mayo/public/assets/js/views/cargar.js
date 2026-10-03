@@ -5,6 +5,11 @@ import {
 
 export default async function cargar(ctx) {
   const editando = ctx.params.id ? Number(ctx.params.id) : null;
+  if (ctx.usuario.bloqueado && !ctx.esAdmin && !editando) {
+    pintar(ctx.el, html`<div class="vista"><div class="vista__cab"><div><h1>Cargar vuelo</h1></div></div>
+      <p class="aviso aviso--mal">${icono('candado')}<span><b>Tu cuenta está bloqueada por falta de pago.</b> No podés cargar vuelos hasta regularizarla. Si ya pagaste, <a href="#/cuenta">informá el pago</a> o comunicate con tesorería.</span></p></div>`);
+    return;
+  }
   const pedidos = [get('/api/aviones'), get('/api/instructores')];
   if (ctx.esAdmin) pedidos.push(get('/api/admin/usuarios'));
   if (editando) pedidos.push(get(`/api/vuelos/${editando}`));

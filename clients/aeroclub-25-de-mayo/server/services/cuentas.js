@@ -1,4 +1,4 @@
-const { db } = require('../db');
+const { db, cuentaTransitos } = require('../db');
 const ledger = require('./ledger');
 const cierres = require('./cierres');
 const vuelos = require('./vuelos');
@@ -6,7 +6,7 @@ const pagosInformados = require('./pagosInformados');
 const { ErrorNegocio } = require('../util');
 
 function estadoCuenta(usuarioId) {
-  const usuario = db.prepare('SELECT id, nombre, apellido, email, telefono, dni, licencia, rol, es_instructor, activo FROM usuarios WHERE id = ?').get(usuarioId);
+  const usuario = db.prepare('SELECT id, nombre, apellido, email, telefono, dni, licencia, rol, es_instructor, activo, baja_motivo, bloqueado, bloqueo_motivo FROM usuarios WHERE id = ?').get(usuarioId);
   if (!usuario) throw new ErrorNegocio('Socio inexistente', 404);
   const movimientos = db.prepare(`
     SELECT m.id, m.tipo, m.concepto, m.importe, m.fecha, m.medio, m.vuelo_id, m.anula_id, m.creado_en,
@@ -32,12 +32,13 @@ function estadoCuenta(usuarioId) {
 function listarCuentas() {
   return db.prepare(`
     SELECT u.id, u.nombre, u.apellido, u.email, u.telefono, u.dni, u.licencia, u.rol, u.es_instructor, u.activo, u.ultimo_acceso,
+      u.baja_motivo, u.bloqueado, u.bloqueo_motivo, (u.id = @transitos) transitos,
       COALESCE((SELECT SUM(importe) FROM movimientos m WHERE m.usuario_id = u.id), 0) saldo,
       COALESCE((SELECT SUM(importe) FROM vuelos v WHERE v.piloto_id = u.id AND v.estado = 'abierto'), 0) a_facturar,
       COALESCE((SELECT SUM(decimas) FROM vuelos v WHERE v.piloto_id = u.id AND v.estado = 'abierto'), 0) decimas_abiertas,
       (SELECT MAX(fecha) FROM movimientos m WHERE m.usuario_id = u.id AND m.tipo = 'pago') ultimo_pago
     FROM usuarios u
-    ORDER BY u.activo DESC, u.apellido, u.nombre`).all();
+    ORDER BY u.activo DESC, u.apellido, u.nombre`).all({ transitos: cuentaTransitos() });
 }
 
 module.exports = { estadoCuenta, listarCuentas };

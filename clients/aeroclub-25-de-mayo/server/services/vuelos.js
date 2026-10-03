@@ -41,6 +41,9 @@ function armar(input, actor, previo = null) {
   const piloto = db.prepare('SELECT * FROM usuarios WHERE id = ?').get(pilotoId);
   if (!piloto) throw new ErrorNegocio('Piloto inexistente');
   if (!piloto.activo && (!previo || previo.piloto_id !== pilotoId)) throw new ErrorNegocio('Ese piloto está dado de baja');
+  if (piloto.bloqueado && !esAdmin && !previo) {
+    throw new ErrorNegocio('Tu cuenta está bloqueada por falta de pago: no podés cargar vuelos. Comunicate con tesorería.', 403);
+  }
 
   const avionId = Number(input.avion_id ?? previo?.avion_id);
   const avion = db.prepare('SELECT * FROM aviones WHERE id = ?').get(avionId);

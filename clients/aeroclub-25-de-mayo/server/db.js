@@ -33,6 +33,10 @@ CREATE TABLE IF NOT EXISTS usuarios (
   rol TEXT NOT NULL DEFAULT 'piloto' CHECK (rol IN ('admin','consulta','rampa','piloto','externo')),
   es_instructor INTEGER NOT NULL DEFAULT 0 CHECK (es_instructor IN (0,1)),
   activo INTEGER NOT NULL DEFAULT 1 CHECK (activo IN (0,1)),
+  baja_motivo TEXT,
+  -- Bloqueado por falta de pago: entra a ver su cuenta e informar pagos, pero no carga vuelos.
+  bloqueado INTEGER NOT NULL DEFAULT 0 CHECK (bloqueado IN (0,1)),
+  bloqueo_motivo TEXT,
   password_hash TEXT,
   debe_cambiar_password INTEGER NOT NULL DEFAULT 1,
   token_version INTEGER NOT NULL DEFAULT 0,
@@ -350,6 +354,11 @@ function migrar() {
     reconstruir('servicios', DDL_SERVICIOS);
     // El nocturno se cobra por noche (antes se había cargado por hora).
     db.prepare("UPDATE servicios SET unidad = 'noche' WHERE nombre = 'Nocturno' AND unidad = 'hora'").run();
+  }
+  if (usuarios && !columnas('usuarios').includes('bloqueado')) {
+    db.exec('ALTER TABLE usuarios ADD COLUMN baja_motivo TEXT');
+    db.exec('ALTER TABLE usuarios ADD COLUMN bloqueado INTEGER NOT NULL DEFAULT 0 CHECK (bloqueado IN (0,1))');
+    db.exec('ALTER TABLE usuarios ADD COLUMN bloqueo_motivo TEXT');
   }
   if (sqlTabla('tickets') && !columnas('tickets').includes('piloto')) db.exec('ALTER TABLE tickets ADD COLUMN piloto TEXT');
   for (const tabla of ['cierres', 'cupones']) {

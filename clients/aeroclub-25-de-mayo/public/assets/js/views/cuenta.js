@@ -4,6 +4,7 @@ import {
 } from '../lib.js';
 import { listaMovimientos } from './comun.js';
 import { tablaInformes, revisarPago } from './pagos.js';
+import { cambiarEstado } from './socios.js';
 
 function bloqueSaldo(d, { admin }) {
   const debe = d.saldo > 0;
@@ -122,9 +123,13 @@ export async function cuentaSocio(ctx) {
   <div class="vista">
     <div class="vista__cab">
       <div><a class="volver" href="#/admin/cuentas">${icono('izq')} Cuentas</a><h1>${nombreCompleto(u)}</h1>
-        <p>${u.rol === 'externo' ? 'Externo. ' : ''}${[u.email, u.telefono, u.licencia, u.dni && u.rol === 'externo' ? `DNI/CUIT ${u.dni}` : null].filter(Boolean).join(', ')}${u.activo ? '' : ' (dado de baja)'}</p></div>
+        <p>${u.rol === 'externo' ? 'Externo. ' : ''}${[u.email, u.telefono, u.licencia, u.dni && u.rol === 'externo' ? `DNI/CUIT ${u.dni}` : null].filter(Boolean).join(', ')}${u.activo ? '' : ' (dado de baja)'}</p>
+        ${u.activo && u.bloqueado ? html`<p><span class="chip chip--mal">Bloqueado: ${u.bloqueo_motivo || 'falta de pago'}</span></p>` : ''}</div>
       <div class="vista__acciones">
         <a class="btn btn--sec" href="#/admin/tickets/nuevo?usuario=${u.id}" data-escritura>${icono('ticket')} Servicio u otro concepto</a>
+        ${u.activo && u.rol === 'piloto' ? (u.bloqueado
+          ? html`<button class="btn btn--sec" type="button" data-desbloquear="${u.id}" data-escritura>${icono('check')} Habilitar</button>`
+          : html`<button class="btn btn--sec" type="button" data-bloquear="${u.id}" data-escritura>${icono('candado')} Bloquear</button>`) : ''}
         <button class="btn btn--sec" type="button" data-ajuste data-escritura>${icono('ajuste')} Ajuste manual</button>
         <button class="btn btn--principal" type="button" data-pago data-escritura>${icono('pago')} Registrar pago</button>
       </div>
@@ -143,6 +148,8 @@ export async function cuentaSocio(ctx) {
     if (rev) return revisarPago(pendientes.find(p => p.id === Number(rev.dataset.revisar)), ctx.recargar);
     if (e.target.closest('[data-pago]')) modalPago(u, d.saldo, ctx.recargar);
     if (e.target.closest('[data-ajuste]')) modalAjuste(u, ctx.recargar);
+    const est = e.target.closest('[data-bloquear],[data-desbloquear]');
+    if (est) return cambiarEstado(ctx, est, [{ ...u, saldo: d.saldo }]);
     const ed = e.target.closest('[data-editar-mov]');
     if (ed) return modalEditarMovimiento(d.movimientos.find(m => m.id === Number(ed.dataset.editarMov)), ctx.recargar);
     const br = e.target.closest('[data-borrar-mov]');

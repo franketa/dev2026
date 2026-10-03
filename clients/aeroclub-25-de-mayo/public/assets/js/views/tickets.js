@@ -123,7 +123,7 @@ export async function nuevoTicket(ctx) {
     <option value="nueva">+ Registrar otra matrícula…</option>`;
   const opcionesCargo = () => html`
     <option value="">Elegí la cuenta</option>
-    ${datos.cuentas.map(c => html`<option value="${c.id}" ${c.id === estado.usuarioId ? raw('selected') : ''}>${c.transitos ? 'Tránsitos (aeronave de paso)' : `${nombreLista(c)}${c.rol === 'externo' ? ' (externo)' : ''}`}</option>`)}`;
+    ${datos.cuentas.map(c => html`<option value="${c.id}" ${c.id === estado.usuarioId ? raw('selected') : ''}>${c.transitos ? 'Tránsitos (aeronave de paso)' : `${nombreLista(c)}${c.rol === 'externo' ? ' (externo)' : ''}${c.bloqueado ? ' (bloqueado)' : ''}`}</option>`)}`;
 
   pintar(ctx.el, html`
   <div class="vista">
@@ -158,7 +158,7 @@ export async function nuevoTicket(ctx) {
           <label><input type="radio" name="cobro" value="cuenta" checked><span>A cuenta<small>Entra en el cupón del mes</small></span></label>
           <label><input type="radio" name="cobro" value="ahora"><span>Pagó ahora<small>Queda registrado el pago</small></span></label>
         </div>
-        <p class="campo__ayuda" id="ayuda-cobro" hidden>A externos y tránsitos se les cobra siempre en el momento.</p>
+        <p class="campo__ayuda" id="ayuda-cobro" hidden></p>
         <div class="campo" id="campo-medio" hidden><label for="medio">¿Cómo pagó?</label><select class="select" id="medio" name="medio">${opcionesMedio('efectivo')}</select></div>
       </div>
       <details class="carga__paso"><summary class="chico" style="cursor:pointer;color:var(--azul);font-weight:600">Fecha y notas</summary>
@@ -191,14 +191,17 @@ export async function nuevoTicket(ctx) {
       : a ? (a.propietario_id === estado.usuarioId ? `Propietario de ${a.matricula}. Si lo paga otra persona, cambialo.` : `Ojo: el propietario de ${a.matricula} es ${nombreCompleto({ nombre: a.prop_nombre, apellido: a.prop_apellido })}.`)
       : '';
     ctx.el.querySelector('#piloto-req').textContent = c?.transitos ? '(obligatorio en tránsitos)' : '(opcional)';
-    const externo = c?.rol === 'externo';
+    // Externos, tránsitos y (para rampa) socios bloqueados por deuda: sólo se cobra en el momento.
+    const externo = c?.rol === 'externo' || (!!c?.bloqueado && !admin);
     const $cuenta = form.querySelector('input[name=cobro][value=cuenta]');
     // Externos y tránsitos: sólo "pagó ahora". Al volver a un socio, se vuelve a "a cuenta".
     if (externo) form.querySelector('input[name=cobro][value=ahora]').checked = true;
     else if ($cuenta.disabled) $cuenta.checked = true;
     $cuenta.disabled = externo;
     estado.cobrado = form.cobro.value === 'ahora';
-    ctx.el.querySelector('#ayuda-cobro').hidden = !externo;
+    const $ayudaCobro = ctx.el.querySelector('#ayuda-cobro');
+    $ayudaCobro.textContent = c?.bloqueado ? `${nombreLista(c)} está bloqueado por falta de pago${admin ? '.' : ': se le cobra en el momento.'}` : 'A externos y tránsitos se les cobra siempre en el momento.';
+    $ayudaCobro.hidden = !externo && !c?.bloqueado;
     ctx.el.querySelector('#campo-medio').hidden = !estado.cobrado;
     calcular();
   }

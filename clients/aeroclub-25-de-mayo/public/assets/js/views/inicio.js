@@ -15,6 +15,8 @@ export default async function inicio(ctx) {
   <div class="vista">
     <div class="vista__cab"><div><h1>Hola, ${usuario.nombre}</h1><p>${hoyLargo()}</p></div></div>
 
+    ${usuario.bloqueado ? html`<p class="aviso aviso--mal">${icono('candado')}<span><b>Tu cuenta está bloqueada por falta de pago.</b> No podés cargar vuelos hasta regularizarla. Si ya pagaste, <a href="#/cuenta">informá el pago</a> o comunicate con tesorería.</span></p>` : ''}
+
     <section class="saldo" aria-label="Tu saldo">
       ${ala('saldo__ala')}
       <div>
@@ -31,7 +33,9 @@ export default async function inicio(ctx) {
       </div>
     </section>
 
-    <a class="cta-cargar" href="#/cargar">${icono('avion')}<div><strong>Cargar vuelo</strong><span>Recién aterrizaste: anotá las horas</span></div>${icono('der')}</a>
+    ${usuario.bloqueado
+      ? html`<div class="cta-cargar cta-cargar--bloqueada" aria-disabled="true">${icono('candado')}<div><strong>Cargar vuelo</strong><span>Bloqueado por falta de pago</span></div></div>`
+      : html`<a class="cta-cargar" href="#/cargar">${icono('avion')}<div><strong>Cargar vuelo</strong><span>Recién aterrizaste: anotá las horas</span></div>${icono('der')}</a>`}
 
     <div class="grilla grilla--2">
       <section class="panel">

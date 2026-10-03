@@ -45,7 +45,6 @@ function crearExterno(input, actor) {
 function editarExterno(id, input, actor) {
   const antes = db.prepare(`SELECT * FROM usuarios WHERE id = ? AND rol = 'externo'`).get(id);
   if (!antes) throw new ErrorNegocio('Externo inexistente', 404);
-  if (id === cuentaTransitos() && (input.activo === false || input.activo === 0)) throw new ErrorNegocio('La cuenta de tránsitos no se puede dar de baja');
   const nombre = limpiarTexto(input.nombre, 80);
   if (!nombre) throw new ErrorNegocio('Completá el nombre (persona o empresa)');
   const apellido = limpiarTexto(input.apellido, 60) || '';
@@ -54,7 +53,7 @@ function editarExterno(id, input, actor) {
   const email = normalizarEmail(limpiarTexto(input.email, 120)) || null;
   if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) throw new ErrorNegocio('Email inválido');
   const dni = limpiarTexto(input.dni, 15);
-  const activo = input.activo === false || input.activo === 0 ? 0 : 1;
+  const activo = antes.activo;   // la baja y la reactivación van por sus rutas, con motivo
   try {
     db.prepare('UPDATE usuarios SET nombre = ?, apellido = ?, email = ?, telefono = ?, dni = ?, activo = ? WHERE id = ?')
       .run(nombre, apellido, email, telefono, dni, activo, id);
@@ -70,7 +69,7 @@ function editarExterno(id, input, actor) {
 // Cuentas a las que se puede cargar un ticket (para rampa y tesorería). Tránsitos va primero.
 function cuentasParaTicket() {
   return db.prepare(`
-    SELECT id, nombre, apellido, rol, telefono, (id = @transitos) transitos FROM usuarios
+    SELECT id, nombre, apellido, rol, telefono, bloqueado, (id = @transitos) transitos FROM usuarios
     WHERE activo = 1 AND rol IN ('piloto','admin','consulta','externo')
     ORDER BY id = @transitos DESC, CASE WHEN apellido = '' THEN nombre ELSE apellido END, nombre`).all({ transitos: cuentaTransitos() });
 }
@@ -231,6 +230,7 @@ const crear = db.transaction((input, actor) => {
 
   // A externos y tránsitos no se les fía: se cobra en el momento.
   if (u.rol === 'externo' && !input.cobrado) throw new ErrorNegocio('Los servicios a externos se cobran en el momento: elegí cómo pagó.');
+  if (u.bloqueado && !esAdmin && !input.cobrado) throw new ErrorNegocio(`${nombreCompleto(u)} está bloqueado por falta de pago: se le cobra en el momento.`);
   let medio = null;
   if (input.cobrado) {
     medio = MEDIOS.includes(input.medio) ? input.medio : null;

@@ -1,7 +1,8 @@
 import { get, html, pintar, icono, pesos, fecha, fechaHora, error, conBoton, nombrePeriodo } from '../lib.js';
 
 const ACCIONES = {
-  'usuario.alta': 'Alta de socio', 'usuario.edicion': 'Edición de socio', 'usuario.reset_password': 'Contraseña regenerada', 'usuario.password': 'Cambio de contraseña',
+  'usuario.alta': 'Alta de socio', 'usuario.edicion': 'Edición de socio', 'usuario.reset_password': 'Contraseña regenerada',
+  'usuario.baja': 'Baja de socio', 'usuario.reactivacion': 'Socio reactivado', 'usuario.bloqueo': 'Socio bloqueado', 'usuario.desbloqueo': 'Socio habilitado', 'usuario.password': 'Cambio de contraseña',
   'usuario.perfil': 'Actualizó su perfil', 'avion.alta': 'Alta de avión', 'avion.edicion': 'Edición de avión', 'tarifa.alta': 'Nueva tarifa',
   'pago.alta': 'Pago registrado', 'ajuste.alta': 'Ajuste manual', 'saldo_inicial.alta': 'Saldo inicial',
   'movimiento.anulacion': 'Movimiento anulado', 'movimiento.edicion': 'Movimiento corregido', 'movimiento.borrado': 'Movimiento borrado', 'cierre.manual': 'Cierre manual', 'cierre.automatico': 'Cierre automático', 'config.edicion': 'Configuración', 'respaldo.descarga': 'Copia de seguridad',
