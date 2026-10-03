@@ -1,7 +1,7 @@
 // Tickets de servicios (hangaraje, combustible, etc.) y registro de aeronaves de terceros.
 // Rampa arma tickets con los servicios de la tabla; tesorería además agrega otros conceptos.
 import {
-  get, post, put, html, raw, pintar, icono, pesos, fecha, hoyAR, periodoHoy, selectorMes, modal, pedirTexto, confirmar, toast, error,
+  get, post, put, html, raw, pintar, icono, pesos, fecha, hoyAR, periodoHoy, selectorMes, modal, confirmar, toast, error,
   conBoton, datosForm, parsePesos, pesosInput, nombreLista, nombreCompleto, rolTexto, chipTicket, linkWa, opcionesMedio, MEDIOS
 } from '../lib.js';
 import { vacio } from './comun.js';
@@ -453,14 +453,40 @@ export async function ticketsAdmin(ctx) {
     const an = e.target.closest('[data-anular-ticket]');
     if (an) {
       const t = tickets.find(x => x.id === Number(an.dataset.anularTicket));
-      const motivo = await pedirTexto({
-        titulo: `Anular ticket ${t.numero_txt}`,
-        texto: `Se descuentan ${pesos(t.total)} de la cuenta de ${nombreCompleto(t)}.${t.pago_movimiento_id ? ' El pago en el acto queda como saldo a favor: si se devolvió la plata, anulá también el pago desde su cuenta.' : ''}`,
-        label: 'Motivo', placeholder: 'Ej.: se cargó a la aeronave equivocada', boton: 'Anular ticket', peligro: true
-      });
-      if (!motivo) return;
-      try { await post(`/api/admin/tickets/${t.id}/anular`, { motivo }); toast('Ticket anulado', 'ok'); ctx.recargar(); } catch (err) { error(err); }
+      const datos = await pedirAnulacion(t);
+      if (!datos) return;
+      try { await post(`/api/admin/tickets/${t.id}/anular`, datos); toast('Ticket anulado', 'ok'); ctx.recargar(); } catch (err) { error(err); }
     }
+  });
+}
+
+// Pide el motivo. Si el ticket se cobró en el acto, el pago se anula con él; a un socio se le
+// puede dejar como saldo a favor (a externos y tránsitos no).
+function pedirAnulacion(t) {
+  const pagado = !!t.pago_movimiento_id;
+  const socio = t.usuario_rol !== 'externo' && !t.transitos;
+  const texto = !pagado ? `Se descuentan ${pesos(t.total)} de la cuenta de ${nombreCompleto(t)}.`
+    : `Se anulan el cargo de ${pesos(t.total)} y también el pago en el acto, que deja de contar como cobrado${socio ? ', salvo que marques que la plata queda a favor del socio' : ''}. Si hay que rehacerlo, cargá el ticket correcto como cobrado.`;
+  return new Promise((ok) => {
+    const m = modal({
+      titulo: `Anular ticket ${t.numero_txt}`, alCerrar: (v) => ok(v ?? null),
+      contenido: html`<form class="form" novalidate>
+        <p>${texto}</p>
+        <div class="campo"><label for="an-motivo">Motivo</label><textarea id="an-motivo" name="motivo" class="textarea" required placeholder="Ej.: se cargó a la aeronave equivocada" maxlength="200"></textarea></div>
+        ${pagado && socio ? html`<label class="check"><input type="checkbox" name="mantener_pago"><span>La plata no se devolvió: queda a favor del socio<br><small class="muted">El pago sigue en su cuenta y se descuenta de lo próximo que deba.</small></span></label>` : ''}
+        <div class="modal__acciones">
+          <button class="btn btn--sec" data-cerrar type="button">Cancelar</button>
+          <button class="btn btn--peligro" type="submit">Anular ticket</button>
+        </div></form>`
+    });
+    const form = m.el.querySelector('form');
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const d = datosForm(form);
+      const motivo = d.motivo.trim();
+      if (!motivo) { form.motivo.setAttribute('aria-invalid', 'true'); return; }
+      m.cerrar({ motivo, mantener_pago: !!d.mantener_pago });
+    });
   });
 }
 
