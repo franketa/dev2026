@@ -91,7 +91,7 @@ function modalInformarPago(saldo, alTerminar) {
       $txt.textContent = archivo.name;
       pintar($prev, comprobante.startsWith('data:image/')
         ? html`<img class="comprobante" src="${comprobante}" alt="Vista previa del comprobante">`
-        : html`<p class="muted chico">${icono('pdf')} PDF listo para enviar</p>`);
+        : html`<p class="muted chico con-icono">${icono('pdf')} PDF listo para enviar</p>`);
     } catch (err) {
       $txt.textContent = 'Sacale una foto o elegí la captura de la transferencia';
       form.archivo.value = '';

@@ -67,7 +67,7 @@ export function tablaInformes(pagos, { socio = true, revisar = false } = {}) {
     <thead><tr>${socio ? html`<th>Socio</th>` : ''}<th>Pago</th><th class="num">Importe</th><th>Estado</th><th></th></tr></thead>
     <tbody>${pagos.map(p => html`<tr>
       ${socio ? html`<td class="celda-ppal"><a href="#/admin/cuentas/${p.usuario_id}"><strong>${nombreLista(p)}</strong></a><div class="muted chico">Informado el ${fechaHora(p.creado_en)}</div></td>` : ''}
-      <td data-label="Pago" ${socio ? '' : raw('class="celda-ppal"')}>${MEDIOS[p.medio] || p.medio}, ${fecha(p.fecha)}${p.nota ? html`<div class="muted chico">${p.nota}</div>` : ''}${p.comprobante_id ? html`<div class="chico">${icono('foto')} Con comprobante</div>` : ''}</td>
+      <td data-label="Pago" ${socio ? '' : raw('class="celda-ppal"')}>${MEDIOS[p.medio] || p.medio}, ${fecha(p.fecha)}${p.nota ? html`<div class="muted chico">${p.nota}</div>` : ''}${p.comprobante_id ? html`<div class="chico muted con-icono">${icono('foto')} Con comprobante</div>` : ''}</td>
       <td class="num monto" data-label="Importe">${pesos(p.importe)}</td>
       <td data-label="Estado">${chipInforme(p)}${p.estado === 'rechazado' && p.motivo_rechazo ? html`<div class="muted chico">${p.motivo_rechazo}</div>` : ''}${p.revisado_por_nombre ? html`<div class="muted chico">Por ${p.revisado_por_nombre}</div>` : ''}</td>
       <td class="celda-acciones"><div class="tabla__acciones">
