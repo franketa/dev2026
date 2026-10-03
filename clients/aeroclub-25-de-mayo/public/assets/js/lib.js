@@ -355,7 +355,9 @@ const P = {
   ojoNo: '<path d="M10.6 5.1A10 10 0 0 1 12 5c6.5 0 10 7 10 7a17 17 0 0 1-2.2 3.2M6.6 6.6C3.7 8.4 2 12 2 12s3.5 7 10 7a9.7 9.7 0 0 0 5.4-1.6"/><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2M3 3l18 18"/>'
 };
 export function icono(nombre) {
-  return raw(`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${P[nombre] || ''}</svg>`);
+  // width/height de respaldo: si ninguna regla de CSS lo dimensiona, queda del tamaño del texto
+  // en vez de estirarse (o colapsar a 0 en algunos navegadores).
+  return raw(`<svg viewBox="0 0 24 24" width="1em" height="1em" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${P[nombre] || ''}</svg>`);
 }
 
 // Agrega a cada campo de contraseña un ojito para ver lo que se está escribiendo.
