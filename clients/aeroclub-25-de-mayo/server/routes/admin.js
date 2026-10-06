@@ -455,7 +455,7 @@ router.get('/respaldos/:nombre', requireAdmin, (req, res) => {
 
 // ── Configuración ───────────────────────────────────────────────────────────
 const EDITABLES = ['club_nombre', 'club_localidad', 'pago_alias', 'pago_cbu', 'pago_titular', 'pago_cuit', 'pago_banco', 'pago_instrucciones',
-  'cierre_automatico', 'cierre_dia', 'cierre_hora', 'vencimiento_dia', 'whatsapp_mensaje', 'url_publica'];
+  'cierre_automatico', 'cierre_dia', 'cierre_hora', 'vencimiento_dia', 'whatsapp_mensaje', 'url_publica', 'email_tesoreria'];
 
 router.get('/config', (req, res) => res.json({ config: getConfig() }));
 
@@ -477,6 +477,8 @@ router.put('/config', (req, res) => {
     if (k === 'cierre_hora' && !(Number(v) >= 0 && Number(v) <= 23)) throw new ErrorNegocio('La hora de cierre tiene que estar entre 0 y 23');
     if (k === 'vencimiento_dia' && !(Number(v) >= 1 && Number(v) <= 28)) throw new ErrorNegocio('El día de vencimiento tiene que estar entre 1 y 28');
     if (k === 'url_publica' && v && !/^https?:\/\/[^\s]+$/.test(v)) throw new ErrorNegocio('La dirección pública tiene que empezar con https://');
+    if (k === 'email_tesoreria') v = normalizarEmail(v) || '';
+    if (k === 'email_tesoreria' && v && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)) throw new ErrorNegocio('El email de tesorería es inválido');
     if (String(actual[k] ?? '') !== v) { set.run(k, v); cambios.push(`${k}: ${actual[k] || '—'} → ${v || '—'}`); }
   }
   if (cambios.length) auditar(req.user.id, 'config.edicion', cambios.join('; '));

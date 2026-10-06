@@ -1,6 +1,6 @@
 // Rutas de uso diario para cualquier usuario logueado (pilotos, alumnos, instructores y admins).
 const express = require('express');
-const { db, auditar } = require('../db');
+const { db, auditar, getConfig } = require('../db');
 const flota = require('../services/flota');
 const vuelos = require('../services/vuelos');
 const cierres = require('../services/cierres');
@@ -83,7 +83,16 @@ router.post('/vuelos/:id/anular', (req, res) => {
 
 router.get('/cuenta', (req, res) => res.json(cuentas.estadoCuenta(req.user.id)));
 
+// Los pilotos no cambian sus datos: se los piden a tesorería por mail.
+router.get('/perfil/contacto', (req, res) => {
+  const email = getConfig().email_tesoreria
+    || db.prepare(`SELECT email FROM usuarios WHERE rol = 'admin' AND activo = 1 AND email IS NOT NULL ORDER BY id LIMIT 1`).get()?.email
+    || null;
+  res.json({ email });
+});
+
 router.put('/perfil', (req, res) => {
+  if (req.user.rol === 'piloto') throw new ErrorNegocio('Para cambiar tus datos, pedíselo a tesorería', 403);
   const telefono = limpiarTexto(req.body?.telefono, 30);
   if (telefono && !telefonoWhatsApp(telefono)) throw new ErrorNegocio('Revisá el celular: poné código de área y número, por ejemplo 2345 401234');
   db.prepare('UPDATE usuarios SET telefono = ? WHERE id = ?').run(telefono, req.user.id);

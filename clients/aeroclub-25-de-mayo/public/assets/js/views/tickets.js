@@ -1,5 +1,5 @@
 // Tickets de servicios (hangaraje, combustible, etc.) y registro de aeronaves de terceros.
-// Rampa arma tickets con los servicios de la tabla; tesorería además agrega otros conceptos.
+// Rampa arma tickets con los servicios de la tabla; tesorería además agrega eventos y otros conceptos.
 import {
   get, post, put, html, raw, pintar, icono, pesos, fecha, hoyAR, periodoHoy, selectorMes, modal, confirmar, toast, error,
   conBoton, datosForm, parsePesos, pesosInput, nombreLista, nombreCompleto, rolTexto, chipTicket, linkWa, opcionesMedio, MEDIOS
@@ -16,6 +16,41 @@ function parseCantidad(v) {
   const [e, d = ''] = s.split('.');
   const n = Number(e) * 100 + Number(d.padEnd(2, '0'));
   return n > 0 ? n : null;
+}
+
+const EVENTOS = { total: 'Evento, pago total', anticipo: 'Evento, anticipo' };
+
+// Cuadro para cargar un evento (alquiler del hangar, bautismos, cenas…): qué es, si se cobra
+// completo o es un anticipo, y el importe. Devuelve el ítem o null si se cancela.
+function pedirEvento(it = {}) {
+  return new Promise((ok) => {
+    const m = modal({
+      titulo: it.evento ? 'Editar evento' : 'Evento',
+      subtitulo: 'Queda escrito en el ticket y en la cuenta.',
+      alCerrar: (v) => ok(v ?? null),
+      contenido: html`<form class="form" novalidate>
+        <div class="campo"><label for="ev-detalle">Descripción del evento</label>
+          <textarea class="textarea" id="ev-detalle" name="detalle" maxlength="300" required autofocus placeholder="Ej.: alquiler del hangar para el cumpleaños del 15 de noviembre">${it.detalle || ''}</textarea></div>
+        <fieldset class="campo" style="border:0;padding:0;margin:0"><legend class="campo__label" style="padding:0;margin-bottom:6px">En concepto de</legend>
+          <div class="segmentado">
+            <label><input type="radio" name="evento" value="total" ${it.evento === 'anticipo' ? '' : raw('checked')}><span>Pago total<small>El evento queda pago</small></span></label>
+            <label><input type="radio" name="evento" value="anticipo" ${it.evento === 'anticipo' ? raw('checked') : ''}><span>Anticipo<small>Seña, falta el resto</small></span></label>
+          </div>
+        </fieldset>
+        <div class="campo"><label for="ev-importe">Importe</label><input class="input" id="ev-importe" name="importe" inputmode="decimal" value="${pesosInput(it.precio)}" placeholder="0" required></div>
+        <div class="modal__acciones"><button class="btn btn--sec" type="button" data-cerrar>Cancelar</button><button class="btn btn--principal" type="submit">${it.evento ? 'Guardar' : 'Agregar'}</button></div>
+      </form>`
+    });
+    const form = m.el.querySelector('form');
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const d = datosForm(form);
+      const precio = parsePesos(d.importe);
+      if (!d.detalle.trim()) { form.detalle.setAttribute('aria-invalid', 'true'); form.detalle.focus(); return; }
+      if (!precio || precio <= 0) { form.importe.setAttribute('aria-invalid', 'true'); form.importe.focus(); return; }
+      m.cerrar({ evento: d.evento, detalle: d.detalle.trim(), precio });
+    });
+  });
 }
 
 const base = (ctx) => (ctx.usuario.rol === 'rampa' ? '#/rampa' : '#/admin');
@@ -148,7 +183,8 @@ export async function nuevoTicket(ctx) {
         <h2><span class="num">3</span> Servicios</h2>
         <div class="chips-servicio" role="group" aria-label="Agregar servicio">
           ${datos.servicios.map(s => html`<button type="button" class="btn btn--sec btn--chico" data-agregar="${s.id}" ${s.precio ? '' : raw('title="Sin precio cargado"')}>${icono('mas')} ${s.nombre}</button>`)}
-          ${admin ? html`<button type="button" class="btn btn--fantasma btn--chico" data-agregar="otro">${icono('mas')} Otro concepto</button>` : ''}
+          ${admin ? html`<button type="button" class="btn btn--sec btn--chico" data-evento>${icono('mas')} Evento</button>
+          <button type="button" class="btn btn--fantasma btn--chico" data-agregar="otro">${icono('mas')} Otro concepto</button>` : ''}
         </div>
         <div id="items" class="items"></div>
       </div>
@@ -207,6 +243,15 @@ export async function nuevoTicket(ctx) {
   }
 
   function filaItem(it) {
+    if (it.evento) {
+      return html`<div class="item" data-item="${it.k}">
+        <div class="item__concepto"><strong>${EVENTOS[it.evento]}</strong><div class="muted chico">${it.detalle}</div>
+          <button type="button" class="btn btn--fantasma btn--chico" data-editar-evento="${it.k}">${icono('editar')} Editar</button></div>
+        <div class="item__cant"></div><div class="item__precio"></div>
+        <strong class="item__importe monto">${pesos(it.precio)}</strong>
+        <button type="button" class="btn btn--fantasma btn--chico item__quitar" data-quitar="${it.k}" aria-label="Quitar">${icono('x')}</button>
+      </div>`;
+    }
     const s = it.servicio_id ? servicio(it.servicio_id) : null;
     const cant = parseCantidad(it.cantidad);
     const precio = it.precio;
@@ -251,7 +296,17 @@ export async function nuevoTicket(ctx) {
     calcular();
   });
 
-  ctx.el.addEventListener('click', (e) => {
+  ctx.el.addEventListener('click', async (e) => {
+    const ev = e.target.closest('[data-evento], [data-editar-evento]');
+    if (ev) {
+      const actual = ev.dataset.editarEvento ? estado.items.find(x => x.k === Number(ev.dataset.editarEvento)) : null;
+      const r = await pedirEvento(actual || {});
+      if (!r) return;
+      if (actual) Object.assign(actual, r);
+      else estado.items.push({ k: sig++, servicio_id: null, concepto: '', cantidad: '1', ...r });
+      pintarItems();
+      return;
+    }
     const ag = e.target.closest('[data-agregar]');
     if (ag) {
       const s = ag.dataset.agregar === 'otro' ? null : servicio(ag.dataset.agregar);
@@ -306,7 +361,7 @@ export async function nuevoTicket(ctx) {
       : cuenta()?.transitos && !d.piloto.trim() ? 'Escribí el piloto al mando: en los tránsitos es lo que identifica el ticket.'
       : !estado.items.length ? 'Agregá al menos un servicio.'
       : estado.items.some(it => !parseCantidad(it.cantidad)) ? 'Revisá las cantidades: números con hasta dos decimales (ej.: 40,5).'
-      : estado.items.some(it => !it.servicio_id && !String(it.concepto || '').trim()) ? 'Escribí el concepto.'
+      : estado.items.some(it => !it.servicio_id && !it.evento && !String(it.concepto || '').trim()) ? 'Escribí el concepto.'
       : estado.items.some(it => !it.precio) ? 'Falta el precio de algún ítem.'
       : null;
     if (falta) { $err.textContent = falta; $err.hidden = false; $err.scrollIntoView({ block: 'center', behavior: 'smooth' }); return; }
@@ -315,6 +370,7 @@ export async function nuevoTicket(ctx) {
     const mat = aeronave()?.matricula || avion()?.matricula;
     const c = cuenta();
     const lineas = estado.items.map((it) => {
+      if (it.evento) return html`<div>${EVENTOS[it.evento]}: <strong>${pesos(it.precio)}</strong><div class="muted chico">${it.detalle}</div></div>`;
       const s = it.servicio_id ? servicio(it.servicio_id) : null;
       const cant = parseCantidad(it.cantidad);
       const unidad = s ? (cant === 100 ? UNIDADES[s.unidad][0] : unidadPlural(s.unidad)) : (cant === 100 ? 'unidad' : 'unidades');
@@ -345,7 +401,10 @@ export async function nuevoTicket(ctx) {
     const cuerpo = {
       aeronave_id: aeronave()?.id ?? null, avion_id: avion()?.id ?? null, usuario_id: estado.usuarioId, piloto: d.piloto,
       fecha: d.fecha, notas: d.notas, cobrado: estado.cobrado, medio: estado.cobrado ? d.medio : null,
-      items: estado.items.map(it => ({ servicio_id: it.servicio_id, concepto: it.concepto, cantidad: it.cantidad, precio: admin ? pesosInput(it.precio) : undefined }))
+      items: estado.items.map(it => ({
+        servicio_id: it.servicio_id, concepto: it.concepto, cantidad: it.cantidad, precio: admin ? pesosInput(it.precio) : undefined,
+        evento: it.evento, detalle: it.detalle
+      }))
     };
     await conBoton(form.querySelector('[type=submit]'), async () => {
       try {
@@ -372,7 +431,7 @@ function listo(ctx, t) {
         <h1>Ticket ${t.numero_txt}</h1>
         <div class="listo__resumen">
           <p><strong class="monto" style="font-size:1.6rem">${pesos(t.total)}</strong></p>
-          <p>${t.matricula ? html`<strong class="matricula">${t.matricula}</strong>${t.piloto ? `, piloto ${t.piloto}` : ''}, ` : ''}${t.items.map(i => i.cantidad === 100 ? i.concepto : `${i.concepto} ${i.cantidad_txt}`).join(', ')}</p>
+          <p>${t.matricula ? html`<strong class="matricula">${t.matricula}</strong>${t.piloto ? `, piloto ${t.piloto}` : ''}, ` : ''}${t.items.map(i => i.detalle ? `${i.concepto}: ${i.detalle}` : i.cantidad === 100 ? i.concepto : `${i.concepto} ${i.cantidad_txt}`).join(', ')}</p>
           <p class="muted">${t.pago_movimiento_id ? `Pagado en el acto (${MEDIOS[t.pago_medio]}).` : `A cuenta de ${nombreCompleto(t)}: entra en su cupón del mes.`}</p>
         </div>
         <div class="listo__acciones">

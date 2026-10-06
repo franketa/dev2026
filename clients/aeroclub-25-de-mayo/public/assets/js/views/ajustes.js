@@ -45,6 +45,8 @@ export default async function ajustes(ctx) {
           <div class="campo"><label for="c-club">Nombre</label><input class="input" id="c-club" name="club_nombre" value="${c.club_nombre}"></div>
           <div class="campo"><label for="c-loc">Localidad</label><input class="input" id="c-loc" name="club_localidad" value="${c.club_localidad}"></div>
         </div>
+        <div class="campo"><label for="c-mail">Email de tesorería</label><input class="input" id="c-mail" name="email_tesoreria" type="email" value="${c.email_tesoreria || ''}" placeholder="tesoreria@aeroclub25demayo.com.ar">
+          <p class="campo__ayuda">A donde llegan los pedidos de cambio de datos de los pilotos. Si queda vacío, se usa el email del primer usuario de tesorería.</p></div>
       </section>
 
       <div data-escritura><button class="btn btn--principal btn--grande" type="submit">${icono('check')} Guardar configuración</button></div>

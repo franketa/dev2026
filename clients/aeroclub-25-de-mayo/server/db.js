@@ -241,7 +241,9 @@ CREATE TABLE IF NOT EXISTS ticket_items (
   unidad TEXT,
   cantidad INTEGER NOT NULL CHECK (cantidad > 0),   -- en centésimas: 40,5 litros → 4050
   precio INTEGER NOT NULL CHECK (precio >= 0),       -- centavos por unidad
-  importe INTEGER NOT NULL
+  importe INTEGER NOT NULL,
+  evento TEXT CHECK (evento IN ('total','anticipo')),  -- eventos: si se cobra el total o un anticipo
+  detalle TEXT                                         -- eventos: descripción
 );
 CREATE INDEX IF NOT EXISTS idx_items_ticket ON ticket_items(ticket_id);
 
@@ -313,7 +315,8 @@ const CONFIG_DEFAULT = {
   cierre_hora: '9',
   vencimiento_dia: '10',
   whatsapp_mensaje: 'Hola {nombre}. Te enviamos el resumen de {periodo} del {club}: volaste {horas} y el total a pagar es {total}. Podés pagar por transferencia al alias {alias}. Descargá tu cupón acá: {link}',
-  url_publica: ''
+  url_publica: '',
+  email_tesoreria: ''   // a dónde escriben los pilotos para cambiar sus datos (si queda vacío, el del primer admin)
 };
 
 function sqlTabla(tabla) {
@@ -361,6 +364,10 @@ function migrar() {
     db.exec('ALTER TABLE usuarios ADD COLUMN bloqueo_motivo TEXT');
   }
   if (sqlTabla('tickets') && !columnas('tickets').includes('piloto')) db.exec('ALTER TABLE tickets ADD COLUMN piloto TEXT');
+  if (sqlTabla('ticket_items') && !columnas('ticket_items').includes('evento')) {
+    db.exec(`ALTER TABLE ticket_items ADD COLUMN evento TEXT CHECK (evento IN ('total','anticipo'))`);
+    db.exec('ALTER TABLE ticket_items ADD COLUMN detalle TEXT');
+  }
   for (const tabla of ['cierres', 'cupones']) {
     if (sqlTabla(tabla) && !columnas(tabla).includes('total_servicios')) {
       db.exec(`ALTER TABLE ${tabla} ADD COLUMN total_servicios INTEGER NOT NULL DEFAULT 0`);

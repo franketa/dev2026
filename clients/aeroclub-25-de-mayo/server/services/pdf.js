@@ -238,8 +238,13 @@ function generarTicket(t, config) {
   y += 20;
   for (const i of t.items) {
     doc.font('R').fontSize(10);
-    const alto = Math.max(14, doc.heightOfString(i.concepto, { width: 236 }));
+    let alto = Math.max(14, doc.heightOfString(i.concepto, { width: 236 }));
     doc.fillColor(C.tinta).text(i.concepto, col.concepto, y, { width: 236 });
+    if (i.detalle) {
+      doc.fontSize(9).fillColor(C.gris).text(i.detalle, col.concepto, y + alto, { width: 236 });
+      alto += doc.heightOfString(i.detalle, { width: 236 });
+      doc.fontSize(10).fillColor(C.tinta);
+    }
     doc.text(i.unidad ? i.cantidad_txt : i.cantidad_txt, col.cantidad, y, { width: 90, align: 'right', ...TNUM });
     doc.fillColor(C.gris).text(pesos(i.precio), col.precio, y, { width: 70, align: 'right', ...TNUM });
     doc.font('M').fillColor(C.tinta).text(pesos(i.importe), col.importe, y, { width: M + ancho - col.importe - 6, align: 'right', ...TNUM });

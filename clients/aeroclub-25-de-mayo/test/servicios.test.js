@@ -229,6 +229,31 @@ test('derecho de aeronave: una vez por mes por piloto que voló', () => {
   assert.equal(ledger.verificarCadena().ok, true);
 });
 
+test('tesorería cobra un evento: descripción y si es el total o un anticipo', async () => {
+  const eva = usuario('Eva');
+  const evento = (it) => ({ usuario_id: eva.id, fecha: util.hoy(), items: [{ evento: 'anticipo', detalle: 'Alquiler del hangar para un cumpleaños', precio: '50.000', ...it }] });
+  assert.throws(() => tickets.crear(evento({ detalle: ' ' }), admin), /Describí el evento/);
+  assert.throws(() => tickets.crear(evento({ evento: 'seña' }), admin), /completo o es un anticipo/);
+  assert.throws(() => tickets.crear(evento({ precio: '' }), admin), /importe del evento/);
+  assert.throws(() => tickets.crear({ ...evento({}), avion_id: 1, cobrado: true, medio: 'efectivo' }, rampa), /servicio de la lista/);
+
+  const t = tickets.crear({ ...evento({}), cobrado: true, medio: 'transferencia' }, admin);
+  assert.equal(t.total, 5000000);
+  assert.equal(t.items[0].concepto, 'Evento, anticipo');
+  assert.equal(t.items[0].detalle, 'Alquiler del hangar para un cumpleaños');
+  assert.equal(t.items[0].evento, 'anticipo');
+  assert.equal(ledger.saldo(eva.id), 0);
+  const cargo = db.prepare('SELECT concepto FROM movimientos WHERE id = ?').get(t.movimiento_id).concepto;
+  assert.match(cargo, /Evento, anticipo: Alquiler del hangar para un cumpleaños/);
+  const total = tickets.crear(evento({ evento: 'total', precio: '100.000' }), admin);
+  assert.equal(total.items[0].concepto, 'Evento, pago total');
+  assert.equal(ledger.saldo(eva.id), 10000000);
+
+  const chunks = [];
+  for await (const c of generarTicket(tickets.detalle(t.id), require('../server/db').getConfig())) chunks.push(c);
+  assert.equal(Buffer.concat(chunks).subarray(0, 5).toString(), '%PDF-');
+});
+
 test('servicios valorizados del mes', () => {
   const r = tickets.resumenServicios(util.periodoActual());
   const porNombre = Object.fromEntries(r.map(x => [x.nombre, x]));
@@ -237,6 +262,8 @@ test('servicios valorizados del mes', () => {
   assert.equal(porNombre['Otros conceptos'].importe, 1200000);   // el ticket anulado no cuenta
   assert.equal(porNombre['Hangaraje mensual'].importe, 5000000);
   assert.equal(porNombre['Hangaraje diario'].cantidad_txt, '2 días');
+  assert.equal(porNombre.Eventos.importe, 15000000);
+  assert.equal(porNombre.Eventos.tickets, 2);
 });
 
 const PNG = 'data:image/png;base64,' + Buffer.from('89504e470d0a1a0a0000000d49484452', 'hex').toString('base64');
@@ -335,6 +362,13 @@ test('roles: consulta sólo mira, rampa sólo tickets, el piloto no toca vuelos,
   const { pago } = await inf.json();
   assert.equal((await p('GET', `/api/pagos-informados/${pago.id}/comprobante`)).status, 200);
   assert.equal((await r('GET', `/api/pagos-informados/${pago.id}/comprobante`)).status, 403);
+
+  // El piloto no cambia sus datos: se los pide a tesorería por mail. Rampa sí puede cargar su celular.
+  assert.equal((await p('PUT', '/api/perfil', { telefono: '2345 401234' })).status, 403);
+  assert.equal((await r('PUT', '/api/perfil', { telefono: '2345 401234' })).status, 200);
+  assert.equal((await (await p('GET', '/api/perfil/contacto')).json()).email, 'tesoreria@aeroclub25demayo.com.ar');
+  db.prepare(`UPDATE config SET valor = 'cuentas@club.com' WHERE clave = 'email_tesoreria'`).run();
+  assert.equal((await (await p('GET', '/api/perfil/contacto')).json()).email, 'cuentas@club.com');
 
   // El externo no tiene usuario: aunque tuviera email, no puede entrar.
   db.prepare(`UPDATE usuarios SET email = 'externo@test.com' WHERE id = ?`).run(externo);

@@ -1,8 +1,10 @@
-import { post, put, html, pintar, icono, toast, error, conBoton, datosForm, rolTexto, verContrasenas } from '../lib.js';
+import { get, post, put, html, pintar, icono, toast, error, conBoton, datosForm, rolTexto, verContrasenas, modal } from '../lib.js';
 
 export default async function perfil(ctx) {
   const u = ctx.usuario;
   const forzado = u.debe_cambiar_password;
+  // El piloto no edita sus datos: se los pide a tesorería por mail.
+  const piloto = u.rol === 'piloto';
 
   pintar(ctx.el, html`
   <div class="vista" style="max-width:640px">
@@ -23,6 +25,17 @@ export default async function perfil(ctx) {
     ${forzado ? '' : html`
     <section class="panel">
       <div class="panel__cab"><h2>Tus datos</h2></div>
+      ${piloto ? html`
+      <dl class="detalle">
+        <dt>Nombre</dt><dd>${u.nombre} ${u.apellido}</dd>
+        <dt>Email</dt><dd>${u.email}</dd>
+        <dt>Celular</dt><dd>${u.telefono || html`<span class="muted">Sin cargar</span>`}</dd>
+        ${u.dni ? html`<dt>DNI</dt><dd>${u.dni}</dd>` : ''}
+        ${u.licencia ? html`<dt>Licencia</dt><dd>${u.licencia}</dd>` : ''}
+      </dl>
+      <p class="muted chico" style="margin:16px 0 12px">Si algún dato está mal o cambió, pedile a tesorería que lo actualice.</p>
+      <button class="btn btn--sec" type="button" data-pedir-cambio>${icono('editar')} Pedir un cambio de datos</button>`
+      : html`
       <form class="form" id="form-datos" novalidate>
         <dl class="detalle">
           <dt>Email</dt><dd>${u.email}</dd>
@@ -31,10 +44,10 @@ export default async function perfil(ctx) {
         </dl>
         <div class="campo"><label for="telefono">Celular (WhatsApp)</label>
           <input class="input" id="telefono" name="telefono" inputmode="tel" value="${u.telefono || ''}" placeholder="2345 401234">
-          <p class="campo__ayuda">Código de área sin 0 y número sin 15.${u.rol === 'rampa' ? '' : ' Tesorería te manda el cupón a este número.'}</p></div>
+          <p class="campo__ayuda">Código de área sin 0 y número sin 15.</p></div>
         <button class="btn btn--sec" type="submit">Guardar celular</button>
       </form>
-      <p class="muted chico" style="margin-top:16px">Para cambiar tu nombre o email, pedíselo a tesorería.</p>
+      <p class="muted chico" style="margin-top:16px">Para cambiar tu nombre o email, pedíselo a tesorería.</p>`}
     </section>
     <button class="btn btn--peligro" type="button" data-salir>${icono('salir')} Salir</button>`}
   </div>`);
@@ -57,6 +70,8 @@ export default async function perfil(ctx) {
     });
   });
 
+  ctx.el.querySelector('[data-pedir-cambio]')?.addEventListener('click', () => pedirCambio(u));
+
   const fd = ctx.el.querySelector('#form-datos');
   fd?.addEventListener('submit', (e) => {
     e.preventDefault();
@@ -67,5 +82,35 @@ export default async function perfil(ctx) {
         toast('Celular guardado', 'ok');
       } catch (err) { error(err); }
     });
+  });
+}
+
+// Arma el mail a tesorería con lo que hay que cambiar; se manda desde la app de correo del piloto.
+async function pedirCambio(u) {
+  let email = null;
+  try { ({ email } = await get('/api/perfil/contacto')); } catch (err) { return error(err); }
+  if (!email) return error({ message: 'Tesorería todavía no cargó su email. Avisales por WhatsApp o en el club.' });
+  const m = modal({
+    titulo: 'Pedir un cambio de datos',
+    subtitulo: `Se abre tu correo con el pedido listo para mandar a ${email}.`,
+    contenido: html`<form class="form" novalidate>
+      <div class="campo"><label for="pc-texto">¿Qué hay que cambiar?</label>
+        <textarea class="textarea" id="pc-texto" name="texto" maxlength="600" required autofocus placeholder="Ej.: mi celular nuevo es 2345 401234"></textarea></div>
+      <div class="modal__acciones"><button class="btn btn--sec" type="button" data-cerrar>Cancelar</button><button class="btn btn--principal" type="submit">Escribir el mail</button></div>
+    </form>`
+  });
+  const form = m.el.querySelector('form');
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const texto = form.texto.value.trim();
+    if (!texto) { form.texto.setAttribute('aria-invalid', 'true'); form.texto.focus(); return; }
+    const asunto = `Cambio de datos: ${u.nombre} ${u.apellido}`;
+    const cuerpo = `Hola, soy ${u.nombre} ${u.apellido} (${u.email}). Necesito cambiar estos datos en el sistema del aeroclub:
+
+${texto}
+
+Gracias.`;
+    location.href = `mailto:${email}?subject=${encodeURIComponent(asunto)}&body=${encodeURIComponent(cuerpo)}`;
+    m.cerrar(true);
   });
 }

@@ -17,6 +17,8 @@ const {
 const DIAS_ATRAS_RAMPA = 7;
 const MAX_ITEMS = 20;
 
+const EVENTOS = { total: 'Evento, pago total', anticipo: 'Evento, anticipo' };
+
 const fmtNumero = (n) => `T-${String(n).padStart(5, '0')}`;
 
 // ── Externos ────────────────────────────────────────────────────────────────
@@ -159,18 +161,28 @@ function leerItems(items, actor) {
         if (precio == null || precio < 0) throw new ErrorNegocio(`Precio inválido en ${s.nombre}`);
       }
       if (!precio) throw new ErrorNegocio(`${s.nombre} no tiene precio cargado. Pedile a tesorería que lo complete en Flota y tarifas.`);
-      return { servicio_id: s.id, concepto: s.nombre, unidad: s.unidad, cantidad, precio, importe: importeItem(precio, cantidad) };
+      return { servicio_id: s.id, concepto: s.nombre, unidad: s.unidad, cantidad, precio, importe: importeItem(precio, cantidad), evento: null, detalle: null };
     }
     if (!esAdmin) throw new ErrorNegocio('Elegí un servicio de la lista');
+    // Evento (alquiler del hangar, bautismos, cenas…): se describe y se indica si es el total o un anticipo.
+    if (it.evento) {
+      if (!EVENTOS[it.evento]) throw new ErrorNegocio('Indicá si el evento se cobra completo o es un anticipo');
+      const detalle = limpiarTexto(it.detalle, 300);
+      if (!detalle) throw new ErrorNegocio('Describí el evento');
+      const precio = parsePesos(String(it.precio ?? ''));
+      if (precio == null || precio <= 0) throw new ErrorNegocio('Indicá el importe del evento');
+      return { servicio_id: null, concepto: EVENTOS[it.evento], unidad: null, cantidad: 100, precio, importe: precio, evento: it.evento, detalle };
+    }
     const concepto = limpiarTexto(it.concepto, 80);
     if (!concepto) throw new ErrorNegocio('Escribí el concepto');
     const precio = parsePesos(String(it.precio ?? ''));
     if (precio == null || precio <= 0) throw new ErrorNegocio(`Indicá el importe de "${concepto}"`);
-    return { servicio_id: null, concepto, unidad: null, cantidad, precio, importe: importeItem(precio, cantidad) };
+    return { servicio_id: null, concepto, unidad: null, cantidad, precio, importe: importeItem(precio, cantidad), evento: null, detalle: null };
   });
 }
 
 function describirItem(i) {
+  if (i.detalle) return `${i.concepto}: ${i.detalle}`;
   return i.cantidad === 100 ? i.concepto : `${i.concepto} ${fmtCantidad(i.cantidad, i.unidad)}`;
 }
 
@@ -180,8 +192,8 @@ function conceptoTicket(numero, matricula, piloto, items) {
 }
 
 const qItem = db.prepare(`
-  INSERT INTO ticket_items (ticket_id, servicio_id, concepto, unidad, cantidad, precio, importe)
-  VALUES (@ticket_id, @servicio_id, @concepto, @unidad, @cantidad, @precio, @importe)`);
+  INSERT INTO ticket_items (ticket_id, servicio_id, concepto, unidad, cantidad, precio, importe, evento, detalle)
+  VALUES (@ticket_id, @servicio_id, @concepto, @unidad, @cantidad, @precio, @importe, @evento, @detalle)`);
 
 // Guarda el ticket y su cargo en el libro. Sin validaciones de permisos: lo usan crear() y el cierre.
 function insertar({ usuario_id, aeronave_id = null, matricula = null, piloto = null, fecha, origen, items, notas = null, creado_por = null, cierre_id = null }) {
@@ -196,7 +208,7 @@ function insertar({ usuario_id, aeronave_id = null, matricula = null, piloto = n
     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`)
     .run(numero, usuario_id, aeronave_id, matricula, piloto, fecha, origen, total, notas, mov.id, crypto.randomBytes(18).toString('base64url'), creado_por);
   const id = Number(r.lastInsertRowid);
-  for (const it of items) qItem.run({ ticket_id: id, ...it });
+  for (const it of items) qItem.run({ evento: null, detalle: null, ...it, ticket_id: id });
   return { id, numero, total };
 }
 
@@ -326,12 +338,12 @@ function listar(filtros = {}) {
 // Servicios facturados en un mes, valorizados (para el panel y los reportes).
 function resumenServicios(periodo) {
   return db.prepare(`
-    SELECT i.servicio_id, COALESCE(s.nombre, 'Otros conceptos') nombre, s.unidad,
+    SELECT i.servicio_id, COALESCE(s.nombre, CASE WHEN i.evento IS NOT NULL THEN 'Eventos' ELSE 'Otros conceptos' END) nombre, s.unidad,
            SUM(i.cantidad) cantidad, SUM(i.importe) importe, COUNT(DISTINCT t.id) tickets
     FROM ticket_items i JOIN tickets t ON t.id = i.ticket_id LEFT JOIN servicios s ON s.id = i.servicio_id
     WHERE t.estado = 'vigente' AND substr(t.fecha,1,7) = ?
-    GROUP BY COALESCE(i.servicio_id, 0)
-    ORDER BY COALESCE(s.orden, 999), nombre`).all(periodo)
+    GROUP BY COALESCE(i.servicio_id, CASE WHEN i.evento IS NOT NULL THEN -1 ELSE 0 END)
+    ORDER BY COALESCE(s.orden, CASE WHEN i.evento IS NOT NULL THEN 998 ELSE 999 END), nombre`).all(periodo)
     .map(r => ({ ...r, cantidad_txt: r.unidad ? fmtCantidad(r.cantidad, r.unidad) : `${r.tickets} ${r.tickets === 1 ? 'cargo' : 'cargos'}` }));
 }
 
