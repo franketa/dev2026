@@ -40,16 +40,34 @@ const informar = db.transaction((input, actor) => {
   const comprobanteId = comp
     ? Number(db.prepare('INSERT INTO comprobantes (tipo, datos) VALUES (?, ?)').run(comp.tipo, comp.datos).lastInsertRowid)
     : null;
-  const r = db.prepare(`INSERT INTO pagos_informados (usuario_id, importe, fecha, medio, nota, comprobante_id) VALUES (?, ?, ?, ?, ?, ?)`)
-    .run(actor.id, importe, fecha, input.medio, nota, comprobanteId);
+  const r = db.prepare(`INSERT INTO pagos_informados (usuario_id, importe, fecha, medio, nota, comprobante_id, informado_por) VALUES (?, ?, ?, ?, ?, ?, ?)`)
+    .run(actor.id, importe, fecha, input.medio, nota, comprobanteId, actor.id);
   auditar(actor.id, 'pago_informado.alta', `${fmtPesos(importe)} por ${input.medio} del ${fecha}${comp ? ', con comprobante' : ''}`);
   return get(Number(r.lastInsertRowid));
 });
 
 const SELECT = `
-  SELECT p.*, u.nombre, u.apellido, u.telefono, r.nombre || ' ' || r.apellido revisado_por_nombre, c.tipo comprobante_tipo
+  SELECT p.*, u.nombre, u.apellido, u.telefono, r.nombre || ' ' || r.apellido revisado_por_nombre, c.tipo comprobante_tipo,
+    t.numero ticket_numero, CASE WHEN p.informado_por <> p.usuario_id THEN i.nombre || ' ' || i.apellido END cobrado_por_nombre
   FROM pagos_informados p JOIN usuarios u ON u.id = p.usuario_id
-  LEFT JOIN usuarios r ON r.id = p.revisado_por LEFT JOIN comprobantes c ON c.id = p.comprobante_id`;
+  LEFT JOIN usuarios r ON r.id = p.revisado_por LEFT JOIN comprobantes c ON c.id = p.comprobante_id
+  LEFT JOIN tickets t ON t.id = p.ticket_id LEFT JOIN usuarios i ON i.id = p.informado_por`;
+
+const numeroTicket = (n) => `T-${String(n).padStart(5, '0')}`;
+
+// Lo que cobra rampa en el momento (efectivo, transferencia…) no toca la cuenta hasta que tesorería
+// lo confirma: queda como pago informado, ligado al ticket.
+function desdeTicket({ ticket, usuarioId, importe, fecha, medio, actor }) {
+  const r = db.prepare(`INSERT INTO pagos_informados (usuario_id, importe, fecha, medio, nota, ticket_id, informado_por) VALUES (?, ?, ?, ?, ?, ?, ?)`)
+    .run(usuarioId, importe, fecha, medio, `Cobrado por rampa en el ticket ${numeroTicket(ticket.numero)}`, ticket.id, actor.id);
+  return Number(r.lastInsertRowid);
+}
+
+// Si se anula el ticket antes de que tesorería confirme el cobro, el pago informado se descarta.
+function descartarPorTicket(pagoId, motivo, actor) {
+  db.prepare(`UPDATE pagos_informados SET estado = 'rechazado', motivo_rechazo = ?, revisado_por = ?, revisado_en = datetime('now') WHERE id = ? AND estado = 'pendiente'`)
+    .run(`Ticket anulado: ${motivo}`.slice(0, 200), actor.id, pagoId);
+}
 
 function get(id) {
   const p = db.prepare(`${SELECT} WHERE p.id = ?`).get(id);
@@ -82,8 +100,11 @@ const confirmar = db.transaction((id, input, actor) => {
   const medio = MEDIOS.includes(input.medio) ? input.medio : p.medio;
   const mov = ledger.registrar({
     usuario_id: p.usuario_id, tipo: 'pago', importe: -importe, fecha, medio, creado_por: actor.id,
-    concepto: `Pago por ${medio} (informado por el socio${p.nota ? `: ${p.nota}` : ''})`.slice(0, 250)
+    concepto: (p.ticket_id
+      ? `Pago del ticket ${numeroTicket(p.ticket_numero)} por ${medio} (cobrado por rampa${p.cobrado_por_nombre ? `: ${p.cobrado_por_nombre}` : ''})`
+      : `Pago por ${medio} (informado por el socio${p.nota ? `: ${p.nota}` : ''})`).slice(0, 250)
   });
+  if (p.ticket_id) db.prepare('UPDATE tickets SET pago_movimiento_id = ? WHERE id = ?').run(mov.id, p.ticket_id);
   db.prepare(`UPDATE pagos_informados SET estado = 'confirmado', importe = ?, fecha = ?, medio = ?, movimiento_id = ?, revisado_por = ?, revisado_en = datetime('now') WHERE id = ?`)
     .run(importe, fecha, medio, mov.id, actor.id, id);
   const cambio = importe !== p.importe ? ` (informó ${fmtPesos(p.importe)})` : '';
@@ -116,4 +137,4 @@ function resumenMes(periodo) {
     FROM pagos_informados WHERE substr(fecha,1,7) = ?`).get(periodo);
 }
 
-module.exports = { informar, listar, get, pendientes, resumenMes, confirmar, rechazar, comprobante };
+module.exports = { informar, desdeTicket, descartarPorTicket, listar, get, pendientes, resumenMes, confirmar, rechazar, comprobante };

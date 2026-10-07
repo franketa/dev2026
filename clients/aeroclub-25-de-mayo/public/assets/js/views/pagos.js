@@ -18,8 +18,10 @@ function vistaComprobante(p) {
 // Revisión de un pago informado. Tesorería puede corregir importe, fecha o medio antes de confirmar.
 export function revisarPago(p, alTerminar) {
   const m = modal({
-    titulo: `Pago informado por ${nombreCompleto(p)}`,
-    subtitulo: `El ${fechaHora(p.creado_en)}. Revisá que el dinero haya llegado antes de confirmar.`,
+    titulo: p.ticket_id ? `Cobro de rampa: ${nombreCompleto(p)}` : `Pago informado por ${nombreCompleto(p)}`,
+    subtitulo: p.ticket_id
+      ? `${p.cobrado_por_nombre || 'Rampa'} lo cobró el ${fechaHora(p.creado_en)}. Confirmalo cuando tengas la plata.`
+      : `El ${fechaHora(p.creado_en)}. Revisá que el dinero haya llegado antes de confirmar.`,
     contenido: html`<form class="form" novalidate>
       ${vistaComprobante(p)}
       ${p.nota ? html`<p class="aviso aviso--info">${icono('nota')}<span>${p.nota}</span></p>` : ''}
@@ -66,7 +68,7 @@ export function tablaInformes(pagos, { socio = true, revisar = false } = {}) {
   return html`<div class="tabla-caja"><table class="tabla tabla--tarjetas">
     <thead><tr>${socio ? html`<th>Socio</th>` : ''}<th>Pago</th><th class="num">Importe</th><th>Estado</th><th></th></tr></thead>
     <tbody>${pagos.map(p => html`<tr>
-      ${socio ? html`<td class="celda-ppal"><a href="#/admin/cuentas/${p.usuario_id}"><strong>${nombreLista(p)}</strong></a><div class="muted chico">Informado el ${fechaHora(p.creado_en)}</div></td>` : ''}
+      ${socio ? html`<td class="celda-ppal"><a href="#/admin/cuentas/${p.usuario_id}"><strong>${nombreLista(p)}</strong></a><div class="muted chico">${p.ticket_id ? `Cobrado por ${p.cobrado_por_nombre || 'rampa'}` : 'Informado'} el ${fechaHora(p.creado_en)}</div></td>` : ''}
       <td data-label="Pago" ${socio ? '' : raw('class="celda-ppal"')}>${MEDIOS[p.medio] || p.medio}, ${fecha(p.fecha)}${p.nota ? html`<div class="muted chico">${p.nota}</div>` : ''}${p.comprobante_id ? html`<div class="chico muted con-icono">${icono('foto')} Con comprobante</div>` : ''}</td>
       <td class="num monto" data-label="Importe">${pesos(p.importe)}</td>
       <td data-label="Estado">${chipInforme(p)}${p.estado === 'rechazado' && p.motivo_rechazo ? html`<div class="muted chico">${p.motivo_rechazo}</div>` : ''}${p.revisado_por_nombre ? html`<div class="muted chico">Por ${p.revisado_por_nombre}</div>` : ''}</td>
@@ -86,7 +88,7 @@ export default async function pagosInformados(ctx) {
 
   pintar(ctx.el, html`
   <div class="vista">
-    <div class="vista__cab"><div><h1>Pagos informados</h1><p>Lo que los socios avisan que pagaron desde la app. No toca su cuenta hasta que lo confirmás.</p></div></div>
+    <div class="vista__cab"><div><h1>Pagos informados</h1><p>Lo que los socios avisan que pagaron desde la app y lo que cobra rampa en el momento. No toca la cuenta hasta que lo confirmás.</p></div></div>
     <div class="pestanas" role="tablist">
       <button type="button" role="tab" data-ver="pendiente" aria-selected="${ver === 'pendiente'}">Por revisar</button>
       <button type="button" role="tab" data-ver="historial" aria-selected="${ver === 'historial'}">Historial</button>

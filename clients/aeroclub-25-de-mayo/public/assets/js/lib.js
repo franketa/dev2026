@@ -162,6 +162,7 @@ export function chipCupon(c) {
 export function chipTicket(t) {
   if (t.estado === 'anulado') return html`<span class="chip chip--neutro">Anulado</span>`;
   if (t.pago_movimiento_id) return html`<span class="chip chip--ok">Cobrado en el acto</span>`;
+  if (t.cobrado_en_acto) return html`<span class="chip chip--pend">Cobrado por rampa, a confirmar</span>`;
   return html`<span class="chip">A cuenta</span>`;
 }
 export function chipInforme(p) {

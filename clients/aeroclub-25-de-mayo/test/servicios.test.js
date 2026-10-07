@@ -102,14 +102,55 @@ test('rampa registra una aeronave de un externo y le arma un ticket (externos pa
   assert.equal(t.items[0].precio, 5000000);                             // rampa no cambia el precio
   assert.equal(t.total, 5000000 + 10125000);
   assert.equal(t.numero_txt, 'T-00001');
-  assert.ok(t.pago_movimiento_id);
-  assert.equal(ledger.saldo(externo), 0);                               // cargo y pago en el mismo acto
+  // Lo que cobra rampa queda en pagos informados: no toca la cuenta hasta que tesorería lo confirma.
+  assert.equal(t.pago_movimiento_id, null);
+  assert.equal(t.cobrado_en_acto, 1);
+  assert.equal(t.pago_informado_estado, 'pendiente');
+  assert.equal(ledger.saldo(externo), 15125000);
+  const informado = pagosInformados.get(t.pago_informado_id);
+  assert.equal(informado.usuario_id, externo);
+  assert.equal(informado.importe, t.total);
+  assert.equal(informado.medio, 'transferencia');
+  assert.equal(informado.cobrado_por_nombre, 'Rampa Test');
+  assert.match(informado.nota, /rampa en el ticket T-00001/);
+  pagosInformados.confirmar(informado.id, {}, admin);
+  assert.equal(ledger.saldo(externo), 0);                               // confirmado: cargo y pago
+  const confirmado = tickets.detalle(t.id);
+  assert.ok(confirmado.pago_movimiento_id);
+  assert.equal(confirmado.pago_medio, 'transferencia');
+  assert.match(db.prepare('SELECT concepto FROM movimientos WHERE id = ?').get(confirmado.pago_movimiento_id).concepto, /ticket T-00001 por transferencia \(cobrado por rampa: Rampa Test\)/);
   const mov = db.prepare('SELECT * FROM movimientos WHERE id = ?').get(t.movimiento_id);
   assert.equal(mov.tipo, 'servicio');
   assert.match(mov.concepto, /T-00001 \(LV-ZZZ\): Hangaraje mensual, Combustible 40,5 litros/);
 
-  tickets.crear({ aeronave_id: aeronave.id, items: [{ servicio_id: servicio('Limpieza de avión').id }], cobrado: true, medio: 'efectivo' }, rampa);
+  const limpieza = tickets.crear({ aeronave_id: aeronave.id, items: [{ servicio_id: servicio('Limpieza de avión').id }], cobrado: true, medio: 'efectivo' }, rampa);
+  assert.equal(ledger.saldo(externo), 2000000);
+  pagosInformados.confirmar(limpieza.pago_informado_id, {}, admin);
   assert.equal(ledger.saldo(externo), 0);
+});
+
+test('si tesorería rechaza lo que cobró rampa, el cargo queda en la cuenta; si se anula el ticket, el cobro se descarta', () => {
+  const items = [{ servicio_id: servicio('Limpieza de avión').id }];
+  const t1 = tickets.crear({ aeronave_id: aeronave.id, items, cobrado: true, medio: 'efectivo' }, rampa);
+  pagosInformados.rechazar(t1.pago_informado_id, 'No llegó la plata a la caja', admin);
+  assert.equal(tickets.detalle(t1.id).cobrado_en_acto, 0);
+  assert.equal(ledger.saldo(externo), 2000000);
+  tickets.anular(t1.id, 'Prueba', admin);
+  assert.equal(ledger.saldo(externo), 0);
+
+  const t2 = tickets.crear({ aeronave_id: aeronave.id, items, cobrado: true, medio: 'efectivo' }, rampa);
+  const a = tickets.anular(t2.id, 'Se cargó dos veces', admin);
+  assert.equal(a.cobrado_en_acto, 0);
+  const p = pagosInformados.get(t2.pago_informado_id);
+  assert.equal(p.estado, 'rechazado');
+  assert.match(p.motivo_rechazo, /Ticket anulado: Se cargó dos veces/);
+  assert.equal(ledger.saldo(externo), 0);
+  // Lo que cobra tesorería en el acto entra directo, sin revisión.
+  const t3 = tickets.crear({ aeronave_id: aeronave.id, items, cobrado: true, medio: 'efectivo' }, admin);
+  assert.ok(t3.pago_movimiento_id);
+  assert.equal(t3.pago_informado_id, null);
+  assert.equal(ledger.saldo(externo), 0);
+  tickets.anular(t3.id, 'Prueba', admin);
 });
 
 test('tránsitos: matrícula y piloto al mando, sin asociarlo a un socio', () => {
@@ -123,6 +164,8 @@ test('tránsitos: matrícula y piloto al mando, sin asociarlo a un socio', () =>
   assert.equal(t.piloto, 'Juan Gómez');
   assert.equal(t.total, 800000);                                          // 2 días × $4.000
   assert.match(db.prepare('SELECT concepto FROM movimientos WHERE id = ?').get(t.movimiento_id).concepto, /LV-PAS, piloto Juan Gómez\): Hangaraje diario 2 días/);
+  assert.equal(ledger.saldo(transitos), 800000);                          // hasta que tesorería confirme el cobro
+  pagosInformados.confirmar(t.pago_informado_id, {}, admin);
   assert.equal(ledger.saldo(transitos), 0);
   assert.equal(tickets.listar({ creado_por: rampa.id }).find(x => x.id === t.id).piloto, 'Juan Gómez');
 });

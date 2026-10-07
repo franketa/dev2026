@@ -439,7 +439,7 @@ router.get('/reportes', (req, res) => {
   if (deServicios) {
     for (const t of [...r.tickets].reverse()) {
       filas.push([t.fecha, t.numero_txt, nombreCompleto(t), t.matricula || '', t.resumen || '', plata(t.total),
-        t.pago_movimiento_id ? `En el acto (${t.pago_medio})` : 'A cuenta', t.origen === 'cierre' ? 'Cierre automático' : (t.creado_por_nombre || '')]);
+        t.cobrado_en_acto ? `En el acto (${t.pago_medio}${t.pago_movimiento_id ? '' : ', a confirmar'})` : 'A cuenta', t.origen === 'cierre' ? 'Cierre automático' : (t.creado_por_nombre || '')]);
     }
   } else {
     for (const v of [...r.vuelos].reverse()) {

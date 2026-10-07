@@ -222,7 +222,7 @@ function generarTicket(t, config) {
   doc.font('C').fontSize(10).fillColor('#BFD3E6').text('Total', cajaX + 16, y + 4);
   doc.font('CB').fontSize(26).fillColor('#FFFFFF').text(pesos(t.total), cajaX + 16, y + 17, { width: 180, ...TNUM });
   doc.font('R').fontSize(9.5).fillColor('#BFD3E6').text(
-    t.estado === 'anulado' ? 'Anulado' : t.pago_movimiento_id ? `Pagado en el acto (${t.pago_medio === 'mercadopago' ? 'Mercado Pago' : t.pago_medio})` : 'Se suma a la cuenta', cajaX + 16, y + 50);
+    t.estado === 'anulado' ? 'Anulado' : t.cobrado_en_acto ? `Pagado en el acto (${t.pago_medio === 'mercadopago' ? 'Mercado Pago' : t.pago_medio})` : 'Se suma a la cuenta', cajaX + 16, y + 50);
 
   // ── Ítems ─────────────────────────────────────────────────────────────────────
   y = t.piloto ? 292 : t.matricula ? 262 : 240;
@@ -262,7 +262,7 @@ function generarTicket(t, config) {
   }
 
   // ── Cómo pagar (si quedó a cuenta) ────────────────────────────────────────────
-  if (t.estado !== 'anulado' && !t.pago_movimiento_id) {
+  if (t.estado !== 'anulado' && !t.cobrado_en_acto) {
     y += 10;
     doc.font('R').fontSize(9.5).fillColor(C.gris)
       .text('El importe se suma a la cuenta y se incluye en el cupón del mes. También se puede pagar ahora:', M, y, { width: ancho });
@@ -270,7 +270,7 @@ function generarTicket(t, config) {
   }
 
   if (t.estado === 'anulado') sello(doc, 'ANULADO', C.rojo);
-  else if (t.pago_movimiento_id) sello(doc, 'PAGADO', C.verde);
+  else if (t.cobrado_en_acto) sello(doc, 'PAGADO', C.verde);
 
   const pie = 800;
   doc.moveTo(M, pie - 10).lineTo(M + ancho, pie - 10).lineWidth(0.5).strokeColor(C.linea).stroke();

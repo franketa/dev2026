@@ -99,6 +99,15 @@ test('la novedad del piloto aparece en los paneles hasta que mantenimiento la ve
   assert.ok(db.prepare(`SELECT 1 FROM auditoria WHERE accion = 'novedad.verificada'`).get());
 });
 
+test('se puede verificar la novedad de un vuelo que ya entró en el cierre', async () => {
+  const r = await p('POST', '/api/vuelos', { avion_id: 1, fecha: util.hoy(), horas: '0,8', hora_salida: '16:00', hora_llegada: '16:55', notas: 'Ruido en la radio' });
+  const id = (await r.json()).vuelo.id;
+  db.prepare(`UPDATE vuelos SET estado = 'cerrado' WHERE id = ?`).run(id);   // como lo deja el cierre del mes
+  const v = await m('POST', `/api/mantenimiento/novedades/${id}/verificar`, {});
+  assert.equal(v.status, 200);
+  assert.equal(db.prepare('SELECT estado FROM vuelos WHERE id = ?').get(id).estado, 'cerrado');
+});
+
 test('una novedad de un vuelo anulado no aparece', async () => {
   const r = await p('POST', '/api/vuelos', { avion_id: 1, fecha: util.hoy(), horas: '0,7', hora_salida: '15:00', hora_llegada: '15:50', notas: 'Se cargó dos veces' });
   const id = (await r.json()).vuelo.id;

@@ -11,7 +11,7 @@ function tarjeta(n, { verificar }) {
     </div>
     <p class="novedad__texto">${n.notas}</p>
     ${n.novedad_revisada_en
-      ? html`<p class="novedad__revision">${icono('check')}<span>Verificada por ${n.revisada_por_nombre} el ${fechaHora(n.novedad_revisada_en)}${n.novedad_comentario ? html`<br><b>${n.novedad_comentario}</b>` : ''}</span></p>`
+      ? html`<p class="novedad__revision">${icono('check')}<span>${n.revisada_por_nombre ? `Verificada por ${n.revisada_por_nombre}` : 'Marcada como revisada'} el ${fechaHora(n.novedad_revisada_en)}${n.novedad_comentario ? html`<br><b>${n.novedad_comentario}</b>` : ''}</span></p>`
       : verificar ? html`<div><button class="btn btn--principal btn--chico" type="button" data-verificar="${n.id}" data-escritura>${icono('check')} Marcar verificada</button></div>` : ''}
   </article>`;
 }

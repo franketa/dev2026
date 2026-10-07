@@ -57,7 +57,7 @@ const base = (ctx) => (ctx.usuario.rol === 'rampa' ? '#/rampa' : '#/admin');
 const urlTicketPdf = (ctx, t) => (ctx.usuario.rol === 'rampa' ? `/api/rampa/tickets/${t.id}/pdf` : `/api/admin/tickets/${t.id}/pdf`);
 
 function waTicket(t) {
-  const estado = t.estado === 'anulado' ? 'Quedó anulado.' : t.pago_movimiento_id ? 'Ya está pagado.' : 'Se suma a tu cuenta del club.';
+  const estado = t.estado === 'anulado' ? 'Quedó anulado.' : t.cobrado_en_acto ? 'Ya está pagado.' : 'Se suma a tu cuenta del club.';
   return linkWa(t.telefono, `Hola ${t.nombre}. Te enviamos el ticket ${t.numero_txt} del Aeroclub 25 de Mayo${t.matricula ? ` por servicios a ${t.matricula}` : ''}: ${t.resumen}. Total ${pesos(t.total)}. ${estado} Descargalo acá: ${location.origin}/t/${t.token}`);
 }
 
@@ -432,7 +432,9 @@ function listo(ctx, t) {
         <div class="listo__resumen">
           <p><strong class="monto" style="font-size:1.6rem">${pesos(t.total)}</strong></p>
           <p>${t.matricula ? html`<strong class="matricula">${t.matricula}</strong>${t.piloto ? `, piloto ${t.piloto}` : ''}, ` : ''}${t.items.map(i => i.detalle ? `${i.concepto}: ${i.detalle}` : i.cantidad === 100 ? i.concepto : `${i.concepto} ${i.cantidad_txt}`).join(', ')}</p>
-          <p class="muted">${t.pago_movimiento_id ? `Pagado en el acto (${MEDIOS[t.pago_medio]}).` : `A cuenta de ${nombreCompleto(t)}: entra en su cupón del mes.`}</p>
+          <p class="muted">${t.pago_movimiento_id ? `Pagado en el acto (${MEDIOS[t.pago_medio]}).`
+            : t.cobrado_en_acto ? `Cobrado en el acto (${MEDIOS[t.pago_medio]}). Tesorería lo confirma en Pagos informados.`
+            : `A cuenta de ${nombreCompleto(t)}: entra en su cupón del mes.`}</p>
         </div>
         <div class="listo__acciones">
           ${wa ? html`<a class="btn btn--wa" href="${wa}" target="_blank" rel="noopener">${icono('wa')} Mandar por WhatsApp</a>` : ''}
@@ -461,7 +463,7 @@ export async function misTickets(ctx) {
     </div>
     <div class="cifras">
       <div class="cifra"><span>Tickets</span><strong>${vigentes.length}</strong></div>
-      <div class="cifra"><span>Total</span><strong>${pesos(vigentes.reduce((s, t) => s + t.total, 0))}</strong><small>${pesos(vigentes.filter(t => t.pago_movimiento_id).reduce((s, t) => s + t.total, 0))} cobrado en el acto</small></div>
+      <div class="cifra"><span>Total</span><strong>${pesos(vigentes.reduce((s, t) => s + t.total, 0))}</strong><small>${pesos(vigentes.filter(t => t.cobrado_en_acto).reduce((s, t) => s + t.total, 0))} cobrado en el acto</small></div>
     </div>
     <section class="panel">${tablaTickets(ctx, tickets)}</section>
   </div>`);
@@ -477,7 +479,8 @@ export async function ticketsAdmin(ctx) {
   const { tickets } = await get(`/api/admin/tickets?periodo=${periodo}${origen ? `&origen=${origen}` : ''}`);
   const vigentes = tickets.filter(t => t.estado !== 'anulado');
   const total = vigentes.reduce((s, t) => s + t.total, 0);
-  const enElActo = vigentes.filter(t => t.pago_movimiento_id).reduce((s, t) => s + t.total, 0);
+  const enElActo = vigentes.filter(t => t.cobrado_en_acto).reduce((s, t) => s + t.total, 0);
+  const aConfirmar = vigentes.filter(t => t.cobrado_en_acto && !t.pago_movimiento_id).reduce((s, t) => s + t.total, 0);
   const sel = (v) => (v === origen ? raw('selected') : '');
 
   pintar(ctx.el, html`
@@ -501,7 +504,7 @@ export async function ticketsAdmin(ctx) {
     </form>
     <div class="cifras">
       <div class="cifra"><span>Servicios facturados</span><strong>${pesos(total)}</strong><small>${vigentes.length} ${vigentes.length === 1 ? 'ticket' : 'tickets'}</small></div>
-      <div class="cifra"><span>Cobrado en el acto</span><strong>${pesos(enElActo)}</strong></div>
+      <div class="cifra"><span>Cobrado en el acto</span><strong>${pesos(enElActo)}</strong>${aConfirmar ? html`<small><a href="#/admin/pagos">${pesos(aConfirmar)} de rampa a confirmar</a></small>` : ''}</div>
       <div class="cifra"><span>A cuenta</span><strong>${pesos(total - enElActo)}</strong><small>Entra en los cupones</small></div>
     </div>
     <section class="panel">${tablaTickets(ctx, tickets, { anular: true })}</section>
@@ -527,7 +530,9 @@ export async function ticketsAdmin(ctx) {
 function pedirAnulacion(t) {
   const pagado = !!t.pago_movimiento_id;
   const socio = t.usuario_rol !== 'externo' && !t.transitos;
-  const texto = !pagado ? `Se descuentan ${pesos(t.total)} de la cuenta de ${nombreCompleto(t)}.`
+  const texto = t.cobrado_en_acto && !pagado
+    ? `Se anula el cargo de ${pesos(t.total)}. Rampa lo había cobrado y tesorería todavía no lo confirmó: ese cobro se descarta de Pagos informados.`
+    : !pagado ? `Se descuentan ${pesos(t.total)} de la cuenta de ${nombreCompleto(t)}.`
     : `Se anulan el cargo de ${pesos(t.total)} y también el pago en el acto, que deja de contar como cobrado${socio ? ', salvo que marques que la plata queda a favor del socio' : ''}. Si hay que rehacerlo, cargá el ticket correcto como cobrado.`;
   return new Promise((ok) => {
     const m = modal({

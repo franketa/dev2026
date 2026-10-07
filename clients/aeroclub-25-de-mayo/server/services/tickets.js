@@ -9,6 +9,7 @@ const crypto = require('crypto');
 const { db, auditar, cuentaTransitos } = require('../db');
 const ledger = require('./ledger');
 const servicios = require('./servicios');
+const pagosInformados = require('./pagosInformados');
 const {
   ErrorNegocio, hoy, sumarDias, ultimoDia, periodoDe, esFecha, esPeriodo, nombrePeriodo, parsePesos, parseCantidad, fmtCantidad,
   importeItem, fmtPesos, limpiarTexto, nombreCompleto, normalizarEmail, telefonoWhatsApp, MEDIOS
@@ -254,7 +255,12 @@ const crear = db.transaction((input, actor) => {
     origen: actor.rol === 'rampa' ? 'rampa' : 'tesoreria', items, notas, creado_por: actor.id
   });
 
-  if (medio) {
+  // Lo que cobra tesorería entra directo. Lo que cobra rampa queda en pagos informados hasta que
+  // tesorería lo confirma: mientras tanto el cargo sigue en la cuenta.
+  if (medio && actor.rol === 'rampa') {
+    const pid = pagosInformados.desdeTicket({ ticket: t, usuarioId: u.id, importe: t.total, fecha, medio, actor });
+    db.prepare('UPDATE tickets SET pago_informado_id = ? WHERE id = ?').run(pid, t.id);
+  } else if (medio) {
     const pago = ledger.registrar({
       usuario_id: u.id, tipo: 'pago', concepto: `Pago del ticket ${fmtNumero(t.numero)} por ${medio}`,
       importe: -t.total, fecha, medio, creado_por: actor.id
@@ -262,7 +268,7 @@ const crear = db.transaction((input, actor) => {
     db.prepare('UPDATE tickets SET pago_movimiento_id = ? WHERE id = ?').run(pago.id, t.id);
   }
   auditar(actor.id, 'ticket.alta',
-    `${fmtNumero(t.numero)} a ${nombreCompleto(u)}${matricula ? ` (${[matricula, piloto].filter(Boolean).join(', ')})` : ''}: ${fmtPesos(t.total)}${medio ? `, cobrado en el acto por ${medio}` : ', a cuenta'}`);
+    `${fmtNumero(t.numero)} a ${nombreCompleto(u)}${matricula ? ` (${[matricula, piloto].filter(Boolean).join(', ')})` : ''}: ${fmtPesos(t.total)}${medio ? `, cobrado en el acto por ${medio}${actor.rol === 'rampa' ? ' (a confirmar por tesorería)' : ''}` : ', a cuenta'}`);
   return detalle(t.id);
 });
 
@@ -282,6 +288,13 @@ const anular = db.transaction((id, motivo, actor, { mantenerPago = false } = {})
   const u = db.prepare('SELECT rol FROM usuarios WHERE id = ?').get(t.usuario_id);
   const quedaAFavor = !!t.pago_movimiento_id && mantenerPago && u.rol !== 'externo' && t.usuario_id !== cuentaTransitos();
   let pago = '';
+  // Cobrado por rampa y todavía sin confirmar: el pago informado se descarta.
+  const informado = t.pago_informado_id && !t.pago_movimiento_id
+    ? db.prepare('SELECT estado FROM pagos_informados WHERE id = ?').get(t.pago_informado_id) : null;
+  if (informado?.estado === 'pendiente') {
+    pagosInformados.descartarPorTicket(t.pago_informado_id, motivo, actor);
+    pago = '. El cobro de rampa sin confirmar se descartó.';
+  }
   if (t.pago_movimiento_id) {
     if (quedaAFavor) pago = '. El pago en el acto queda como saldo a favor.';
     else if (!yaAnulado(t.pago_movimiento_id)) {
@@ -304,14 +317,18 @@ function ticketDeMovimiento(movimientoId) {
 
 const SELECT_TICKET = `
   SELECT t.*, u.nombre, u.apellido, u.telefono, u.email, u.dni, u.rol usuario_rol, ae.modelo,
-         c.nombre || ' ' || c.apellido creado_por_nombre, pm.medio pago_medio,
+         c.nombre || ' ' || c.apellido creado_por_nombre, COALESCE(pm.medio, pi.medio) pago_medio,
+         pi.estado pago_informado_estado,
+         -- Pagado en el momento: confirmado en el libro, o cobrado por rampa y esperando que tesorería lo confirme.
+         (t.pago_movimiento_id IS NOT NULL OR pi.estado = 'pendiente') cobrado_en_acto,
          (t.usuario_id = (SELECT CAST(valor AS INTEGER) FROM config WHERE clave = 'cuenta_transitos')) transitos,
          (SELECT GROUP_CONCAT(i.concepto, ', ') FROM ticket_items i WHERE i.ticket_id = t.id) resumen
   FROM tickets t
   JOIN usuarios u ON u.id = t.usuario_id
   LEFT JOIN aeronaves ae ON ae.id = t.aeronave_id
   LEFT JOIN usuarios c ON c.id = t.creado_por
-  LEFT JOIN movimientos pm ON pm.id = t.pago_movimiento_id`;
+  LEFT JOIN movimientos pm ON pm.id = t.pago_movimiento_id
+  LEFT JOIN pagos_informados pi ON pi.id = t.pago_informado_id`;
 
 function detalle(id) {
   const t = db.prepare(`${SELECT_TICKET} WHERE t.id = ?`).get(id);

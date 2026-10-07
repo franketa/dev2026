@@ -126,10 +126,6 @@ CREATE TABLE IF NOT EXISTS vuelos (
   decimas INTEGER NOT NULL CHECK (decimas > 0),
   hora_salida TEXT,               -- 'HH:MM' (24 h); obligatorias desde la v1.004, los vuelos viejos no las tienen
   hora_llegada TEXT,
-  -- Novedades (notas del piloto): mantenimiento las marca como verificadas y salen de los paneles.
-  novedad_revisada_en TEXT,
-  novedad_revisada_por INTEGER REFERENCES usuarios(id),
-  novedad_comentario TEXT,
   -- Opcionales, reservados para sumar el tacómetro más adelante (hoy no se usan).
   tac_inicial INTEGER,
   tac_final INTEGER,
@@ -233,6 +229,7 @@ CREATE TABLE IF NOT EXISTS tickets (
   notas TEXT,
   movimiento_id INTEGER REFERENCES movimientos(id),
   pago_movimiento_id INTEGER REFERENCES movimientos(id) ON DELETE SET NULL,
+  pago_informado_id INTEGER,      -- lo cobró rampa: queda en pagos informados hasta que tesorería lo confirma
   estado TEXT NOT NULL DEFAULT 'vigente' CHECK (estado IN ('vigente','anulado')),
   motivo_anulacion TEXT,
   token TEXT NOT NULL UNIQUE,
@@ -285,10 +282,21 @@ CREATE TABLE IF NOT EXISTS pagos_informados (
   revisado_por INTEGER REFERENCES usuarios(id),
   revisado_en TEXT,
   motivo_rechazo TEXT,
+  ticket_id INTEGER REFERENCES tickets(id),      -- cobrado por rampa en ese ticket
+  informado_por INTEGER REFERENCES usuarios(id), -- quién lo cargó (el socio, o rampa)
   creado_en TEXT NOT NULL DEFAULT (datetime('now'))
 );
 CREATE INDEX IF NOT EXISTS idx_pinf_estado ON pagos_informados(estado, id);
 CREATE INDEX IF NOT EXISTS idx_pinf_usuario ON pagos_informados(usuario_id, id);
+
+-- Novedades de los vuelos (las notas del piloto) que mantenimiento ya revisó. Va aparte porque
+-- un vuelo cerrado no se modifica. Sin revisor: marcada al activar el módulo (v1.004).
+CREATE TABLE IF NOT EXISTS novedades_revisadas (
+  vuelo_id INTEGER PRIMARY KEY REFERENCES vuelos(id),
+  revisada_en TEXT NOT NULL DEFAULT (datetime('now')),
+  revisada_por INTEGER REFERENCES usuarios(id),
+  comentario TEXT
+);
 
 -- Vuelos: nunca se borran. Se editan sólo mientras están abiertos (antes del cierre del mes).
 CREATE TRIGGER IF NOT EXISTS vuelos_no_delete BEFORE DELETE ON vuelos
@@ -375,10 +383,10 @@ function migrar() {
   if (usuarios && !columnas('usuarios').includes('email_verificado_en')) {
     for (const c of ['email_verificado_en', 'verif_token_hash', 'verif_enviado_en']) db.exec(`ALTER TABLE usuarios ADD COLUMN ${c} TEXT`);
   }
-  if (sqlTabla('vuelos') && !columnas('vuelos').includes('novedad_revisada_en')) {
-    db.exec('ALTER TABLE vuelos ADD COLUMN novedad_revisada_en TEXT');
-    db.exec('ALTER TABLE vuelos ADD COLUMN novedad_revisada_por INTEGER REFERENCES usuarios(id)');
-    db.exec('ALTER TABLE vuelos ADD COLUMN novedad_comentario TEXT');
+  if (sqlTabla('tickets') && !columnas('tickets').includes('pago_informado_id')) db.exec('ALTER TABLE tickets ADD COLUMN pago_informado_id INTEGER');
+  if (sqlTabla('pagos_informados') && !columnas('pagos_informados').includes('ticket_id')) {
+    db.exec('ALTER TABLE pagos_informados ADD COLUMN ticket_id INTEGER REFERENCES tickets(id)');
+    db.exec('ALTER TABLE pagos_informados ADD COLUMN informado_por INTEGER REFERENCES usuarios(id)');
   }
   if (sqlTabla('vuelos') && !columnas('vuelos').includes('hora_salida')) {
     db.exec('ALTER TABLE vuelos ADD COLUMN hora_salida TEXT');
@@ -432,6 +440,15 @@ function initDB() {
   for (const [k, v] of Object.entries(CONFIG_DEFAULT)) setDefault.run(k, v);
   // Primer período que maneja el sistema: el cierre automático nunca intenta cerrar meses anteriores.
   setDefault.run('periodo_inicio', periodoActual());
+
+  // v1.004: las novedades cargadas antes del módulo de mantenimiento arrancan como revisadas
+  // (lo pidió el club para empezar de cero). Corre una sola vez.
+  if (!db.prepare(`SELECT 1 FROM config WHERE clave = 'novedades_desde'`).get()) {
+    const n = db.prepare(`INSERT OR IGNORE INTO novedades_revisadas (vuelo_id, comentario)
+      SELECT id, 'Anterior al módulo de mantenimiento' FROM vuelos WHERE notas IS NOT NULL AND trim(notas) <> ''`).run().changes;
+    db.prepare(`INSERT INTO config (clave, valor) VALUES ('novedades_desde', datetime('now'))`).run();
+    if (n) console.log(`[db] ${n} novedades anteriores al módulo de mantenimiento marcadas como revisadas`);
+  }
 
   // Flota inicial del aeroclub.
   if (db.prepare('SELECT COUNT(*) n FROM aviones').get().n === 0) {
