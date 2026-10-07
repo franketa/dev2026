@@ -180,7 +180,10 @@ export default async function socios(ctx) {
         <tbody>${usuarios.map(u => html`<tr data-nombre="${`${u.nombre} ${u.apellido} ${u.email || ''} ${u.dni || ''}`.toLowerCase()}" ${u.activo ? '' : raw('style="opacity:.55"')}>
           <td class="celda-ppal"><strong>${nombreLista(u)}</strong>${u.activo ? '' : html` <span class="chip chip--neutro">Baja</span>`}${u.activo && u.bloqueado ? html` <span class="chip chip--mal">Bloqueado</span>` : ''}
             ${!u.activo && u.baja_motivo ? html`<div class="muted chico">Baja: ${u.baja_motivo}</div>` : u.bloqueado ? html`<div class="muted chico">${u.bloqueo_motivo || 'Falta de pago'}</div>` : ''}</td>
-          <td data-label="Contacto"><div>${u.email || (u.rol === 'externo' && u.dni ? `DNI/CUIT ${u.dni}` : '')}</div><div class="muted chico">${u.telefono || 'Sin celular'}</div></td>
+          <td data-label="Contacto"><div>${u.email || (u.rol === 'externo' && u.dni ? `DNI/CUIT ${u.dni}` : '')}</div><div class="muted chico">${u.telefono || 'Sin celular'}</div>
+            ${u.rol !== 'externo' && u.email ? (u.email_verificado_en
+              ? html`<span class="chip chip--ok">Email verificado</span>`
+              : html`<span class="chip chip--pend">Email sin verificar</span>${u.activo ? html` <button class="btn btn--fantasma btn--chico" type="button" data-verificar="${u.id}" data-escritura>Mandar link</button>` : ''}`) : ''}</td>
           <td data-label="Rol">${rolTexto(u)}${u.rol !== 'piloto' && u.es_instructor ? html`<div class="muted chico">Instructor</div>` : ''}</td>
           <td class="num" data-label="Saldo">${u.rol === 'rampa' ? html`<span class="muted">—</span>` : html`<a href="#/admin/cuentas/${u.id}" class="monto">${pesos(u.saldo)}</a>`}</td>
           <td class="celda-acciones"><div class="tabla__acciones">
@@ -216,6 +219,15 @@ export default async function socios(ctx) {
     if (e.target.closest('[data-nuevo]')) return abrirForm(ctx);
     const ed = e.target.closest('[data-editar]');
     if (ed) return abrirForm(ctx, usuarios.find(u => u.id === Number(ed.dataset.editar)));
+    const vf = e.target.closest('[data-verificar]');
+    if (vf) {
+      return conBoton(vf, async () => {
+        try {
+          const r = await post(`/api/admin/usuarios/${vf.dataset.verificar}/verificar-email`);
+          toast(`Le mandamos el link de verificación a ${r.email}`, 'ok');
+        } catch (err) { error(err); }
+      });
+    }
     const rs = e.target.closest('[data-reset]');
     if (rs) {
       const u = usuarios.find(x => x.id === Number(rs.dataset.reset));

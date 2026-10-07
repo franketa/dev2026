@@ -2,6 +2,7 @@ const express = require('express');
 const bcrypt = require('bcryptjs');
 const { db, auditar } = require('../db');
 const { requireAuth, emitirSesion, cerrarSesion, publico } = require('../middleware/auth');
+const verificacion = require('../services/verificacion');
 const { normalizarEmail } = require('../util');
 
 const router = express.Router();
@@ -48,6 +49,11 @@ router.post('/password', requireAuth, (req, res) => {
   const actualizado = db.prepare('SELECT * FROM usuarios WHERE id = ?').get(u.id);
   emitirSesion(res, actualizado);
   res.json({ usuario: publico(actualizado) });
+});
+
+// Cualquier usuario logueado pide el link para verificar su email.
+router.post('/verificar-email', requireAuth, async (req, res, next) => {
+  try { res.json(await verificacion.pedir(req.user.id, req, req.user)); } catch (e) { next(e); }
 });
 
 module.exports = router;

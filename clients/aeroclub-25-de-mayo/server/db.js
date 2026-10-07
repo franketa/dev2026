@@ -42,6 +42,9 @@ CREATE TABLE IF NOT EXISTS usuarios (
   token_version INTEGER NOT NULL DEFAULT 0,
   creado_en TEXT NOT NULL DEFAULT (datetime('now')),
   ultimo_acceso TEXT,
+  email_verificado_en TEXT,       -- cuándo confirmó el email con el link (null: sin verificar)
+  verif_token_hash TEXT,          -- hash del link de verificación vigente
+  verif_enviado_en TEXT,
   CHECK (rol = 'externo' OR (email IS NOT NULL AND password_hash IS NOT NULL))
 );`;
 
@@ -362,6 +365,9 @@ function migrar() {
     db.exec('ALTER TABLE usuarios ADD COLUMN baja_motivo TEXT');
     db.exec('ALTER TABLE usuarios ADD COLUMN bloqueado INTEGER NOT NULL DEFAULT 0 CHECK (bloqueado IN (0,1))');
     db.exec('ALTER TABLE usuarios ADD COLUMN bloqueo_motivo TEXT');
+  }
+  if (usuarios && !columnas('usuarios').includes('email_verificado_en')) {
+    for (const c of ['email_verificado_en', 'verif_token_hash', 'verif_enviado_en']) db.exec(`ALTER TABLE usuarios ADD COLUMN ${c} TEXT`);
   }
   if (sqlTabla('tickets') && !columnas('tickets').includes('piloto')) db.exec('ALTER TABLE tickets ADD COLUMN piloto TEXT');
   if (sqlTabla('ticket_items') && !columnas('ticket_items').includes('evento')) {

@@ -12,6 +12,7 @@ const cuentas = require('../services/cuentas');
 const ledger = require('../services/ledger');
 const correcciones = require('../services/correcciones');
 const servicios = require('../services/servicios');
+const verificacion = require('../services/verificacion');
 const tickets = require('../services/tickets');
 const pagosInformados = require('../services/pagosInformados');
 const respaldos = require('../services/respaldos');
@@ -107,6 +108,10 @@ router.post('/usuarios', (req, res) => {
   }
 });
 
+router.post('/usuarios/:id/verificar-email', requireAdmin, async (req, res, next) => {
+  try { res.json(await verificacion.pedir(Number(req.params.id), req, req.user)); } catch (e) { next(e); }
+});
+
 router.post('/externos', (req, res) => res.status(201).json({ id: tickets.crearExterno(req.body || {}, req.user) }));
 
 router.put('/externos/:id', (req, res) => {
@@ -130,7 +135,11 @@ router.put('/usuarios/:id', (req, res) => {
     const cortaSesion = (antes.activo && !s.activo) || antes.rol !== s.rol;
     db.prepare(`
       UPDATE usuarios SET nombre=@nombre, apellido=@apellido, email=@email, telefono=@telefono, dni=@dni, licencia=@licencia,
-        rol=@rol, es_instructor=@es_instructor, activo=@activo, token_version = token_version + @corta WHERE id=@id`)
+        rol=@rol, es_instructor=@es_instructor, activo=@activo, token_version = token_version + @corta,
+        -- Con otro email hay que volver a verificarlo.
+        email_verificado_en = CASE WHEN email = @email THEN email_verificado_en END,
+        verif_token_hash = CASE WHEN email = @email THEN verif_token_hash END
+      WHERE id=@id`)
       .run({ ...s, id, corta: cortaSesion ? 1 : 0 });
   } catch (e) {
     if (String(e.message).includes('UNIQUE')) throw new ErrorNegocio('Ya hay un socio con ese email');

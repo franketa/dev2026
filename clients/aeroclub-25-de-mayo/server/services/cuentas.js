@@ -32,7 +32,7 @@ function estadoCuenta(usuarioId) {
 function listarCuentas() {
   return db.prepare(`
     SELECT u.id, u.nombre, u.apellido, u.email, u.telefono, u.dni, u.licencia, u.rol, u.es_instructor, u.activo, u.ultimo_acceso,
-      u.baja_motivo, u.bloqueado, u.bloqueo_motivo, (u.id = @transitos) transitos,
+      u.baja_motivo, u.bloqueado, u.bloqueo_motivo, u.email_verificado_en, (u.id = @transitos) transitos,
       COALESCE((SELECT SUM(importe) FROM movimientos m WHERE m.usuario_id = u.id), 0) saldo,
       COALESCE((SELECT SUM(importe) FROM vuelos v WHERE v.piloto_id = u.id AND v.estado = 'abierto'), 0) a_facturar,
       COALESCE((SELECT SUM(decimas) FROM vuelos v WHERE v.piloto_id = u.id AND v.estado = 'abierto'), 0) decimas_abiertas,

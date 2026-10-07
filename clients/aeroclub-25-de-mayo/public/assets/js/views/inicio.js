@@ -16,6 +16,7 @@ export default async function inicio(ctx) {
     <div class="vista__cab"><div><h1>Hola, ${usuario.nombre}</h1><p>${hoyLargo()}</p></div></div>
 
     ${usuario.bloqueado ? html`<p class="aviso aviso--mal">${icono('candado')}<span><b>Tu cuenta está bloqueada por falta de pago.</b> No podés cargar vuelos hasta regularizarla. Si ya pagaste, <a href="#/cuenta">informá el pago</a> o comunicate con tesorería.</span></p>` : ''}
+    ${usuario.email_verificado ? '' : html`<a class="aviso aviso--info aviso--link" href="#/perfil">${icono('info')}<span><b>Confirmá tu email.</b> Tocá acá y te mandamos un link a ${usuario.email}.</span></a>`}
 
     <section class="saldo" aria-label="Tu saldo">
       ${ala('saldo__ala')}

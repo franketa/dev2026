@@ -8,6 +8,7 @@ const cuentas = require('../services/cuentas');
 const ledger = require('../services/ledger');
 const tickets = require('../services/tickets');
 const pagosInformados = require('../services/pagosInformados');
+const mail = require('../services/mail');
 const { generarCupon } = require('../services/pdf');
 const { requireSocio } = require('../middleware/auth');
 const { enviarTicket } = require('./rampa');
@@ -84,11 +85,38 @@ router.post('/vuelos/:id/anular', (req, res) => {
 router.get('/cuenta', (req, res) => res.json(cuentas.estadoCuenta(req.user.id)));
 
 // Los pilotos no cambian sus datos: se los piden a tesorería por mail.
-router.get('/perfil/contacto', (req, res) => {
-  const email = getConfig().email_tesoreria
-    || db.prepare(`SELECT email FROM usuarios WHERE rol = 'admin' AND activo = 1 AND email IS NOT NULL ORDER BY id LIMIT 1`).get()?.email
-    || null;
-  res.json({ email });
+const emailTesoreria = () => getConfig().email_tesoreria
+  || db.prepare(`SELECT email FROM usuarios WHERE rol = 'admin' AND activo = 1 AND email IS NOT NULL ORDER BY id LIMIT 1`).get()?.email
+  || null;
+
+// `envio_directo`: si el sistema manda el pedido; si no, el piloto lo manda desde su correo.
+router.get('/perfil/contacto', (req, res) => res.json({ email: emailTesoreria(), envio_directo: mail.configurado() }));
+
+router.post('/perfil/pedido-cambio', async (req, res, next) => {
+  try {
+    const texto = limpiarTexto(req.body?.texto, 600);
+    if (!texto) throw new ErrorNegocio('Contá qué dato hay que cambiar');
+    const para = emailTesoreria();
+    if (!para) throw new ErrorNegocio('Tesorería todavía no cargó su email. Avisales por WhatsApp o en el club.');
+    const u = req.user;
+    const nombre = `${u.nombre} ${u.apellido}`;
+    await mail.enviar({
+      para, responderA: u.email,
+      asunto: `Cambio de datos: ${nombre}`,
+      html: mail.plantilla({
+        titulo: 'Pedido de cambio de datos',
+        parrafos: [
+          `<b>${mail.escapar(nombre)}</b> (${mail.escapar(u.email)}${u.telefono ? `, ${mail.escapar(u.telefono)}` : ''}) pide cambiar estos datos:`,
+          mail.escapar(texto).replace(/\n/g, '<br>'),
+          'Se cambian desde Socios → Editar. Para contestarle, respondé este mail.'
+        ],
+        pie: 'Pedido enviado desde el perfil del sistema del aeroclub.'
+      }),
+      texto: `${nombre} (${u.email}${u.telefono ? `, ${u.telefono}` : ''}) pide cambiar estos datos:\n\n${texto}\n\nSe cambian desde Socios → Editar. Para contestarle, respondé este mail.`
+    });
+    auditar(u.id, 'usuario.pedido_cambio', texto);
+    res.json({ ok: true, para });
+  } catch (e) { next(e); }
 });
 
 router.put('/perfil', (req, res) => {

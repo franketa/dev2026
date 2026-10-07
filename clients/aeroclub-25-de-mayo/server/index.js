@@ -9,6 +9,8 @@ const { router: rampaRouter, enviarTicket } = require('./routes/rampa');
 const cierres = require('./services/cierres');
 const tickets = require('./services/tickets');
 const respaldos = require('./services/respaldos');
+const verificacion = require('./services/verificacion');
+const { escapar } = require('./services/mail');
 const { ErrorNegocio } = require('./util');
 
 const app = express();
@@ -69,6 +71,26 @@ app.get('/t/:token', (req, res) => {
   const t = tickets.porToken(req.params.token);
   if (!t) return res.status(404).type('text/plain; charset=utf-8').send('Ticket inexistente. Pedile el link actualizado a tesorería.');
   enviarTicket(res, t, false);
+});
+
+// Link del mail de verificación de email.
+function paginaSimple(titulo, texto, ok) {
+  return `<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>${escapar(titulo)} · Aeroclub 25 de Mayo</title><link rel="icon" type="image/png" href="/assets/img/favicon.png"></head>
+  <body style="margin:0;min-height:100vh;display:grid;place-items:center;background:#eef3f9;font-family:Arial,Helvetica,sans-serif;color:#16284a">
+  <main style="max-width:420px;margin:16px;padding:32px 24px;background:#fff;border-radius:14px;text-align:center;box-shadow:0 8px 30px rgba(22,40,74,.12)">
+    <img src="/assets/img/escudo-256.png" alt="" width="88" height="88">
+    <h1 style="font-size:22px;margin:16px 0 8px;color:${ok ? '#16284a' : '#b3261e'}">${escapar(titulo)}</h1>
+    <p style="font-size:15px;line-height:1.5;color:#44506a;margin:0 0 22px">${escapar(texto)}</p>
+    <a href="/app" style="display:inline-block;background:#d43a2f;color:#fff;text-decoration:none;font-weight:600;padding:12px 22px;border-radius:8px">Ir al sistema</a>
+  </main></body></html>`;
+}
+
+app.get('/verificar-email/:token', (req, res) => {
+  const u = verificacion.confirmar(req.params.token);
+  res.status(u ? 200 : 410).type('html').send(u
+    ? paginaSimple('Email confirmado', `Listo, ${u.nombre}: ${u.email} quedó verificado.`, true)
+    : paginaSimple('El link ya no sirve', 'Venció, ya se usó o no es correcto. Desde tu perfil podés pedir uno nuevo.', false));
 });
 
 // ── Páginas ─────────────────────────────────────────────────────────────────
