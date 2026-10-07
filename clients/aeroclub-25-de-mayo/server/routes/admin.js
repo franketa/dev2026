@@ -359,10 +359,6 @@ router.get('/cierres/simular', (req, res) => {
   res.json(cierres.simular(periodo, req.user));
 });
 
-router.get('/cierres/simular/cupon/:usuarioId', (req, res) => {
-  enviarPdf(res, cierres.cuponPrevio(String(req.query.periodo || ''), Number(req.params.usuarioId), req.user), false);
-});
-
 router.post('/cierres', (req, res) => {
   const periodo = req.body?.periodo;
   const r = cierres.cerrar(periodo, req.user);

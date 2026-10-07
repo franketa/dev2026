@@ -96,10 +96,9 @@ function sello(doc, texto, color) {
   doc.fillOpacity(1).strokeOpacity(1);
 }
 
-// `vistaPrevia`: el cupón que saldría si el mes se cerrara ahora (no tiene validez).
-function generarCupon({ cupon, movimientos, config, estado, vistaPrevia = false }) {
-  const doc = nuevoDocumento({ Title: `${vistaPrevia ? 'Vista previa del cupón' : 'Cupón'} ${cupon.numero} · ${config.club_nombre}`, Author: config.club_nombre, Subject: `Resumen de ${nombrePeriodo(cupon.periodo)}` });
-  cabecera(doc, config, { tipo: vistaPrevia ? 'Vista previa del cupón' : 'Cupón de pago', numero: cupon.numero, detalle: capital(nombrePeriodo(cupon.periodo)) });
+function generarCupon({ cupon, movimientos, config, estado }) {
+  const doc = nuevoDocumento({ Title: `Cupón ${cupon.numero} · ${config.club_nombre}`, Author: config.club_nombre, Subject: `Resumen de ${nombrePeriodo(cupon.periodo)}` });
+  cabecera(doc, config, { tipo: 'Cupón de pago', numero: cupon.numero, detalle: capital(nombrePeriodo(cupon.periodo)) });
 
   // ── Socio y total ─────────────────────────────────────────────────────────────
   let y = 158;
@@ -182,22 +181,16 @@ function generarCupon({ cupon, movimientos, config, estado, vistaPrevia = false 
   cajaPago(doc, config, y);
 
   // ── Sello de estado (se calcula al generar: refleja si ya se pagó) ────────────
-  if (vistaPrevia) sello(doc, 'VISTA PREVIA', C.rojo);
-  else if (estado && ['pagado', 'sin_deuda'].includes(estado.estado)) {
+  if (estado && ['pagado', 'sin_deuda'].includes(estado.estado)) {
     sello(doc, estado.estado === 'pagado' ? 'PAGADO' : 'SIN DEUDA', C.verde);
   }
 
   // ── Pie: sello de integridad ──────────────────────────────────────────────────
   const pie = 800;
   doc.moveTo(M, pie - 10).lineTo(M + ancho, pie - 10).lineWidth(0.5).strokeColor(C.linea).stroke();
-  doc.font('R').fontSize(7.5).fillColor(C.gris);
-  if (vistaPrevia) {
-    doc.text(`Vista previa generada el ${fmtFechaCorta(fechaDeSqlite(cupon.creado_en))} con lo cargado hasta ese momento. No es un cupón: el mes todavía no se cerró.`, M, pie - 2, { width: ancho, lineBreak: false });
-    doc.text('Los importes pueden cambiar hasta el cierre. Documento no válido como factura.', M, pie + 9, { width: ancho, lineBreak: false });
-  } else {
-    doc.text(`Sello de integridad del libro de movimientos al cierre: ${cupon.sello.slice(0, 32)}`, M, pie - 2, { width: ancho, lineBreak: false });
-    doc.text(`Cierre de ${nombrePeriodo(cupon.periodo)} generado el ${fmtFechaCorta(fechaDeSqlite(cupon.creado_en))}. Documento no válido como factura.`, M, pie + 9, { width: ancho, lineBreak: false });
-  }
+  doc.font('R').fontSize(7.5).fillColor(C.gris)
+    .text(`Sello de integridad del libro de movimientos al cierre: ${cupon.sello.slice(0, 32)}`, M, pie - 2, { width: ancho, lineBreak: false });
+  doc.text(`Cierre de ${nombrePeriodo(cupon.periodo)} generado el ${fmtFechaCorta(fechaDeSqlite(cupon.creado_en))}. Documento no válido como factura.`, M, pie + 9, { width: ancho, lineBreak: false });
 
   doc.end();
   return doc;

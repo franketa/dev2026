@@ -37,17 +37,11 @@ function periodosPendientes() {
   return out;
 }
 
-// La vista previa también acepta el mes en curso (con lo cargado hasta ahora), si no quedan meses
-// anteriores sin cerrar.
-function validarPeriodo(periodo, simular = false) {
+function validarPeriodo(periodo) {
   if (!esPeriodo(periodo)) throw new ErrorNegocio('Período inválido');
   if (db.prepare('SELECT 1 FROM cierres WHERE periodo = ?').get(periodo)) throw new ErrorNegocio(`${nombrePeriodo(periodo)} ya está cerrado`, 409);
-  const pendientes = periodosPendientes();
-  if (simular && periodo === periodoActual()) {
-    if (pendientes.length) throw new ErrorNegocio(`Primero hay que cerrar ${nombrePeriodo(pendientes[0])}`);
-    return;
-  }
   if (periodo >= periodoActual()) throw new ErrorNegocio(`${nombrePeriodo(periodo)} todavía no terminó`);
+  const pendientes = periodosPendientes();
   if (!pendientes.includes(periodo)) throw new ErrorNegocio(`${nombrePeriodo(periodo)} es anterior al inicio del sistema`);
   if (pendientes[0] !== periodo) throw new ErrorNegocio(`Primero hay que cerrar ${nombrePeriodo(pendientes[0])}`);
 }
@@ -79,7 +73,7 @@ function totalesRango(usuarioId, desde, hasta) {
 }
 
 const correrCierre = db.transaction((periodo, actor, simular) => {
-  validarPeriodo(periodo, simular);
+  validarPeriodo(periodo);
   const cfg = getConfig();
   const previo = ultimoCierre();
   const desde = previo?.hasta_movimiento_id ?? 0;
@@ -151,11 +145,7 @@ const correrCierre = db.transaction((periodo, actor, simular) => {
     .run(hasta, vuelos.length, totalDecimas, totalVuelos, totalServicios, nro, totalCupones, cierreId);
 
   const resultado = detalleCierre(cierreId);
-  if (simular) {
-    // Los datos de cada cupón se arman antes del rollback, para poder mostrar el PDF de la vista previa.
-    if (simular.cupones) resultado.datos = resultado.cupones.map(c => datosCupon(c.id));
-    throw new Simulacion(resultado);   // rollback: la vista previa es exactamente lo que va a pasar
-  }
+  if (simular) throw new Simulacion(resultado);   // rollback: la vista previa es exactamente lo que va a pasar
   auditar(actor?.id ?? null, actor ? 'cierre.manual' : 'cierre.automatico',
     `${nombrePeriodo(periodo)}: ${vuelos.length} vuelos, ${fmtHoras(totalDecimas)}${derechos ? `, ${derechos} derechos de aeronave` : ''}, ${nro} cupones, ${fmtPesos(totalCupones)} a cobrar`);
   return resultado;
@@ -163,17 +153,9 @@ const correrCierre = db.transaction((periodo, actor, simular) => {
 
 function cerrar(periodo, actor) { return correrCierre(periodo, actor, false); }
 
-function simular(periodo, actor, { cupones = false } = {}) {
-  try { correrCierre(periodo, actor, { cupones }); } catch (e) { if (e instanceof Simulacion) return e.resultado; throw e; }
+function simular(periodo, actor) {
+  try { correrCierre(periodo, actor, true); } catch (e) { if (e instanceof Simulacion) return e.resultado; throw e; }
   throw new Error('La simulación no se revirtió');
-}
-
-// PDF de un cupón tal como saldría si el mes se cerrara ahora. No queda nada guardado.
-function cuponPrevio(periodo, usuarioId, actor) {
-  const r = simular(periodo, actor, { cupones: true });
-  const d = r.datos.find(x => x.cupon.usuario_id === usuarioId);
-  if (!d) throw new ErrorNegocio('Ese socio no tendría cupón en este cierre', 404);
-  return { ...d, estado: null, vistaPrevia: true };
 }
 
 function listarCierres() {
@@ -290,6 +272,6 @@ function proximoCierreAutomatico() {
 }
 
 module.exports = {
-  cerrar, simular, cuponPrevio, listarCierres, detalleCierre, estadoCupon, datosCupon, registrarEnvio, cierreAutomatico,
+  cerrar, simular, listarCierres, detalleCierre, estadoCupon, datosCupon, registrarEnvio, cierreAutomatico,
   periodosPendientes, proximoCierreAutomatico, ultimoCierre, totalesRango, recalcularCupones, actualizarSellos
 };

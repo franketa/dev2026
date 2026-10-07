@@ -1,15 +1,14 @@
 import { get, post, html, pintar, icono, pesos, horas, fecha, fechaHora, nombrePeriodo, chipCupon, modal, confirmar, toast, error, conBoton, nombreLista } from '../lib.js';
 import { modalPago } from './cuenta.js';
 
-function tablaSimulacion(r, periodo) {
+function tablaSimulacion(r) {
   return html`<div class="tabla-caja"><table class="tabla">
-    <thead><tr><th>Socio</th><th class="num">Horas</th><th class="num">Saldo anterior</th><th class="num">Vuelos</th><th class="num">Servicios</th><th class="num">Pagos</th><th class="num">Ajustes</th><th class="num">Total</th><th></th></tr></thead>
+    <thead><tr><th>Socio</th><th class="num">Horas</th><th class="num">Saldo anterior</th><th class="num">Vuelos</th><th class="num">Servicios</th><th class="num">Pagos</th><th class="num">Ajustes</th><th class="num">Total</th></tr></thead>
     <tbody>${r.cupones.map(c => html`<tr>
       <td>${nombreLista(c)}</td><td class="num">${horas(c.decimas)}</td><td class="num">${pesos(c.saldo_anterior)}</td>
       <td class="num">${pesos(c.total_vuelos)}</td><td class="num">${pesos(c.total_servicios)}</td><td class="num">${pesos(c.total_pagos)}</td><td class="num">${pesos(c.total_ajustes)}</td>
-      <td class="num monto">${pesos(c.total)}</td>
-      <td><a class="btn btn--sec btn--chico" href="/api/admin/cierres/simular/cupon/${c.usuario_id}?periodo=${periodo}" target="_blank" rel="noopener">${icono('pdf')} Cupón</a></td></tr>`)}</tbody>
-    <tfoot><tr><td>${r.cupones.length} cupones</td><td class="num">${horas(r.cierre.total_decimas)}</td><td></td><td class="num">${pesos(r.cierre.total_vuelos)}</td><td class="num">${pesos(r.cierre.total_servicios)}</td><td></td><td></td><td class="num">${pesos(r.cierre.total_cupones)}</td><td></td></tr></tfoot>
+      <td class="num monto">${pesos(c.total)}</td></tr>`)}</tbody>
+    <tfoot><tr><td>${r.cupones.length} cupones</td><td class="num">${horas(r.cierre.total_decimas)}</td><td></td><td class="num">${pesos(r.cierre.total_vuelos)}</td><td class="num">${pesos(r.cierre.total_servicios)}</td><td></td><td></td><td class="num">${pesos(r.cierre.total_cupones)}</td></tr></tfoot>
   </table></div>`;
 }
 
@@ -46,11 +45,7 @@ export async function cierres(ctx) {
         </div>`
       : html`
         <div><p class="muted">Mes en curso</p><h2 style="text-transform:capitalize">${nombrePeriodo(proximo.periodo)}</h2></div>
-        <p>${proximo.automatico ? `Se cierra solo el ${fecha(proximo.fecha)} a las ${proximo.hora} h: los vuelos se facturan y se generan los cupones.` : 'El cierre automático está apagado: cuando termine el mes, cerralo desde acá.'}
-          Mientras tanto podés ver cómo quedarían los cupones con lo cargado hasta hoy.</p>
-        <div class="vista__acciones">
-          <button class="btn btn--sec" type="button" data-simular="${proximo.periodo}" data-en-curso>${icono('lista')} Ver cómo quedaría hoy</button>
-        </div>`}
+        <p>${proximo.automatico ? `Se cierra solo el ${fecha(proximo.fecha)} a las ${proximo.hora} h: los vuelos se facturan y se generan los cupones.` : 'El cierre automático está apagado: cuando termine el mes, cerralo desde acá.'}</p>`}
     </section>
 
     <section class="panel">
@@ -75,17 +70,15 @@ export async function cierres(ctx) {
     if (sim) {
       await conBoton(sim, async () => {
         try {
-          const periodo = sim.dataset.simular;
-          const enCurso = sim.hasAttribute('data-en-curso');
-          const r = await get(`/api/admin/cierres/simular?periodo=${periodo}`);
+          const r = await get(`/api/admin/cierres/simular?periodo=${sim.dataset.simular}`);
           const m = modal({
-            titulo: enCurso ? `Así quedaría ${nombrePeriodo(periodo)} si cerrara hoy` : `Así quedaría ${nombrePeriodo(periodo)}`,
-            subtitulo: `${r.cierre.cantidad_vuelos} vuelos, ${horas(r.cierre.total_decimas)}. Es una vista previa: no se guarda nada y no se le manda nada a nadie.${enCurso ? ' Lo que se cargue hasta el cierre también va a entrar.' : ''}`,
+            titulo: `Así quedaría ${nombrePeriodo(sim.dataset.simular)}`,
+            subtitulo: `${r.cierre.cantidad_vuelos} vuelos, ${horas(r.cierre.total_decimas)}. Es una vista previa: todavía no se guardó nada.`,
             ancho: true,
-            contenido: html`<div class="pila">${r.cupones.length ? tablaSimulacion(r, periodo) : html`<p class="muted">No hay vuelos ni saldos: no se generaría ningún cupón.</p>`}
-              <div class="modal__acciones"><button class="btn btn--sec" type="button" data-cerrar>Volver</button>${enCurso ? '' : html`<button class="btn btn--principal" type="button" data-confirmar data-escritura>${icono('cierre')} Cerrar el mes</button>`}</div></div>`
+            contenido: html`<div class="pila">${r.cupones.length ? tablaSimulacion(r) : html`<p class="muted">No hay vuelos ni saldos: no se generaría ningún cupón.</p>`}
+              <div class="modal__acciones"><button class="btn btn--sec" type="button" data-cerrar>Volver</button><button class="btn btn--principal" type="button" data-confirmar data-escritura>${icono('cierre')} Cerrar el mes</button></div></div>`
           });
-          m.el.querySelector('[data-confirmar]')?.addEventListener('click', () => { m.cerrar(); cerrarMes(periodo, ctx); });
+          m.el.querySelector('[data-confirmar]').addEventListener('click', () => { m.cerrar(); cerrarMes(sim.dataset.simular, ctx); });
         } catch (err) { error(err); }
       });
     }
