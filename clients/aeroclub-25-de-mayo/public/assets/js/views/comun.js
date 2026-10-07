@@ -12,7 +12,7 @@ export function tiraVuelo(v, { piloto = false, ordenAvion = {} } = {}) {
     <button type="button" class="tira ${v.estado === 'anulado' ? 'tira--anulado' : ''}" data-vuelo="${v.id}" style="--serie:${colorAvion(ordenAvion[v.avion_id])}">
       <span class="tira__banda"></span>
       <span class="tira__cuerpo">
-        <span class="tira__avion"><span class="matricula">${v.matricula}</span><small>${fechaCorta(v.fecha)}</small></span>
+        <span class="tira__avion"><span class="matricula">${v.matricula}</span><small>${fechaCorta(v.fecha)}${v.hora_salida ? html`<br>${v.hora_salida}–${v.hora_llegada}` : ''}</small></span>
         <span class="tira__linea1"><strong>${quien}</strong></span>
         <span class="tira__linea2">
           ${piloto && v.tipo === 'instruccion' ? html`<span>Con ${v.instructor}</span>` : ''}
@@ -46,7 +46,7 @@ export function tarjetaAvion(a, { propio = false } = {}) {
 }
 
 const ACCIONES_HIST = { alta: 'Cargado', edicion: 'Corregido', anulacion: 'Anulado', cierre: 'Entró en el cierre', retarifa: 'Precio actualizado' };
-const CAMPOS = { fecha: 'Fecha', decimas: 'Horas', tipo: 'Tipo', precio_hora: 'Precio/h', importe: 'Importe', notas: 'Notas', avion_id: 'Avión', instructor_id: 'Instructor', piloto_id: 'Piloto' };
+const CAMPOS = { fecha: 'Fecha', hora_salida: 'Salida', hora_llegada: 'Llegada', decimas: 'Horas', tipo: 'Tipo', precio_hora: 'Precio/h', importe: 'Importe', notas: 'Notas', avion_id: 'Avión', instructor_id: 'Instructor', piloto_id: 'Piloto' };
 
 function difHistorial(h) {
   if (!h.antes || !h.despues) return '';
@@ -72,6 +72,7 @@ export async function abrirVuelo(id, ctx, { alCambiar } = {}) {
         <div><span>Importe</span><strong>${pesos(v.importe)}</strong><small>${pesos(v.precio_hora)} por hora</small></div></div>
       <dl class="detalle">
         <dt>Estado</dt><dd>${chipVuelo(v)}${v.cierre_periodo ? html` <span class="muted chico">cierre de ${v.cierre_periodo}</span>` : ''}</dd>
+        ${v.hora_salida ? html`<dt>Horario</dt><dd>Salida ${v.hora_salida}, llegada ${v.hora_llegada}</dd>` : ''}
         <dt>Modelo</dt><dd>${v.modelo}</dd>
         ${v.notas ? html`<dt>Novedades</dt><dd>${v.notas}</dd>` : ''}
         ${v.motivo_anulacion ? html`<dt>Motivo de anulación</dt><dd>${v.motivo_anulacion}</dd>` : ''}

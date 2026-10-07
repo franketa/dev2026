@@ -7,6 +7,7 @@ const {
 const DIAS_ATRAS_PILOTO = 60;
 const MAX_DECIMAS_PILOTO = 100;   // 10,0 h: más que eso casi seguro es un error de tipeo
 const MAX_DECIMAS_ADMIN = 300;
+const REGEX_HORA = /^([01]\d|2[0-3]):[0-5]\d$/;
 
 const SELECT_VUELO = `
   SELECT v.*, a.matricula, a.modelo,
@@ -63,6 +64,17 @@ function armar(input, actor, previo = null) {
   const maxDecimas = esAdmin ? MAX_DECIMAS_ADMIN : MAX_DECIMAS_PILOTO;
   if (decimas > maxDecimas) throw new ErrorNegocio(`${fmtHoras(decimas)} en un solo vuelo parece un error de tipeo. Revisá el tiempo de vuelo.`);
 
+  // Hora de salida y de llegada (24 h): obligatorias al cargar. Un vuelo viejo que no las tenía
+  // se puede corregir sin completarlas. No se usan para calcular el tiempo de vuelo.
+  const horario = {};
+  for (const [campo, nombre] of [['hora_salida', 'salida'], ['hora_llegada', 'llegada']]) {
+    const v = input[campo] !== undefined ? String(input[campo] ?? '').trim() : previo?.[campo] ?? '';
+    if (v && !REGEX_HORA.test(v)) throw new ErrorNegocio(`Hora de ${nombre} inválida: usá el formato 24 h, por ejemplo 14:30`);
+    if (!v && (!previo || previo[campo])) throw new ErrorNegocio(`Completá la hora de ${nombre}`);
+    horario[campo] = v || null;
+  }
+  if (horario.hora_salida && horario.hora_salida === horario.hora_llegada) throw new ErrorNegocio('La hora de llegada no puede ser igual a la de salida');
+
   const conInstructor = input.con_instructor != null ? !!input.con_instructor : previo ? previo.tipo === 'instruccion' : false;
   let instructorId = null;
   if (conInstructor) {
@@ -97,14 +109,14 @@ function armar(input, actor, previo = null) {
   return {
     fila: {
       piloto_id: pilotoId, avion_id: avionId, instructor_id: instructorId, fecha,
-      decimas, tipo,
+      decimas, tipo, ...horario,
       tarifa_id: tarifa.id, precio_hora: tarifa.precio_hora, importe: importeVuelo(tarifa.precio_hora, decimas), notas
     },
     avisos
   };
 }
 
-const CAMPOS_HIST = ['piloto_id', 'avion_id', 'instructor_id', 'fecha', 'decimas', 'tipo', 'precio_hora', 'importe', 'notas'];
+const CAMPOS_HIST = ['piloto_id', 'avion_id', 'instructor_id', 'fecha', 'hora_salida', 'hora_llegada', 'decimas', 'tipo', 'precio_hora', 'importe', 'notas'];
 function snapshot(v) { const o = {}; for (const k of CAMPOS_HIST) o[k] = v[k]; return o; }
 
 const qHist = db.prepare('INSERT INTO vuelos_historial (vuelo_id, accion, antes, despues, usuario_id) VALUES (?, ?, ?, ?, ?)');
@@ -112,8 +124,8 @@ const qHist = db.prepare('INSERT INTO vuelos_historial (vuelo_id, accion, antes,
 const crear = db.transaction((input, actor) => {
   const { fila, avisos } = armar(input, actor);
   const r = db.prepare(`
-    INSERT INTO vuelos (piloto_id, avion_id, instructor_id, fecha, decimas, tipo, tarifa_id, precio_hora, importe, notas, cargado_por)
-    VALUES (@piloto_id, @avion_id, @instructor_id, @fecha, @decimas, @tipo, @tarifa_id, @precio_hora, @importe, @notas, @cargado_por)`)
+    INSERT INTO vuelos (piloto_id, avion_id, instructor_id, fecha, hora_salida, hora_llegada, decimas, tipo, tarifa_id, precio_hora, importe, notas, cargado_por)
+    VALUES (@piloto_id, @avion_id, @instructor_id, @fecha, @hora_salida, @hora_llegada, @decimas, @tipo, @tarifa_id, @precio_hora, @importe, @notas, @cargado_por)`)
     .run({ ...fila, cargado_por: actor.id });
   const id = Number(r.lastInsertRowid);
   qHist.run(id, 'alta', null, JSON.stringify(snapshot(fila)), actor.id);
@@ -139,7 +151,7 @@ const editar = db.transaction((id, input, actor) => {
   const { fila, avisos } = armar(input, actor, previo);
   db.prepare(`
     UPDATE vuelos SET piloto_id=@piloto_id, avion_id=@avion_id, instructor_id=@instructor_id, fecha=@fecha,
-      decimas=@decimas, tipo=@tipo, tarifa_id=@tarifa_id,
+      hora_salida=@hora_salida, hora_llegada=@hora_llegada, decimas=@decimas, tipo=@tipo, tarifa_id=@tarifa_id,
       precio_hora=@precio_hora, importe=@importe, notas=@notas, actualizado_en=datetime('now')
     WHERE id=@id`).run({ ...fila, id });
   const antes = snapshot(previo);

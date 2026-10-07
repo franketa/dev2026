@@ -403,7 +403,7 @@ router.get('/reportes', (req, res) => {
   const deServicios = req.query.de === 'servicios';
   const filas = deServicios
     ? [['Fecha', 'Ticket', 'A cargo de', 'Aeronave', 'Detalle', 'Total', 'Cobro', 'Cargado por']]
-    : [['Fecha', 'Avión', 'Piloto', 'Instructor', 'Horas', 'Precio/h', 'Importe', 'Estado', 'Novedades']];
+    : [['Fecha', 'Salida', 'Llegada', 'Avión', 'Piloto', 'Instructor', 'Horas', 'Precio/h', 'Importe', 'Estado', 'Novedades']];
   if (deServicios) {
     for (const t of [...r.tickets].reverse()) {
       filas.push([t.fecha, t.numero_txt, nombreCompleto(t), t.matricula || '', t.resumen || '', plata(t.total),
@@ -411,7 +411,7 @@ router.get('/reportes', (req, res) => {
     }
   } else {
     for (const v of [...r.vuelos].reverse()) {
-      filas.push([v.fecha, v.matricula, v.piloto, v.instructor || '', num(v.decimas), plata(v.precio_hora), plata(v.importe), v.estado, v.notas || '']);
+      filas.push([v.fecha, v.hora_salida || '', v.hora_llegada || '', v.matricula, v.piloto, v.instructor || '', num(v.decimas), plata(v.precio_hora), plata(v.importe), v.estado, v.notas || '']);
     }
   }
   // Separador ";" y BOM: Excel en español lo abre directo con acentos y columnas bien.

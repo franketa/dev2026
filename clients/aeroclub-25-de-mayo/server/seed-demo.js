@@ -92,11 +92,19 @@ let semilla = 7;
 const azar = () => { semilla = (semilla * 16807) % 2147483647; return semilla / 2147483647; };
 const NOTAS = ['Aceite 5 qt, todo normal', 'Cubierta del tren izquierdo algo baja', 'Ruido en la radio con el motor en alta', 'Viento cruzado fuerte en 21', 'Cargué 40 litros en la bomba', 'Luz de navegación derecha quemada'];
 
+// Salida entre las 8 y las 17; la llegada, el tiempo de vuelo más unos minutos de rodaje.
+function horario(dec) {
+  const salida = 8 * 60 + Math.floor(azar() * 9) * 60 + Math.floor(azar() * 12) * 5;
+  const llegada = salida + dec * 6 + 10;
+  const hhmm = (m) => `${String(Math.floor(m / 60) % 24).padStart(2, '0')}:${String(m % 60).padStart(2, '0')}`;
+  return { hora_salida: hhmm(salida), hora_llegada: hhmm(llegada) };
+}
+
 function vuelo(fecha, piloto, avionId, conInstructor) {
   const dec = conInstructor ? 6 + Math.floor(azar() * 8) : 5 + Math.floor(azar() * 14);
   const inst = conInstructor ? instructores[Math.floor(azar() * instructores.length)] : null;
   vuelos.crear({
-    piloto_id: piloto.id, avion_id: avionId, fecha, horas: String(dec / 10),
+    piloto_id: piloto.id, avion_id: avionId, fecha, horas: String(dec / 10), ...horario(dec),
     con_instructor: !!inst, instructor_id: inst?.id, notas: azar() < 0.12 ? NOTAS[Math.floor(azar() * NOTAS.length)] : null
   }, admin);
 }

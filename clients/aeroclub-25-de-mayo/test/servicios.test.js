@@ -24,6 +24,7 @@ const pagosInformados = require('../server/services/pagosInformados');
 const respaldos = require('../server/services/respaldos');
 const { generarTicket } = require('../server/services/pdf');
 
+const H = { hora_salida: '10:00', hora_llegada: '11:20' };   // horario del vuelo (obligatorio)
 const admin = { id: 1, rol: 'admin' };
 const HASH = bcrypt.hashSync('clave-1234', 4);
 
@@ -195,7 +196,7 @@ test('al anular un ticket cobrado en el acto se anula también el pago', () => {
 
 test('derecho de aeronave: una vez por mes por piloto que voló', () => {
   // Ana vuela los dos aviones en INICIO; Beto vuela en MES2. Tesorería carga porque son vuelos viejos.
-  const volar = (p, avion, fecha) => vuelos.crear({ piloto_id: p.id, avion_id: avion, fecha, horas: '1' }, admin);
+  const volar = (p, avion, fecha) => vuelos.crear({ ...H, piloto_id: p.id, avion_id: avion, fecha, horas: '1' }, admin);
   volar(ana, 1, `${INICIO}-03`);
   volar(ana, 2, `${INICIO}-10`);
   volar(ana, 1, `${INICIO}-20`);
@@ -351,7 +352,7 @@ test('roles: consulta sólo mira, rampa sólo tickets, el piloto no toca vuelos,
   assert.equal((await fetch(`${base}/t/no-existe`)).status, 404);
 
   const p = await entrar('piloto@test.com');
-  const v = await p('POST', '/api/vuelos', { avion_id: 1, fecha: util.hoy(), horas: '1' });
+  const v = await p('POST', '/api/vuelos', { ...H, avion_id: 1, fecha: util.hoy(), horas: '1' });
   assert.equal(v.status, 201);
   const { vuelo } = await v.json();
   assert.equal((await p('POST', `/api/vuelos/${vuelo.id}/anular`, { motivo: 'x' })).status, 403);

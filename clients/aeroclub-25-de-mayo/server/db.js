@@ -124,6 +124,8 @@ CREATE TABLE IF NOT EXISTS vuelos (
   instructor_id INTEGER REFERENCES usuarios(id),
   fecha TEXT NOT NULL,
   decimas INTEGER NOT NULL CHECK (decimas > 0),
+  hora_salida TEXT,               -- 'HH:MM' (24 h); obligatorias desde la v1.004, los vuelos viejos no las tienen
+  hora_llegada TEXT,
   -- Opcionales, reservados para sumar el tacómetro más adelante (hoy no se usan).
   tac_inicial INTEGER,
   tac_final INTEGER,
@@ -368,6 +370,10 @@ function migrar() {
   }
   if (usuarios && !columnas('usuarios').includes('email_verificado_en')) {
     for (const c of ['email_verificado_en', 'verif_token_hash', 'verif_enviado_en']) db.exec(`ALTER TABLE usuarios ADD COLUMN ${c} TEXT`);
+  }
+  if (sqlTabla('vuelos') && !columnas('vuelos').includes('hora_salida')) {
+    db.exec('ALTER TABLE vuelos ADD COLUMN hora_salida TEXT');
+    db.exec('ALTER TABLE vuelos ADD COLUMN hora_llegada TEXT');
   }
   if (sqlTabla('tickets') && !columnas('tickets').includes('piloto')) db.exec('ALTER TABLE tickets ADD COLUMN piloto TEXT');
   if (sqlTabla('ticket_items') && !columnas('ticket_items').includes('evento')) {

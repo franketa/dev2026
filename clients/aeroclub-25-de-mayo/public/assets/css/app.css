@@ -654,3 +654,10 @@ a.aviso--link span { color: inherit; }
 .comprobante { display: block; max-width: 100%; max-height: 320px; border-radius: var(--r-m); border: 1px solid var(--linea); overflow: hidden; }
 .comprobante img { display: block; width: 100%; max-height: 320px; object-fit: contain; background: var(--papel); }
 img.comprobante { object-fit: contain; background: var(--papel); }
+
+/* Horario del vuelo: hora y minutos en 24 h */
+.hora-24 { display: grid; gap: 6px; }
+.hora-24__selects { display: flex; align-items: center; gap: 6px; }
+.hora-24__selects .select { flex: 1; min-width: 0; font-family: var(--f-titulo); font-size: 1.15rem; text-align: center; }
+.hora-24__selects span { font-weight: 700; font-size: 1.2rem; }
+.fila-campos--horas { grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); }

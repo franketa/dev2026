@@ -3,6 +3,25 @@ import {
   fecha, confirmar
 } from '../lib.js';
 
+// Selector de hora en 24 h: hora y minutos por separado (cómodo en el celular, sin AM/PM).
+const dos = (n) => String(n).padStart(2, '0');
+function selectorHora(nombre, etiqueta, valor) {
+  const [h, m] = valor ? valor.split(':') : ['', ''];
+  return html`<fieldset class="hora-24" style="border:0;padding:0;margin:0">
+    <legend class="campo__label">${etiqueta}</legend>
+    <div class="hora-24__selects">
+      <select class="select" name="${nombre}_h" aria-label="${etiqueta}: hora">
+        <option value="">--</option>${Array.from({ length: 24 }, (_, i) => html`<option value="${dos(i)}" ${dos(i) === h ? raw('selected') : ''}>${dos(i)}</option>`)}
+      </select>
+      <span aria-hidden="true">:</span>
+      <select class="select" name="${nombre}_m" aria-label="${etiqueta}: minutos">
+        <option value="">--</option>${Array.from({ length: 60 }, (_, i) => html`<option value="${dos(i)}" ${dos(i) === m ? raw('selected') : ''}>${dos(i)}</option>`)}
+      </select>
+    </div>
+  </fieldset>`;
+}
+const leerHora = (d, nombre) => (d[`${nombre}_h`] && d[`${nombre}_m`] ? `${d[`${nombre}_h`]}:${d[`${nombre}_m`]}` : '');
+
 export default async function cargar(ctx) {
   const editando = ctx.params.id ? Number(ctx.params.id) : null;
   if (ctx.usuario.bloqueado && !ctx.esAdmin && !editando) {
@@ -75,7 +94,16 @@ export default async function cargar(ctx) {
       </div>
 
       <div class="carga__paso">
-        <h2><span class="num">3</span> <label for="horas">Tiempo de vuelo</label></h2>
+        <h2><span class="num">3</span> Horario</h2>
+        <div class="fila-campos fila-campos--horas">
+          ${selectorHora('salida', 'Salida', previo?.hora_salida)}
+          ${selectorHora('llegada', 'Llegada', previo?.hora_llegada)}
+        </div>
+        <p class="campo__ayuda">En formato 24 h. Ejemplo: 14:30.</p>
+      </div>
+
+      <div class="carga__paso">
+        <h2><span class="num">4</span> <label for="horas">Tiempo de vuelo</label></h2>
         <div class="horas-carga">
           <button class="btn btn--sec" type="button" data-paso="-1" aria-label="Restar 0,1 horas">−0,1</button>
           <input class="input input--tac" id="horas" name="horas" inputmode="decimal" autocomplete="off" placeholder="0,0" value="${previo ? horasInput(previo.decimas) : ''}" required>
@@ -87,7 +115,7 @@ export default async function cargar(ctx) {
 
       <fieldset class="carga__paso" style="border:0;padding:0;margin:0">
         <legend class="sr">Tipo de vuelo</legend>
-        <h2 aria-hidden="true"><span class="num">4</span> ¿Volaste con instructor?</h2>
+        <h2 aria-hidden="true"><span class="num">5</span> ¿Volaste con instructor?</h2>
         <div class="segmentado" id="tipos"></div>
         <div class="campo" id="campo-instructor" hidden>
           <label for="instructor">Instructor</label>
@@ -99,7 +127,7 @@ export default async function cargar(ctx) {
       </fieldset>
 
       <div class="carga__paso">
-        <h2><span class="num">5</span> <label for="notas">Novedades y notas</label></h2>
+        <h2><span class="num">6</span> <label for="notas">Novedades y notas</label></h2>
         <textarea class="textarea" id="notas" name="notas" maxlength="1000" placeholder="Ej.: aceite 5 qt, cubierta izquierda baja, ruido en la radio">${previo?.notas || ''}</textarea>
         <p class="campo__ayuda">Lo que anotes acá le llega a tesorería y a mantenimiento.</p>
       </div>
@@ -167,14 +195,21 @@ export default async function cargar(ctx) {
     e.preventDefault();
     $err.hidden = true;
     const d = datosForm(form);
+    const salida = leerHora(d, 'salida');
+    const llegada = leerHora(d, 'llegada');
+    // Un vuelo viejo, sin horario, se puede corregir sin completarlo.
+    const pideHorario = !previo || previo.hora_salida;
     const falta = !estado.avionId ? 'Elegí el avión.'
+      : pideHorario && !salida ? 'Completá la hora de salida (hora y minutos).'
+      : pideHorario && !llegada ? 'Completá la hora de llegada (hora y minutos).'
+      : salida && salida === llegada ? 'La hora de llegada no puede ser igual a la de salida.'
       : !(parseHoras($horas.value) > 0) ? 'Completá el tiempo de vuelo en horas con un decimal (ej.: 1,4).'
       : estado.tipo === 'instruccion' && !d.instructor_id ? 'Elegí qué instructor voló con vos.'
       : null;
     if (falta) { $err.textContent = falta; $err.hidden = false; $err.scrollIntoView({ block: 'center', behavior: 'smooth' }); return; }
 
     const cuerpo = {
-      avion_id: estado.avionId, fecha: d.fecha, horas: d.horas,
+      avion_id: estado.avionId, fecha: d.fecha, horas: d.horas, hora_salida: salida, hora_llegada: llegada,
       con_instructor: estado.tipo === 'instruccion', instructor_id: estado.tipo === 'instruccion' ? Number(d.instructor_id) : null,
       notas: d.notas
     };
@@ -192,6 +227,7 @@ export default async function cargar(ctx) {
           <dl class="detalle">
             <dt>Avión</dt><dd><strong class="matricula">${a.matricula}</strong> ${a.modelo}</dd>
             <dt>Fecha</dt><dd>${fecha(d.fecha)}</dd>
+            <dt>Horario</dt><dd>Salida ${salida}, llegada ${llegada}</dd>
             <dt>Tiempo de vuelo</dt><dd><strong>${horas(dec)}</strong> (${dec * 6} minutos)</dd>
             <dt>Instructor</dt><dd>${inst || 'Sin instructor'}</dd>
             ${precio ? html`<dt>Importe</dt><dd>${pesos(Math.round(precio * dec / 10))}</dd>` : ''}
