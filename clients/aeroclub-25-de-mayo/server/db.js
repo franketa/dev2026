@@ -30,7 +30,7 @@ CREATE TABLE IF NOT EXISTS usuarios (
   telefono TEXT,
   dni TEXT,
   licencia TEXT,
-  rol TEXT NOT NULL DEFAULT 'piloto' CHECK (rol IN ('admin','consulta','rampa','piloto','externo')),
+  rol TEXT NOT NULL DEFAULT 'piloto' CHECK (rol IN ('admin','consulta','rampa','mantenimiento','piloto','externo')),
   es_instructor INTEGER NOT NULL DEFAULT 0 CHECK (es_instructor IN (0,1)),
   activo INTEGER NOT NULL DEFAULT 1 CHECK (activo IN (0,1)),
   baja_motivo TEXT,
@@ -126,6 +126,10 @@ CREATE TABLE IF NOT EXISTS vuelos (
   decimas INTEGER NOT NULL CHECK (decimas > 0),
   hora_salida TEXT,               -- 'HH:MM' (24 h); obligatorias desde la v1.004, los vuelos viejos no las tienen
   hora_llegada TEXT,
+  -- Novedades (notas del piloto): mantenimiento las marca como verificadas y salen de los paneles.
+  novedad_revisada_en TEXT,
+  novedad_revisada_por INTEGER REFERENCES usuarios(id),
+  novedad_comentario TEXT,
   -- Opcionales, reservados para sumar el tacómetro más adelante (hoy no se usan).
   tac_inicial INTEGER,
   tac_final INTEGER,
@@ -354,7 +358,7 @@ function reconstruir(tabla, ddl) {
 // Bases creadas con versiones anteriores del sistema.
 function migrar() {
   const usuarios = sqlTabla('usuarios');
-  if (usuarios && !usuarios.includes("'externo'")) reconstruir('usuarios', DDL_USUARIOS);
+  if (usuarios && (!usuarios.includes("'externo'") || !usuarios.includes("'mantenimiento'"))) reconstruir('usuarios', DDL_USUARIOS);
   const movimientos = sqlTabla('movimientos');
   if (movimientos && !movimientos.includes("'servicio'")) reconstruir('movimientos', DDL_MOVIMIENTOS);
   const tablaServicios = sqlTabla('servicios');
@@ -370,6 +374,11 @@ function migrar() {
   }
   if (usuarios && !columnas('usuarios').includes('email_verificado_en')) {
     for (const c of ['email_verificado_en', 'verif_token_hash', 'verif_enviado_en']) db.exec(`ALTER TABLE usuarios ADD COLUMN ${c} TEXT`);
+  }
+  if (sqlTabla('vuelos') && !columnas('vuelos').includes('novedad_revisada_en')) {
+    db.exec('ALTER TABLE vuelos ADD COLUMN novedad_revisada_en TEXT');
+    db.exec('ALTER TABLE vuelos ADD COLUMN novedad_revisada_por INTEGER REFERENCES usuarios(id)');
+    db.exec('ALTER TABLE vuelos ADD COLUMN novedad_comentario TEXT');
   }
   if (sqlTabla('vuelos') && !columnas('vuelos').includes('hora_salida')) {
     db.exec('ALTER TABLE vuelos ADD COLUMN hora_salida TEXT');

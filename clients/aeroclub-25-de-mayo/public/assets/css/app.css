@@ -661,3 +661,11 @@ img.comprobante { object-fit: contain; background: var(--papel); }
 .hora-24__selects .select { flex: 1; min-width: 0; font-family: var(--f-titulo); font-size: 1.15rem; text-align: center; }
 .hora-24__selects span { font-weight: 700; font-size: 1.2rem; }
 .fila-campos--horas { grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); }
+
+/* Novedades de la flota (mantenimiento) */
+.novedades { display: grid; gap: 12px; grid-template-columns: repeat(auto-fill, minmax(min(100%, 340px), 1fr)); }
+.novedad { display: grid; gap: 10px; align-content: start; padding: 14px 16px 14px 18px; border-radius: var(--r-m); background: var(--blanco); box-shadow: var(--sombra); border-left: 4px solid var(--serie, var(--ambar)); }
+.novedad__cab { display: flex; flex-wrap: wrap; gap: 4px 10px; align-items: baseline; }
+.novedad__texto { color: var(--tinta); font-size: 1rem; white-space: pre-line; }
+.novedad__revision { display: flex; gap: 8px; align-items: flex-start; font-size: .86rem; color: var(--tinta-2); }
+.novedad__revision svg { width: 16px; height: 16px; flex: none; margin-top: 2px; color: var(--verde); }

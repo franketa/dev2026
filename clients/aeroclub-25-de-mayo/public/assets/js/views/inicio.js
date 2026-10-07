@@ -1,4 +1,4 @@
-import { get, html, pintar, icono, pesos, horas, fecha, nombrePeriodo, mesDe, chipCupon, ala, hoyLargo } from '../lib.js';
+import { get, html, pintar, icono, pesos, horas, fecha, fechaCorta, nombrePeriodo, mesDe, chipCupon, ala, hoyLargo } from '../lib.js';
 import { tiraVuelo, tarjetaAvion, mapaOrden, abrirVuelo, vacio } from './comun.js';
 
 export default async function inicio(ctx) {
@@ -59,6 +59,13 @@ export default async function inicio(ctx) {
           : vacio('Todavía no cargaste vuelos.', html`<a class="btn btn--principal" href="#/cargar">Cargar el primero</a>`)}
       </section>
     </div>
+
+    ${d.novedades?.length ? html`<section class="panel">
+      <div class="panel__cab"><div><h2>Novedades de la flota</h2><p>Lo que anotaron los pilotos y mantenimiento todavía no verificó.</p></div></div>
+      ${d.novedades.map(n => html`<div class="nota-vuelo">
+        <p>${n.notas}</p><small><b class="matricula">${n.matricula}</b>, ${fechaCorta(n.fecha)}, ${n.piloto}</small>
+      </div>`)}
+    </section>` : ''}
 
     ${volados.length ? html`<section class="pila">
       <h2>Tus horas por avión</h2>

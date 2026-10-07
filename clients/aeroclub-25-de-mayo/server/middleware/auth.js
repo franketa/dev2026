@@ -91,7 +91,11 @@ function requireRampa(req, res, next) {
 
 // Lo de uso diario (vuelos, cuenta, cupones) es para socios; rampa sólo usa su perfil.
 function requireSocio(req, res, next) {
+  // Rampa y mantenimiento no tienen cuenta corriente ni cargan vuelos: sólo su perfil.
   if (req.user?.rol === 'rampa' && req.path !== '/perfil') return res.status(403).json({ error: 'Tu usuario es de rampa: sólo carga tickets de servicios' });
+  if (req.user?.rol === 'mantenimiento' && !req.path.startsWith('/perfil')) {
+    return res.status(403).json({ error: 'Tu usuario es de mantenimiento: sólo revisa las novedades de la flota' });
+  }
   next();
 }
 
@@ -103,4 +107,12 @@ function exigirOrigenPropio(req, res, next) {
   next();
 }
 
-module.exports = { requireAuth, requireAdmin, requireStaff, requireRampa, requireSocio, exigirOrigenPropio, emitirSesion, cerrarSesion, publico, identificar };
+// Novedades de la flota: mantenimiento y tesorería las marcan; consulta sólo mira.
+function requireMantenimiento(req, res, next) {
+  const rol = req.user?.rol;
+  if (rol === 'consulta' && ['GET', 'HEAD'].includes(req.method)) return next();
+  if (!['admin', 'mantenimiento'].includes(rol)) return res.status(403).json({ error: 'Sólo mantenimiento o tesorería puede hacer esto' });
+  next();
+}
+
+module.exports = { requireAuth, requireAdmin, requireStaff, requireRampa, requireSocio, requireMantenimiento, exigirOrigenPropio, emitirSesion, cerrarSesion, publico, identificar };

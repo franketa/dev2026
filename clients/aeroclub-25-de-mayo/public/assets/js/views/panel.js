@@ -114,11 +114,11 @@ export default async function panel(ctx) {
     <div class="grilla grilla--2">
       <section class="pila"><h2>La flota</h2>${d.aviones.map(a => tarjetaAvion(a))}</section>
       <section class="panel">
-        <div class="panel__cab"><h2>Novedades de los pilotos</h2></div>
+        <div class="panel__cab"><h2>Novedades por verificar</h2><a class="btn btn--fantasma btn--chico" href="#/mantenimiento">Ver todas</a></div>
         ${d.novedades.length ? d.novedades.map(v => html`
           <button type="button" class="nota-vuelo" data-vuelo="${v.id}" style="text-align:left;background:none;border:0;border-bottom:1px solid var(--linea-2);cursor:pointer;width:100%">
             <p>${v.notas}</p><small><b class="matricula">${v.matricula}</b>, ${fechaCorta(v.fecha)}, ${v.piloto}</small>
-          </button>`) : html`<p class="muted">Cuando un piloto anota algo al cargar el vuelo (aceite, cubiertas, radio), aparece acá.</p>`}
+          </button>`) : html`<p class="muted">Cuando un piloto anota algo al cargar el vuelo (aceite, cubiertas, radio), aparece acá hasta que mantenimiento lo verifica.</p>`}
       </section>
     </div>
   </div>`);

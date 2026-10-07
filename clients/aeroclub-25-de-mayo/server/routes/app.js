@@ -9,6 +9,7 @@ const ledger = require('../services/ledger');
 const tickets = require('../services/tickets');
 const pagosInformados = require('../services/pagosInformados');
 const mail = require('../services/mail');
+const novedades = require('../services/novedades');
 const { generarCupon } = require('../services/pdf');
 const { requireSocio } = require('../middleware/auth');
 const { enviarTicket } = require('./rampa');
@@ -35,6 +36,8 @@ router.get('/inicio', (req, res) => {
     ultimo_cupon: ultimoCupon ? { ...ultimoCupon, ...cierres.estadoCupon(ultimoCupon) } : null,
     ultimos_vuelos: vuelos.listar({ piloto_id: uid, limite: 5 }),
     aviones: flota.listarAviones({ pilotoId: uid }),
+    // Novedades de la flota que mantenimiento todavía no verificó.
+    novedades: novedades.listar({ estado: 'pendiente', limite: 10 }),
     proximo_cierre: cierres.proximoCierreAutomatico()
   });
 });

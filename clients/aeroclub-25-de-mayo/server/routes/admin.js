@@ -12,6 +12,7 @@ const cuentas = require('../services/cuentas');
 const ledger = require('../services/ledger');
 const correcciones = require('../services/correcciones');
 const servicios = require('../services/servicios');
+const novedadesSrv = require('../services/novedades');
 const verificacion = require('../services/verificacion');
 const tickets = require('../services/tickets');
 const pagosInformados = require('../services/pagosInformados');
@@ -47,7 +48,7 @@ router.get('/panel', (req, res) => {
       COALESCE(SUM(m.tipo = 'pago' AND NOT EXISTS (SELECT 1 FROM movimientos a WHERE a.anula_id = m.id)),0) pagos
     FROM movimientos m LEFT JOIN movimientos o ON o.id = m.anula_id
     WHERE COALESCE(o.tipo, m.tipo) = 'pago' AND substr(m.fecha,1,7) = ?`).get(periodo);
-  const novedades = vuelos.listar({ con_notas: true, limite: 8 });
+  const novedades = novedadesSrv.listar({ estado: 'pendiente', limite: 8 });
   res.json({
     periodo,
     por_avion: porAvion,
@@ -78,13 +79,13 @@ function leerSocio(body, existente = null) {
   if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) throw new ErrorNegocio('Email inválido');
   const telefono = limpiarTexto(body.telefono, 30);
   if (telefono && !telefonoWhatsApp(telefono)) throw new ErrorNegocio('Celular inválido: poné código de área y número (ej: 2345 401234)');
-  const rol = ['admin', 'consulta', 'rampa'].includes(body.rol) ? body.rol : 'piloto';
+  const rol = ['admin', 'consulta', 'rampa', 'mantenimiento'].includes(body.rol) ? body.rol : 'piloto';
   return {
     nombre, apellido, email, telefono,
     dni: limpiarTexto(body.dni, 12),
     licencia: limpiarTexto(body.licencia, 60),
     rol,
-    es_instructor: body.es_instructor && rol !== 'rampa' ? 1 : 0,
+    es_instructor: body.es_instructor && !['rampa', 'mantenimiento'].includes(rol) ? 1 : 0,
     // La baja y la reactivación van por sus propias rutas (con motivo), no por la edición.
     activo: existente ? existente.activo : 1
   };

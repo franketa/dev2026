@@ -43,7 +43,8 @@ function formSocio(u = {}) {
         ${[['piloto', 'Piloto o alumno: carga sus vuelos, ve su cuenta e informa pagos'],
            ['admin', 'Tesorería: administra todo (tarifas, pagos, ajustes, cierres)'],
            ['consulta', 'Consulta: ve toda la administración, sin poder cambiar nada'],
-           ['rampa', 'Rampa: registra aeronaves y carga tickets de servicios']]
+           ['rampa', 'Rampa: registra aeronaves y carga tickets de servicios'],
+           ['mantenimiento', 'Mantenimiento: revisa y verifica las novedades de la flota']]
           .map(([v, t]) => html`<option value="${v}" ${(u.rol || 'piloto') === v ? raw('selected') : ''}>${t}</option>`)}
       </select>
       <p class="campo__ayuda">Tesorería y consulta también pueden cargar sus propios vuelos.</p></div>
@@ -55,7 +56,7 @@ function formSocio(u = {}) {
 function abrirForm(ctx, u = null) {
   const m = modal({ titulo: u ? 'Editar usuario' : 'Nuevo usuario', contenido: formSocio(u || { activo: 1 }) });
   const form = m.el.querySelector('form');
-  const instructor = () => { m.el.querySelector('[data-instructor]').hidden = form.rol.value === 'rampa'; };
+  const instructor = () => { m.el.querySelector('[data-instructor]').hidden = ['rampa', 'mantenimiento'].includes(form.rol.value); };
   form.rol.addEventListener('change', instructor);
   instructor();
   form.addEventListener('submit', (e) => {
@@ -185,7 +186,7 @@ export default async function socios(ctx) {
               ? html`<span class="chip chip--ok">Email verificado</span>`
               : html`<span class="chip chip--pend">Email sin verificar</span>${u.activo ? html` <button class="btn btn--fantasma btn--chico" type="button" data-verificar="${u.id}" data-escritura>Mandar link</button>` : ''}`) : ''}</td>
           <td data-label="Rol">${rolTexto(u)}${u.rol !== 'piloto' && u.es_instructor ? html`<div class="muted chico">Instructor</div>` : ''}</td>
-          <td class="num" data-label="Saldo">${u.rol === 'rampa' ? html`<span class="muted">—</span>` : html`<a href="#/admin/cuentas/${u.id}" class="monto">${pesos(u.saldo)}</a>`}</td>
+          <td class="num" data-label="Saldo">${['rampa', 'mantenimiento'].includes(u.rol) ? html`<span class="muted">—</span>` : html`<a href="#/admin/cuentas/${u.id}" class="monto">${pesos(u.saldo)}</a>`}</td>
           <td class="celda-acciones"><div class="tabla__acciones">
             ${u.rol === 'externo'
               ? html`<button class="btn btn--sec btn--chico" type="button" data-editar-externo="${u.id}" data-escritura>${icono('editar')} Editar</button>`

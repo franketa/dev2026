@@ -104,7 +104,7 @@ export const iniciales = (n, a) => `${(n || '?')[0]}${(a || '')[0] || ''}`.toUpp
 export const nombreLista = (u) => (u.apellido ? `${u.apellido}, ${u.nombre}` : u.nombre);
 export const nombreCompleto = (u) => [u.nombre, u.apellido].filter(Boolean).join(' ');
 
-export const ROLES = { admin: 'Tesorería', consulta: 'Consulta', rampa: 'Rampa', piloto: 'Piloto', externo: 'Externo' };
+export const ROLES = { admin: 'Tesorería', consulta: 'Consulta', rampa: 'Rampa', mantenimiento: 'Mantenimiento', piloto: 'Piloto', externo: 'Externo' };
 export const rolTexto = (u) => (u.rol === 'piloto' && u.es_instructor ? 'Instructor' : ROLES[u.rol] || u.rol);
 
 // Etiquetas de todos los medios (incluye el cheque de pagos viejos); para elegir, el cheque ya no se ofrece.

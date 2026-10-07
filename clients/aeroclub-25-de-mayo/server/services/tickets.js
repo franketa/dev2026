@@ -225,7 +225,7 @@ const crear = db.transaction((input, actor) => {
   const u = db.prepare('SELECT * FROM usuarios WHERE id = ?').get(usuarioId);
   if (!u) throw new ErrorNegocio('Elegí a nombre de quién va el ticket');
   if (!u.activo) throw new ErrorNegocio(`${nombreCompleto(u)} está dado de baja`);
-  if (u.rol === 'rampa') throw new ErrorNegocio('Esa cuenta no puede recibir cargos');
+  if (['rampa', 'mantenimiento'].includes(u.rol)) throw new ErrorNegocio('Esa cuenta no puede recibir cargos');
   const esTransito = u.id === cuentaTransitos();
 
   const piloto = limpiarTexto(input.piloto, 80);

@@ -1,10 +1,11 @@
 const express = require('express');
 const path = require('path');
 const { db } = require('./db');
-const { requireAuth, requireStaff, requireRampa, exigirOrigenPropio } = require('./middleware/auth');
+const { requireAuth, requireStaff, requireRampa, requireMantenimiento, exigirOrigenPropio } = require('./middleware/auth');
 const authRouter = require('./routes/auth');
 const { router: appRouter, enviarPdf } = require('./routes/app');
 const adminRouter = require('./routes/admin');
+const mantenimientoRouter = require('./routes/mantenimiento');
 const { router: rampaRouter, enviarTicket } = require('./routes/rampa');
 const cierres = require('./services/cierres');
 const tickets = require('./services/tickets');
@@ -55,6 +56,7 @@ app.use('/api', exigirOrigenPropio);
 app.use('/api/auth', authRouter);
 app.use('/api/admin', requireAuth, requireStaff, adminRouter);
 app.use('/api/rampa', requireAuth, requireRampa, rampaRouter);
+app.use('/api/mantenimiento', requireAuth, requireMantenimiento, mantenimientoRouter);
 app.use('/api', requireAuth, appRouter);
 app.use('/api', (req, res) => res.status(404).json({ error: 'Ruta inexistente' }));
 

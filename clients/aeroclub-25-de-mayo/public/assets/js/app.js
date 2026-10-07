@@ -14,6 +14,7 @@ import registro from './views/registro.js';
 import ajustes from './views/ajustes.js';
 import { nuevoTicket, misTickets, ticketsAdmin, aeronaves } from './views/tickets.js';
 import pagosInformados from './views/pagos.js';
+import novedades from './views/novedades.js';
 
 // Quién entra a cada ruta: socio (piloto, tesorería y consulta), staff (tesorería y consulta),
 // admin (sólo tesorería), rampa (rampa y tesorería).
@@ -39,6 +40,7 @@ const RUTAS = [
   { ruta: '/admin/reportes', vista: reportes, titulo: 'Reportes', para: 'staff' },
   { ruta: '/admin/registro', vista: registro, titulo: 'Registro', para: 'staff' },
   { ruta: '/admin/ajustes', vista: ajustes, titulo: 'Configuración', para: 'staff' },
+  { ruta: '/mantenimiento', vista: novedades, titulo: 'Novedades', para: 'mantenimiento' },
   { ruta: '/rampa', vista: nuevoTicket, titulo: 'Nuevo ticket', para: 'rampa' },
   { ruta: '/rampa/tickets', vista: misTickets, titulo: 'Tickets', para: 'rampa' },
   { ruta: '/rampa/aeronaves', vista: aeronaves, titulo: 'Aeronaves', para: 'rampa' }
@@ -49,7 +51,8 @@ const PERMISOS = {
   socio: (r) => ['piloto', 'admin', 'consulta'].includes(r),
   staff: (r) => ['admin', 'consulta'].includes(r),
   admin: (r) => r === 'admin',
-  rampa: (r) => ['rampa', 'admin'].includes(r)
+  rampa: (r) => ['rampa', 'admin'].includes(r),
+  mantenimiento: (r) => ['mantenimiento', 'admin', 'consulta'].includes(r)
 };
 
 const MENU_PILOTO = [
@@ -68,6 +71,7 @@ const MENU_ADMIN = [
   { href: '#/admin/cierres', txt: 'Cierres y cupones', ic: 'cierre' },
   { href: '#/admin/socios', txt: 'Socios', ic: 'usuarios' },
   { href: '#/admin/flota', txt: 'Flota y tarifas', ic: 'hangar' },
+  { href: '#/mantenimiento', txt: 'Novedades', ic: 'nota' },
   { href: '#/admin/reportes', txt: 'Reportes', ic: 'reporte' },
   { href: '#/admin/registro', txt: 'Registro', ic: 'escudo' },
   { href: '#/admin/ajustes', txt: 'Configuración', ic: 'ajustes' }
@@ -76,6 +80,11 @@ const MENU_RAMPA = [
   { href: '#/rampa', txt: 'Nuevo ticket', ic: 'mas', exacto: true },
   { href: '#/rampa/tickets', txt: 'Tickets', ic: 'ticket' },
   { href: '#/rampa/aeronaves', txt: 'Aeronaves', ic: 'avion' },
+  { href: '#/perfil', txt: 'Perfil', ic: 'usuario' }
+];
+
+const MENU_MANT = [
+  { href: '#/mantenimiento', txt: 'Novedades', ic: 'nota' },
   { href: '#/perfil', txt: 'Perfil', ic: 'usuario' }
 ];
 
@@ -101,7 +110,7 @@ function leerHash() {
 
 const rol = () => usuario?.rol;
 const esStaff = () => PERMISOS.staff(rol());
-const inicioPorRol = () => (esStaff() ? '/panel' : rol() === 'rampa' ? '/rampa' : '/inicio');
+const inicioPorRol = () => (esStaff() ? '/panel' : rol() === 'rampa' ? '/rampa' : rol() === 'mantenimiento' ? '/mantenimiento' : '/inicio');
 
 function itemMenu(it, actual) {
   const destino = it.href.slice(1);
@@ -117,6 +126,8 @@ function pintarMenus(actual) {
     lateral = html`${itemMenu(MENU_PILOTO[1], actual)}<div class="menu__grupo">Administración</div>${MENU_ADMIN.map(i => itemMenu(i, actual))}<div class="menu__grupo">Mi actividad</div>${MI_ACTIVIDAD.map(i => itemMenu(i, actual))}`;
   } else if (rol() === 'rampa') {
     lateral = MENU_RAMPA.filter(i => i.href !== '#/perfil').map(i => itemMenu(i, actual));
+  } else if (rol() === 'mantenimiento') {
+    lateral = itemMenu(MENU_MANT[0], actual);
   } else {
     lateral = MENU_PILOTO.filter(i => i.href !== '#/perfil').map(i => itemMenu(i, actual));
   }
@@ -137,6 +148,7 @@ function pintarMenus(actual) {
     ? [MENU_ADMIN[0], MENU_ADMIN[2], MENU_PILOTO[1], MENU_ADMIN[5], { mas: true }]
     : rol() === 'rampa'
       ? [MENU_RAMPA[1], { ...MENU_RAMPA[0], cargar: true }, MENU_RAMPA[2], MENU_RAMPA[3]]
+      : rol() === 'mantenimiento' ? MENU_MANT
       : [MENU_PILOTO[0], MENU_PILOTO[2], MENU_PILOTO[1], MENU_PILOTO[3], MENU_PILOTO[4]];
   pintar(document.getElementById('nav-inf'), inf.map(it => {
     if (it.mas) return html`<button type="button" data-cajon>${icono('menu')}<span>Más</span></button>`;

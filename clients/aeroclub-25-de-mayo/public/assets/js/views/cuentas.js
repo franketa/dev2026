@@ -4,7 +4,7 @@ import { modalPago } from './cuenta.js';
 export default async function cuentas(ctx) {
   const [{ cuentas: todas }, { pagos: informados }] = await Promise.all([get('/api/admin/cuentas'), get('/api/admin/pagos-informados?estado=pendiente')]);
   // Rampa no tiene cuenta corriente; los externos sí (dueños de aeronaves de afuera).
-  const lista = todas.filter(c => c.rol !== 'rampa');
+  const lista = todas.filter(c => !['rampa', 'mantenimiento'].includes(c.rol));
   const conDeuda = lista.filter(c => c.saldo > 0);
   const totalDeuda = conDeuda.reduce((s, c) => s + c.saldo, 0);
   const aFacturar = lista.reduce((s, c) => s + c.a_facturar, 0);
