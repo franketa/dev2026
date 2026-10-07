@@ -60,6 +60,7 @@ export default async function panel(ctx) {
   const totalVuelos = d.por_avion.reduce((s, a) => s + a.vuelos, 0);
   const totalServ = d.servicios.reduce((s, x) => s + x.importe, 0);
   const pi = d.pagos_informados;
+  const pim = d.pagos_informados_mes;
   const g = grafico(periodo, d.por_dia, d.por_avion.map(a => ({ ...a, orden: orden[a.id] })));
   const pc = d.proximo_cierre;
   pintar(ctx.el, html`
@@ -109,6 +110,25 @@ export default async function panel(ctx) {
         </tbody>
         <tfoot><tr><td>Total</td><td class="num">${horas(totalDec)}</td><td class="num">${pesos(totalImp + totalServ)}</td></tr></tfoot>
       </table></div>
+    </section>
+
+    <section class="panel">
+      <div class="panel__cab"><div><h2>Actividad de ${nombrePeriodo(periodo)}</h2><p>Lo del mes. El historial completo queda en cada sección y en el Registro.</p></div></div>
+      <div class="cifras">
+        <a class="cifra cifra--link" href="#/admin/pagos?ver=historial&periodo=${periodo}"><span>Pagos informados</span><strong>${pim.n}</strong>
+          <small>${pim.confirmados} ${pim.confirmados === 1 ? 'confirmado' : 'confirmados'} (${pesos(pim.importe_confirmado)})${pim.rechazados ? `, ${pim.rechazados} ${pim.rechazados === 1 ? 'rechazado' : 'rechazados'}` : ''}${pim.pendientes ? `, ${pim.pendientes} por revisar` : ''}</small></a>
+        <a class="cifra cifra--link" href="#/admin/tickets?periodo=${periodo}"><span>Tickets</span><strong>${d.tickets_mes.vigentes}</strong>
+          <small>${d.tickets_mes.anulados ? `${d.tickets_mes.anulados} ${d.tickets_mes.anulados === 1 ? 'anulado' : 'anulados'}` : 'Ninguno anulado'}</small></a>
+        <div class="cifra"><span>Anulaciones</span><strong>${d.anulaciones.length}</strong><small>Pagos, tickets, vuelos y ajustes</small></div>
+      </div>
+      ${d.anulaciones.length ? html`<div class="tabla-caja" style="margin-top:14px"><table class="tabla tabla--tarjetas">
+        <thead><tr><th>Anulación</th><th>Socio</th><th>Motivo</th><th class="num">Importe</th></tr></thead>
+        <tbody>${d.anulaciones.map(a => html`<tr>
+          <td class="celda-ppal"><strong>${a.que}</strong>${a.detalle ? html`<div class="muted chico">${a.detalle}</div>` : ''}<div class="muted chico">${fechaCorta(a.fecha)}${a.por ? `, por ${a.por}` : ''}</div></td>
+          <td data-label="Socio"><a href="#/admin/cuentas/${a.usuario_id}">${a.socio}</a></td>
+          <td data-label="Motivo">${a.motivo || html`<span class="muted">—</span>`}</td>
+          <td class="num monto" data-label="Importe">${pesos(Math.abs(a.importe))}</td></tr>`)}</tbody>
+      </table></div>` : html`<p class="muted" style="margin-top:12px">No hubo anulaciones en ${nombrePeriodo(periodo)}.</p>`}
     </section>
 
     <div class="grilla grilla--2">

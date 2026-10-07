@@ -669,3 +669,7 @@ img.comprobante { object-fit: contain; background: var(--papel); }
 .novedad__texto { color: var(--tinta); font-size: 1rem; white-space: pre-line; }
 .novedad__revision { display: flex; gap: 8px; align-items: flex-start; font-size: .86rem; color: var(--tinta-2); }
 .novedad__revision svg { width: 16px; height: 16px; flex: none; margin-top: 2px; color: var(--verde); }
+
+/* Cifra que lleva a otra sección */
+a.cifra--link { text-decoration: none; color: inherit; }
+a.cifra--link:hover { filter: brightness(.97); }

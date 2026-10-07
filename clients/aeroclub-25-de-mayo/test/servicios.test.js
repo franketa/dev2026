@@ -331,7 +331,19 @@ test('roles: consulta sólo mira, rampa sólo tickets, el piloto no toca vuelos,
   }
 
   const c = await entrar('consulta@test.com');
-  assert.equal((await c('GET', '/api/admin/panel')).status, 200);
+  const panel = await c('GET', '/api/admin/panel');
+  assert.equal(panel.status, 200);
+  // Actividad del mes: las anulaciones de tickets y de sus pagos en el acto, con el motivo.
+  const pd = await panel.json();
+  const tipos = new Set(pd.anulaciones.map(a => a.que));
+  assert.ok(tipos.has('Ticket') && tipos.has('Pago'), [...tipos].join());
+  assert.ok(pd.anulaciones.every(a => a.socio && a.fecha.startsWith(util.periodoActual())));
+  assert.ok(pd.anulaciones.some(a => a.motivo));
+  assert.ok(pd.tickets_mes.anulados >= 1);
+  assert.equal(typeof pd.pagos_informados_mes.n, 'number');
+  const hist = await (await c('GET', `/api/admin/pagos-informados?periodo=${util.periodoActual()}`)).json();
+  assert.ok(hist.pagos.every(p => p.fecha.startsWith(util.periodoActual())));
+  assert.equal((await (await c('GET', '/api/admin/pagos-informados?periodo=2001-01')).json()).pagos.length, 0);
   assert.equal((await c('GET', '/api/admin/cuentas')).status, 200);
   assert.equal((await c('POST', '/api/admin/pagos', { usuario_id: ana.id, importe: '1' })).status, 403);
   assert.equal((await c('PUT', '/api/admin/config', {})).status, 403);

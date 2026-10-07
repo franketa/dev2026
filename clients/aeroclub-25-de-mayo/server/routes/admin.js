@@ -28,6 +28,30 @@ const {
 const router = express.Router();
 
 // ── Panel ───────────────────────────────────────────────────────────────────
+const TIPO_ANULADO = { pago: 'Pago', servicio: 'Ticket', vuelo: 'Cargo de vuelo', ajuste: 'Ajuste', saldo_inicial: 'Saldo inicial' };
+
+// Anulaciones hechas en el mes: movimientos de la cuenta (pagos, tickets, ajustes) y vuelos.
+function anulacionesDelMes(periodo) {
+  const movs = db.prepare(`
+    SELECT a.fecha, o.tipo, o.importe, a.concepto, u.id usuario_id, u.nombre || ' ' || u.apellido socio, c.nombre || ' ' || c.apellido por
+    FROM movimientos a JOIN movimientos o ON o.id = a.anula_id JOIN usuarios u ON u.id = a.usuario_id LEFT JOIN usuarios c ON c.id = a.creado_por
+    WHERE a.tipo = 'anulacion' AND substr(a.fecha,1,7) = ?`).all(periodo)
+    .map(m => ({
+      fecha: m.fecha, que: TIPO_ANULADO[m.tipo] || m.tipo, importe: m.importe, usuario_id: m.usuario_id, socio: m.socio, por: m.por,
+      // "Anula #12 (Pago por efectivo) — se devolvió" → detalle y motivo
+      detalle: (m.concepto.match(/^Anula #\d+ \((.*)\) — /) || [])[1] || '', motivo: m.concepto.split(' — ').slice(1).join(' — ')
+    }));
+  const vuelos = db.prepare(`
+    SELECT date(h.creado_en, '-3 hours') fecha, v.importe, v.motivo_anulacion motivo, a.matricula, v.fecha fecha_vuelo,
+      p.id usuario_id, p.nombre || ' ' || p.apellido socio, u.nombre || ' ' || u.apellido por
+    FROM vuelos_historial h JOIN vuelos v ON v.id = h.vuelo_id JOIN aviones a ON a.id = v.avion_id
+    JOIN usuarios p ON p.id = v.piloto_id LEFT JOIN usuarios u ON u.id = h.usuario_id
+    WHERE h.accion = 'anulacion' AND substr(date(h.creado_en, '-3 hours'),1,7) = ?`).all(periodo)
+    .map(v => ({ fecha: v.fecha, que: 'Vuelo', importe: v.importe, usuario_id: v.usuario_id, socio: v.socio, por: v.por,
+      detalle: `${v.matricula} del ${fmtFechaCorta(v.fecha_vuelo)}`, motivo: v.motivo || '' }));
+  return [...movs, ...vuelos].sort((x, y) => (x.fecha < y.fecha ? 1 : x.fecha > y.fecha ? -1 : 0));
+}
+
 router.get('/panel', (req, res) => {
   const periodo = esPeriodo(req.query.periodo) ? req.query.periodo : periodoActual();
   const porAvion = db.prepare(`
@@ -49,6 +73,10 @@ router.get('/panel', (req, res) => {
     FROM movimientos m LEFT JOIN movimientos o ON o.id = m.anula_id
     WHERE COALESCE(o.tipo, m.tipo) = 'pago' AND substr(m.fecha,1,7) = ?`).get(periodo);
   const novedades = novedadesSrv.listar({ estado: 'pendiente', limite: 8 });
+  // Actividad del mes: el historial completo queda en cada sección y en el Registro.
+  const ticketsMes = db.prepare(`SELECT COALESCE(SUM(estado = 'vigente'),0) vigentes, COALESCE(SUM(estado = 'anulado'),0) anulados
+    FROM tickets WHERE substr(fecha,1,7) = ?`).get(periodo);
+  const anulaciones = anulacionesDelMes(periodo);
   res.json({
     periodo,
     por_avion: porAvion,
@@ -59,6 +87,9 @@ router.get('/panel', (req, res) => {
     deuda,
     cobrado,
     novedades,
+    pagos_informados_mes: pagosInformados.resumenMes(periodo),
+    tickets_mes: ticketsMes,
+    anulaciones,
     aviones: flota.listarAviones(),
     proximo_cierre: cierres.proximoCierreAutomatico(),
     pilotos_activos: db.prepare(`SELECT COUNT(DISTINCT piloto_id) n FROM vuelos WHERE estado <> 'anulado' AND substr(fecha,1,7) = ?`).get(periodo).n
@@ -253,7 +284,7 @@ router.post('/tickets/:id/anular', (req, res) => res.json({ ticket: tickets.anul
 
 // ── Pagos informados por los socios ──────────────────────────────────────────
 router.get('/pagos-informados', (req, res) => {
-  res.json({ pagos: pagosInformados.listar({ estado: req.query.estado || null, limite: 200 }) });
+  res.json({ pagos: pagosInformados.listar({ estado: req.query.estado || null, periodo: req.query.periodo || null, limite: 500 }) });
 });
 router.get('/pagos-informados/:id/comprobante', (req, res) => enviarComprobante(res, pagosInformados.comprobante(Number(req.params.id))));
 router.post('/pagos-informados/:id/confirmar', (req, res) => res.json(pagosInformados.confirmar(Number(req.params.id), req.body || {}, req.user)));

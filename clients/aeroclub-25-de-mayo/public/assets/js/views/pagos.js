@@ -1,6 +1,6 @@
 // Pagos que informan los socios desde la app: tesorería mira el comprobante y confirma o rechaza.
 import {
-  get, post, html, raw, pintar, icono, pesos, fecha, fechaHora, modal, pedirTexto, toast, error, conBoton, datosForm, hoyAR,
+  get, post, html, raw, pintar, icono, pesos, fecha, fechaHora, periodoHoy, selectorMes, nombrePeriodo, modal, pedirTexto, toast, error, conBoton, datosForm, hoyAR,
   pesosInput, nombreLista, nombreCompleto, chipInforme, opcionesMedio, MEDIOS
 } from '../lib.js';
 import { vacio } from './comun.js';
@@ -76,25 +76,36 @@ export function tablaInformes(pagos, { socio = true, revisar = false } = {}) {
       </div></td></tr>`)}</tbody></table></div>`;
 }
 
+// "Por revisar": todos los pendientes. "Historial": todos los informados, mes por mes (por fecha del pago).
 export default async function pagosInformados(ctx) {
-  const ver = ctx.query.ver === 'todos' ? 'todos' : 'pendiente';
-  const { pagos } = await get(`/api/admin/pagos-informados${ver === 'pendiente' ? '?estado=pendiente' : ''}`);
+  const ver = ['historial', 'todos'].includes(ctx.query.ver) ? 'historial' : 'pendiente';
+  const periodo = ctx.query.periodo || periodoHoy();
+  const { pagos } = await get(`/api/admin/pagos-informados?${ver === 'pendiente' ? 'estado=pendiente' : `periodo=${periodo}`}`);
   const total = pagos.filter(p => p.estado === 'pendiente').reduce((s, p) => s + p.importe, 0);
+  const confirmado = pagos.filter(p => p.estado === 'confirmado').reduce((s, p) => s + p.importe, 0);
 
   pintar(ctx.el, html`
   <div class="vista">
     <div class="vista__cab"><div><h1>Pagos informados</h1><p>Lo que los socios avisan que pagaron desde la app. No toca su cuenta hasta que lo confirmás.</p></div></div>
     <div class="pestanas" role="tablist">
       <button type="button" role="tab" data-ver="pendiente" aria-selected="${ver === 'pendiente'}">Por revisar</button>
-      <button type="button" role="tab" data-ver="todos" aria-selected="${ver === 'todos'}">Todos</button>
+      <button type="button" role="tab" data-ver="historial" aria-selected="${ver === 'historial'}">Historial</button>
     </div>
+    ${ver === 'historial' ? html`<div class="filtros">${selectorMes(periodo)}</div>` : ''}
     ${ver === 'pendiente' && pagos.length ? html`<div class="cifras"><div class="cifra"><span>Por revisar</span><strong>${pesos(total)}</strong><small>${pagos.length} ${pagos.length === 1 ? 'pago' : 'pagos'}</small></div></div>` : ''}
-    <section class="panel">${pagos.length ? tablaInformes(pagos, { revisar: true }) : vacio(ver === 'pendiente' ? 'No hay pagos para revisar.' : 'Todavía nadie informó pagos.')}</section>
+    ${ver === 'historial' && pagos.length ? html`<div class="cifras">
+      <div class="cifra"><span>Informados</span><strong>${pagos.length}</strong></div>
+      <div class="cifra"><span>Confirmados</span><strong>${pesos(confirmado)}</strong><small>${pagos.filter(p => p.estado === 'confirmado').length} pagos</small></div>
+      ${total ? html`<div class="cifra"><span>Por revisar</span><strong>${pesos(total)}</strong></div>` : ''}
+    </div>` : ''}
+    <section class="panel">${pagos.length ? tablaInformes(pagos, { revisar: true }) : vacio(ver === 'pendiente' ? 'No hay pagos para revisar.' : `No se informaron pagos de ${nombrePeriodo(periodo)}.`)}</section>
   </div>`);
 
   ctx.el.addEventListener('click', (e) => {
     const v = e.target.closest('[data-ver]');
-    if (v) return ctx.ir(`#/admin/pagos${v.dataset.ver === 'todos' ? '?ver=todos' : ''}`);
+    if (v) return ctx.ir(`#/admin/pagos${v.dataset.ver === 'historial' ? '?ver=historial' : ''}`);
+    const mes = e.target.closest('[data-mes]');
+    if (mes) return ctx.ir(`#/admin/pagos?ver=historial&periodo=${mes.dataset.mes}`);
     const r = e.target.closest('[data-revisar]');
     if (r) revisarPago(pagos.find(p => p.id === Number(r.dataset.revisar)), ctx.recargar);
   });

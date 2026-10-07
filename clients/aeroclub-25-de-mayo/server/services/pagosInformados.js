@@ -3,7 +3,7 @@
 
 const { db, auditar } = require('../db');
 const ledger = require('./ledger');
-const { ErrorNegocio, hoy, sumarDias, esFecha, parsePesos, fmtPesos, limpiarTexto, nombreCompleto, MEDIOS } = require('../util');
+const { ErrorNegocio, hoy, sumarDias, esFecha, esPeriodo, parsePesos, fmtPesos, limpiarTexto, nombreCompleto, MEDIOS } = require('../util');
 
 const TIPOS_COMPROBANTE = ['image/jpeg', 'image/png', 'image/webp', 'application/pdf'];
 const MAX_COMPROBANTE = 3 * 1024 * 1024;
@@ -57,9 +57,11 @@ function get(id) {
   return p;
 }
 
-function listar({ usuarioId = null, estado = null, limite = 100 } = {}) {
+// `periodo`: los del mes del pago (para el historial).
+function listar({ usuarioId = null, estado = null, periodo = null, limite = 100 } = {}) {
   const where = [];
   const params = [];
+  if (periodo && esPeriodo(periodo)) { where.push('substr(p.fecha,1,7) = ?'); params.push(periodo); }
   if (usuarioId) { where.push('p.usuario_id = ?'); params.push(usuarioId); }
   if (['pendiente', 'confirmado', 'rechazado'].includes(estado)) { where.push('p.estado = ?'); params.push(estado); }
   return db.prepare(`${SELECT} ${where.length ? 'WHERE ' + where.join(' AND ') : ''} ORDER BY p.id DESC LIMIT ${Math.min(Number(limite) || 100, 500)}`).all(...params);
@@ -106,4 +108,12 @@ function comprobante(pagoId) {
   return { usuario_id: p.usuario_id, ...db.prepare('SELECT tipo, datos FROM comprobantes WHERE id = ?').get(p.comprobante_id) };
 }
 
-module.exports = { informar, listar, get, pendientes, confirmar, rechazar, comprobante };
+// Resumen del mes para el panel: cuántos se informaron y cómo quedaron.
+function resumenMes(periodo) {
+  return db.prepare(`
+    SELECT COUNT(*) n, COALESCE(SUM(estado = 'confirmado'),0) confirmados, COALESCE(SUM(estado = 'rechazado'),0) rechazados,
+      COALESCE(SUM(estado = 'pendiente'),0) pendientes, COALESCE(SUM(CASE WHEN estado = 'confirmado' THEN importe END),0) importe_confirmado
+    FROM pagos_informados WHERE substr(fecha,1,7) = ?`).get(periodo);
+}
+
+module.exports = { informar, listar, get, pendientes, resumenMes, confirmar, rechazar, comprobante };
