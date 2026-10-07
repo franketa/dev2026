@@ -134,7 +134,7 @@ function pintarMenus(actual) {
 
   pintar(document.getElementById('lateral'), html`
     <a class="lateral__marca" href="#${inicioPorRol()}">
-      <img src="/assets/img/escudo-256.png" alt="" width="46" height="46">
+      <img src="/assets/img/escudo-256.png?v=2" alt="" width="46" height="46">
       <span class="barra__club">Aeroclub 25 de Mayo<small>${rol() === 'piloto' ? 'Socios' : ROLES[rol()]}</small></span>
     </a>
     <div class="menu">${lateral}</div>

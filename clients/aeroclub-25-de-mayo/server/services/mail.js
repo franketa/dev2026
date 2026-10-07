@@ -11,7 +11,9 @@ const escapar = (s) => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;',
 
 // Plantilla común: encabezado con el nombre del club, párrafos y, si hay, un botón.
 function plantilla({ titulo, parrafos, boton = null, pie = null }) {
-  const club = escapar(getConfig().club_nombre || 'Aeroclub 25 de Mayo');
+  const cfg = getConfig();
+  const club = escapar(cfg.club_nombre || 'Aeroclub 25 de Mayo');
+  const escudo = `${(cfg.url_publica || 'https://aeroclub25demayo.com.ar').replace(/\/$/, '')}/assets/img/escudo-256.png?v=2`;
   const ps = parrafos.map(p => `<p style="margin:0 0 14px;font-size:15px;line-height:1.5;color:#1d2a44">${p}</p>`).join('');
   const btn = boton
     ? `<p style="margin:22px 0"><a href="${escapar(boton.url)}" style="display:inline-block;background:#d43a2f;color:#fff;text-decoration:none;font-weight:600;padding:12px 22px;border-radius:8px">${escapar(boton.texto)}</a></p>
@@ -19,7 +21,8 @@ function plantilla({ titulo, parrafos, boton = null, pie = null }) {
     : '';
   return `<!doctype html><html lang="es"><body style="margin:0;background:#eef3f9;font-family:Arial,Helvetica,sans-serif">
   <div style="max-width:520px;margin:0 auto;padding:24px 16px">
-    <div style="background:#16284a;color:#fff;padding:16px 22px;border-radius:12px 12px 0 0;font-weight:700;font-size:17px">${club}</div>
+    <div style="background:#16284a;color:#fff;padding:14px 22px;border-radius:12px 12px 0 0;font-weight:700;font-size:17px">
+      <img src="${escapar(escudo)}" alt="" width="44" height="44" style="vertical-align:middle;margin-right:12px;border:0">${club}</div>
     <div style="background:#fff;padding:24px 22px;border-radius:0 0 12px 12px">
       <h1 style="margin:0 0 16px;font-size:20px;color:#16284a">${escapar(titulo)}</h1>
       ${ps}${btn}
