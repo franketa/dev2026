@@ -244,6 +244,31 @@ test('tesorería corrige movimientos: edita, borra y los cupones se recalculan',
   assert.deepEqual(audit, ['movimiento.edicion', 'movimiento.borrado']);
 });
 
+test('vista previa del mes en curso: los cupones con lo cargado hasta hoy, sin dejar rastros', async () => {
+  const actual = util.periodoActual();
+  assert.throws(() => cierres.simular(actual, admin), /Primero hay que cerrar/);
+  for (let p = '2026-09'; p < actual; p = util.sumarMeses(p, 1)) cierres.cerrar(p, admin);
+  assert.throws(() => cierres.cerrar(actual, admin), /todavía no terminó/);
+
+  const antes = ['cierres', 'cupones', 'movimientos', 'tickets'].map(t => db.prepare(`SELECT COUNT(*) n FROM ${t}`).get().n);
+  const sim = cierres.simular(actual, admin);
+  const cupJuan = sim.cupones.find(c => c.usuario_id === juan.id);
+  assert.equal(cupJuan.total_vuelos, 9000000);              // el vuelo de hoy, con la tarifa nueva
+  const previo = cierres.cuponPrevio(actual, juan.id, admin);
+  assert.equal(previo.vistaPrevia, true);
+  assert.equal(previo.cupon.total, cupJuan.total);
+  assert.ok(previo.movimientos.some(m => m.tipo === 'vuelo'));
+  assert.throws(() => cierres.cuponPrevio(actual, 999, admin), /no tendría cupón/);
+  assert.deepEqual(['cierres', 'cupones', 'movimientos', 'tickets'].map(t => db.prepare(`SELECT COUNT(*) n FROM ${t}`).get().n), antes);
+  assert.equal(db.prepare(`SELECT COUNT(*) n FROM vuelos WHERE estado = 'abierto' AND fecha = ?`).get(util.hoy()).n, 1);
+
+  const chunks = [];
+  for await (const c of generarCupon(previo)) chunks.push(c);
+  const buf = Buffer.concat(chunks);
+  assert.equal(buf.subarray(0, 5).toString(), '%PDF-');
+  fs.writeFileSync(path.join(dir, 'cupon-previo.pdf'), buf);
+});
+
 test('la cadena de hashes detecta una manipulación por fuera del sistema', () => {
   assert.equal(ledger.verificarCadena().ok, true);
   // Alguien con acceso al archivo cambia un importe sin pasar por el sistema…

@@ -166,7 +166,7 @@ function enviarComprobante(res, c) {
 }
 
 function enviarPdf(res, datos, descargar) {
-  const nombre = `cupon-${datos.cupon.numero}-${datos.cupon.apellido}`.normalize('NFD').replace(/[^\w-]/g, '').toLowerCase();
+  const nombre = `${datos.vistaPrevia ? 'vista-previa-' : ''}cupon-${datos.cupon.numero}-${datos.cupon.apellido}`.normalize('NFD').replace(/[^\w-]/g, '').toLowerCase();
   res.setHeader('Content-Type', 'application/pdf');
   res.setHeader('Content-Disposition', `${descargar ? 'attachment' : 'inline'}; filename="${nombre}.pdf"`);
   res.setHeader('Cache-Control', 'private, no-store');
