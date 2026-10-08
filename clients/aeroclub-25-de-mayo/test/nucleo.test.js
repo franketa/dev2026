@@ -18,7 +18,11 @@ const cierres = require('../server/services/cierres');
 const ledger = require('../server/services/ledger');
 const { generarCupon } = require('../server/services/pdf');
 
-const H = { hora_salida: '10:00', hora_llegada: '11:20' };   // horario del vuelo (obligatorio)
+// Horario del vuelo (obligatorio): sale a las 10 y vuelve justo a las horas pedidas, así la tabla del club da esas décimas.
+const H = (horas) => {
+  const m = 600 + Math.round(Number(horas.replace(',', '.')) * 60);
+  return { horas, hora_salida: '10:00', hora_llegada: `${String(Math.floor(m / 60) % 24).padStart(2, '0')}:${String(m % 60).padStart(2, '0')}` };
+};
 const admin = { id: 1, rol: 'admin' };
 
 function socio(nombre, apellido, extra = {}) {
@@ -36,6 +40,13 @@ test('utilidades: horas, pesos, teléfonos, importes y fechas', () => {
   assert.equal(util.parseHoras(1.4), 14);
   assert.equal(util.parseHoras('1,45'), null);
   assert.equal(util.parseHoras('abc'), null);
+  // Tabla de minutos del club → décimas.
+  const tabla = [[0, 2, 0], [3, 8, 1], [9, 14, 2], [15, 20, 3], [21, 26, 4], [27, 33, 5], [34, 39, 6], [40, 45, 7], [46, 51, 8], [52, 57, 9], [58, 60, 10]];
+  for (const [desde, hasta, dec] of tabla) for (let m = desde; m <= hasta; m++) assert.equal(util.minutosADecimas(m), dec, `${m} min`);
+  assert.equal(util.minutosADecimas(61), 10);
+  assert.equal(util.minutosADecimas(95), 16);
+  assert.equal(util.minutosEntre('11:07', '11:40'), 33);
+  assert.equal(util.minutosEntre('23:50', '00:20'), 30);   // pasó la medianoche
   assert.equal(util.parsePesos('80.000'), 8000000);
   assert.equal(util.parsePesos('80000,50'), 8000050);
   assert.equal(util.parsePesos('$ 1.234.567'), 123456700);
@@ -66,22 +77,30 @@ test('preparación: tarifas y socios', () => {
 const porTesoreria = (input, piloto) => vuelos.crear({ ...input, piloto_id: piloto.id }, admin);
 
 test('carga de vuelos: horas, validaciones e instructor', () => {
-  const v1 = porTesoreria({ ...H, avion_id: 1, fecha: '2026-07-10', horas: '1,2', con_instructor: true, instructor_id: inst.id }, ana);
+  const v1 = porTesoreria({ ...H('1,2'), avion_id: 1, fecha: '2026-07-10', con_instructor: true, instructor_id: inst.id }, ana);
   assert.equal(v1.vuelo.decimas, 12);
   assert.equal(v1.vuelo.importe, 11400000);
   assert.equal(v1.vuelo.cargado_por, admin.id);
   assert.equal(v1.vuelo.tac_inicial, null);
   assert.equal(v1.vuelo.hora_salida, '10:00');
-  assert.equal(v1.vuelo.hora_llegada, '11:20');
+  assert.equal(v1.vuelo.hora_llegada, '11:12');
   assert.deepEqual(v1.avisos, []);
 
-  assert.throws(() => porTesoreria({ ...H, avion_id: 1, fecha: '2026-07-11', horas: '0' }, juan), /Tiempo de vuelo/);
-  assert.throws(() => porTesoreria({ ...H, avion_id: 1, fecha: '2026-07-11', horas: '1,25' }, juan), /Tiempo de vuelo/);
-  assert.throws(() => porTesoreria({ ...H, avion_id: 1, fecha: '2026-07-11', horas: '1', con_instructor: true }, juan), /instructor/);
-  assert.throws(() => porTesoreria({ ...H, avion_id: 1, fecha: '2026-07-11', horas: '1', con_instructor: true, instructor_id: juan.id }, juan), /instructor/);
-  assert.throws(() => vuelos.crear({ ...H, avion_id: 1, fecha: '2099-01-01', horas: '1' }, juan), /futura/);
-  assert.throws(() => vuelos.crear({ ...H, avion_id: 1, fecha: '2026-07-11', horas: '1' }, juan), /últimos 60 días/);
-  assert.throws(() => vuelos.crear({ ...H, avion_id: 1, fecha: util.hoy(), horas: '12' }, juan), /error de tipeo/);
+  // El tiempo de vuelo sale del horario con la tabla del club: lo que venga en `horas` no cuenta.
+  const tabla = vuelos.crear({ avion_id: 1, fecha: util.hoy(), hora_salida: '11:07', hora_llegada: '11:40', horas: '3' }, juan);
+  assert.equal(tabla.vuelo.decimas, 5);
+  vuelos.anular(tabla.vuelo.id, 'Prueba', admin);
+  const nocturno = vuelos.crear({ avion_id: 1, fecha: util.hoy(), hora_salida: '23:50', hora_llegada: '00:20' }, juan);
+  assert.equal(nocturno.vuelo.decimas, 5);
+  vuelos.anular(nocturno.vuelo.id, 'Prueba', admin);
+  // Nunca se vuela menos de 3 minutos (0 a 2 minutos dan 0,0 h).
+  assert.throws(() => vuelos.crear({ avion_id: 1, fecha: util.hoy(), hora_salida: '10:00', hora_llegada: '10:02' }, juan), /menos de 3 minutos/);
+  assert.throws(() => vuelos.crear({ avion_id: 1, fecha: util.hoy(), hora_salida: '10:00', hora_llegada: '10:01' }, juan), /1 minuto de vuelo/);
+  assert.throws(() => porTesoreria({ ...H('1'), avion_id: 1, fecha: '2026-07-11', con_instructor: true }, juan), /instructor/);
+  assert.throws(() => porTesoreria({ ...H('1'), avion_id: 1, fecha: '2026-07-11', con_instructor: true, instructor_id: juan.id }, juan), /instructor/);
+  assert.throws(() => vuelos.crear({ ...H('1'), avion_id: 1, fecha: '2099-01-01' }, juan), /futura/);
+  assert.throws(() => vuelos.crear({ ...H('1'), avion_id: 1, fecha: '2026-07-11' }, juan), /últimos 60 días/);
+  assert.throws(() => vuelos.crear({ ...H('12'), avion_id: 1, fecha: util.hoy() }, juan), /error de tipeo/);
 
   // Hora de salida y de llegada: obligatorias, en 24 h.
   const sinHora = { avion_id: 1, fecha: util.hoy(), horas: '1' };
@@ -92,10 +111,10 @@ test('carga de vuelos: horas, validaciones e instructor', () => {
   assert.throws(() => vuelos.crear({ ...sinHora, hora_salida: '10:00', hora_llegada: '10:00' }, juan), /igual a la de salida/);
 
   // Un piloto no puede cargarle vuelos a otro: el piloto_id se ignora.
-  const ajeno = vuelos.crear({ ...H, avion_id: 1, piloto_id: ana.id, fecha: util.hoy(), horas: '0,5' }, juan);
+  const ajeno = vuelos.crear({ ...H('0,5'), avion_id: 1, piloto_id: ana.id, fecha: util.hoy() }, juan);
   assert.equal(ajeno.vuelo.piloto_id, juan.id);
   // Cargar lo mismo dos veces avisa (no bloquea).
-  const doble = vuelos.crear({ ...H, avion_id: 1, fecha: util.hoy(), horas: '0,5' }, juan);
+  const doble = vuelos.crear({ ...H('0,5'), avion_id: 1, fecha: util.hoy() }, juan);
   assert.match(doble.avisos.join(' '), /otro vuelo igual.*tesorería/);
   // Una vez aceptado, el piloto no puede anular ni corregir su vuelo: sólo tesorería.
   assert.throws(() => vuelos.anular(doble.vuelo.id, 'Duplicado', juan), /no se pueden modificar una vez aceptados/);
@@ -105,22 +124,24 @@ test('carga de vuelos: horas, validaciones e instructor', () => {
   vuelos.anular(ajeno.vuelo.id, 'Prueba', admin);
   assert.throws(() => vuelos.anular(ajeno.vuelo.id, 'Otra', admin), /anulado/);
 
-  const v3 = vuelos.crear({ ...H, avion_id: 1, fecha: '2026-07-12', horas: '1' }, admin);
+  const v3 = vuelos.crear({ ...H('1'), avion_id: 1, fecha: '2026-07-12' }, admin);
   // Tesorería corrige un vuelo viejo, sin horario, sin tener que completarlo.
   db.prepare('UPDATE vuelos SET hora_salida = NULL, hora_llegada = NULL WHERE id = ?').run(v3.vuelo.id);
   assert.equal(vuelos.editar(v3.vuelo.id, { horas: '1,1' }, admin).vuelo.hora_salida, null);
-  assert.equal(vuelos.editar(v3.vuelo.id, { hora_salida: '08:05', hora_llegada: '09:15' }, admin).vuelo.hora_llegada, '09:15');
+  const conHorario = vuelos.editar(v3.vuelo.id, { hora_salida: '08:05', hora_llegada: '09:15' }, admin).vuelo;
+  assert.equal(conHorario.hora_llegada, '09:15');
+  assert.equal(conHorario.decimas, 12);   // al completar el horario, las horas salen de la tabla (70 min)
 
   // Ningún piloto toca vuelos, ni ajenos ni propios.
   assert.throws(() => vuelos.editar(v1.vuelo.id, { notas: 'x' }, juan), /no se pueden modificar/);
   assert.throws(() => vuelos.editar(v1.vuelo.id, { notas: 'x' }, ana), /no se pueden modificar/);
   // Tesorería sí lo corrige mientras el mes está abierto, y queda en el historial.
-  const corregido = vuelos.editar(v1.vuelo.id, { horas: '1,3', notas: 'Presión de aceite baja' }, admin);
+  const corregido = vuelos.editar(v1.vuelo.id, { ...H('1,3'), notas: 'Presión de aceite baja' }, admin);
   assert.equal(corregido.vuelo.importe, 12350000);
   assert.equal(vuelos.historial(v1.vuelo.id).length, 2);
-  vuelos.editar(v1.vuelo.id, { horas: '1,2' }, admin);
+  vuelos.editar(v1.vuelo.id, H('1,2'), admin);
 
-  porTesoreria({ ...H, avion_id: 1, fecha: '2026-07-20', horas: '1' }, juan);
+  porTesoreria({ ...H('1'), avion_id: 1, fecha: '2026-07-20' }, juan);
 });
 
 test('pagos y ajustes quedan en el libro', () => {
@@ -165,9 +186,9 @@ test('cierre de julio: cupones correctos y vuelos congelados', () => {
 
 test('agosto: saldo anterior, pago parcial y vuelo cargado tarde de julio', () => {
   // Juan se olvidó un vuelo de julio y lo carga en agosto: entra en el cierre de agosto.
-  const tarde = porTesoreria({ ...H, avion_id: 1, fecha: '2026-07-30', horas: '0,5' }, juan);
+  const tarde = porTesoreria({ ...H('0,5'), avion_id: 1, fecha: '2026-07-30' }, juan);
   assert.match(tarde.avisos.join(' '), /ya se cerró/);
-  porTesoreria({ ...H, avion_id: 1, fecha: '2026-08-05', horas: '1', con_instructor: true, instructor_id: inst.id }, ana);
+  porTesoreria({ ...H('1'), avion_id: 1, fecha: '2026-08-05', con_instructor: true, instructor_id: inst.id }, ana);
   ledger.registrar({ usuario_id: ana.id, tipo: 'pago', concepto: 'Pago parcial', importe: -4000000, creado_por: admin.id });
 
   const cupJulio = db.prepare('SELECT * FROM cupones WHERE usuario_id = ? ORDER BY id DESC').get(ana.id);
@@ -201,7 +222,7 @@ test('anulación de movimientos: contraasiento, una sola vez', () => {
 });
 
 test('retarifa opcional de vuelos abiertos', () => {
-  const v = vuelos.crear({ ...H, avion_id: 1, fecha: util.hoy(), horas: '1' }, juan);
+  const v = vuelos.crear({ ...H('1'), avion_id: 1, fecha: util.hoy() }, juan);
   assert.equal(v.vuelo.importe, 8000000);
   const r = flota.nuevaTarifa(1, { tipo: 'solo', precio_hora: 9000000, vigente_desde: util.hoy(), aplicar_abiertos: true }, admin);
   assert.equal(r.repreciados, 1);

@@ -660,7 +660,8 @@ img.comprobante { object-fit: contain; background: var(--papel); }
 .hora-24__selects { display: flex; align-items: center; gap: 6px; }
 .hora-24__selects .select { flex: 1; min-width: 0; font-family: var(--f-titulo); font-size: 1.15rem; text-align: center; }
 .hora-24__selects span { font-weight: 700; font-size: 1.2rem; }
-.fila-campos--horas { grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); }
+/* Salida y llegada lado a lado sólo si cada selector de hora/minutos queda con lugar para "07": en celular, una abajo de la otra. */
+.fila-campos--horas { grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); }
 
 /* Novedades de la flota (mantenimiento) */
 .novedades { display: grid; gap: 12px; grid-template-columns: repeat(auto-fill, minmax(min(100%, 340px), 1fr)); }

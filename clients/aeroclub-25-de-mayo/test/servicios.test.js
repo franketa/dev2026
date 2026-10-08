@@ -24,7 +24,11 @@ const pagosInformados = require('../server/services/pagosInformados');
 const respaldos = require('../server/services/respaldos');
 const { generarTicket } = require('../server/services/pdf');
 
-const H = { hora_salida: '10:00', hora_llegada: '11:20' };   // horario del vuelo (obligatorio)
+// Horario del vuelo (obligatorio): sale a las 10 y vuelve justo a las horas pedidas, así la tabla del club da esas décimas.
+const H = (horas) => {
+  const m = 600 + Math.round(Number(horas.replace(',', '.')) * 60);
+  return { horas, hora_salida: '10:00', hora_llegada: `${String(Math.floor(m / 60) % 24).padStart(2, '0')}:${String(m % 60).padStart(2, '0')}` };
+};
 const admin = { id: 1, rol: 'admin' };
 const HASH = bcrypt.hashSync('clave-1234', 4);
 
@@ -239,7 +243,7 @@ test('al anular un ticket cobrado en el acto se anula también el pago', () => {
 
 test('derecho de aeronave: una vez por mes por piloto que voló', () => {
   // Ana vuela los dos aviones en INICIO; Beto vuela en MES2. Tesorería carga porque son vuelos viejos.
-  const volar = (p, avion, fecha) => vuelos.crear({ ...H, piloto_id: p.id, avion_id: avion, fecha, horas: '1' }, admin);
+  const volar = (p, avion, fecha) => vuelos.crear({ ...H('1'), piloto_id: p.id, avion_id: avion, fecha }, admin);
   volar(ana, 1, `${INICIO}-03`);
   volar(ana, 2, `${INICIO}-10`);
   volar(ana, 1, `${INICIO}-20`);
@@ -407,7 +411,7 @@ test('roles: consulta sólo mira, rampa sólo tickets, el piloto no toca vuelos,
   assert.equal((await fetch(`${base}/t/no-existe`)).status, 404);
 
   const p = await entrar('piloto@test.com');
-  const v = await p('POST', '/api/vuelos', { ...H, avion_id: 1, fecha: util.hoy(), horas: '1' });
+  const v = await p('POST', '/api/vuelos', { ...H('1'), avion_id: 1, fecha: util.hoy() });
   assert.equal(v.status, 201);
   const { vuelo } = await v.json();
   assert.equal((await p('POST', `/api/vuelos/${vuelo.id}/anular`, { motivo: 'x' })).status, 403);

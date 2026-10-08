@@ -1,7 +1,7 @@
 const { db } = require('../db');
 const flota = require('./flota');
 const {
-  ErrorNegocio, hoy, sumarDias, esFecha, esPeriodo, parseHoras, fmtHoras, fmtFechaCorta, importeVuelo, limpiarTexto, periodoDe
+  ErrorNegocio, hoy, sumarDias, esFecha, esPeriodo, parseHoras, minutosADecimas, minutosEntre, fmtHoras, fmtFechaCorta, importeVuelo, limpiarTexto, periodoDe
 } = require('../util');
 
 const DIAS_ATRAS_PILOTO = 60;
@@ -58,14 +58,8 @@ function armar(input, actor, previo = null) {
     throw new ErrorNegocio(`Sólo podés cargar vuelos de los últimos ${DIAS_ATRAS_PILOTO} días. Para uno más viejo, pedíselo al tesorero.`);
   }
 
-  // Tiempo de vuelo en décimas de hora (0,1 = 6 minutos), como se anota en el aeroclub.
-  const decimas = input.horas != null ? parseHoras(input.horas) : previo?.decimas;
-  if (decimas == null || decimas <= 0) throw new ErrorNegocio('Tiempo de vuelo inválido: usá horas con un decimal, por ejemplo 1,4');
-  const maxDecimas = esAdmin ? MAX_DECIMAS_ADMIN : MAX_DECIMAS_PILOTO;
-  if (decimas > maxDecimas) throw new ErrorNegocio(`${fmtHoras(decimas)} en un solo vuelo parece un error de tipeo. Revisá el tiempo de vuelo.`);
-
   // Hora de salida y de llegada (24 h): obligatorias al cargar. Un vuelo viejo que no las tenía
-  // se puede corregir sin completarlas. No se usan para calcular el tiempo de vuelo.
+  // se puede corregir sin completarlas.
   const horario = {};
   for (const [campo, nombre] of [['hora_salida', 'salida'], ['hora_llegada', 'llegada']]) {
     const v = input[campo] !== undefined ? String(input[campo] ?? '').trim() : previo?.[campo] ?? '';
@@ -74,6 +68,21 @@ function armar(input, actor, previo = null) {
     horario[campo] = v || null;
   }
   if (horario.hora_salida && horario.hora_salida === horario.hora_llegada) throw new ErrorNegocio('La hora de llegada no puede ser igual a la de salida');
+
+  // Tiempo de vuelo en décimas de hora (0,1 = 6 minutos), como se anota en el aeroclub. Con horario, sale
+  // siempre de la tabla del club y se ignora lo que venga en `horas`; sólo un vuelo viejo sin horario lo toma a mano.
+  const maxDecimas = esAdmin ? MAX_DECIMAS_ADMIN : MAX_DECIMAS_PILOTO;
+  let decimas;
+  if (horario.hora_salida && horario.hora_llegada) {
+    const minutos = minutosEntre(horario.hora_salida, horario.hora_llegada);
+    decimas = minutosADecimas(minutos);
+    if (decimas <= 0) throw new ErrorNegocio(`Revisá el horario: da ${minutos} ${minutos === 1 ? 'minuto' : 'minutos'} de vuelo y un vuelo no puede durar menos de 3 minutos`);
+    if (decimas > maxDecimas) throw new ErrorNegocio(`Revisá el horario: da ${fmtHoras(decimas)} de vuelo, parece un error de tipeo`);
+  } else {
+    decimas = input.horas != null ? parseHoras(input.horas) : previo?.decimas;
+    if (decimas == null || decimas <= 0) throw new ErrorNegocio('Tiempo de vuelo inválido: usá horas con un decimal, por ejemplo 1,4');
+    if (decimas > maxDecimas) throw new ErrorNegocio(`${fmtHoras(decimas)} en un solo vuelo parece un error de tipeo. Revisá el tiempo de vuelo.`);
+  }
 
   const conInstructor = input.con_instructor != null ? !!input.con_instructor : previo ? previo.tipo === 'instruccion' : false;
   let instructorId = null;

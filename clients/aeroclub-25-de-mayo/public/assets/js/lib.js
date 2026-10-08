@@ -91,16 +91,16 @@ export function parseHoras(v) {
 export const horasInput = (d) => (d / 10).toFixed(1).replace('.', ',');
 // Minutos de vuelo → décimas de hora, con la tabla del club: 0-2 min = 0,0; 3-8 = 0,1; 9-14 = 0,2; 15-20 = 0,3;
 // 21-26 = 0,4; 27-33 = 0,5; 34-39 = 0,6; 40-45 = 0,7; 46-51 = 0,8; 52-57 = 0,9; 58-60 = 1,0. Pasada la hora,
-// las horas enteras más la tabla sobre los minutos que sobran.
+// las horas enteras más la tabla sobre los minutos que sobran. El servidor usa la misma tabla (server/util.js).
 const TOPES_DECIMAS = [2, 8, 14, 20, 26, 33, 39, 45, 51, 57, 59];
 export function minutosADecimas(min) {
   const resto = min % 60;
   return Math.floor(min / 60) * 10 + TOPES_DECIMAS.findIndex(tope => resto <= tope);
 }
-// Décimas entre dos horas "HH:MM". Si la llegada es anterior a la salida, el vuelo pasó la medianoche.
-export function decimasEntre(salida, llegada) {
+// Minutos entre dos horas "HH:MM". Si la llegada es anterior a la salida, el vuelo pasó la medianoche.
+export function minutosEntre(salida, llegada) {
   const min = (s) => { const [h, m] = s.split(':').map(Number); return h * 60 + m; };
-  return minutosADecimas((min(llegada) - min(salida) + 1440) % 1440);
+  return (min(llegada) - min(salida) + 1440) % 1440;
 }
 export function parsePesos(v) {
   let s = String(v ?? '').trim().replace(/\$|\s/g, '');

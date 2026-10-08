@@ -1,6 +1,6 @@
 import {
   get, post, put, html, raw, pintar, icono, pesos, horas, horasInput, parseHoras, tambor, rodar, hoyAR, colorAvion, error, conBoton, nombrePeriodo, datosForm,
-  fecha, confirmar, decimasEntre
+  fecha, confirmar, minutosADecimas, minutosEntre
 } from '../lib.js';
 
 // Selector de hora en 24 h: hora y minutos por separado (cómodo en el celular, sin AM/PM).
@@ -54,6 +54,9 @@ export default async function cargar(ctx) {
     pilotoId: previo?.piloto_id ?? ctx.usuario.id
   };
   const avion = () => lista.find(a => a.id === estado.avionId);
+  // Con horario, el tiempo de vuelo sale de la tabla del club y no se toca a mano. Sólo un vuelo viejo,
+  // cargado antes de pedir el horario, se corrige escribiendo las horas.
+  const pideHorario = !previo || !!previo.hora_salida;
   const pilotos = socios ? socios.usuarios.filter(u => u.activo || u.id === previo?.piloto_id) : null;
 
   pintar(ctx.el, html`
@@ -103,13 +106,17 @@ export default async function cargar(ctx) {
       </div>
 
       <div class="carga__paso">
-        <h2><span class="num">4</span> <label for="horas">Tiempo de vuelo</label></h2>
-        <div class="horas-carga">
-          <button class="btn btn--sec" type="button" data-paso="-1" aria-label="Restar 0,1 horas">−0,1</button>
-          <input class="input input--tac" id="horas" name="horas" inputmode="decimal" autocomplete="off" placeholder="0,0" value="${previo ? horasInput(previo.decimas) : ''}" required>
-          <button class="btn btn--sec" type="button" data-paso="1" aria-label="Sumar 0,1 horas">+0,1</button>
-        </div>
-        <p class="campo__ayuda">Se completa solo con el horario de salida y llegada. En horas, con un decimal: 0,1 son 6 minutos. Ejemplo: 1,4.</p>
+        ${pideHorario ? html`
+          <h2><span class="num">4</span> Tiempo de vuelo</h2>
+          <input type="hidden" id="horas" name="horas" value="${previo ? horasInput(previo.decimas) : ''}">
+          <p class="campo__ayuda">Se calcula solo con la salida y la llegada, según la tabla de minutos del club.</p>` : html`
+          <h2><span class="num">4</span> <label for="horas">Tiempo de vuelo</label></h2>
+          <div class="horas-carga">
+            <button class="btn btn--sec" type="button" data-paso="-1" aria-label="Restar 0,1 horas">−0,1</button>
+            <input class="input input--tac" id="horas" name="horas" inputmode="decimal" autocomplete="off" placeholder="0,0" value="${previo ? horasInput(previo.decimas) : ''}" required>
+            <button class="btn btn--sec" type="button" data-paso="1" aria-label="Sumar 0,1 horas">+0,1</button>
+          </div>
+          <p class="campo__ayuda">Este vuelo se cargó sin horario: en horas, con un decimal (0,1 son 6 minutos). Si completás la salida y la llegada, se calcula solo.</p>`}
         <div class="resultado" id="resultado" aria-live="polite"></div>
       </div>
 
@@ -158,7 +165,18 @@ export default async function cargar(ctx) {
     if (Number($inst.value) === yo) $inst.value = '';
   }
 
+  // Salida y llegada completas → minutos de vuelo; si falta alguna, null.
+  function minutosDeVuelo() {
+    const d = datosForm(form);
+    const salida = leerHora(d, 'salida');
+    const llegada = leerHora(d, 'llegada');
+    return salida && llegada ? { salida, llegada, minutos: minutosEntre(salida, llegada) } : null;
+  }
+
   function calcular() {
+    const vuelo = minutosDeVuelo();
+    if (vuelo) $horas.value = horasInput(minutosADecimas(vuelo.minutos));
+    else if (pideHorario) $horas.value = '';
     const dec = parseHoras($horas.value);
     const a = avion();
     const precio = a?.tarifas?.[estado.tipo];
@@ -167,7 +185,12 @@ export default async function cargar(ctx) {
     const importe = ok && precio ? Math.round(precio * dec / 10) : null;
     $res.classList.toggle('resultado--vacio', !ok);
     pintar($res, html`
-      <div><span>Tiempo de vuelo</span><strong>${ok ? horas(dec) : '—'}</strong><small>${ok && dec > 60 ? 'Revisá: es un vuelo muy largo' : ok ? `${dec * 6} minutos` : 'Completá las horas'}</small></div>
+      <div><span>Tiempo de vuelo</span><strong>${ok ? horas(dec) : '—'}</strong><small>${
+        ok && dec > 60 ? 'Revisá: es un vuelo muy largo'
+        : ok && vuelo ? `${vuelo.minutos} minutos, de ${vuelo.salida} a ${vuelo.llegada}`
+        : ok ? `${dec * 6} minutos`
+        : vuelo ? 'Menos de 3 minutos: revisá el horario'
+        : pideHorario ? 'Completá la salida y la llegada' : 'Completá las horas'}</small></div>
       <div><span>Importe</span><strong>${importe != null ? pesos(importe) : '—'}</strong><small>${precio ? 'Se suma en el cierre del mes' : a ? 'Falta la tarifa de este avión' : 'Elegí el avión'}</small></div>`);
   }
 
@@ -183,17 +206,10 @@ export default async function cargar(ctx) {
     if (e.target.name === 'avion_id') {
       estado.avionId = Number(e.target.value);
       pintarTipos();
-      if (!editando && !$horas.value) $horas.focus();
+      if (!editando && !$horas.value) (pideHorario ? form.salida_h : $horas).focus();
     }
     if (e.target.name === 'tipo') { estado.tipo = e.target.value; pintarTipos(); if (estado.tipo === 'instruccion') $inst.focus(); }
     if (e.target.name === 'piloto_id') { estado.pilotoId = Number(e.target.value); pintarTipos(); }
-    // Con salida y llegada completas, el tiempo de vuelo sale de la tabla del club (se puede retocar a mano).
-    if (/^(salida|llegada)_[hm]$/.test(e.target.name)) {
-      const d = datosForm(form);
-      const salida = leerHora(d, 'salida');
-      const llegada = leerHora(d, 'llegada');
-      if (salida && llegada && salida !== llegada) $horas.value = horasInput(decimasEntre(salida, llegada));
-    }
     calcular();
   });
   form.addEventListener('input', (e) => { if (e.target === $horas) calcular(); });
@@ -204,13 +220,11 @@ export default async function cargar(ctx) {
     const d = datosForm(form);
     const salida = leerHora(d, 'salida');
     const llegada = leerHora(d, 'llegada');
-    // Un vuelo viejo, sin horario, se puede corregir sin completarlo.
-    const pideHorario = !previo || previo.hora_salida;
     const falta = !estado.avionId ? 'Elegí el avión.'
       : pideHorario && !salida ? 'Completá la hora de salida (hora y minutos).'
       : pideHorario && !llegada ? 'Completá la hora de llegada (hora y minutos).'
       : salida && salida === llegada ? 'La hora de llegada no puede ser igual a la de salida.'
-      : !(parseHoras($horas.value) > 0) ? 'Completá el tiempo de vuelo en horas con un decimal (ej.: 1,4).'
+      : !(parseHoras($horas.value) > 0) ? (salida && llegada ? 'Revisá el horario: un vuelo no puede durar menos de 3 minutos.' : 'Completá el tiempo de vuelo en horas con un decimal (ej.: 1,4).')
       : estado.tipo === 'instruccion' && !d.instructor_id ? 'Elegí qué instructor voló con vos.'
       : null;
     if (falta) { $err.textContent = falta; $err.hidden = false; $err.scrollIntoView({ block: 'center', behavior: 'smooth' }); return; }
@@ -235,7 +249,7 @@ export default async function cargar(ctx) {
             <dt>Avión</dt><dd><strong class="matricula">${a.matricula}</strong> ${a.modelo}</dd>
             <dt>Fecha</dt><dd>${fecha(d.fecha)}</dd>
             <dt>Horario</dt><dd>Salida ${salida}, llegada ${llegada}</dd>
-            <dt>Tiempo de vuelo</dt><dd><strong>${horas(dec)}</strong> (${dec * 6} minutos)</dd>
+            <dt>Tiempo de vuelo</dt><dd><strong>${horas(dec)}</strong> (${salida && llegada ? minutosEntre(salida, llegada) : dec * 6} minutos)</dd>
             <dt>Instructor</dt><dd>${inst || 'Sin instructor'}</dd>
             ${precio ? html`<dt>Importe</dt><dd>${pesos(Math.round(precio * dec / 10))}</dd>` : ''}
             ${d.notas ? html`<dt>Novedades</dt><dd>${d.notas}</dd>` : ''}

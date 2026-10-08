@@ -65,10 +65,10 @@ test('mantenimiento no tiene cuenta ni carga vuelos', async () => {
 test('la novedad del piloto aparece en los paneles hasta que mantenimiento la verifica', async () => {
   p = await entrar('pedro@test.com');
   c = await entrar('consulta@test.com');
-  const r = await p('POST', '/api/vuelos', { avion_id: 1, fecha: util.hoy(), horas: '1', hora_salida: '10:00', hora_llegada: '11:10', notas: 'Cubierta izquierda baja' });
+  const r = await p('POST', '/api/vuelos', { avion_id: 1, fecha: util.hoy(), horas: '1', hora_salida: '10:00', hora_llegada: '11:00', notas: 'Cubierta izquierda baja' });
   assert.equal(r.status, 201);
   vueloId = (await r.json()).vuelo.id;
-  await p('POST', '/api/vuelos', { avion_id: 1, fecha: util.hoy(), horas: '0,5', hora_salida: '12:00', hora_llegada: '12:40' });   // sin novedad
+  await p('POST', '/api/vuelos', { avion_id: 1, fecha: util.hoy(), horas: '0,5', hora_salida: '12:00', hora_llegada: '12:30' });   // sin novedad
 
   const pend = await json(await m('GET', '/api/mantenimiento/novedades'));
   assert.equal(pend.novedades.length, 1);
@@ -100,7 +100,7 @@ test('la novedad del piloto aparece en los paneles hasta que mantenimiento la ve
 });
 
 test('se puede verificar la novedad de un vuelo que ya entró en el cierre', async () => {
-  const r = await p('POST', '/api/vuelos', { avion_id: 1, fecha: util.hoy(), horas: '0,8', hora_salida: '16:00', hora_llegada: '16:55', notas: 'Ruido en la radio' });
+  const r = await p('POST', '/api/vuelos', { avion_id: 1, fecha: util.hoy(), horas: '0,8', hora_salida: '16:00', hora_llegada: '16:48', notas: 'Ruido en la radio' });
   const id = (await r.json()).vuelo.id;
   db.prepare(`UPDATE vuelos SET estado = 'cerrado' WHERE id = ?`).run(id);   // como lo deja el cierre del mes
   const v = await m('POST', `/api/mantenimiento/novedades/${id}/verificar`, {});
@@ -109,7 +109,7 @@ test('se puede verificar la novedad de un vuelo que ya entró en el cierre', asy
 });
 
 test('una novedad de un vuelo anulado no aparece', async () => {
-  const r = await p('POST', '/api/vuelos', { avion_id: 1, fecha: util.hoy(), horas: '0,7', hora_salida: '15:00', hora_llegada: '15:50', notas: 'Se cargó dos veces' });
+  const r = await p('POST', '/api/vuelos', { avion_id: 1, fecha: util.hoy(), horas: '0,7', hora_salida: '15:00', hora_llegada: '15:42', notas: 'Se cargó dos veces' });
   const id = (await r.json()).vuelo.id;
   assert.equal((await json(await m('GET', '/api/mantenimiento/novedades'))).novedades.length, 1);
   assert.equal((await a('POST', `/api/vuelos/${id}/anular`, { motivo: 'Duplicado' })).status, 200);

@@ -92,10 +92,10 @@ let semilla = 7;
 const azar = () => { semilla = (semilla * 16807) % 2147483647; return semilla / 2147483647; };
 const NOTAS = ['Aceite 5 qt, todo normal', 'Cubierta del tren izquierdo algo baja', 'Ruido en la radio con el motor en alta', 'Viento cruzado fuerte en 21', 'Cargué 40 litros en la bomba', 'Luz de navegación derecha quemada'];
 
-// Salida entre las 8 y las 17; la llegada, el tiempo de vuelo más unos minutos de rodaje.
+// Salida entre las 8 y las 17; la llegada, justo el tiempo de vuelo (las décimas salen del horario).
 function horario(dec) {
   const salida = 8 * 60 + Math.floor(azar() * 9) * 60 + Math.floor(azar() * 12) * 5;
-  const llegada = salida + dec * 6 + 10;
+  const llegada = salida + dec * 6;
   const hhmm = (m) => `${String(Math.floor(m / 60) % 24).padStart(2, '0')}:${String(m % 60).padStart(2, '0')}`;
   return { hora_salida: hhmm(salida), hora_llegada: hhmm(llegada) };
 }
