@@ -1,6 +1,6 @@
 import {
   get, post, put, html, raw, pintar, icono, pesos, horas, horasInput, parseHoras, tambor, rodar, hoyAR, colorAvion, error, conBoton, nombrePeriodo, datosForm,
-  fecha, confirmar
+  fecha, confirmar, decimasEntre
 } from '../lib.js';
 
 // Selector de hora en 24 h: hora y minutos por separado (cómodo en el celular, sin AM/PM).
@@ -109,7 +109,7 @@ export default async function cargar(ctx) {
           <input class="input input--tac" id="horas" name="horas" inputmode="decimal" autocomplete="off" placeholder="0,0" value="${previo ? horasInput(previo.decimas) : ''}" required>
           <button class="btn btn--sec" type="button" data-paso="1" aria-label="Sumar 0,1 horas">+0,1</button>
         </div>
-        <p class="campo__ayuda">En horas, con un decimal: 0,1 son 6 minutos. Ejemplo: 1,4.</p>
+        <p class="campo__ayuda">Se completa solo con el horario de salida y llegada. En horas, con un decimal: 0,1 son 6 minutos. Ejemplo: 1,4.</p>
         <div class="resultado" id="resultado" aria-live="polite"></div>
       </div>
 
@@ -187,6 +187,13 @@ export default async function cargar(ctx) {
     }
     if (e.target.name === 'tipo') { estado.tipo = e.target.value; pintarTipos(); if (estado.tipo === 'instruccion') $inst.focus(); }
     if (e.target.name === 'piloto_id') { estado.pilotoId = Number(e.target.value); pintarTipos(); }
+    // Con salida y llegada completas, el tiempo de vuelo sale de la tabla del club (se puede retocar a mano).
+    if (/^(salida|llegada)_[hm]$/.test(e.target.name)) {
+      const d = datosForm(form);
+      const salida = leerHora(d, 'salida');
+      const llegada = leerHora(d, 'llegada');
+      if (salida && llegada && salida !== llegada) $horas.value = horasInput(decimasEntre(salida, llegada));
+    }
     calcular();
   });
   form.addEventListener('input', (e) => { if (e.target === $horas) calcular(); });
