@@ -103,7 +103,7 @@
 .grid__head:first-child { padding-top: .2rem; }
 .grid__head h2 { font-family: var(--font-display); font-weight: 700; font-size: var(--text-xl); letter-spacing: -.01em; }
 .grid__head span { font-family: var(--font-display); font-size: .78rem; letter-spacing: .08em; text-transform: uppercase; color: var(--alu-500); }
-.grid .pcard { animation: cardIn .6s var(--ease-out) both; }
+.grid .pcard, .grid .lcard { animation: cardIn .6s var(--ease-out) both; }
 @keyframes cardIn { from { opacity: 0; transform: translateY(16px); } }
 @media (max-width: 1100px) { .grid { grid-template-columns: repeat(3, 1fr); } }
 @media (max-width: 760px) {

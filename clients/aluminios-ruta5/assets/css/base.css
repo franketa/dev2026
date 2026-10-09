@@ -292,6 +292,42 @@ body.menu-open .nav__logo-img--light { display: block; }
   body { padding-bottom: 0; }
 }
 
+/* ---------- Tarjeta de catálogo por línea ---------- */
+.lcard {
+  position: relative;
+  display: flex; flex-direction: column;
+  background: #fff;
+  border: 1px solid var(--alu-200);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  transition: transform .5s var(--ease-out), box-shadow .5s var(--ease-out), border-color .3s;
+}
+.lcard:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); border-color: var(--alu-300); }
+.lcard__media {
+  position: relative; aspect-ratio: 4 / 3;
+  background: linear-gradient(135deg, var(--alu-100), var(--alu-50));
+  border-bottom: 1px solid var(--alu-200);
+}
+.lcard__media img { position: absolute; top: 14%; left: 14%; width: 72%; height: 72%; object-fit: contain; transition: transform .8s var(--ease-out); }
+.lcard:hover .lcard__media img { transform: scale(1.06); }
+.lcard__body { display: flex; flex-direction: column; gap: .3rem; padding: 1rem 1.1rem 1.1rem; flex: 1; }
+.lcard__eyebrow { font-family: var(--font-display); font-size: .7rem; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--blue); }
+.lcard__title { font-family: var(--font-display); font-weight: 800; font-size: 1.5rem; letter-spacing: -.02em; line-height: 1; }
+.lcard__desc { font-size: .85rem; color: var(--alu-700); line-height: 1.4; }
+.lcard__foot { display: flex; align-items: center; justify-content: space-between; gap: .6rem; margin-top: auto; padding-top: .8rem; }
+.lcard__meta { font-family: var(--font-display); font-size: .78rem; font-weight: 600; color: var(--alu-500); white-space: nowrap; }
+.lcard__cta { display: inline-flex; align-items: center; gap: .35rem; font-family: var(--font-display); font-weight: 600; font-size: .85rem; color: var(--ink); white-space: nowrap; }
+.lcard__cta svg { width: 16px; height: 16px; transition: transform .3s var(--ease-out); }
+.lcard:hover .lcard__cta { color: var(--blue); }
+.lcard:hover .lcard__cta svg { transform: translateX(3px); }
+@media (max-width: 760px) {
+  .lcard__media { aspect-ratio: 1 / 1; }
+  .lcard__body { padding: .85rem .9rem 1rem; }
+  .lcard__title { font-size: 1.25rem; }
+  .lcard__desc { font-size: .78rem; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+  .lcard__foot { flex-direction: column; align-items: flex-start; gap: .25rem; }
+}
+
 /* ---------- Tarjeta de producto ---------- */
 .pcard {
   position: relative;

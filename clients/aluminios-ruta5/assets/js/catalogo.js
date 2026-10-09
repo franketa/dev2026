@@ -5,6 +5,7 @@
   const e = R5.escape;
 
   let products = [];
+  let lineas = [];   // catálogos PDF por línea: en Perfiles van estos en vez de fichas sueltas
   let catalogos = { categorias: [], lineas: [] };
   const state = { q: '', categoria: '', linea: '', orden: 'relevancia' };
   const draft = { categoria: '', linea: '', orden: 'relevancia' }; // estado provisorio del sheet
@@ -43,6 +44,17 @@
     return norm(q).split(/\s+/).filter(Boolean).every(w => hay.includes(w));
   }
 
+  function matchesLinea(l, q) {
+    if (!q) return true;
+    const hay = norm([l.nombre, l.desc, 'perfiles', l.codigos.join(' ')].join(' '));
+    return norm(q).split(/\s+/).filter(Boolean).every(w => hay.includes(w));
+  }
+
+  function filteredLineas() {
+    if (state.categoria && state.categoria !== 'Perfiles') return [];
+    return lineas.filter(l => (!state.linea || l.nombre === state.linea) && matchesLinea(l, state.q));
+  }
+
   function filtered() {
     let list = products.filter(p =>
       (!state.categoria || p.categoria === state.categoria) &&
@@ -62,14 +74,16 @@
   function renderChips() {
     const counts = {};
     products.forEach(p => { counts[p.categoria] = (counts[p.categoria] || 0) + 1; });
-    const cats = catalogos.categorias.filter(c => counts[c]);
-    $('chipsCategoria').innerHTML = chip('Todo', '', !state.categoria, products.length) +
+    if (lineas.length) counts['Perfiles'] = lineas.length;
+    const cats = ['Perfiles', ...catalogos.categorias.filter(c => c !== 'Perfiles')].filter(c => counts[c]);
+    $('chipsCategoria').innerHTML = chip('Todo', '', !state.categoria, products.length + lineas.length) +
       cats.map(c => chip(c, c, state.categoria === c, counts[c])).join('');
     $('sheetCategoria').innerHTML = chip('Todo', '', !draft.categoria) + cats.map(c => chip(c, c, draft.categoria === c)).join('');
 
-    const lineas = catalogos.lineas.filter(l => products.some(p => p.linea === l));
-    $('selectLinea').innerHTML = '<option value="">Todas las líneas</option>' + lineas.map(l => `<option value="${e(l)}" ${state.linea === l ? 'selected' : ''}>${e(l)}</option>`).join('');
-    $('sheetLinea').innerHTML = chip('Todas', '', !draft.linea) + lineas.map(l => chip(l, l, draft.linea === l)).join('');
+    const nombres = lineas.map(l => l.nombre);
+    const conLinea = nombres.concat(catalogos.lineas.filter(l => !nombres.includes(l) && products.some(p => p.linea === l)));
+    $('selectLinea').innerHTML = '<option value="">Todas las líneas</option>' + conLinea.map(l => `<option value="${e(l)}" ${state.linea === l ? 'selected' : ''}>${e(l)}</option>`).join('');
+    $('sheetLinea').innerHTML = chip('Todas', '', !draft.linea) + conLinea.map(l => chip(l, l, draft.linea === l)).join('');
 
     const ordenes = [['relevancia', 'Relevancia'], ['nombre', 'Nombre A–Z'], ['nuevos', 'Más nuevos']];
     $('sheetOrden').innerHTML = ordenes.map(([v, l]) => chip(l, v, draft.orden === v)).join('');
@@ -90,10 +104,15 @@
 
   function render() {
     const list = filtered();
-    $('resultsCount').innerHTML = list.length === 1 ? '<strong>1</strong> producto' : `<strong>${list.length}</strong> productos`;
+    const ls = filteredLineas();
+    const cuenta = [
+      ls.length && (ls.length === 1 ? '<strong>1</strong> catálogo' : `<strong>${ls.length}</strong> catálogos`),
+      (list.length || !ls.length) && (list.length === 1 ? '<strong>1</strong> producto' : `<strong>${list.length}</strong> productos`)
+    ].filter(Boolean);
+    $('resultsCount').innerHTML = cuenta.join(' · ');
     $('catTitle').textContent = TITLES[state.categoria] || 'Perfiles, accesorios y todo lo demás.';
     document.title = (state.categoria ? state.categoria + ' · ' : '') + 'Catálogo · Aluminios Ruta 5';
-    if (!list.length) {
+    if (!list.length && !ls.length) {
       $('grid').innerHTML = `
         <div class="empty">
           <h3>No encontramos productos con esos filtros</h3>
@@ -105,12 +124,17 @@
         </div>`;
       $('btnReset').addEventListener('click', resetAll);
     } else {
-      $('grid').innerHTML = grouped(list).map(([titulo, items]) => `
+      const head = ls.length ? `
+        <div class="grid__head">
+          <h2>Perfiles · catálogo por línea</h2>
+          <span>PDF · escala 1:1 · código AR5 y kg/m</span>
+        </div>` + ls.map(l => R5.lineaCard(l)).join('') : '';
+      $('grid').innerHTML = head + grouped(list).map(([titulo, items]) => `
         <div class="grid__head">
           <h2>${e(titulo)}</h2>
           ${items.some(p => p.codigo) ? `<span>${items.map(p => p.codigo).filter(Boolean).map(e).join(' · ')}</span>` : ''}
         </div>` + items.map(p => R5.productCard(p)).join('')).join('');
-      [...$('grid').querySelectorAll('.pcard')].forEach((el, i) => { el.style.animationDelay = `${Math.min(i, 12) * 40}ms`; });
+      [...$('grid').querySelectorAll('.pcard, .lcard')].forEach((el, i) => { el.style.animationDelay = `${Math.min(i, 12) * 40}ms`; });
     }
     renderChips();
     renderActive();
@@ -184,12 +208,16 @@
   $('searchInput').value = state.q;
   $('searchClear').hidden = !state.q;
 
-  fetch('/api/products')
-    .then(r => r.json())
-    .then(data => {
-      products = data.products || [];
+  Promise.all([
+    fetch('/api/products').then(r => r.json()),
+    R5.loadLineas().catch(() => [])
+  ])
+    .then(([data, ls]) => {
+      lineas = ls;
+      // con catálogo por línea, los perfiles sueltos no se listan
+      products = (data.products || []).filter(p => !(lineas.length && p.categoria === 'Perfiles'));
       catalogos = data.catalogos || catalogos;
-      $('catTotal').textContent = products.length;
+      $('catTotal').textContent = products.length + lineas.reduce((n, l) => n + l.perfiles, 0);
       render();
     })
     .catch(() => {

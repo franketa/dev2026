@@ -317,6 +317,16 @@ SLUGS = {"Clásica": "clasica", "RTO640": "rto640", "MDNA": "mdna", "A3": "a3", 
          "Baranda": "baranda", "FI": "fi", "Mampara": "mampara", "Deco": "deco"}
 
 
+# perfil que ilustra la tarjeta de cada línea en el sitio (si no está, el de mayor tamaño)
+DIBUJO = {"Clásica": "AR5-1034", "A3": "AR5-041", "A4": "AR5-14257", "A4C": "AR5-40667"}
+
+
+def dibujo(l):
+    ps = [p for p in l["perfiles"] if not p["v"].get("falta")]
+    elegido = [p for p in ps if p["codigo"] == DIBUJO.get(l["nombre"])]
+    return (elegido or sorted(ps, key=lambda p: -p["v"]["w"] * p["v"]["h"]))[0]["v"]
+
+
 def cover_linea(nombre_linea, cant):
     return f'''<section class="page cover">
   <img src="../../assets/logo-white.svg" class="cover__logo" alt="Aluminios Ruta 5">
@@ -342,8 +352,7 @@ def build_lineas():
                 f'<div class="fila">{"".join(perfil_html(p) for p in r)}</div>' for r in rows)
             pages.append(chrome(l["nombre"], i + 2, content, first=(i == 0)))
         resumen.append((l["nombre"], [p["codigo"] for p in l["perfiles"]], pages,
-                        max((p["v"] for p in l["perfiles"] if not p["v"].get("falta")),
-                            key=lambda v: v["w"] * v["h"])))
+                        dibujo(l)))
     resumen.append(("Deco", ["AR5-" + it[0] for f in DECO for it in f["items"]] + [WALL_PANEL["codigo"]],
                     deco_pages(2), vectorize(WALL_PANEL["mask"])))
 

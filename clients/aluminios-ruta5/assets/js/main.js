@@ -126,6 +126,29 @@
       </article>`;
   };
 
+  // Catálogos técnicos por línea (PDF). Los genera aluminios-ruta5-catalogo/tools/build.py --lineas --publicar
+  R5.CATALOGOS = '/assets/catalogos/';
+  R5.loadLineas = function () {
+    return fetch(R5.CATALOGOS + 'lineas.json').then(r => r.json());
+  };
+  R5.lineaCard = function (l, opts) {
+    opts = opts || {};
+    const e = R5.escape;
+    return `
+      <a class="lcard ${opts.className || ''}" href="${R5.CATALOGOS + e(l.pdf)}" target="_blank" rel="noopener" aria-label="Catálogo de la línea ${e(l.nombre)} (PDF)">
+        <div class="lcard__media"><img src="${R5.CATALOGOS + e(l.dibujo)}" alt="" loading="lazy" decoding="async"></div>
+        <div class="lcard__body">
+          <span class="lcard__eyebrow">Línea</span>
+          <h3 class="lcard__title">${e(l.nombre)}</h3>
+          <p class="lcard__desc">${e(l.desc)}</p>
+          <div class="lcard__foot">
+            <span class="lcard__meta">${l.perfiles} perfiles · PDF</span>
+            <span class="lcard__cta">Ver catálogo <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+          </div>
+        </div>
+      </a>`;
+  };
+
   // Año en footer
   document.querySelectorAll('[data-year]').forEach(el => { el.textContent = new Date().getFullYear(); });
 })();
