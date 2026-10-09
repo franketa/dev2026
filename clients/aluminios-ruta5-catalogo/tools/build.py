@@ -2,8 +2,12 @@
 que después Chrome imprime a PDF.
 
 Uso: python tools/build.py            → build/catalogo.html + dist/catalogo-perfiles-ar5.pdf
+     python tools/build.py --lineas [--publicar]
+                                       → un PDF por línea en dist/lineas/ (+ copia a aluminios-ruta5/assets/catalogos/)
 """
 import html
+import json
+import shutil
 import subprocess
 import sys
 from datetime import date
@@ -212,7 +216,7 @@ def deco_pages(start):
 
 
 # ------------------------------------------------------------------ documento
-def build():
+def load_lineas():
     lineas = []
     faltan = []
     for l in LINEAS:
@@ -224,6 +228,21 @@ def build():
                 v = {"d": "", "w": 30, "h": 18, "falta": True}
             ps.append({**p, "v": v})
         lineas.append({"nombre": l["nombre"], "perfiles": ps})
+    return lineas, faltan
+
+
+def doc_html(title, pages):
+    css = (ROOT / "tools" / "catalogo.css").read_text("utf-8")
+    return f'''<!doctype html><html lang="es"><head><meta charset="utf-8"><title>{html.escape(title)}</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>{css}</style></head><body>
+{"".join(pages)}
+</body></html>'''
+
+
+def build():
+    lineas, faltan = load_lineas()
 
     pages_html, indice, toc = [], [], []
     n = 3  # 1 tapa, 2 contenido
@@ -286,23 +305,82 @@ def build():
   <footer class="page__foot"><span>Aluminios Ruta 5 · Parque Industrial Chivilcoy, galpón 111 · Tel. / WhatsApp 2346 41-1139 · aluminiosruta5.com.ar</span><b>2</b></footer>
 </section>'''
 
-    css = (ROOT / "tools" / "catalogo.css").read_text("utf-8")
-    doc = f'''<!doctype html><html lang="es"><head><meta charset="utf-8"><title>Catálogo de perfiles AR5</title>
-<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-<style>{css}</style></head><body>
-{cover}{contents}{"".join(pages_html)}{"".join(idx_pages)}
-</body></html>'''
+    doc = doc_html("Catálogo de perfiles AR5", [cover, contents, *pages_html, *idx_pages])
     out = ROOT / "build" / "catalogo.html"
     out.write_text(doc, "utf-8")
     print("hojas:", n - 1, "| perfiles sin silueta:", faltan)
     return out
 
 
-def pdf(html_path):
-    dist = ROOT / "dist"
-    dist.mkdir(exist_ok=True)
-    out = dist / "catalogo-perfiles-ar5.pdf"
+# ------------------------------------------------------------------ un catálogo por línea (para la web)
+SLUGS = {"Clásica": "clasica", "RTO640": "rto640", "MDNA": "mdna", "A3": "a3", "A4": "a4", "A4C": "a4c",
+         "Baranda": "baranda", "FI": "fi", "Mampara": "mampara", "Deco": "deco"}
+
+
+def cover_linea(nombre_linea, cant):
+    return f'''<section class="page cover">
+  <img src="../../assets/logo-white.svg" class="cover__logo" alt="Aluminios Ruta 5">
+  <div class="cover__txt"><p class="cover__eyebrow">Catálogo técnico · Línea</p><h1>{html.escape(nombre_linea)}</h1>
+  <p class="cover__lineas">{html.escape(LINEA_INFO.get(nombre_linea, ""))}<br>{cant} perfiles · Escala 1:1</p></div>
+  <div class="cover__foot"><span>Parque Industrial Chivilcoy, galpón 111</span><span>Tel. / WhatsApp 2346 41-1139</span><span>aluminiosruta5.com.ar</span><span>Edición {date.today().year}</span></div>
+</section>'''
+
+
+def build_lineas():
+    """build/lineas/<slug>.html: tapa de la línea + sus hojas, numeradas desde 2. Además, para las tarjetas
+    del sitio, el dibujo del perfil más grande de cada línea (dist/lineas/<slug>.svg)."""
+    lineas, _ = load_lineas()
+    out_dir = ROOT / "build" / "lineas"
+    dist = ROOT / "dist" / "lineas"
+    out_dir.mkdir(parents=True, exist_ok=True)
+    dist.mkdir(parents=True, exist_ok=True)
+    resumen = []
+    for l in lineas:
+        pages = []
+        for i, rows in enumerate(paginate(l["perfiles"], LINE_HEAD)):
+            content = "".join(
+                f'<div class="fila">{"".join(perfil_html(p) for p in r)}</div>' for r in rows)
+            pages.append(chrome(l["nombre"], i + 2, content, first=(i == 0)))
+        resumen.append((l["nombre"], [p["codigo"] for p in l["perfiles"]], pages,
+                        max((p["v"] for p in l["perfiles"] if not p["v"].get("falta")),
+                            key=lambda v: v["w"] * v["h"])))
+    resumen.append(("Deco", ["AR5-" + it[0] for f in DECO for it in f["items"]] + [WALL_PANEL["codigo"]],
+                    deco_pages(2), vectorize(WALL_PANEL["mask"])))
+
+    htmls, meta = [], []
+    for nom, codigos, pages, v in resumen:
+        cant = len(codigos)
+        slug = SLUGS[nom]
+        doc = doc_html(f"Línea {nom} · Catálogo de perfiles AR5", [cover_linea(nom, cant), *pages])
+        # las hojas referencian ../assets desde build/; acá estamos un nivel más abajo
+        doc = doc.replace('src="../assets/', 'src="../../assets/')
+        f = out_dir / f"{slug}.html"
+        f.write_text(doc, "utf-8")
+        (dist / f"{slug}.svg").write_text(
+            f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {v["w"]:.2f} {v["h"]:.2f}">'
+            f'<path d="{v["d"]}" fill-rule="evenodd"/></svg>', "utf-8")
+        htmls.append((f, dist / f"catalogo-{slug}.pdf"))
+        meta.append({"nombre": nom, "slug": slug, "desc": LINEA_INFO.get(nom, ""), "perfiles": cant,
+                     "hojas": len(pages) + 1, "pdf": f"catalogo-{slug}.pdf", "dibujo": f"{slug}.svg",
+                     "codigos": codigos})
+        print(f"{nom}: {cant} perfiles, {len(pages) + 1} hojas")
+    (dist / "lineas.json").write_text(json.dumps(meta, ensure_ascii=False, indent=1), "utf-8")
+    return htmls
+
+
+def publicar():
+    """Copia los catálogos por línea al sitio (solo material propio AR5, nada de las extrusoras)."""
+    web = ROOT.parent / "aluminios-ruta5" / "assets" / "catalogos"
+    web.mkdir(parents=True, exist_ok=True)
+    for f in (ROOT / "dist" / "lineas").iterdir():
+        if f.suffix in (".pdf", ".svg", ".json"):
+            shutil.copy2(f, web / f.name)
+    print("publicado en", web)
+
+
+def pdf(html_path, out=None):
+    out = out or ROOT / "dist" / "catalogo-perfiles-ar5.pdf"
+    out.parent.mkdir(parents=True, exist_ok=True)
     subprocess.run([CHROME, "--headless=new", "--disable-gpu", "--no-pdf-header-footer",
                     "--virtual-time-budget=15000", f"--print-to-pdf={out}", html_path.as_uri()],
                    check=True, capture_output=True)
@@ -310,6 +388,13 @@ def pdf(html_path):
 
 
 if __name__ == "__main__":
-    h = build()
-    if "--sin-pdf" not in sys.argv:
-        pdf(h)
+    if "--lineas" in sys.argv:          # un PDF por línea → dist/lineas/
+        for h, out in build_lineas():
+            if "--sin-pdf" not in sys.argv:
+                pdf(h, out)
+        if "--publicar" in sys.argv:
+            publicar()
+    else:
+        h = build()
+        if "--sin-pdf" not in sys.argv:
+            pdf(h)
