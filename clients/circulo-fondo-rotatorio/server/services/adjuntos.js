@@ -36,7 +36,15 @@ function clienteS3() {
 async function guardarArchivo(clave, buffer, mime) {
   if (DRIVER === 's3') {
     const { sdk, cliente, bucket } = clienteS3();
-    await cliente.send(new sdk.PutObjectCommand({ Bucket: bucket, Key: clave, Body: buffer, ContentType: mime }));
+    const subir = () => cliente.send(new sdk.PutObjectCommand({ Bucket: bucket, Key: clave, Body: buffer, ContentType: mime }));
+    try {
+      await subir();
+    } catch (e) {
+      // MinIO recién instalado: el bucket todavía no existe.
+      if (e.name !== 'NoSuchBucket') throw e;
+      await cliente.send(new sdk.CreateBucketCommand({ Bucket: bucket }));
+      await subir();
+    }
     return;
   }
   const destino = path.join(DIR, clave);

@@ -41,10 +41,11 @@ function banda(doc, { titulo, subtitulo, derecha, derechaSub }) {
   doc.rect(0, 0, W, 70).fill(C.tinta);
   doc.rect(0, 70, W, 3).fill(C.celeste);
   marca(doc, 36, 22, 1.1);
-  doc.font('CB').fontSize(16).fillColor('#FFFFFF').text(titulo, 84, 18, { width: W / 2 });
-  doc.font('R').fontSize(9.5).fillColor('#BFD3EA').text(subtitulo, 84, 40, { width: W / 2 });
-  doc.font('CB').fontSize(15).fillColor('#FFFFFF').text(derecha, W / 2, 18, { width: W / 2 - 36, align: 'right' });
-  doc.font('M').fontSize(10).fillColor('#BFD3EA').text(derechaSub, W / 2, 40, { width: W / 2 - 36, align: 'right' });
+  const apaisado = W > 700;
+  doc.font('CB').fontSize(apaisado ? 16 : 13).fillColor('#FFFFFF').text(titulo, 84, apaisado ? 18 : 20, { width: W - 84 - 220, lineBreak: false });
+  doc.font('R').fontSize(9.5).fillColor('#BFD3EA').text(subtitulo, 84, 40, { width: W - 84 - 220 });
+  doc.font('CB').fontSize(15).fillColor('#FFFFFF').text(derecha, W - 236, 18, { width: 200, align: 'right' });
+  doc.font('M').fontSize(10).fillColor('#BFD3EA').text(derechaSub, W - 236, 40, { width: 200, align: 'right' });
 }
 
 function pie(doc, texto) {
@@ -97,7 +98,7 @@ function generarRendicion({ contenido: c, version: v, rendicion, estadoTexto }) 
     ]],
     ['Gastos', [
       ['Pagado por la sede · banco', r.gastado_sede.banco], ['Pagado por la sede · efectivo', r.gastado_sede.efectivo],
-      ['Pagado por la Central con cargo a la sede', r.pagado_central], ['Total de gastos', r.total_gastos, true]
+      ['Pagado directo por la Central', r.pagado_central], ['Total de gastos', r.total_gastos, true]
     ]],
     ['Saldo al cierre', [
       ['Banco', r.saldo_final.banco], ['Efectivo', r.saldo_final.efectivo], ['Retenciones practicadas', r.retenciones], ['Saldo total', r.saldo_final.total, true]
@@ -203,7 +204,7 @@ function generarRendicion({ contenido: c, version: v, rendicion, estadoTexto }) 
       }
     }
     saltoSi(20);
-    doc.font('B').fontSize(10).fillColor(C.tinta).text(`Total ${titulo.toLowerCase()}`, M + 4, y + 3);
+    doc.font('B').fontSize(10).fillColor(C.tinta).text(`Total ${titulo.charAt(0).toLowerCase()}${titulo.slice(1)}`, M + 4, y + 3);
     doc.text(fmtPesos2(total), M + ancho - 150, y + 3, { width: 146, align: 'right', ...TNUM });
     y += 26;
   };
@@ -263,25 +264,31 @@ function generarCertificado({ certificado: cert, gasto, retenciones }) {
   banda(doc, { titulo: agente.razon_social, subtitulo: 'Agente de retención', derecha: `Retención N.º ${numero}`, derechaSub: `Fecha ${fmtFechaCorta(cert.fecha)}` });
 
   let y = 96;
-  const caja = (titulo, filas, x, w) => {
-    doc.roundedRect(x, y, w, 100, 5).lineWidth(0.8).strokeColor(C.linea).stroke();
+  const altoCaja = (filas, w) => 38 + filas.reduce((s, [, v]) => s + Math.max(16, doc.font('M').fontSize(9.5).heightOfString(v || '—', { width: w - 94 }) + 4), 0);
+  const caja = (titulo, filas, x, w, alto) => {
+    doc.roundedRect(x, y, w, alto, 5).lineWidth(0.8).strokeColor(C.linea).stroke();
     doc.font('CB').fontSize(11).fillColor(C.azul).text(titulo, x + 12, y + 10);
-    filas.forEach(([k, v], i) => {
-      doc.font('R').fontSize(8.5).fillColor(C.gris).text(k, x + 12, y + 30 + i * 16, { width: 70 });
-      doc.font('M').fontSize(9.5).fillColor(C.tinta).text(v || '—', x + 82, y + 29 + i * 16, { width: w - 94, lineBreak: false, ellipsis: true });
-    });
+    let fy = y + 30;
+    for (const [k, v] of filas) {
+      doc.font('R').fontSize(8.5).fillColor(C.gris).text(k, x + 12, fy + 1, { width: 70 });
+      doc.font('M').fontSize(9.5).fillColor(C.tinta).text(v || '—', x + 82, fy, { width: w - 94 });
+      fy += Math.max(16, doc.heightOfString(v || '—', { width: w - 94 }) + 4);
+    }
   };
   const mitad = (ancho - 14) / 2;
-  caja('Agente de retención', [['Razón social', agente.razon_social], ['CUIT', agente.cuit ? fmtCuit(agente.cuit) : 'A completar en Administración'], ['Domicilio', agente.domicilio]], M, mitad);
-  caja('Sujeto retenido', [['Razón social', sujeto.razon_social], ['CUIT', fmtCuit(sujeto.cuit)], ['Domicilio', sujeto.domicilio], ['Condición IVA', CONDICION[sujeto.condicion_iva]]], M + mitad + 14, mitad);
-  y += 116;
+  const filasAgente = [['Razón social', agente.razon_social], ['CUIT', agente.cuit ? fmtCuit(agente.cuit) : 'A completar en Administración'], ['Domicilio', agente.domicilio]];
+  const filasSujeto = [['Razón social', sujeto.razon_social], ['CUIT', fmtCuit(sujeto.cuit)], ['Domicilio', sujeto.domicilio], ['Condición IVA', CONDICION[sujeto.condicion_iva]]];
+  const alto = Math.max(altoCaja(filasAgente, mitad), altoCaja(filasSujeto, mitad));
+  caja('Agente de retención', filasAgente, M, mitad, alto);
+  caja('Sujeto retenido', filasSujeto, M + mitad + 14, mitad, alto);
+  y += alto + 16;
 
   doc.font('CB').fontSize(11).fillColor(C.tinta).text('Comprobante que origina la retención', M, y);
   y += 16;
   doc.font('R').fontSize(9.5).fillColor(C.tinta).text(`${gasto.comprobante}${gasto.cae ? ` · CAE ${gasto.cae}` : ' · sin CAE'} · fecha ${fmtFechaCorta(gasto.fecha_comprobante || gasto.fecha_pago)} · importe ${fmtPesos2(gasto.bruto)} · ${gasto.sede_nombre} · gasto #${gasto.id}`, M, y, { width: ancho });
   y += 26;
 
-  const cols = [['Impuesto', 90], ['Régimen', 170], ['Jurisdicción', 80], ['Base imponible', 70, true], ['Alícuota', 40, true], ['Importe retenido', 57, true]];
+  const cols = [['Impuesto', 84], ['Régimen', 170], ['Jurisdicción', 80], ['Base imponible', 70, true], ['Alícuota', 40, true], ['Importe retenido', 57, true]];
   doc.rect(M, y, ancho, 18).fill(C.tinta);
   let x = M + 6;
   for (const [t, w, der] of cols) { doc.font('SB').fontSize(8.5).fillColor('#FFFFFF').text(t, x, y + 5, { width: w - 6, align: der ? 'right' : 'left' }); x += w; }

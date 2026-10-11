@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="es-AR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Ingresar · Fondo rotatorio · Círculo de Oficiales FAA</title>
+  <meta name="theme-color" content="#14233F">
+  <meta name="robots" content="noindex">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&family=Barlow+Semi+Condensed:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/app.css">
+</head>
+<body>
+  <main class="login">
+    <div>
+      <form class="login__caja form" id="login" novalidate>
+        <div class="login__marca">
+          <svg class="marca" viewBox="0 0 36 24" aria-hidden="true"><path d="M0 14 L18 4 L36 14 L30 14 L18 8 L6 14 Z" fill="#6CACE4"/><path d="M4 22 L18 13 L32 22 L26 22 L18 17 L10 22 Z" fill="currentColor"/></svg>
+          <div><strong>Círculo de Oficiales de la Fuerza Aérea</strong><small>Fondo rotatorio de las sedes</small></div>
+        </div>
+        <div class="campo">
+          <label for="email">Email</label>
+          <input class="input" id="email" name="email" type="email" autocomplete="username" inputmode="email" required autofocus>
+        </div>
+        <div class="campo">
+          <label for="password">Contraseña</label>
+          <input class="input" id="password" name="password" type="password" autocomplete="current-password" required>
+        </div>
+        <p class="aviso aviso--mal" id="error" hidden></p>
+        <button class="btn btn--principal btn--grande btn--ancho" type="submit">Entrar</button>
+      </form>
+      <p class="login__pie">¿Olvidaste la contraseña? Pedile a la Sede Central que te la blanquee.</p>
+    </div>
+  </main>
+  <script type="module" src="/assets/js/login.js"></script>
+</body>
+</html>

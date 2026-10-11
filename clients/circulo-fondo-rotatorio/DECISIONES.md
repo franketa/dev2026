@@ -30,6 +30,17 @@ la Etapa 2), el acceso a datos está concentrado en `server/services/*` y la mig
 sube, el gasto queda con "adjunto pendiente" y se puede reintentar desde el detalle. Driver `local` (volumen) por
 defecto; `s3` para MinIO. Todo apagable con el flag `adjuntos`.
 
+**D-07 · Sesión de 12 horas** (una jornada), con freno de 8 intentos fallidos de login cada 15 minutos. Cambiar
+rol, sede, contraseña o dar de baja a un usuario cierra sus sesiones abiertas.
+
+**D-08 · Snapshot sin datos volátiles.** Lo que se firma (y se hashea) no incluye si la foto del comprobante ya
+subió: una foto que termina de subir después del cierre no "rompe" la firma. El trigger de período cerrado deja
+cambiar sólo esa marca.
+
+**D-09 · Saldo inicial arrastrado en el hash.** La rendición firmada incluye el saldo al empezar el mes. Si se
+reabre y modifica un mes anterior, la verificación del mes siguiente marca "no coincide": es intencional, avisa que
+cambió la base sobre la que se firmó.
+
 ## De negocio (supuestos)
 
 **N-01 · Pago directo de la Central [A CONFIRMAR].** No consume el fondo de la sede, pero **sí** es gasto de la
@@ -82,6 +93,17 @@ vuelve a cargar.
 
 **N-14 · CAE de un gasto anulado**: queda libre para volver a cargarlo bien (es la forma de corregir un error de
 carga). El duplicado se controla contra los gastos vigentes.
+
+**N-15 · Sólo "Servicios" es fijo en el seed** (luz, gas, agua, internet, telefonía). "Impuestos y tasas" o
+contratos mensuales (limpieza) no se marcaron fijos **[A CONFIRMAR]**: se marca desde Rubros.
+
+**N-16 · Sedes 6 y 7 de la demo** se llaman "Sede Norte / Sede Sur (nombre a confirmar)". Las cinco nombradas en
+el relevamiento (Vicente López, Córdoba, Ascochinga, Cosquín, Bahía Agradable) son reales.
+
+**N-17 · Un solo pedido de fondos extra pendiente por sede**, para que no se acumulen pedidos sin respuesta.
+
+**N-18 · No se puede pagar más de lo que hay**: la sede no registra un gasto que supere el saldo de la subcuenta
+(si es efectivo, le pide registrar antes la extracción) y la Central no asigna ni paga sin saldo.
 
 ## Puntos abiertos (parametrizables; no bloquean)
 
