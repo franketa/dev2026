@@ -1,0 +1,25 @@
+{
+  "name": "circulo-fondo-rotatorio",
+  "private": true,
+  "description": "Círculo de Oficiales de la Fuerza Aérea — fondo rotatorio de las sedes: asignación, gastos, solicitudes, retenciones y rendición mensual",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "start": "node server/index.js",
+    "dev": "node --watch server/index.js",
+    "demo": "node server/seed-demo.js",
+    "test": "node --test test/*.test.js"
+  },
+  "dependencies": {
+    "bcryptjs": "^3.0.2",
+    "better-sqlite3": "^12.2.0",
+    "exceljs": "^4.4.0",
+    "express": "^4.21.0",
+    "jsonwebtoken": "^9.0.2",
+    "pdfkit": "^0.17.1"
+  },
+  "optionalDependencies": {
+    "@aws-sdk/client-s3": "^3.700.0"
+  }
+}
