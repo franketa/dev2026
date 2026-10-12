@@ -115,3 +115,24 @@ test('una novedad de un vuelo anulado no aparece', async () => {
   assert.equal((await a('POST', `/api/vuelos/${id}/anular`, { motivo: 'Duplicado' })).status, 200);
   assert.equal((await json(await m('GET', '/api/mantenimiento/novedades'))).novedades.length, 0);
 });
+
+test('un piloto puede ser además instructor de simulador y de mantenimiento', async () => {
+  const r = await a('POST', '/api/admin/usuarios', {
+    nombre: 'Andres', apellido: 'Mixto', email: 'andres@test.com', rol: 'piloto', es_instructor_sim: true, es_mantenimiento: true
+  });
+  assert.equal(r.status, 201);
+  const { id, password_temporal } = await r.json();
+  const u = db.prepare('SELECT rol, es_instructor, es_instructor_sim, es_mantenimiento FROM usuarios WHERE id = ?').get(id);
+  assert.deepEqual({ ...u }, { rol: 'piloto', es_instructor: 0, es_instructor_sim: 1, es_mantenimiento: 1 });
+  const t = await entrar('andres@test.com', password_temporal);
+  assert.equal((await t('POST', '/api/auth/password', { actual: password_temporal, nueva: 'clave-1234' })).status, 200);
+  const x = await entrar('andres@test.com');
+  // Vuela (tiene cuenta) y además ve y verifica las novedades.
+  assert.equal((await x('GET', '/api/cuenta')).status, 200);
+  assert.equal((await x('GET', '/api/mantenimiento/novedades')).status, 200);
+  // El de simulador no aparece como instructor de vuelo.
+  const { instructores } = await json(await x('GET', '/api/instructores'));
+  assert.ok(!instructores.some(i => i.id === id));
+  // Un piloto sin el tilde no entra a mantenimiento.
+  assert.equal((await p('GET', '/api/mantenimiento/novedades')).status, 403);
+});

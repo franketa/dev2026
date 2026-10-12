@@ -39,7 +39,8 @@ function cerrarSesion(res) { res.clearCookie(COOKIE, { path: '/' }); }
 function publico(u) {
   return {
     id: u.id, nombre: u.nombre, apellido: u.apellido, email: u.email, telefono: u.telefono, dni: u.dni, licencia: u.licencia,
-    rol: u.rol, es_instructor: !!u.es_instructor, activo: !!u.activo, debe_cambiar_password: !!u.debe_cambiar_password,
+    rol: u.rol, es_instructor: !!u.es_instructor, es_instructor_sim: !!u.es_instructor_sim, es_mantenimiento: !!u.es_mantenimiento,
+    activo: !!u.activo, debe_cambiar_password: !!u.debe_cambiar_password,
     bloqueado: !!u.bloqueado, bloqueo_motivo: u.bloqueo_motivo, email_verificado: !!u.email_verificado_en
   };
 }
@@ -107,11 +108,11 @@ function exigirOrigenPropio(req, res, next) {
   next();
 }
 
-// Novedades de la flota: mantenimiento y tesorería las marcan; consulta sólo mira.
+// Novedades de la flota: mantenimiento (por rol o pilotos con el tilde) y tesorería las marcan; consulta sólo mira.
 function requireMantenimiento(req, res, next) {
   const rol = req.user?.rol;
   if (rol === 'consulta' && ['GET', 'HEAD'].includes(req.method)) return next();
-  if (!['admin', 'mantenimiento'].includes(rol)) return res.status(403).json({ error: 'Sólo mantenimiento o tesorería puede hacer esto' });
+  if (!['admin', 'mantenimiento'].includes(rol) && !req.user?.es_mantenimiento) return res.status(403).json({ error: 'Sólo mantenimiento o tesorería puede hacer esto' });
   next();
 }
 

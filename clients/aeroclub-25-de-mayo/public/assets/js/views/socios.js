@@ -1,5 +1,5 @@
 import {
-  get, post, put, html, raw, pintar, icono, pesos, modal, confirmar, pedirTexto, toast, error, conBoton, datosForm, fechaHora, linkWa, nombreLista, rolTexto
+  get, post, put, html, raw, pintar, icono, pesos, modal, confirmar, pedirTexto, toast, error, conBoton, datosForm, fechaHora, linkWa, nombreLista, rolTexto, extrasRol
 } from '../lib.js';
 
 const PARA_QUE = {
@@ -48,7 +48,12 @@ function formSocio(u = {}) {
           .map(([v, t]) => html`<option value="${v}" ${(u.rol || 'piloto') === v ? raw('selected') : ''}>${t}</option>`)}
       </select>
       <p class="campo__ayuda">Tesorería y consulta también pueden cargar sus propios vuelos.</p></div>
-    <label class="check" data-instructor><input type="checkbox" name="es_instructor" ${sel(u.es_instructor)}><span>Es instructor de vuelo<br><small class="muted">Aparece en la lista cuando un alumno carga un vuelo con instructor.</small></span></label>
+    <fieldset class="pila" data-extras style="gap:10px;border:0;padding:0;margin:0">
+      <legend class="campo__label" style="padding:0;margin-bottom:6px">Además es…</legend>
+      <label class="check"><input type="checkbox" name="es_instructor" ${sel(u.es_instructor)}><span>Instructor de vuelo<br><small class="muted">Aparece en la lista cuando un alumno carga un vuelo con instructor.</small></span></label>
+      <label class="check"><input type="checkbox" name="es_instructor_sim" ${sel(u.es_instructor_sim)}><span>Instructor de simulador<br><small class="muted">Da clases en el simulador, no en vuelo.</small></span></label>
+      <label class="check" data-mant><input type="checkbox" name="es_mantenimiento" ${sel(u.es_mantenimiento)}><span>Mantenimiento<br><small class="muted">Además de volar, revisa y verifica las novedades de la flota.</small></span></label>
+    </fieldset>
     <div class="modal__acciones"><button class="btn btn--sec" type="button" data-cerrar>Cancelar</button><button class="btn btn--principal" type="submit">${u.id ? 'Guardar cambios' : 'Dar de alta'}</button></div>
   </form>`;
 }
@@ -56,7 +61,12 @@ function formSocio(u = {}) {
 function abrirForm(ctx, u = null) {
   const m = modal({ titulo: u ? 'Editar usuario' : 'Nuevo usuario', contenido: formSocio(u || { activo: 1 }) });
   const form = m.el.querySelector('form');
-  const instructor = () => { m.el.querySelector('[data-instructor]').hidden = ['rampa', 'mantenimiento'].includes(form.rol.value); };
+  // Rampa y mantenimiento "solo" no vuelan: sin tildes. El tilde de mantenimiento es para pilotos
+  // (tesorería ya verifica novedades).
+  const instructor = () => {
+    m.el.querySelector('[data-extras]').hidden = ['rampa', 'mantenimiento'].includes(form.rol.value);
+    m.el.querySelector('[data-mant]').hidden = form.rol.value !== 'piloto';
+  };
   form.rol.addEventListener('change', instructor);
   instructor();
   form.addEventListener('submit', (e) => {
@@ -185,7 +195,7 @@ export default async function socios(ctx) {
             ${u.rol !== 'externo' && u.email ? (u.email_verificado_en
               ? html`<span class="chip chip--ok">Email verificado</span>`
               : html`<span class="chip chip--pend">Email sin verificar</span>${u.activo ? html` <button class="btn btn--fantasma btn--chico" type="button" data-verificar="${u.id}" data-escritura>Mandar link</button>` : ''}`) : ''}</td>
-          <td data-label="Rol">${rolTexto(u)}${u.rol !== 'piloto' && u.es_instructor ? html`<div class="muted chico">Instructor</div>` : ''}</td>
+          <td data-label="Rol">${u.rol === 'piloto' ? 'Piloto' : rolTexto(u)}${extrasRol(u).length ? html`<div class="muted chico">${extrasRol(u).join(', ').replace(/^./, c => c.toUpperCase())}</div>` : ''}</td>
           <td class="num" data-label="Saldo">${['rampa', 'mantenimiento'].includes(u.rol) ? html`<span class="muted">—</span>` : html`<a href="#/admin/cuentas/${u.id}" class="monto">${pesos(u.saldo)}</a>`}</td>
           <td class="celda-acciones"><div class="tabla__acciones">
             ${u.rol === 'externo'

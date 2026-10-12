@@ -48,7 +48,7 @@ export default async function novedades(ctx) {
   const avion = ctx.query.avion || '';
   const qs = new URLSearchParams({ estado: ver === 'verificadas' ? 'verificada' : 'pendiente', ...(avion ? { avion } : {}), ...(ver === 'verificadas' ? { periodo } : {}) });
   const d = await get(`/api/mantenimiento/novedades?${qs}`);
-  const puede = ['admin', 'mantenimiento'].includes(ctx.usuario.rol);
+  const puede = ['admin', 'mantenimiento'].includes(ctx.usuario.rol) || ctx.usuario.es_mantenimiento;
   const url = (cambios) => {
     const q = new URLSearchParams({ ...(ver === 'verificadas' ? { ver } : {}), ...(avion ? { avion } : {}), ...(ver === 'verificadas' ? { periodo } : {}), ...cambios });
     for (const [k, v] of [...q]) if (!v) q.delete(k);

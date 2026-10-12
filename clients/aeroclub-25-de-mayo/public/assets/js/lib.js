@@ -119,6 +119,11 @@ export const nombreCompleto = (u) => [u.nombre, u.apellido].filter(Boolean).join
 
 export const ROLES = { admin: 'Tesorería', consulta: 'Consulta', rampa: 'Rampa', mantenimiento: 'Mantenimiento', piloto: 'Piloto', externo: 'Externo' };
 export const rolTexto = (u) => (u.rol === 'piloto' && u.es_instructor ? 'Instructor' : ROLES[u.rol] || u.rol);
+// Lo que hace además de su rol: "instructor de vuelo, de simulador y mantenimiento".
+export function extrasRol(u) {
+  const inst = [u.es_instructor && 'de vuelo', u.es_instructor_sim && 'de simulador'].filter(Boolean);
+  return [inst.length ? `instructor ${inst.join(' y ')}` : null, u.es_mantenimiento ? 'mantenimiento' : null].filter(Boolean);
+}
 
 // Etiquetas de todos los medios (incluye el cheque de pagos viejos); para elegir, el cheque ya no se ofrece.
 export const MEDIOS = { transferencia: 'Transferencia', efectivo: 'Efectivo', mercadopago: 'Mercado Pago', otro: 'Otro', cheque: 'Cheque' };

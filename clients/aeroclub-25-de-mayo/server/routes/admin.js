@@ -111,12 +111,18 @@ function leerSocio(body, existente = null) {
   const telefono = limpiarTexto(body.telefono, 30);
   if (telefono && !telefonoWhatsApp(telefono)) throw new ErrorNegocio('Celular inválido: poné código de área y número (ej: 2345 401234)');
   const rol = ['admin', 'consulta', 'rampa', 'mantenimiento'].includes(body.rol) ? body.rol : 'piloto';
+  // Además de su rol, un socio que vuela puede ser instructor (de vuelo y/o de simulador) y de
+  // mantenimiento. Rampa y mantenimiento "solo" no vuelan, así que no llevan tildes.
+  const vuela = !['rampa', 'mantenimiento'].includes(rol);
   return {
     nombre, apellido, email, telefono,
     dni: limpiarTexto(body.dni, 12),
     licencia: limpiarTexto(body.licencia, 60),
     rol,
-    es_instructor: body.es_instructor && !['rampa', 'mantenimiento'].includes(rol) ? 1 : 0,
+    es_instructor: body.es_instructor && vuela ? 1 : 0,
+    es_instructor_sim: body.es_instructor_sim && vuela ? 1 : 0,
+    // Tesorería ya verifica novedades; consulta sólo mira.
+    es_mantenimiento: body.es_mantenimiento && rol === 'piloto' ? 1 : 0,
     // La baja y la reactivación van por sus propias rutas (con motivo), no por la edición.
     activo: existente ? existente.activo : 1
   };
@@ -129,10 +135,11 @@ router.post('/usuarios', (req, res) => {
   const temporal = passwordTemporal();
   try {
     const r = db.prepare(`
-      INSERT INTO usuarios (nombre, apellido, email, telefono, dni, licencia, rol, es_instructor, activo, password_hash, debe_cambiar_password)
-      VALUES (@nombre, @apellido, @email, @telefono, @dni, @licencia, @rol, @es_instructor, 1, @hash, 1)`)
+      INSERT INTO usuarios (nombre, apellido, email, telefono, dni, licencia, rol, es_instructor, es_instructor_sim, es_mantenimiento, activo, password_hash, debe_cambiar_password)
+      VALUES (@nombre, @apellido, @email, @telefono, @dni, @licencia, @rol, @es_instructor, @es_instructor_sim, @es_mantenimiento, 1, @hash, 1)`)
       .run({ ...s, hash: bcrypt.hashSync(temporal, 10) });
-    auditar(req.user.id, 'usuario.alta', `${s.nombre} ${s.apellido} (${s.email}), rol ${s.rol}${s.es_instructor ? ', instructor' : ''}`);
+    const extras = [s.es_instructor && 'instructor de vuelo', s.es_instructor_sim && 'instructor de simulador', s.es_mantenimiento && 'mantenimiento'].filter(Boolean);
+    auditar(req.user.id, 'usuario.alta', `${s.nombre} ${s.apellido} (${s.email}), rol ${s.rol}${extras.length ? `, ${extras.join(', ')}` : ''}`);
     res.status(201).json({ id: Number(r.lastInsertRowid), password_temporal: temporal });
   } catch (e) {
     if (String(e.message).includes('UNIQUE')) throw new ErrorNegocio('Ya hay un socio con ese email');
@@ -163,11 +170,12 @@ router.put('/usuarios/:id', (req, res) => {
     if (admins <= 1) throw new ErrorNegocio('Tiene que quedar al menos un administrador activo');
   }
   try {
-    // Dar de baja o cambiar el rol invalida sus sesiones abiertas.
-    const cortaSesion = (antes.activo && !s.activo) || antes.rol !== s.rol;
+    // Dar de baja o cambiar el rol (o el permiso de mantenimiento) invalida sus sesiones abiertas.
+    const cortaSesion = (antes.activo && !s.activo) || antes.rol !== s.rol || !!antes.es_mantenimiento !== !!s.es_mantenimiento;
     db.prepare(`
       UPDATE usuarios SET nombre=@nombre, apellido=@apellido, email=@email, telefono=@telefono, dni=@dni, licencia=@licencia,
-        rol=@rol, es_instructor=@es_instructor, activo=@activo, token_version = token_version + @corta,
+        rol=@rol, es_instructor=@es_instructor, es_instructor_sim=@es_instructor_sim, es_mantenimiento=@es_mantenimiento,
+        activo=@activo, token_version = token_version + @corta,
         -- Con otro email hay que volver a verificarlo.
         email_verificado_en = CASE WHEN email = @email THEN email_verificado_en END,
         verif_token_hash = CASE WHEN email = @email THEN verif_token_hash END

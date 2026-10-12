@@ -52,7 +52,7 @@ const PERMISOS = {
   staff: (r) => ['admin', 'consulta'].includes(r),
   admin: (r) => r === 'admin',
   rampa: (r) => ['rampa', 'admin'].includes(r),
-  mantenimiento: (r) => ['mantenimiento', 'admin', 'consulta'].includes(r)
+  mantenimiento: (r, u) => ['mantenimiento', 'admin', 'consulta'].includes(r) || !!u?.es_mantenimiento
 };
 
 const MENU_PILOTO = [
@@ -129,7 +129,8 @@ function pintarMenus(actual) {
   } else if (rol() === 'mantenimiento') {
     lateral = itemMenu(MENU_MANT[0], actual);
   } else {
-    lateral = MENU_PILOTO.filter(i => i.href !== '#/perfil').map(i => itemMenu(i, actual));
+    // Un piloto que además es de mantenimiento tiene también las novedades de la flota.
+    lateral = [...MENU_PILOTO.filter(i => i.href !== '#/perfil'), ...(usuario.es_mantenimiento ? [MENU_MANT[0]] : [])].map(i => itemMenu(i, actual));
   }
 
   pintar(document.getElementById('lateral'), html`
@@ -200,7 +201,7 @@ async function navegar(opciones = {}) {
 
   let destino = null; let params = {};
   for (const r of RUTAS) { const p = coincide(r.ruta, ruta); if (p) { destino = r; params = p; break; } }
-  if (!destino || !PERMISOS[destino.para](rol())) { location.replace(`#${inicioPorRol()}`); return; }
+  if (!destino || !PERMISOS[destino.para](rol(), usuario)) { location.replace(`#${inicioPorRol()}`); return; }
 
   pintarMenus(ruta);
   document.getElementById('barra-seccion').textContent = destino.titulo;
