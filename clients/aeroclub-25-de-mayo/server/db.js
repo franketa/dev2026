@@ -31,7 +31,9 @@ CREATE TABLE IF NOT EXISTS usuarios (
   dni TEXT,
   licencia TEXT,
   rol TEXT NOT NULL DEFAULT 'piloto' CHECK (rol IN ('admin','consulta','rampa','mantenimiento','piloto','externo')),
-  es_instructor INTEGER NOT NULL DEFAULT 0 CHECK (es_instructor IN (0,1)),
+  es_instructor INTEGER NOT NULL DEFAULT 0 CHECK (es_instructor IN (0,1)),       -- instructor de vuelo
+  es_instructor_sim INTEGER NOT NULL DEFAULT 0 CHECK (es_instructor_sim IN (0,1)), -- instructor de simulador
+  es_mantenimiento INTEGER NOT NULL DEFAULT 0 CHECK (es_mantenimiento IN (0,1)),   -- verifica las novedades de la flota
   activo INTEGER NOT NULL DEFAULT 1 CHECK (activo IN (0,1)),
   baja_motivo TEXT,
   -- Bloqueado por falta de pago: entra a ver su cuenta e informar pagos, pero no carga vuelos.
@@ -75,6 +77,32 @@ CREATE TABLE IF NOT EXISTS servicios (
   precio INTEGER NOT NULL DEFAULT 0 CHECK (precio >= 0),
   activo INTEGER NOT NULL DEFAULT 1 CHECK (activo IN (0,1)),
   orden INTEGER NOT NULL DEFAULT 0,
+  creado_en TEXT NOT NULL DEFAULT (datetime('now'))
+);`;
+
+const DDL_PAGOS_INFORMADOS = `
+-- Historial de pagos de cada socio: los que informa él desde la app (tesorería los confirma y recién
+-- ahí entran al libro), los que cobra rampa en el momento y los que carga tesorería directo.
+-- Un pago anulado o borrado del libro queda acá como 'anulado', para que no se pierda el rastro.
+CREATE TABLE IF NOT EXISTS pagos_informados (
+  id INTEGER PRIMARY KEY,
+  usuario_id INTEGER NOT NULL REFERENCES usuarios(id),
+  importe INTEGER NOT NULL CHECK (importe > 0),
+  fecha TEXT NOT NULL,
+  medio TEXT NOT NULL,
+  nota TEXT,
+  comprobante_id INTEGER REFERENCES comprobantes(id),
+  estado TEXT NOT NULL DEFAULT 'pendiente' CHECK (estado IN ('pendiente','confirmado','rechazado','anulado')),
+  origen TEXT NOT NULL DEFAULT 'socio' CHECK (origen IN ('socio','rampa','tesoreria')),
+  movimiento_id INTEGER REFERENCES movimientos(id) ON DELETE SET NULL,
+  revisado_por INTEGER REFERENCES usuarios(id),
+  revisado_en TEXT,
+  motivo_rechazo TEXT,
+  anulado_por INTEGER REFERENCES usuarios(id),
+  anulado_en TEXT,
+  motivo_anulacion TEXT,
+  ticket_id INTEGER REFERENCES tickets(id),      -- cobrado en el acto en ese ticket
+  informado_por INTEGER REFERENCES usuarios(id), -- quién lo cargó (el socio, rampa o tesorería)
   creado_en TEXT NOT NULL DEFAULT (datetime('now'))
 );`;
 
@@ -261,7 +289,7 @@ CREATE TABLE IF NOT EXISTS derechos_aeronave (
   PRIMARY KEY (usuario_id, periodo)
 );
 
--- Pagos que informa el socio desde la app; tesorería los confirma (y recién ahí entran al libro).
+-- Fotos de los comprobantes de los pagos que informan los socios.
 CREATE TABLE IF NOT EXISTS comprobantes (
   id INTEGER PRIMARY KEY,
   tipo TEXT NOT NULL,
@@ -269,25 +297,10 @@ CREATE TABLE IF NOT EXISTS comprobantes (
   creado_en TEXT NOT NULL DEFAULT (datetime('now'))
 );
 
-CREATE TABLE IF NOT EXISTS pagos_informados (
-  id INTEGER PRIMARY KEY,
-  usuario_id INTEGER NOT NULL REFERENCES usuarios(id),
-  importe INTEGER NOT NULL CHECK (importe > 0),
-  fecha TEXT NOT NULL,
-  medio TEXT NOT NULL,
-  nota TEXT,
-  comprobante_id INTEGER REFERENCES comprobantes(id),
-  estado TEXT NOT NULL DEFAULT 'pendiente' CHECK (estado IN ('pendiente','confirmado','rechazado')),
-  movimiento_id INTEGER REFERENCES movimientos(id) ON DELETE SET NULL,
-  revisado_por INTEGER REFERENCES usuarios(id),
-  revisado_en TEXT,
-  motivo_rechazo TEXT,
-  ticket_id INTEGER REFERENCES tickets(id),      -- cobrado por rampa en ese ticket
-  informado_por INTEGER REFERENCES usuarios(id), -- quién lo cargó (el socio, o rampa)
-  creado_en TEXT NOT NULL DEFAULT (datetime('now'))
-);
+${DDL_PAGOS_INFORMADOS}
 CREATE INDEX IF NOT EXISTS idx_pinf_estado ON pagos_informados(estado, id);
 CREATE INDEX IF NOT EXISTS idx_pinf_usuario ON pagos_informados(usuario_id, id);
+CREATE INDEX IF NOT EXISTS idx_pinf_movimiento ON pagos_informados(movimiento_id);
 
 -- Novedades de los vuelos (las notas del piloto) que mantenimiento ya revisó. Va aparte porque
 -- un vuelo cerrado no se modifica. Sin revisor: marcada al activar el módulo (v1.004).
@@ -388,6 +401,16 @@ function migrar() {
     db.exec('ALTER TABLE pagos_informados ADD COLUMN ticket_id INTEGER REFERENCES tickets(id)');
     db.exec('ALTER TABLE pagos_informados ADD COLUMN informado_por INTEGER REFERENCES usuarios(id)');
   }
+  // v1.005: estado 'anulado' y origen del pago (el CHECK nuevo obliga a reconstruir la tabla).
+  if (sqlTabla('pagos_informados') && !columnas('pagos_informados').includes('origen')) {
+    reconstruir('pagos_informados', DDL_PAGOS_INFORMADOS);
+    db.exec(`UPDATE pagos_informados SET origen = 'rampa' WHERE ticket_id IS NOT NULL`);
+  }
+  // v1.005: instructor de simulador y mantenimiento son tildes del usuario, además de su rol.
+  if (usuarios && !columnas('usuarios').includes('es_mantenimiento')) {
+    db.exec('ALTER TABLE usuarios ADD COLUMN es_instructor_sim INTEGER NOT NULL DEFAULT 0 CHECK (es_instructor_sim IN (0,1))');
+    db.exec('ALTER TABLE usuarios ADD COLUMN es_mantenimiento INTEGER NOT NULL DEFAULT 0 CHECK (es_mantenimiento IN (0,1))');
+  }
   if (sqlTabla('vuelos') && !columnas('vuelos').includes('hora_salida')) {
     db.exec('ALTER TABLE vuelos ADD COLUMN hora_salida TEXT');
     db.exec('ALTER TABLE vuelos ADD COLUMN hora_llegada TEXT');
@@ -448,6 +471,22 @@ function initDB() {
       SELECT id, 'Anterior al módulo de mantenimiento' FROM vuelos WHERE notas IS NOT NULL AND trim(notas) <> ''`).run().changes;
     db.prepare(`INSERT INTO config (clave, valor) VALUES ('novedades_desde', datetime('now'))`).run();
     if (n) console.log(`[db] ${n} novedades anteriores al módulo de mantenimiento marcadas como revisadas`);
+  }
+
+  // v1.005: los pagos que tesorería cargó directo en la cuenta pasan al historial de pagos, como
+  // confirmados (o anulados, si después se anularon). Corre una sola vez.
+  if (!db.prepare(`SELECT 1 FROM config WHERE clave = 'pagos_historial_desde'`).get()) {
+    const n = db.prepare(`
+      INSERT INTO pagos_informados (usuario_id, importe, fecha, medio, nota, estado, origen, movimiento_id, revisado_por, revisado_en,
+        anulado_por, anulado_en, motivo_anulacion, ticket_id, informado_por, creado_en)
+      SELECT m.usuario_id, -m.importe, m.fecha, COALESCE(m.medio, 'otro'), m.concepto,
+        CASE WHEN a.id IS NULL THEN 'confirmado' ELSE 'anulado' END, 'tesoreria', m.id, m.creado_por, replace(substr(m.creado_en,1,19),'T',' '),
+        a.creado_por, replace(substr(a.creado_en,1,19),'T',' '), substr(a.concepto, instr(a.concepto, ' — ') + 3),
+        (SELECT t.id FROM tickets t WHERE t.pago_movimiento_id = m.id), m.creado_por, replace(substr(m.creado_en,1,19),'T',' ')
+      FROM movimientos m LEFT JOIN movimientos a ON a.anula_id = m.id
+      WHERE m.tipo = 'pago' AND m.importe < 0 AND NOT EXISTS (SELECT 1 FROM pagos_informados p WHERE p.movimiento_id = m.id)`).run().changes;
+    db.prepare(`INSERT INTO config (clave, valor) VALUES ('pagos_historial_desde', datetime('now'))`).run();
+    if (n) console.log(`[db] ${n} pagos cargados por tesorería pasaron al historial de pagos`);
   }
 
   // Flota inicial del aeroclub.

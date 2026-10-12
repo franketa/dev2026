@@ -265,7 +265,8 @@ const crear = db.transaction((input, actor) => {
       usuario_id: u.id, tipo: 'pago', concepto: `Pago del ticket ${fmtNumero(t.numero)} por ${medio}`,
       importe: -t.total, fecha, medio, creado_por: actor.id
     });
-    db.prepare('UPDATE tickets SET pago_movimiento_id = ? WHERE id = ?').run(pago.id, t.id);
+    const pid = pagosInformados.desdeTesoreria({ movimiento: pago, nota: `Cobrado en el ticket ${fmtNumero(t.numero)}`, ticketId: t.id, actor });
+    db.prepare('UPDATE tickets SET pago_movimiento_id = ?, pago_informado_id = ? WHERE id = ?').run(pago.id, pid, t.id);
   }
   auditar(actor.id, 'ticket.alta',
     `${fmtNumero(t.numero)} a ${nombreCompleto(u)}${matricula ? ` (${[matricula, piloto].filter(Boolean).join(', ')})` : ''}: ${fmtPesos(t.total)}${medio ? `, cobrado en el acto por ${medio}${actor.rol === 'rampa' ? ' (a confirmar por tesorería)' : ''}` : ', a cuenta'}`);
@@ -299,6 +300,7 @@ const anular = db.transaction((id, motivo, actor, { mantenerPago = false } = {})
     if (quedaAFavor) pago = '. El pago en el acto queda como saldo a favor.';
     else if (!yaAnulado(t.pago_movimiento_id)) {
       ledger.anular(t.pago_movimiento_id, `ticket ${fmtNumero(t.numero)} anulado: ${motivo}`, actor.id);
+      pagosInformados.alAnularMovimiento(t.pago_movimiento_id, `Ticket ${fmtNumero(t.numero)} anulado: ${motivo}`, actor);
       pago = '. También se anuló el pago en el acto.';
     }
   }

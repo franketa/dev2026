@@ -300,21 +300,25 @@ function socioActivo(id) {
   return u;
 }
 
-router.post('/pagos', (req, res) => {
-  const u = socioActivo(req.body?.usuario_id);
-  const importe = parsePesos(req.body?.importe);
+// Pago que carga tesorería: entra confirmado al libro y al historial de pagos del socio.
+const registrarPago = db.transaction((body, actor) => {
+  const u = socioActivo(body.usuario_id);
+  const importe = parsePesos(body.importe);
   if (importe == null || importe <= 0) throw new ErrorNegocio('Importe del pago inválido');
-  const fecha = req.body?.fecha || hoy();
+  const fecha = body.fecha || hoy();
   if (!esFecha(fecha) || fecha > hoy()) throw new ErrorNegocio('Fecha del pago inválida');
-  const medio = MEDIOS.includes(req.body?.medio) ? req.body.medio : 'transferencia';
-  const nota = limpiarTexto(req.body?.nota, 200);
+  const medio = MEDIOS.includes(body.medio) ? body.medio : 'transferencia';
+  const nota = limpiarTexto(body.nota, 200);
   const m = ledger.registrar({
-    usuario_id: u.id, tipo: 'pago', importe: -importe, fecha, medio, creado_por: req.user.id,
+    usuario_id: u.id, tipo: 'pago', importe: -importe, fecha, medio, creado_por: actor.id,
     concepto: `Pago por ${medio}${nota ? ` (${nota})` : ''}`
   });
-  auditar(req.user.id, 'pago.alta', `${u.nombre} ${u.apellido}: ${fmtPesos(importe)} por ${medio}, movimiento #${m.id}`);
-  res.status(201).json({ movimiento_id: m.id, saldo: ledger.saldo(u.id) });
+  pagosInformados.desdeTesoreria({ movimiento: m, nota, actor });
+  auditar(actor.id, 'pago.alta', `${u.nombre} ${u.apellido}: ${fmtPesos(importe)} por ${medio}, movimiento #${m.id}`);
+  return { movimiento_id: m.id, saldo: ledger.saldo(u.id) };
 });
+
+router.post('/pagos', (req, res) => res.status(201).json(registrarPago(req.body || {}, req.user)));
 
 router.post('/ajustes', (req, res) => {
   const u = socioActivo(req.body?.usuario_id);
@@ -332,12 +336,16 @@ router.post('/ajustes', (req, res) => {
   res.status(201).json({ movimiento_id: m.id, saldo: ledger.saldo(u.id) });
 });
 
+const anularMovimiento = db.transaction((id, motivo, actor) => {
+  correcciones.exigirQueNoSeaTicket(id);
+  const m = ledger.anular(id, motivo, actor.id);
+  pagosInformados.alAnularMovimiento(id, motivo, actor);   // si era un pago, queda anulado en el historial
+  auditar(actor.id, 'movimiento.anulacion', `Movimiento #${id} anulado con #${m.id}: ${motivo}`);
+  return { movimiento_id: m.id };
+});
+
 router.post('/movimientos/:id/anular', (req, res) => {
-  correcciones.exigirQueNoSeaTicket(Number(req.params.id));
-  const motivo = limpiarTexto(req.body?.motivo, 200);
-  const m = ledger.anular(Number(req.params.id), motivo, req.user.id);
-  auditar(req.user.id, 'movimiento.anulacion', `Movimiento #${req.params.id} anulado con #${m.id}: ${motivo}`);
-  res.status(201).json({ movimiento_id: m.id });
+  res.status(201).json(anularMovimiento(Number(req.params.id), limpiarTexto(req.body?.motivo, 200), req.user));
 });
 
 router.put('/movimientos/:id', (req, res) => {

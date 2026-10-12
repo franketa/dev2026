@@ -101,6 +101,11 @@ export async function abrirVuelo(id, ctx, { alCambiar } = {}) {
   });
 }
 
+// Un movimiento anulado y su anulación se compensan: para leer la cuenta sin ruido, se ocultan los dos.
+export function sinAnulados(movs) {
+  return movs.filter(m => !m.anulado_por && m.tipo !== 'anulacion');
+}
+
 export function listaMovimientos(movs, { admin = false } = {}) {
   if (!movs.length) return html`<div class="vacio"><p>Todavía no hay movimientos en la cuenta.</p></div>`;
   return html`<div class="movs">${movs.map(m => html`

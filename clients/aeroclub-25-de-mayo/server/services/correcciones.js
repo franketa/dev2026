@@ -6,6 +6,7 @@ const { db, auditar } = require('../db');
 const ledger = require('./ledger');
 const cierres = require('./cierres');
 const tickets = require('./tickets');
+const pagosInformados = require('./pagosInformados');
 const { ErrorNegocio, hoy, esFecha, parsePesos, fmtPesos, fmtFechaCorta, limpiarTexto, MEDIOS } = require('../util');
 
 function getMovimiento(id) {
@@ -56,6 +57,7 @@ const editar = db.transaction((id, input, actor) => {
   despuesDeCorregir(id, m.usuario_id);
 
   const despues = { ...m, concepto, fecha, importe, medio };
+  pagosInformados.alEditarMovimiento(despues);
   auditar(actor.id, 'movimiento.edicion', `#${id} de ${m.socio}. Antes: ${resumen(m)}. Ahora: ${resumen(despues)}. Motivo: ${motivo}`);
   return { saldo: ledger.saldo(m.usuario_id) };
 });
@@ -65,6 +67,11 @@ const borrar = db.transaction((id, motivo, actor) => {
   exigirQueNoSeaTicket(id);
   motivo = limpiarTexto(motivo, 200);
   if (!motivo) throw new ErrorNegocio('Contá brevemente por qué se borra (queda en el registro)');
+
+  // En el historial de pagos no se borra nada: un pago borrado queda como anulado, y si se borra la
+  // anulación de un pago, el pago vuelve a contar.
+  if (m.tipo === 'pago') pagosInformados.alAnularMovimiento(id, `Borrado: ${motivo}`, actor);
+  if (m.tipo === 'anulacion' && m.anula_id) pagosInformados.alRevivirMovimiento(m.anula_id);
 
   // Si el movimiento tiene una anulación, se borran juntos (la anulación sin su original no tiene sentido).
   const anulaciones = db.prepare('SELECT * FROM movimientos WHERE anula_id = ?').all(id);

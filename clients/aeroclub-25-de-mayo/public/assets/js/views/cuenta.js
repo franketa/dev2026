@@ -2,7 +2,7 @@ import {
   get, post, put, html, raw, pintar, icono, pesos, horas, fecha, nombrePeriodo, chipCupon, modal, pedirTexto, toast, error, conBoton,
   hoyAR, pesosInput, datosForm, ala, nombreCompleto, opcionesMedio, leerComprobante
 } from '../lib.js';
-import { listaMovimientos } from './comun.js';
+import { listaMovimientos, sinAnulados } from './comun.js';
 import { tablaInformes, revisarPago } from './pagos.js';
 import { cambiarEstado } from './socios.js';
 
@@ -48,9 +48,9 @@ export async function miCuenta(ctx) {
       <div class="vista__acciones"><button class="btn btn--principal" type="button" data-informar>${icono('informar')} Informar un pago</button></div>
     </div>
     ${bloqueSaldo(d, { admin: false })}
-    ${informes.length ? html`<section class="panel"><div class="panel__cab"><h2>Pagos que informaste</h2><p>Tesorería los revisa y, cuando los confirma, se descuentan de tu saldo.</p></div>${tablaInformes(informes, { socio: false })}</section>` : ''}
+    ${informes.length ? html`<section class="panel"><div class="panel__cab"><h2>Tus pagos</h2><p>Los que informaste vos y los que cargó tesorería. Los que informás se descuentan de tu saldo cuando tesorería los confirma.</p></div>${tablaInformes(informes, { socio: false })}</section>` : ''}
     <section class="panel"><div class="panel__cab"><h2>Cupones</h2></div>${tablaCupones(d.cupones, { admin: false })}</section>
-    <section class="panel"><div class="panel__cab"><h2>Movimientos</h2><p>Los vuelos aparecen acá cuando entran en el cierre del mes.</p></div>${listaMovimientos(d.movimientos)}</section>
+    <section class="panel"><div class="panel__cab"><h2>Movimientos</h2><p>Los vuelos aparecen acá cuando entran en el cierre del mes.</p></div>${listaMovimientos(sinAnulados(d.movimientos))}</section>
   </div>`);
   ctx.el.addEventListener('click', (e) => {
     if (e.target.closest('[data-informar]')) modalInformarPago(d.saldo, ctx.recargar);
@@ -118,6 +118,10 @@ export async function cuentaSocio(ctx) {
   const d = await get(`/api/admin/cuentas/${id}`);
   const u = d.usuario;
   const pendientes = d.pagos_informados.filter(p => p.estado === 'pendiente');
+  const historialPagos = d.pagos_informados.filter(p => p.estado !== 'pendiente');
+  // Lo anulado (el movimiento y su contraasiento) no suma nada: se oculta salvo que se pida verlo.
+  const verAnulados = ctx.query.anulados === '1';
+  const anulados = d.movimientos.length - sinAnulados(d.movimientos).length;
 
   pintar(ctx.el, html`
   <div class="vista">
@@ -137,9 +141,11 @@ export async function cuentaSocio(ctx) {
     ${pendientes.length ? html`<section class="panel"><div class="panel__cab"><h2>Pagos informados por revisar</h2><p>No se descuentan del saldo hasta que los confirmes.</p></div>${tablaInformes(pendientes, { socio: false, revisar: true })}</section>` : ''}
     ${bloqueSaldo(d, { admin: true })}
     <section class="panel"><div class="panel__cab"><h2>Cupones</h2></div>${tablaCupones(d.cupones, { admin: true })}</section>
+    ${historialPagos.length ? html`<section class="panel"><div class="panel__cab"><div><h2>Pagos</h2><p>Los confirmados, rechazados y anulados. El historial de todos los socios está en Pagos informados.</p></div></div>${tablaInformes(historialPagos.slice(0, 12), { socio: false })}</section>` : ''}
     <section class="panel">
-      <div class="panel__cab"><h2>Movimientos</h2><p>Podés anular, editar o borrar movimientos. Cada cambio queda en Registro con tu nombre y el motivo.</p></div>
-      ${listaMovimientos(d.movimientos, { admin: true })}
+      <div class="panel__cab"><div><h2>Movimientos</h2><p>Podés anular, editar o borrar movimientos. Cada cambio queda en Registro con tu nombre y el motivo.</p></div>
+        ${anulados ? html`<a class="btn btn--fantasma btn--chico" href="#/admin/cuentas/${u.id}${verAnulados ? '' : '?anulados=1'}">${verAnulados ? 'Ocultar anulados' : `Ver anulados (${anulados})`}</a>` : ''}</div>
+      ${listaMovimientos(verAnulados ? d.movimientos : sinAnulados(d.movimientos), { admin: true })}
     </section>
   </div>`);
 
@@ -216,7 +222,7 @@ function modalEditarMovimiento(m, alTerminar) {
 export function modalPago(u, sugerido, alTerminar) {
   const m = modal({
     titulo: 'Registrar pago',
-    subtitulo: nombreCompleto(u),
+    subtitulo: `${nombreCompleto(u)}. Queda confirmado: se descuenta del saldo y aparece en su historial de pagos.`,
     contenido: html`<form class="form" novalidate>
       <div class="fila-campos">
         <div class="campo"><label for="p-imp">Importe</label><input class="input" id="p-imp" name="importe" inputmode="decimal" value="${sugerido > 0 ? pesosInput(sugerido) : ''}" placeholder="0" required autofocus></div>
@@ -225,7 +231,7 @@ export function modalPago(u, sugerido, alTerminar) {
       <div class="campo"><label for="p-medio">Medio</label>
         <select class="select" id="p-medio" name="medio">${opcionesMedio('transferencia')}</select></div>
       <div class="campo"><label for="p-nota">Nota <span class="muted">(opcional)</span></label><input class="input" id="p-nota" name="nota" maxlength="200" placeholder="Ej.: comprobante 00123"></div>
-      <div class="modal__acciones"><button class="btn btn--sec" type="button" data-cerrar>Cancelar</button><button class="btn btn--principal" type="submit">${icono('check')} Registrar pago</button></div>
+      <div class="modal__acciones"><button class="btn btn--sec" type="button" data-cerrar>Cancelar</button><button class="btn btn--principal" type="submit">${icono('check')} Confirmar pago</button></div>
     </form>`
   });
   const form = m.el.querySelector('form');
@@ -234,7 +240,7 @@ export function modalPago(u, sugerido, alTerminar) {
     conBoton(form.querySelector('[type=submit]'), async () => {
       try {
         const r = await post('/api/admin/pagos', { usuario_id: u.id, ...datosForm(form) });
-        toast(`Pago registrado. Saldo: ${pesos(r.saldo)}`, 'ok');
+        toast(`Pago confirmado. Saldo: ${pesos(r.saldo)}`, 'ok');
         m.cerrar();
         alTerminar?.();
       } catch (err) { error(err); }

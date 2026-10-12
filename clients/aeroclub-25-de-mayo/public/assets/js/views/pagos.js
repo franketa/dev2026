@@ -64,21 +64,37 @@ export function revisarPago(p, alTerminar) {
   });
 }
 
+// De dónde salió el pago: lo informó el socio, lo cobró rampa o lo cargó tesorería.
+export function origenPago(p, { socio = true } = {}) {
+  if (p.origen === 'rampa') return `Cobrado por ${p.cobrado_por_nombre || 'rampa'}${p.ticket_numero ? ` (ticket T-${String(p.ticket_numero).padStart(5, '0')})` : ''}`;
+  if (p.origen === 'tesoreria') return `Cargado por tesorería${p.informado_por_nombre ? ` (${p.informado_por_nombre})` : ''}`;
+  return socio ? 'Informado por el socio' : 'Lo informaste vos';
+}
+
+// Estado y quién lo resolvió. Un pago anulado muestra quién lo anuló y por qué.
+function estadoPago(p) {
+  if (p.estado === 'anulado') {
+    return html`${chipInforme(p)}<div class="muted chico">${p.anulado_por_nombre ? `Por ${p.anulado_por_nombre}` : 'Por tesorería'}${p.anulado_en ? `, ${fechaHora(p.anulado_en)}` : ''}</div>${p.motivo_anulacion ? html`<div class="muted chico">${p.motivo_anulacion}</div>` : ''}`;
+  }
+  return html`${chipInforme(p)}${p.estado === 'rechazado' && p.motivo_rechazo ? html`<div class="muted chico">${p.motivo_rechazo}</div>` : ''}${p.revisado_por_nombre && p.origen !== 'tesoreria' ? html`<div class="muted chico">Por ${p.revisado_por_nombre}</div>` : ''}`;
+}
+
 export function tablaInformes(pagos, { socio = true, revisar = false } = {}) {
   return html`<div class="tabla-caja"><table class="tabla tabla--tarjetas">
     <thead><tr>${socio ? html`<th>Socio</th>` : ''}<th>Pago</th><th class="num">Importe</th><th>Estado</th><th></th></tr></thead>
-    <tbody>${pagos.map(p => html`<tr>
-      ${socio ? html`<td class="celda-ppal"><a href="#/admin/cuentas/${p.usuario_id}"><strong>${nombreLista(p)}</strong></a><div class="muted chico">${p.ticket_id ? `Cobrado por ${p.cobrado_por_nombre || 'rampa'}` : 'Informado'} el ${fechaHora(p.creado_en)}</div></td>` : ''}
-      <td data-label="Pago" ${socio ? '' : raw('class="celda-ppal"')}>${MEDIOS[p.medio] || p.medio}, ${fecha(p.fecha)}${p.nota ? html`<div class="muted chico">${p.nota}</div>` : ''}${p.comprobante_id ? html`<div class="chico muted con-icono">${icono('foto')} Con comprobante</div>` : ''}</td>
+    <tbody>${pagos.map(p => html`<tr class="${p.estado === 'anulado' ? 'fila--anulada' : ''}">
+      ${socio ? html`<td class="celda-ppal"><a href="#/admin/cuentas/${p.usuario_id}"><strong>${nombreLista(p)}</strong></a><div class="muted chico">${origenPago(p)} el ${fechaHora(p.creado_en)}</div></td>` : ''}
+      <td data-label="Pago" ${socio ? '' : raw('class="celda-ppal"')}>${MEDIOS[p.medio] || p.medio}, ${fecha(p.fecha)}${socio ? '' : html`<div class="muted chico">${origenPago(p, { socio: false })}</div>`}${p.nota && p.origen !== 'rampa' ? html`<div class="muted chico">${p.nota}</div>` : ''}${p.comprobante_id ? html`<div class="chico muted con-icono">${icono('foto')} Con comprobante</div>` : ''}</td>
       <td class="num monto" data-label="Importe">${pesos(p.importe)}</td>
-      <td data-label="Estado">${chipInforme(p)}${p.estado === 'rechazado' && p.motivo_rechazo ? html`<div class="muted chico">${p.motivo_rechazo}</div>` : ''}${p.revisado_por_nombre ? html`<div class="muted chico">Por ${p.revisado_por_nombre}</div>` : ''}</td>
+      <td data-label="Estado">${estadoPago(p)}</td>
       <td class="celda-acciones"><div class="tabla__acciones">
         ${revisar && p.estado === 'pendiente' ? html`<button class="btn btn--principal btn--chico" type="button" data-revisar="${p.id}" data-escritura>${icono('check')} Revisar</button>` : ''}
         ${p.comprobante_id ? html`<a class="btn btn--sec btn--chico" href="${revisar ? urlComprobante(p) : `/api/pagos-informados/${p.id}/comprobante`}" target="_blank" rel="noopener">${icono('foto')} Comprobante</a>` : ''}
       </div></td></tr>`)}</tbody></table></div>`;
 }
 
-// "Por revisar": todos los pendientes. "Historial": todos los informados, mes por mes (por fecha del pago).
+// "Por revisar": todos los pendientes. "Historial": todos los pagos del mes (por fecha del pago): los
+// informados por los socios, los cobrados por rampa y los que cargó tesorería, también los anulados.
 export default async function pagosInformados(ctx) {
   const ver = ['historial', 'todos'].includes(ctx.query.ver) ? 'historial' : 'pendiente';
   const periodo = ctx.query.periodo || periodoHoy();
@@ -88,7 +104,9 @@ export default async function pagosInformados(ctx) {
 
   pintar(ctx.el, html`
   <div class="vista">
-    <div class="vista__cab"><div><h1>Pagos informados</h1><p>Lo que los socios avisan que pagaron desde la app y lo que cobra rampa en el momento. No toca la cuenta hasta que lo confirmás.</p></div></div>
+    <div class="vista__cab"><div><h1>Pagos informados</h1><p>${ver === 'pendiente'
+      ? 'Lo que los socios avisan que pagaron desde la app y lo que cobra rampa en el momento. No toca la cuenta hasta que lo confirmás.'
+      : 'Todos los pagos del mes: los que informaron los socios, los que cobró rampa y los que cargó tesorería. Los anulados quedan a la vista.'}</p></div></div>
     <div class="pestanas" role="tablist">
       <button type="button" role="tab" data-ver="pendiente" aria-selected="${ver === 'pendiente'}">Por revisar</button>
       <button type="button" role="tab" data-ver="historial" aria-selected="${ver === 'historial'}">Historial</button>
@@ -96,11 +114,14 @@ export default async function pagosInformados(ctx) {
     ${ver === 'historial' ? html`<div class="filtros">${selectorMes(periodo)}</div>` : ''}
     ${ver === 'pendiente' && pagos.length ? html`<div class="cifras"><div class="cifra"><span>Por revisar</span><strong>${pesos(total)}</strong><small>${pagos.length} ${pagos.length === 1 ? 'pago' : 'pagos'}</small></div></div>` : ''}
     ${ver === 'historial' && pagos.length ? html`<div class="cifras">
-      <div class="cifra"><span>Informados</span><strong>${pagos.length}</strong></div>
+      <div class="cifra"><span>Pagos</span><strong>${pagos.length}</strong><small>${[
+        [pagos.filter(p => p.origen === 'socio').length, 'informados por socios'], [pagos.filter(p => p.origen === 'rampa').length, 'de rampa'],
+        [pagos.filter(p => p.origen === 'tesoreria').length, 'de tesorería']].filter(([n]) => n).map(([n, t]) => `${n} ${t}`).join(', ')}</small></div>
       <div class="cifra"><span>Confirmados</span><strong>${pesos(confirmado)}</strong><small>${pagos.filter(p => p.estado === 'confirmado').length} pagos</small></div>
+      ${pagos.some(p => p.estado === 'anulado') ? html`<div class="cifra"><span>Anulados</span><strong>${pagos.filter(p => p.estado === 'anulado').length}</strong><small>${pesos(pagos.filter(p => p.estado === 'anulado').reduce((s, p) => s + p.importe, 0))}</small></div>` : ''}
       ${total ? html`<div class="cifra"><span>Por revisar</span><strong>${pesos(total)}</strong></div>` : ''}
     </div>` : ''}
-    <section class="panel">${pagos.length ? tablaInformes(pagos, { revisar: true }) : vacio(ver === 'pendiente' ? 'No hay pagos para revisar.' : `No se informaron pagos de ${nombrePeriodo(periodo)}.`)}</section>
+    <section class="panel">${pagos.length ? tablaInformes(pagos, { revisar: true }) : vacio(ver === 'pendiente' ? 'No hay pagos para revisar.' : `No hay pagos de ${nombrePeriodo(periodo)}.`)}</section>
   </div>`);
 
   ctx.el.addEventListener('click', (e) => {

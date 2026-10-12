@@ -115,8 +115,8 @@ export default async function panel(ctx) {
     <section class="panel">
       <div class="panel__cab"><div><h2>Actividad de ${nombrePeriodo(periodo)}</h2><p>Lo del mes. El historial completo queda en cada sección y en el Registro.</p></div></div>
       <div class="cifras">
-        <a class="cifra cifra--link" href="#/admin/pagos?ver=historial&periodo=${periodo}"><span>Pagos informados</span><strong>${pim.n}</strong>
-          <small>${pim.confirmados} ${pim.confirmados === 1 ? 'confirmado' : 'confirmados'} (${pesos(pim.importe_confirmado)})${pim.rechazados ? `, ${pim.rechazados} ${pim.rechazados === 1 ? 'rechazado' : 'rechazados'}` : ''}${pim.pendientes ? `, ${pim.pendientes} por revisar` : ''}</small></a>
+        <a class="cifra cifra--link" href="#/admin/pagos?ver=historial&periodo=${periodo}"><span>Pagos del mes</span><strong>${pim.n}</strong>
+          <small>${pim.confirmados} ${pim.confirmados === 1 ? 'confirmado' : 'confirmados'} (${pesos(pim.importe_confirmado)})${pim.rechazados ? `, ${pim.rechazados} ${pim.rechazados === 1 ? 'rechazado' : 'rechazados'}` : ''}${pim.anulados ? `, ${pim.anulados} ${pim.anulados === 1 ? 'anulado' : 'anulados'}` : ''}${pim.pendientes ? `, ${pim.pendientes} por revisar` : ''}</small></a>
         <a class="cifra cifra--link" href="#/admin/tickets?periodo=${periodo}"><span>Tickets</span><strong>${d.tickets_mes.vigentes}</strong>
           <small>${d.tickets_mes.anulados ? `${d.tickets_mes.anulados} ${d.tickets_mes.anulados === 1 ? 'anulado' : 'anulados'}` : 'Ninguno anulado'}</small></a>
         <div class="cifra"><span>Anulaciones</span><strong>${d.anulaciones.length}</strong><small>Pagos, tickets, vuelos y ajustes</small></div>

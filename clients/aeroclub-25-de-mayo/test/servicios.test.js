@@ -146,15 +146,17 @@ test('si tesorería rechaza lo que cobró rampa, el cargo queda en la cuenta; si
   const a = tickets.anular(t2.id, 'Se cargó dos veces', admin);
   assert.equal(a.cobrado_en_acto, 0);
   const p = pagosInformados.get(t2.pago_informado_id);
-  assert.equal(p.estado, 'rechazado');
-  assert.match(p.motivo_rechazo, /Ticket anulado: Se cargó dos veces/);
+  assert.equal(p.estado, 'anulado');
+  assert.match(p.motivo_anulacion, /Ticket anulado: Se cargó dos veces/);
   assert.equal(ledger.saldo(externo), 0);
-  // Lo que cobra tesorería en el acto entra directo, sin revisión.
+  // Lo que cobra tesorería en el acto entra directo, sin revisión, y queda en el historial como confirmado.
   const t3 = tickets.crear({ aeronave_id: aeronave.id, items, cobrado: true, medio: 'efectivo' }, admin);
   assert.ok(t3.pago_movimiento_id);
-  assert.equal(t3.pago_informado_id, null);
+  assert.equal(pagosInformados.get(t3.pago_informado_id).estado, 'confirmado');
+  assert.equal(pagosInformados.get(t3.pago_informado_id).origen, 'tesoreria');
   assert.equal(ledger.saldo(externo), 0);
   tickets.anular(t3.id, 'Prueba', admin);
+  assert.equal(pagosInformados.get(t3.pago_informado_id).estado, 'anulado');
 });
 
 test('tránsitos: matrícula y piloto al mando, sin asociarlo a un socio', () => {

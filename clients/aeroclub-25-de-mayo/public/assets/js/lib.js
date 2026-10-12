@@ -179,7 +179,7 @@ export function chipTicket(t) {
   return html`<span class="chip">A cuenta</span>`;
 }
 export function chipInforme(p) {
-  const [clase, txt] = { pendiente: ['pend', 'En revisión'], confirmado: ['ok', 'Confirmado'], rechazado: ['mal', 'Rechazado'] }[p.estado] || ['neutro', p.estado];
+  const [clase, txt] = { pendiente: ['pend', 'En revisión'], confirmado: ['ok', 'Confirmado'], rechazado: ['mal', 'Rechazado'], anulado: ['neutro', 'Anulado'] }[p.estado] || ['neutro', p.estado];
   return html`<span class="chip chip--${clase}">${txt}</span>`;
 }
 export function chipVuelo(v) {

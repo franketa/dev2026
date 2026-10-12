@@ -148,7 +148,8 @@ const pagar = (u, fraccion, fecha, medio = 'transferencia') => {
   const s = ledger.saldo(u.id);
   if (s <= 0) return;
   const imp = Math.round((s * fraccion) / 100) * 100;
-  ledger.registrar({ usuario_id: u.id, tipo: 'pago', concepto: `Pago por ${medio}`, importe: -imp, fecha, medio, creado_por: admin.id });
+  const m = ledger.registrar({ usuario_id: u.id, tipo: 'pago', concepto: `Pago por ${medio}`, importe: -imp, fecha, medio, creado_por: admin.id });
+  pagosInformados.desdeTesoreria({ movimiento: m, actor: admin });
 };
 const mes2 = sumarMeses(inicio, 1);
 for (const u of [...alumnos, ...pilotos.slice(0, 3), ...instructores]) pagar(u, 1, `${mes2}-0${3 + Math.floor(azar() * 6)}`);
