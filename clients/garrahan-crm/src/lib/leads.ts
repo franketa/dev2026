@@ -35,7 +35,7 @@ export async function avisarLeadNuevo(id: number) {
   if (!l) return;
   const interes = l.marca ? `${l.marca} ${l.modelo}` : l.vehiculo_texto;
   const lineas = [
-    `${l.entrega_usado && !interes ? "🚗 <b>Cotización de usado</b>" : "🔥 <b>Lead nuevo</b>"} · ${enlace("/leads/" + id, l.nombre)}`,
+    `${l.entrega_usado && l.origen === "web" ? "🚗 <b>Cotización de usado</b>" : "🔥 <b>Lead nuevo</b>"} · ${enlace("/leads/" + id, l.nombre)}`,
     `Origen: ${t(ORIGENES_LEAD[l.origen] || l.origen)}${l.telefono ? " · " + t(l.telefono) : ""}`,
     interes ? `Interesado en: ${t(interes)}` : null,
     l.entrega_usado && l.usado_detalle ? `Usado: ${t(l.usado_detalle)}` : null,

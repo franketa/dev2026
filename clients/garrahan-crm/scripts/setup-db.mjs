@@ -19,7 +19,7 @@ if (!url) {
   process.exit(1);
 }
 
-const sql = postgres(url, { max: 1 });
+const sql = postgres(url, { max: 1, onnotice: () => {} }); // los "ya existe, se saltea" del esquema no aportan nada
 const hoy = new Date();
 const diasAtras = (n) => new Date(Date.now() - n * 864e5).toISOString().slice(0, 10);
 
@@ -27,6 +27,14 @@ async function main() {
   // ------------------------------------------------------------- esquema
   console.log("→ Creando el esquema…");
   await sql.unsafe(readFileSync(join(aqui, "..", "db", "schema.sql"), "utf8"));
+
+  // Al arrancar el contenedor solo se aplica el esquema: así un deploy suma
+  // las columnas nuevas solo, sin tocar datos ni cargar los de ejemplo.
+  if (process.argv.includes("--solo-esquema")) {
+    console.log("→ Esquema al día.");
+    await sql.end();
+    return;
+  }
 
   // ------------------------------------------------------------- empresa
   await sql`INSERT INTO empresa (id, razon_social, cuit, domicilio, localidad, provincia)

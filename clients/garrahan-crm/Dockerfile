@@ -22,4 +22,6 @@ COPY --from=builder --chown=nextjs:nodejs /app/node_modules/postgres ./node_modu
 COPY --from=builder --chown=nextjs:nodejs /app/node_modules/bcryptjs ./node_modules/bcryptjs
 USER nextjs
 EXPOSE 3000
-CMD ["node", "server.js"]
+# El esquema se aplica en cada arranque (es idempotente). Si falla, el
+# contenedor no arranca: mejor eso que correr con columnas que faltan.
+CMD ["sh", "-c", "node scripts/setup-db.mjs --solo-esquema && exec node server.js"]

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { sql, num } from "@/lib/db";
-import { requiereSesion, veCostos } from "@/lib/auth";
+import { requiereSesion, veCostos, puede } from "@/lib/auth";
+import { leadsVisibles, HORAS_SIN_CONTACTAR } from "@/lib/leads";
 import { plata, plataCorta, numero, porcentaje, fecha, saludo, dominio } from "@/lib/format";
 import { ALERTAS, ESTADOS_VEHICULO } from "@/lib/constantes";
 import { KPI, GrillaKPI, Panel, PanelTitulo, Chip, Tabla, TH, TD, FilaVacia } from "@/components/ui";
@@ -37,7 +38,7 @@ export default async function Dashboard() {
       sql`SELECT l.id, l.nombre, l.proxima_accion, l.fecha_proxima, l.estado,
                  COALESCE(us.nombre,'—') AS asesor
           FROM leads l LEFT JOIN usuarios us ON us.id = l.asesor_id
-          WHERE l.fecha_proxima IS NOT NULL
+          WHERE l.fecha_proxima IS NOT NULL AND ${leadsVisibles(u)}
             AND l.estado NOT IN ('vendido','perdido','postergado')
           ORDER BY l.fecha_proxima ASC LIMIT 6`,
       sql`SELECT COALESCE(us.nombre,'Sin asignar') AS vendedor, count(*)::int AS n
@@ -51,6 +52,23 @@ export default async function Dashboard() {
             AND fecha >= date_trunc('month', current_date) - interval '5 months'
           GROUP BY 1,2 ORDER BY 2`,
     ]);
+
+  // Lo que hay que resolver hoy. Cada número lleva a la pantalla donde se resuelve.
+  const [pend] = await sql`
+    SELECT
+      (SELECT count(*) FROM ventas WHERE estado = 'reserva' AND sena_vence <= current_date + 1)::int AS senas,
+      (SELECT count(*) FROM leads l WHERE l.estado = 'nuevo' AND ${leadsVisibles(u)}
+         AND l.creado_en < now() - make_interval(hours => ${HORAS_SIN_CONTACTAR}))::int AS leads,
+      (SELECT count(*) FROM postventa pv JOIN ventas v ON v.id = pv.venta_id
+         WHERE v.estado <> 'cancelada' AND pv.contacto_7 IS NULL AND current_date - pv.entrega >= 7)::int AS llamados,
+      (SELECT count(*) FROM cobranzas WHERE estado NOT IN ('cobrado','incobrable')
+         AND vencimiento < current_date AND monto > cobrado)::int AS cobros`;
+  const paraHoy = [
+    { n: pend.senas, texto: "señas vencen hoy, mañana o ya vencieron", href: "/ventas?estado=reserva", ver: puede(u, "ventas") },
+    { n: pend.leads, texto: `leads nuevos sin contactar hace más de ${HORAS_SIN_CONTACTAR} h`, href: "/leads?estado=nuevo", ver: puede(u, "leads") },
+    { n: pend.llamados, texto: "llamados de postventa a los 7 días", href: "/postventa", ver: puede(u, "ventas") },
+    { n: pend.cobros, texto: "cobros o cuotas vencidas", href: "/cobranzas", ver: puede(u, "cobranzas") },
+  ].filter((x) => x.ver && Number(x.n) > 0);
 
   const s = stock[0] || {};
   const vm = ventasMes[0] || {};
@@ -102,6 +120,19 @@ export default async function Dashboard() {
           </span>
           <span className="ml-auto text-[12px] text-[var(--c-rojo-alto)] shrink-0">Ver →</span>
         </Link>
+      )}
+
+      {paraHoy.length > 0 && (
+        <div className="mt-3 grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
+          {paraHoy.map((x) => (
+            <Link key={x.href} href={x.href}
+              className="rounded-xl border border-[var(--c-borde)] bg-[var(--c-panel)] px-4 py-3
+                hover:border-[var(--c-primario)] transition-colors">
+              <div className="text-[22px] font-semibold tabular text-[var(--c-amarillo)]">{x.n}</div>
+              <div className="text-[12.5px] text-[var(--c-tinta-media)] leading-snug">{x.texto}</div>
+            </Link>
+          ))}
+        </div>
       )}
 
       <div className="grid lg:grid-cols-2 gap-4 mt-4">

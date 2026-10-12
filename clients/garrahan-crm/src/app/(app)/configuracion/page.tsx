@@ -6,10 +6,14 @@ import { Encabezado, KPI, GrillaKPI, Chip, Tabla, TH, TD, FilaVacia, Panel } fro
 export const dynamic = "force-dynamic";
 
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 import { Boton, Campo, PanelTitulo } from "@/components/ui";
+import { avisar, telegramConfigurado } from "@/lib/telegram";
+import { mandarResumen } from "@/lib/avisos";
 
-export default async function Configuracion() {
+export default async function Configuracion({ searchParams }: { searchParams: Promise<any> }) {
   await requierePermiso("configuracion");
+  const { tg } = await searchParams;
   const [e] = await sql`SELECT * FROM empresa WHERE id = 1`;
   const [cot] = await sql`SELECT * FROM cotizaciones ORDER BY fecha DESC LIMIT 1`;
 
@@ -37,6 +41,37 @@ export default async function Configuracion() {
               ON CONFLICT (fecha) DO UPDATE SET valor = EXCLUDED.valor`;
     revalidatePath("/configuracion");
   }
+
+  async function guardarTelegram(fd: FormData) {
+    "use server";
+    await requierePermiso("configuracion");
+    const chat = String(fd.get("telegram_chat") || "").trim() || null;
+    await sql`UPDATE empresa SET telegram_chat = ${chat} WHERE id = 1`;
+    revalidatePath("/configuracion");
+  }
+
+  async function probarTelegram() {
+    "use server";
+    const usr = await requierePermiso("configuracion");
+    const ok = await avisar(`✅ Prueba de avisos del sistema de Garrahan. Mandada por ${usr.nombre}.`);
+    redirect(`/configuracion?tg=${ok ? "ok" : "error"}`);
+  }
+
+  async function resumenAhora() {
+    "use server";
+    await requierePermiso("configuracion");
+    const ok = await mandarResumen();
+    redirect(`/configuracion?tg=${ok ? "resumen" : "vacio"}`);
+  }
+
+  const tokenOk = telegramConfigurado();
+  const chatActual = e?.telegram_chat || process.env.TELEGRAM_CHAT_ID || "";
+  const MENSAJES: Record<string, string> = {
+    ok: "Listo: el mensaje de prueba salió. Revisá el chat.",
+    error: "No salió. Revisá que el bot esté agregado al chat y que el ID sea el correcto.",
+    resumen: "Resumen mandado.",
+    vacio: "No había nada para avisar hoy (o no se pudo mandar).",
+  };
 
   return (
     <>
@@ -77,6 +112,38 @@ export default async function Configuracion() {
             </Campo>
             <Boton tipo="submit" variante="suave">Actualizar</Boton>
           </form>
+        </Panel>
+
+        <Panel className="lg:col-span-3">
+          <PanelTitulo titulo="Avisos por Telegram"
+            detalle="Lead nuevo y cotización de usado, seña registrada, venta cerrada y cobros, en el momento. Cada mañana a las 9: señas por vencer, cuotas vencidas, autos con más de 60 días, postventa y leads sin contactar." />
+          {!tokenOk ? (
+            <p className="text-[13px] text-[var(--c-tinta-media)]">
+              Falta conectar el bot: se configura una sola vez en el servidor (variable <code>TELEGRAM_BOT_TOKEN</code>).
+            </p>
+          ) : (
+            <div className="grid sm:grid-cols-2 gap-6 items-start">
+              <form action={guardarTelegram} className="space-y-3">
+                <Campo label="Chat o grupo que recibe los avisos">
+                  <input name="telegram_chat" className="campo" defaultValue={chatActual}
+                    placeholder="-1001234567890" />
+                </Campo>
+                <p className="text-[11.5px] text-[var(--c-tinta-tenue)] leading-relaxed">
+                  Lo ideal es un grupo con el equipo y el bot adentro. El ID de un grupo empieza con un guion.
+                </p>
+                <Boton tipo="submit">Guardar</Boton>
+              </form>
+              <div className="space-y-3">
+                <div className="flex flex-wrap gap-2">
+                  <form action={probarTelegram}><Boton tipo="submit" variante="suave">Mandar un mensaje de prueba</Boton></form>
+                  <form action={resumenAhora}><Boton tipo="submit" variante="suave">Mandar el resumen de hoy</Boton></form>
+                </div>
+                {tg && MENSAJES[tg] && (
+                  <Chip tono={tg === "ok" || tg === "resumen" ? "verde" : "amarillo"}>{MENSAJES[tg]}</Chip>
+                )}
+              </div>
+            </div>
+          )}
         </Panel>
       </div>
     </>
