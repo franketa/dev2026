@@ -149,3 +149,11 @@ export const TIPOS_COSTO = [
   "Mecánica", "Chapa y pintura", "Detailing", "Repuestos", "Neumáticos",
   "Gestoría", "Transporte", "Administrativo", "Publicidad", "Otro",
 ];
+
+/* ------------------------------------------------------------ postventa */
+/** Una transferencia que pasa este plazo desde la entrega sin inscribirse está demorada. */
+export const DIAS_TRANSFERENCIA = 15;
+/** La VTV se avisa con este margen antes de vencer. */
+export const DIAS_VTV = 30;
+/** Estados del trámite en que la transferencia ya no necesita seguimiento. */
+export const TRAMITE_TERMINADO = ["inscripto", "entregado"];

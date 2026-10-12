@@ -482,6 +482,12 @@ ALTER TABLE venta_pagos ADD COLUMN IF NOT EXISTS es_sena boolean NOT NULL DEFAUL
 ALTER TABLE postventa ADD COLUMN IF NOT EXISTS contacto_7 date;
 ALTER TABLE postventa ADD COLUMN IF NOT EXISTS resultado_7 text;
 ALTER TABLE postventa ADD COLUMN IF NOT EXISTS vtv_vence date;
+-- Desde cuándo se cuentan los 7 días: el día que la venta se cerró, no el
+-- de la reserva. Las que ya existían toman la fecha de la venta.
+ALTER TABLE postventa ADD COLUMN IF NOT EXISTS entrega date;
+UPDATE postventa p SET entrega = COALESCE(v.fecha_entrega, v.fecha)
+  FROM ventas v WHERE v.id = p.venta_id AND p.entrega IS NULL;
+ALTER TABLE postventa ALTER COLUMN entrega SET DEFAULT current_date;
 
 -- ----------------------------------------------------------------- roles
 -- referente: acceso acotado. reportes: mira los números y puede corregir datos.

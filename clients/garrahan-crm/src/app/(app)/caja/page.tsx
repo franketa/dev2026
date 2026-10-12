@@ -26,7 +26,8 @@ export default async function Caja({ searchParams }: { searchParams: Promise<any
   const where = cuentaF ? sql`WHERE m.cuenta_id = ${Number(cuentaF)}` : sql``;
 
   const [saldos, movimientos, cuentas, mes, porCategoria] = await Promise.all([
-    sql`SELECT * FROM v_saldos ORDER BY id`,
+    sql`SELECT s.* FROM v_saldos s JOIN caja_cuentas c ON c.id = s.id
+        WHERE c.activa ORDER BY s.moneda, c.posicion, s.id`,
     sql`SELECT m.*, c.nombre AS cuenta, cd.nombre AS destino, v.dominio
         FROM caja_movimientos m
         JOIN caja_cuentas c ON c.id = m.cuenta_id
@@ -81,16 +82,21 @@ export default async function Caja({ searchParams }: { searchParams: Promise<any
   return (
     <>
       <Encabezado titulo="Caja" detalle="Todos los movimientos, en las cuentas reales de la agencia."
-        acciones={<><ImprimirListado /><Exportar que="caja" /></>} />
+        acciones={<><ImprimirListado /><Exportar que="caja" />
+          <Boton href="/caja/cuentas" variante="suave">Cuentas</Boton></>} />
 
       <GrillaKPI>
-        <KPI label="Ingresos del mes" valor={plataCorta(m.ingresos)} tono="verde" />
-        <KPI label="Egresos del mes" valor={plataCorta(m.egresos)} tono="rojo" />
+        {/* Pesos y dólares van separados: sumarlos a una cotización del día
+            da un número que no existe en ninguna caja. */}
+        <KPI label="Caja en pesos" valor={plataCorta(totalArs)}
+             detalle={`${saldos.filter((s: any) => s.moneda === "ARS").length} cuentas`} />
+        <KPI label="Caja en dólares" valor={plata(totalUsd, "USD")}
+             detalle={`${saldos.filter((s: any) => s.moneda === "USD").length} cuentas`} />
+        <KPI label="Ingresos del mes" valor={plataCorta(m.ingresos)} tono="verde"
+             detalle={`egresos ${plataCorta(m.egresos)}`} />
         <KPI label="Resultado del mes"
              valor={<Monto valor={Number(m.ingresos) - Number(m.egresos)} signo />}
              detalle="sin contar compras de unidades" />
-        <KPI label="Saldo total" valor={plataCorta(totalArs)}
-             detalle={totalUsd !== 0 ? `+ ${plata(totalUsd, "USD")}` : undefined} />
       </GrillaKPI>
 
       {/* ------------------------------------------------------ cuentas */}
