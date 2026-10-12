@@ -57,14 +57,15 @@ Usuarios de la demo: `tesoreria@aeroclub25demayo.com.ar` / `demo1234` (tesorerí
 | El período es el mes calendario; el cierre automático corre el día 5 del mes siguiente a las 9 (configurable), así los vuelos cargados tarde entran en su mes. En orden y sin saltear meses | `cierres.cierreAutomatico()` |
 | Tickets de servicios: un movimiento `servicio` por ticket, con el precio del día congelado en sus ítems. No se editan: se anulan (contraasiento) y se hace otro | `server/services/tickets.js` |
 | Derecho de aeronave: se cobra en el cierre, una sola vez por piloto y por mes volado (`derechos_aeronave`). Con precio en cero no se cobra | `tickets.cobrarDerechos()` |
-| Pagos informados: no tocan el saldo hasta que tesorería los confirma. El comprobante se guarda dentro de la base | `server/services/pagosInformados.js` |
+| Historial de pagos: lo que informa el socio y lo que cobra rampa no toca el saldo hasta que tesorería lo confirma; lo que carga tesorería entra confirmado. Un pago anulado o borrado del libro queda como 'anulado' en el historial | `server/services/pagosInformados.js` |
+| Ticket a la cuenta: pagado, parcial o sin pagar según los pagos de la cuenta, aplicados a los cargos más viejos primero | `tickets.impagoPorCargo()` |
 | Bases de versiones anteriores se migran solas al arrancar (se reconstruyen `usuarios` y `movimientos` para los CHECK nuevos) | `db.migrar()` |
 
 Copias de seguridad: el sistema guarda **una copia completa por mes** en el volumen (`/app/data/respaldos`, quedan las últimas 12), después del cierre. Se bajan desde **Registro**, que también permite descargar una copia en el momento. Conviene guardarlas además fuera del servidor.
 
 ## Roles
 
-- **Piloto** (incluye alumnos): carga vuelos, ve su historial, descarga sus cupones, informa pagos y consulta su estado de cuenta. No puede corregir ni anular vuelos. Si es **instructor**, también ve los vuelos que dio como instructor.
+- **Piloto** (incluye alumnos): carga vuelos, ve su historial, descarga sus cupones, informa pagos y consulta su estado de cuenta. No puede corregir ni anular vuelos. Además puede tener tildes: **instructor de vuelo** (ve los vuelos que dio y aparece al cargar un vuelo con instructor), **instructor de simulador** y **mantenimiento** (ve y verifica las novedades de la flota).
 - **Administrador** (tesorería): todo lo anterior, más socios, flota, tarifas y servicios, pagos, ajustes, tickets con otros conceptos, cierres, reportes, registro y configuración.
 - **Consulta**: ve todo el módulo de administración sin poder cambiar nada (el servidor rechaza cualquier escritura).
 - **Rampa**: registra aeronaves y propietarios y carga tickets de servicios. No ve cuentas ni vuelos.
