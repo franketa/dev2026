@@ -124,7 +124,7 @@ Gasto: registrado ──▶ anulado (contraasiento, motivo obligatorio)
 | Cargar gastos | | ✓ (pago directo) | | ✓ | ✓ | ✓ |
 | Registrar retenciones (pagos sobre el umbral) | | ✓ | | ✓ | ✓ | |
 | Anular / corregir gastos | | ✓ | | ✓ | ✓ | |
-| Alta de proveedores | ✓ | ✓ | ✓ | | ✓ | |
+| Alta de proveedores | ✓ | ✓ | ✓ | ✓ | ✓ | |
 | Crear solicitudes de gasto | | | | ✓ | | |
 | Resolver solicitudes (panel diario) | | ✓ | | | | |
 | Resolver solicitudes escaladas (en revisión) | | ✓ | ✓ | | | |

@@ -43,7 +43,7 @@ cambió la base sobre la que se firmó.
 
 ## De negocio (supuestos)
 
-**N-01 · Pago directo de la Central [A CONFIRMAR].** No consume el fondo de la sede, pero **sí** es gasto de la
+**N-01 · Pago directo de la Central (confirmado).** No consume el fondo de la sede, pero **sí** es gasto de la
 sede: se imputa a su rubro, aparece en su rendición en una sección aparte ("pagado por la Central con cargo a la
 sede") y sale del saldo de la Central.
 
@@ -81,8 +81,8 @@ correlativa única del Círculo. **[A CONFIRMAR]** si necesitan numeración sepa
 **N-10 · Cierre de la rendición**: se puede cerrar desde el último día del mes (no antes). El superadmin puede
 habilitar el cierre anticipado con el flag `cierre_anticipado` (útil para la demo).
 
-**N-11 · Alta de proveedores**: según el relevamiento, sólo el Administrativo de sede y los roles de la Central.
-El Jefe de sede no está incluido por defecto **[A CONFIRMAR]**; se habilita desde la matriz de permisos.
+**N-11 · Alta de proveedores (confirmado)**: el Administrativo y el Jefe de sede, y los roles de la Central. El
+usuario de carga no. Se cambia desde la matriz de permisos.
 
 **N-12 · Asignar más de lo que tiene la Central**: se bloquea. La Central registra "ingresos" a su cuenta
 (fondos que le llegan) desde *Asignar fondos*.
@@ -113,7 +113,6 @@ el relevamiento (Vicente López, Córdoba, Ascochinga, Cosquín, Bahía Agradabl
 | Topes de caja chica y umbral de retención | Administración → Parámetros (con vigencia) | $ 320.000 transferencia · $ 40.000 efectivo · $ 320.000 retención |
 | Lista definitiva de rubros (desde Vicente López) | Administración → Rubros | Seed del relevamiento |
 | CUIT del Círculo (receptor) | Administración → Datos del Círculo | Vacío: no se advierte hasta cargarlo |
-| ¿El pago directo de la Central consume el fondo de la sede? | N-01 | No |
 | Saldo sobrante a fin de mes | N-03 | Se arrastra |
 | Nombres definitivos de las sedes | Administración → Sedes | Seed: 7 sedes + Central |
 | Roles definitivos | Administración → Permisos | Los 6 del relevamiento |

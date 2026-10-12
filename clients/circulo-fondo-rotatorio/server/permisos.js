@@ -46,7 +46,7 @@ const MATRIZ_INICIAL = {
   presidente: ['sedes.ver_todas', 'fondos.autorizar_extra', 'proveedores.alta', 'solicitudes.resolver_escaladas',
     'rendiciones.recibidas', 'auditoria.ver'],
   jefe_sede: ['fondos.pedir_extra', 'fondos.extraccion', 'gastos.cargar', 'gastos.retenciones', 'gastos.corregir',
-    'solicitudes.crear', 'rendicion.cerrar', 'auditoria.ver'],
+    'proveedores.alta', 'solicitudes.crear', 'rendicion.cerrar', 'auditoria.ver'],
   administrativo: ['fondos.extraccion', 'gastos.cargar', 'gastos.retenciones', 'gastos.corregir', 'proveedores.alta'],
   carga: ['gastos.cargar']
 };

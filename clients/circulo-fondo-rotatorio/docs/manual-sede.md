@@ -11,7 +11,7 @@ y cada gasto se descuenta del saldo con su comprobante. Funciona en el celular y
 |---|---|
 | **Usuario de carga** | Cargar gastos de caja chica y fijos de hasta $ 320.000. No da de alta proveedores. |
 | **Administrativo** | Todo lo anterior, más dar de alta proveedores, registrar pagos con retenciones, sacar efectivo y corregir o anular gastos. |
-| **Jefe de sede** | Todo lo del administrativo (salvo alta de proveedores), más pedir aprobación de gastos, pedir fondos extra y **cerrar, firmar y enviar la rendición**. |
+| **Jefe de sede** | Todo lo del administrativo, más pedir aprobación de gastos, pedir fondos extra y **cerrar, firmar y enviar la rendición**. |
 
 ## Entrar
 
@@ -28,7 +28,7 @@ muestra los avisos nuevos: solicitudes aprobadas o rechazadas, fondos que llegar
 
 Botón **Cargar** (el círculo azul de abajo, en el celular).
 
-1. **¿A quién le pagaste?** Escribí el nombre o el CUIT y tocá el proveedor. Si no está, el administrativo lo da
+1. **¿A quién le pagaste?** Escribí el nombre o el CUIT y tocá el proveedor. Si no está, el administrativo o el jefe lo da
    de alta ahí mismo con el CUIT: el sistema controla que el número sea válido y que no exista ya.
 2. **¿Cuánto y cómo?** El importe total del comprobante y si se pagó por **transferencia** o en **efectivo**.
 3. **¿Qué se pagó?** El rubro. Apenas lo elegís, el sistema te dice qué tipo de gasto es:

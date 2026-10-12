@@ -56,6 +56,8 @@ test('proveedores: CUIT obligatorio y válido, base única sin duplicados', () =
   // El usuario de carga no da de alta proveedores.
   assert.throws(() => proveedores.alta(a.carga, { cuit: cuit(44555666), razon_social: 'Otro' }), /administrativo/);
   assert.equal(db.prepare('SELECT COUNT(*) n FROM proveedores').get().n, 3);
+  // El jefe de sede sí (N-11).
+  assert.ok(proveedores.alta(a.jefe, { cuit: cuit(44555666), razon_social: 'Vidriería Central' }).proveedor.id);
 });
 
 test('caja chica por transferencia: hasta $ 320.000 sin solicitud', () => {
