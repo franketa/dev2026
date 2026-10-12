@@ -3,9 +3,17 @@ import {
   fecha, confirmar, minutosADecimas, minutosEntre
 } from '../lib.js';
 
-// Selector de hora en 24 h: hora y minutos por separado (cómodo en el celular, sin AM/PM).
+// En el celular, el selector de hora del teléfono: un solo toque abre la rueda (o el reloj) con hora y
+// minutos juntos. En la compu, hora y minutos en dos listas de 24 h, sin AM/PM.
+const tactil = () => window.matchMedia?.('(pointer: coarse)').matches;
 const dos = (n) => String(n).padStart(2, '0');
 function selectorHora(nombre, etiqueta, valor) {
+  if (tactil()) {
+    return html`<div class="campo hora-nativa">
+      <label for="hora-${nombre}">${etiqueta}</label>
+      <input class="input" type="time" id="hora-${nombre}" name="${nombre}" value="${valor || ''}" step="60" required>
+    </div>`;
+  }
   const [h, m] = valor ? valor.split(':') : ['', ''];
   return html`<fieldset class="hora-24" style="border:0;padding:0;margin:0">
     <legend class="campo__label">${etiqueta}</legend>
@@ -20,7 +28,8 @@ function selectorHora(nombre, etiqueta, valor) {
     </div>
   </fieldset>`;
 }
-const leerHora = (d, nombre) => (d[`${nombre}_h`] && d[`${nombre}_m`] ? `${d[`${nombre}_h`]}:${d[`${nombre}_m`]}` : '');
+const leerHora = (d, nombre) => (nombre in d ? (d[nombre] || '').slice(0, 5)
+  : d[`${nombre}_h`] && d[`${nombre}_m`] ? `${d[`${nombre}_h`]}:${d[`${nombre}_m`]}` : '');
 
 export default async function cargar(ctx) {
   const editando = ctx.params.id ? Number(ctx.params.id) : null;
@@ -102,7 +111,7 @@ export default async function cargar(ctx) {
           ${selectorHora('salida', 'Salida', previo?.hora_salida)}
           ${selectorHora('llegada', 'Llegada', previo?.hora_llegada)}
         </div>
-        <p class="campo__ayuda">En formato 24 h. Ejemplo: 14:30.</p>
+        <p class="campo__ayuda">${tactil() ? 'Tocá cada hora y elegila en la rueda del teléfono.' : 'En formato 24 h. Ejemplo: 14:30.'}</p>
       </div>
 
       <div class="carga__paso">
@@ -206,13 +215,13 @@ export default async function cargar(ctx) {
     if (e.target.name === 'avion_id') {
       estado.avionId = Number(e.target.value);
       pintarTipos();
-      if (!editando && !$horas.value) (pideHorario ? form.salida_h : $horas).focus();
+      if (!editando && !$horas.value && !tactil()) (pideHorario ? form.salida_h : $horas).focus();
     }
     if (e.target.name === 'tipo') { estado.tipo = e.target.value; pintarTipos(); if (estado.tipo === 'instruccion') $inst.focus(); }
     if (e.target.name === 'piloto_id') { estado.pilotoId = Number(e.target.value); pintarTipos(); }
     calcular();
   });
-  form.addEventListener('input', (e) => { if (e.target === $horas) calcular(); });
+  form.addEventListener('input', (e) => { if (e.target === $horas || e.target.type === 'time') calcular(); });
 
   form.addEventListener('submit', async (e) => {
     e.preventDefault();

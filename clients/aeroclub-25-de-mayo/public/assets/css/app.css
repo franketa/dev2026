@@ -51,7 +51,7 @@ body {
   font-size: 16px;
   line-height: 1.45;
   color: var(--tinta);
-  background: var(--papel);
+  background: var(--papel) url('/assets/img/pista.svg') center / auto 100vh no-repeat fixed;
   font-variant-numeric: tabular-nums;
   -webkit-font-smoothing: antialiased;
 }
@@ -660,6 +660,9 @@ img.comprobante { object-fit: contain; background: var(--papel); }
 .hora-24__selects { display: flex; align-items: center; gap: 6px; }
 .hora-24__selects .select { flex: 1; min-width: 0; font-family: var(--f-titulo); font-size: 1.15rem; text-align: center; }
 .hora-24__selects span { font-weight: 700; font-size: 1.2rem; }
+/* En el celular: el selector de hora nativo, grande y fácil de tocar. */
+.hora-nativa .input { min-height: 54px; font-family: var(--f-titulo); font-size: 1.4rem; text-align: center; }
+.hora-nativa input::-webkit-date-and-time-value { text-align: center; }
 /* Salida y llegada lado a lado sólo si cada selector de hora/minutos queda con lugar para "07": en celular, una abajo de la otra. */
 .fila-campos--horas { grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); }
 
@@ -715,3 +718,5 @@ a.cifra--link:hover { filter: brightness(.97); }
 .pagar__cbu { font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
 .pagar__qr { display: grid; gap: 4px; justify-items: center; text-decoration: none; color: var(--gris); }
 .pagar__qr img { width: 132px; height: 132px; object-fit: contain; border-radius: var(--r-s); border: 1px solid var(--linea); background: #fff; padding: 6px; }
+/* Con el selector nativo, salida y llegada entran lado a lado también en el celular. */
+.fila-campos--horas:has(.hora-nativa) { grid-template-columns: 1fr 1fr; }

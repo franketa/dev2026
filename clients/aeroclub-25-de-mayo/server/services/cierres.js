@@ -183,7 +183,13 @@ function estadoCupon(cupon) {
     WHERE cu.usuario_id = ? AND cu.id > ? ORDER BY cu.id LIMIT 1`).get(cupon.usuario_id, cupon.id);
   if (posterior) return { estado: 'incluido', estado_detalle: `Su saldo pasó al cupón de ${nombrePeriodo(posterior.periodo)}`, restante: 0 };
   if (cupon.total <= 0) return { estado: 'sin_deuda', estado_detalle: cupon.total < 0 ? `Saldo a favor de ${fmtPesos(-cupon.total)}` : 'Sin deuda', restante: 0 };
-  const actual = ledger.saldo(cupon.usuario_id);
+  // Lo que falta del cupón: su total menos lo que se pagó (o se acreditó) después del cierre. Los cargos
+  // nuevos (vuelos, servicios, ajustes a cobrar) no cuentan: van en el cupón siguiente.
+  const despues = db.prepare(`
+    SELECT COALESCE(SUM(importe), 0) s FROM movimientos
+    WHERE usuario_id = ? AND id > (SELECT hasta_movimiento_id FROM cierres WHERE id = ?)
+      AND NOT (importe > 0 AND tipo IN ('vuelo','servicio','ajuste','saldo_inicial'))`).get(cupon.usuario_id, cupon.cierre_id).s;
+  const actual = Math.min(ledger.saldo(cupon.usuario_id), cupon.total + despues);
   if (actual <= 0) return { estado: 'pagado', estado_detalle: 'Pagado', restante: 0 };
   const vencido = hoy() > cupon.vencimiento;
   if (actual < cupon.total) return { estado: 'parcial', estado_detalle: `Pago parcial: faltan ${fmtPesos(actual)}`, restante: actual, vencido };

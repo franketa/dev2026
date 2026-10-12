@@ -25,7 +25,10 @@ export default async function inicio(ctx) {
         <div class="saldo__etiqueta">${debe ? 'Tu saldo a pagar' : d.saldo < 0 ? 'Tenés saldo a favor' : 'Tu cuenta'} ${ayuda(detalleSaldo(d.composicion, { abiertos: d.abiertos, proximo: cierre }), '¿De dónde sale tu saldo?')}</div>
         <div class="saldo__monto">${pesos(Math.abs(d.saldo))}</div>
         <div class="saldo__estado">${debe
-          ? html`<span class="chip chip--pend">${cup && cup.estado === 'parcial' ? 'Pago parcial registrado' : cup?.vencido ? 'Cupón vencido' : cup ? `Vence el ${fecha(cup.vencimiento)}` : 'Pendiente'}</span>`
+          ? html`<span class="chip chip--pend">${!cup ? 'Pendiente'
+            : cup.estado === 'parcial' ? `Pago parcial: faltan ${pesos(cup.restante)} del cupón`
+            : cup.estado === 'pendiente' ? (cup.vencido ? 'Cupón vencido' : `Vence el ${fecha(cup.vencimiento)}`)
+            : 'Cupón pagado. Lo nuevo va en el próximo'}</span>`
           : html`<span class="chip chip--ok">Estás al día</span>`}</div>
       </div>
       <div class="saldo__pie">
