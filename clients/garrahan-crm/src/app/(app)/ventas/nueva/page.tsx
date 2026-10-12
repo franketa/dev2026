@@ -108,11 +108,11 @@ export default async function NuevaVenta({ searchParams }: { searchParams: Promi
       // financiación no son plata en mano, así que no tocan ninguna cuenta.
       if (cuentaId && MEDIOS_A_CAJA.includes(medios[i])) {
         await sql`
-          INSERT INTO caja_movimientos (cuenta_id, tipo, categoria, concepto, monto, moneda,
-                                        cotizacion, equivalente_ars, fecha, vehiculo_id, usuario_id)
+          INSERT INTO caja_movimientos (cuenta_id, tipo, categoria, descripcion, monto, moneda,
+                                        cotizacion, equivalente_ars, fecha, vehiculo_id, venta_id, usuario_id)
           VALUES (${cuentaId}, 'ingreso', 'venta_usado',
                   ${"Venta " + (veh?.marca || "") + " " + (veh?.modelo || "")},
-                  ${monto}, ${moneda}, ${cot}, ${enPesos}, ${fechaVenta}, ${vehiculoId}, ${usr.id})`;
+                  ${monto}, ${moneda}, ${cot}, ${enPesos}, ${fechaVenta}, ${vehiculoId}, ${venta.id}, ${usr.id})`;
       }
     }
 

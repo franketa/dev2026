@@ -73,7 +73,7 @@ export default async function NuevoVehiculo({ searchParams }: { searchParams: Pr
       const cot = num("cotizacion_compra") ?? 1;
       const moneda = String(fd.get("moneda_compra") || "ARS");
       await sql`
-        INSERT INTO caja_movimientos (cuenta_id, tipo, categoria, concepto, monto, moneda,
+        INSERT INTO caja_movimientos (cuenta_id, tipo, categoria, descripcion, monto, moneda,
                                       cotizacion, equivalente_ars, fecha, vehiculo_id, usuario_id)
         VALUES (${cuenta}, 'egreso', 'compra_unidad',
                 ${"Compra " + marca + " " + modelo}, ${valorCompra}, ${moneda},

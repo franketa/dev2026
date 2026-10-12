@@ -69,10 +69,10 @@ export default async function Venta({ params }: { params: Promise<any> }) {
     const cuenta = fd.get("cuenta_id") ? Number(fd.get("cuenta_id")) : null;
     if (cuenta && MEDIOS_A_CAJA.includes(medio)) {
       await sql`
-        INSERT INTO caja_movimientos (cuenta_id, tipo, categoria, concepto, monto, moneda,
-                                      cotizacion, equivalente_ars, fecha, vehiculo_id, usuario_id)
+        INSERT INTO caja_movimientos (cuenta_id, tipo, categoria, descripcion, monto, moneda,
+                                      cotizacion, equivalente_ars, fecha, vehiculo_id, venta_id, usuario_id)
         VALUES (${cuenta}, 'ingreso', 'venta_usado', ${"Cobro venta #" + id}, ${monto},
-                ${moneda}, ${cot}, ${monto * cot}, ${f}, ${v.vehiculo_id}, ${usr.id})`;
+                ${moneda}, ${cot}, ${monto * cot}, ${f}, ${v.vehiculo_id}, ${id}, ${usr.id})`;
     }
 
     // El saldo abierto se va descontando solo: si se salda, la cobranza se cierra.
