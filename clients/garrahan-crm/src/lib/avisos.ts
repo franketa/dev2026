@@ -44,12 +44,12 @@ export async function armarResumen(): Promise<string | null> {
         FROM postventa pv JOIN ventas v ON v.id = pv.venta_id
         LEFT JOIN clientes c ON c.id = v.cliente_id LEFT JOIN vehiculos x ON x.id = v.vehiculo_id
         WHERE v.estado <> 'cancelada' AND NOT (v.estado_tramite = ANY(${TRAMITE_TERMINADO}))
-          AND current_date - pv.entrega >= ${DIAS_TRANSFERENCIA}`,
+          AND current_date - pv.entrega >= ${DIAS_TRANSFERENCIA}::int`,
     sql`SELECT pv.venta_id, pv.vtv_vence, c.nombre AS cliente, c.telefono, x.marca, x.modelo
         FROM postventa pv JOIN ventas v ON v.id = pv.venta_id
         LEFT JOIN clientes c ON c.id = v.cliente_id LEFT JOIN vehiculos x ON x.id = v.vehiculo_id
         WHERE v.estado <> 'cancelada' AND pv.vtv_vence IS NOT NULL
-          AND pv.vtv_vence <= current_date + ${DIAS_VTV} AND pv.vtv_vence >= current_date - 30`,
+          AND pv.vtv_vence <= current_date + ${DIAS_VTV}::int AND pv.vtv_vence >= current_date - 30`,
     sql`SELECT id, nombre FROM leads
         WHERE estado = 'nuevo' AND creado_en < now() - make_interval(hours => ${HORAS_SIN_CONTACTAR})
         ORDER BY creado_en LIMIT 10`,

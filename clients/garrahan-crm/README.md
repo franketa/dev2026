@@ -63,11 +63,20 @@ hay nada que sincronizar.
 | Rol | Ve |
 |---|---|
 | Dueño / Gerente | Todo |
-| Vendedor | Stock, clientes, leads, ventas. **Sin costos ni márgenes** |
+| Vendedor | Stock, clientes, sus leads y los sin asignar, ventas. **Sin costos ni márgenes** |
 | Administrativo | Caja, cobranzas, deudas, proveedores, reportes |
 | Taller | Solo preparación de unidades |
+| Referente | Stock sin costos y solo sus leads |
+| Reportes | Reportes y todos los datos para corregir. No administra usuarios ni configuración |
+
+Cada pantalla pide su permiso con `requierePermiso()`: el menú esconde, pero el
+servidor es el que corta.
 
 ## Documentos
+
+Boleto, recibo y mandato llevan el logo (`public/logo.png`). Un cobro hecho mientras
+la operación está en **Reserva** es seña: sale como *Recibo de seña* con la fecha
+hasta la que vale la reserva (7 días por defecto, se extiende desde la venta).
 
 El boleto de compraventa se genera en `/documentos/boleto/[id]` y se imprime desde el
 navegador (Imprimir → Guardar como PDF). Sin librería de PDF: es una hoja con estilos de
@@ -75,7 +84,37 @@ impresión. La razón social y el CUIT salen de Configuración, se cargan una ve
 
 Incluye el importe en letras, que un boleto sin eso no sirve.
 
+## La web
+
+`garrahanautomotores.com.ar` lee el stock de acá (`/api/publico/vehiculos`, sin costos
+ni datos del titular). Se publica lo que está **disponible** y tildado *Publicar en la
+web*; al señarse o venderse sale solo. Las fotos se guardan en la base
+(`vehiculo_fotos`) porque el contenedor no tiene volumen, y se sirven en `/api/fotos/:id`.
+
+El cotizador de *Vendé tu auto* manda la consulta al servidor del sitio, que la pasa a
+`/api/publico/leads` con la clave compartida `WEB_API_KEY`.
+
+## Telegram
+
+Avisos en el momento (lead nuevo y cotización de usado, seña, cobro, venta cerrada o
+cancelada) y un resumen a las 9 (señas por vencer, cuotas vencidas, autos de +60 días,
+postventa, leads sin contactar). El reloj está en `src/instrumentation.ts`; cada resumen
+se manda una vez por día (`avisos_enviados`). El chat se elige en Configuración.
+
+## Variables de entorno
+
+| Variable | Para qué |
+|---|---|
+| `DATABASE_URL` | Postgres |
+| `CRM_PUBLIC_URL` | URL pública del CRM (links de fotos y de los avisos) |
+| `WEB_API_KEY` | Clave compartida con el sitio para cargar leads. La misma va en el sitio |
+| `TELEGRAM_BOT_TOKEN` | Token del bot. Sin esto no hay avisos |
+| `TELEGRAM_CHAT_ID` | Chat por defecto, si no se elige uno en Configuración |
+
 ## Deploy
+
+El contenedor aplica `db/schema.sql` al arrancar (`setup-db.mjs --solo-esquema`), así
+las columnas nuevas llegan solas con cada deploy.
 
 Coolify sobre `venturebyte`, build por Dockerfile desde este subdirectorio.
 La base es un Postgres gestionado por Coolify; la app la encuentra por red interna

@@ -36,7 +36,9 @@ export async function avisar(html: string): Promise<boolean> {
   const chat = await chatDestino();
   if (!chat) return false;
   try {
-    const r = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+    // TELEGRAM_API_URL solo existe para probar contra un servidor falso.
+    const api = process.env.TELEGRAM_API_URL || "https://api.telegram.org";
+    const r = await fetch(`${api}/bot${token}/sendMessage`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
