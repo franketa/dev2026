@@ -9,6 +9,8 @@ import { Encabezado, KPI, GrillaKPI, Chip, Tabla, TH, TD, FilaVacia, Boton, Etap
 import Exportar from "@/components/exportar";
 import ImprimirListado from "@/components/imprimir-listado";
 import SelectEstado from "@/components/select-estado";
+import TableroLeads from "@/components/tablero-leads";
+import { leadsVisibles, HORAS_SIN_CONTACTAR } from "@/lib/leads";
 
 export const dynamic = "force-dynamic";
 
@@ -18,12 +20,13 @@ const ICONO_ORIGEN: Record<string, any> = {
 };
 
 export default async function Leads({ searchParams }: { searchParams: Promise<any> }) {
-  await requierePermiso("leads");
+  const u = await requierePermiso("leads");
   const p = await searchParams;
+  const vista = p.vista === "tablero" ? "tablero" : "lista";
   const estado = p.estado || "";
   const q = (p.q || "").trim();
 
-  const donde: any[] = [];
+  const donde: any[] = [leadsVisibles(u)];
   if (estado) donde.push(sql`l.estado = ${estado}`);
   if (q) donde.push(sql`(l.nombre ILIKE ${"%" + q + "%"} OR l.telefono ILIKE ${"%" + q + "%"}
                          OR l.vehiculo_texto ILIKE ${"%" + q + "%"})`);
@@ -32,7 +35,9 @@ export default async function Leads({ searchParams }: { searchParams: Promise<an
     : sql``;
 
   const [filas, resumen, asesores] = await Promise.all([
-    sql`SELECT l.*, us.nombre AS asesor, v.dominio, v.marca, v.modelo
+    sql`SELECT l.*, us.nombre AS asesor, v.dominio, v.marca, v.modelo,
+               CASE WHEN l.estado = 'nuevo'
+                    THEN floor(extract(epoch FROM now() - l.creado_en) / 3600)::int END AS horas_sin_contactar
         FROM leads l
         LEFT JOIN usuarios us ON us.id = l.asesor_id
         LEFT JOIN vehiculos v ON v.id = l.vehiculo_id
@@ -44,8 +49,10 @@ export default async function Leads({ searchParams }: { searchParams: Promise<an
                count(*) FILTER (WHERE estado IN ('contactado','calificado','visita_agendada','en_negociacion'))::int AS gestion,
                count(*) FILTER (WHERE estado IN ('vendido','perdido','postergado'))::int AS cerrados,
                count(*) FILTER (WHERE fecha_proxima < current_date
-                                AND estado NOT IN ('vendido','perdido','postergado'))::int AS vencidos
-        FROM leads`,
+                                AND estado NOT IN ('vendido','perdido','postergado'))::int AS vencidos,
+               count(*) FILTER (WHERE estado = 'nuevo'
+                                AND creado_en < now() - make_interval(hours => ${HORAS_SIN_CONTACTAR}))::int AS sin_contactar
+        FROM leads l WHERE ${leadsVisibles(u)}`,
     sql`SELECT id, nombre FROM usuarios WHERE activo ORDER BY nombre`,
   ]);
 
@@ -55,6 +62,8 @@ export default async function Leads({ searchParams }: { searchParams: Promise<an
     "use server";
     const usr = await requierePermiso("leads");
     const id = Number(fd.get("id"));
+    const [visible] = await sql`SELECT 1 FROM leads l WHERE l.id = ${id} AND ${leadsVisibles(usr)}`;
+    if (!visible || !ESTADOS_LEAD[String(fd.get("estado"))]) return;
     const nuevo = String(fd.get("estado"));
     const etapa = ESTADOS_LEAD[nuevo]?.etapa || "captacion";
     await sql`UPDATE leads SET estado = ${nuevo}, etapa = ${etapa}, actualizado_en = now() WHERE id = ${id}`;
@@ -70,12 +79,51 @@ export default async function Leads({ searchParams }: { searchParams: Promise<an
 
       <GrillaKPI>
         <KPI label="Leads visibles" valor={numero(r.total)} />
-        <KPI label="Nuevos" valor={numero(r.nuevos)} tono="azul" detalle="sin contactar" />
+        <KPI label="Nuevos" valor={numero(r.nuevos)} tono={Number(r.sin_contactar) > 0 ? "rojo" : "azul"}
+             detalle={Number(r.sin_contactar) > 0 ? `${r.sin_contactar} hace más de ${HORAS_SIN_CONTACTAR} h` : "sin contactar"}
+             href="/leads?estado=nuevo" />
         <KPI label="En gestión" valor={numero(r.gestion)} tono="amarillo" />
         <KPI label="Acciones vencidas" valor={numero(r.vencidos)} tono={Number(r.vencidos) > 0 ? "rojo" : "verde"}
              detalle={Number(r.vencidos) > 0 ? "hay que llamar" : "todo al día"} />
       </GrillaKPI>
 
+      {Number(r.sin_contactar) > 0 && (
+        <Link href="/leads?estado=nuevo"
+          className="mt-4 flex items-center justify-between gap-3 rounded-xl border border-[var(--c-rojo-alto)]
+            bg-[var(--c-panel)] px-4 py-3 text-[13px] hover:bg-[var(--c-hover)]">
+          <span>
+            <b className="text-[var(--c-rojo-alto)]">{r.sin_contactar} {Number(r.sin_contactar) === 1 ? "lead nuevo" : "leads nuevos"}</b>
+            {" "}sin contactar hace más de {HORAS_SIN_CONTACTAR} horas.
+          </span>
+          <span className="text-[var(--c-enlace)] whitespace-nowrap">Ver →</span>
+        </Link>
+      )}
+
+      {/* ------------------------------------------------ lista o tablero */}
+      <div className="flex gap-1 mt-6 p-1 w-fit rounded-lg bg-[var(--c-hover)] border border-[var(--c-borde)]">
+        {(["lista", "tablero"] as const).map((x) => (
+          <Link key={x} href={`/leads?vista=${x}${q ? "&q=" + encodeURIComponent(q) : ""}`}
+            className={`px-3 py-1 rounded-md text-[12.5px] font-medium
+              ${vista === x ? "bg-[var(--c-panel)] text-[var(--c-tinta)] shadow-sm" : "text-[var(--c-tinta-media)]"}`}>
+            {x === "lista" ? "Lista" : "Tablero"}
+          </Link>
+        ))}
+      </div>
+
+      {vista === "tablero" ? (
+        <div className="mt-4">
+          <TableroLeads accion={cambiarEstado} horasLimite={HORAS_SIN_CONTACTAR}
+            columnas={Object.entries(ESTADOS_LEAD).map(([k, x]) => ({ valor: k, label: x.label, tono: x.tono }))}
+            leads={filas.map((l: any) => ({
+              id: l.id, nombre: l.nombre, telefono: l.telefono, estado: l.estado,
+              origen: ORIGENES_LEAD[l.origen] || l.origen, asesor: l.asesor,
+              interes: l.marca ? `${l.marca} ${l.modelo}` : l.vehiculo_texto,
+              proxima: l.proxima_accion ? `${l.proxima_accion}${l.fecha_proxima ? " · " + fecha(l.fecha_proxima) : ""}` : null,
+              vencida: !!l.fecha_proxima && new Date(l.fecha_proxima) < new Date(new Date().toDateString()),
+              horasSinContactar: l.horas_sin_contactar ?? null,
+            }))} />
+        </div>
+      ) : (<>
       {/* ------------------------------------------------ filtros por etapa */}
       <div className="flex flex-wrap items-center gap-x-4 gap-y-2 mt-6 mb-3">
         <Link href="/leads" className={`rounded-lg px-3 py-1.5 text-[12.5px] font-medium
@@ -131,6 +179,11 @@ export default async function Leads({ searchParams }: { searchParams: Promise<an
                 <TD>
                   <Link href={`/leads/${l.id}`} className="font-medium hover:text-[var(--c-primario)]">{l.nombre}</Link>
                   {l.telefono && <div className="text-[11.5px] text-[var(--c-tinta-tenue)]">{l.telefono}</div>}
+                  {l.horas_sin_contactar >= HORAS_SIN_CONTACTAR && (
+                    <div className="text-[11px] font-semibold text-[var(--c-rojo-alto)]">
+                      Sin contactar hace {l.horas_sin_contactar} h
+                    </div>
+                  )}
                 </TD>
                 <TD>
                   <span className="inline-flex items-center gap-1.5 text-[12.5px] text-[var(--c-tinta-media)]">
@@ -162,6 +215,7 @@ export default async function Leads({ searchParams }: { searchParams: Promise<an
           })}
         </tbody>
       </Tabla>
+      </>)}
     </>
   );
 }

@@ -1,4 +1,5 @@
 import { redirect } from "next/navigation";
+import { avisarLeadNuevo } from "@/lib/leads";
 import { sql } from "@/lib/db";
 import { requierePermiso } from "@/lib/auth";
 import { ORIGENES_LEAD, ESTADOS_LEAD } from "@/lib/constantes";
@@ -40,14 +41,14 @@ export default async function NuevoLead({ searchParams }: { searchParams: Promis
       INSERT INTO leads (cliente_id, nombre, telefono, email, origen, etapa, estado,
                          asesor_id, vehiculo_id, vehiculo_texto, presupuesto,
                          entrega_usado, usado_detalle, tasacion,
-                         proxima_accion, fecha_proxima, observaciones, sucursal_id)
+                         proxima_accion, fecha_proxima, observaciones, sucursal_id, creado_por)
       VALUES (${num("cliente_id")}, ${nombre}, ${txt("telefono")}, ${txt("email")},
               ${String(fd.get("origen") || "showroom")}, ${etapa}, ${estado},
               ${num("asesor_id")}, ${num("vehiculo_id")}, ${txt("vehiculo_texto")},
               ${num("presupuesto")},
               ${fd.get("entrega_usado") === "on"}, ${txt("usado_detalle")}, ${num("tasacion")},
               ${txt("proxima_accion")}, ${txt("fecha_proxima")},
-              ${txt("observaciones")}, ${num("sucursal_id")})
+              ${txt("observaciones")}, ${num("sucursal_id")}, ${usr.id})
       RETURNING id`;
 
     await sql`INSERT INTO lead_interacciones (lead_id, tipo, detalle, usuario_id)
@@ -55,6 +56,7 @@ export default async function NuevoLead({ searchParams }: { searchParams: Promis
     await sql`INSERT INTO auditoria (usuario_id, entidad, entidad_id, accion, detalle)
               VALUES (${usr.id}, 'lead', ${l.id}, 'alta', ${nombre})`;
 
+    await avisarLeadNuevo(l.id);
     redirect(`/leads/${l.id}`);
   }
 

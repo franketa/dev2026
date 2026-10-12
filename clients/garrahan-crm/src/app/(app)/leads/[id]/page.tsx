@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { Phone, MessageCircle, Mail, Receipt, CalendarClock } from "lucide-react";
 import { sql } from "@/lib/db";
 import { requierePermiso } from "@/lib/auth";
+import { puedeVerLead } from "@/lib/leads";
 import { plata, fecha, numero } from "@/lib/format";
 import { ESTADOS_LEAD, ETAPAS_LEAD, ORIGENES_LEAD } from "@/lib/constantes";
 import {
@@ -34,6 +35,7 @@ function soloNumeros(t: string | null) {
 export default async function Lead({ params }: { params: Promise<any> }) {
   const u = await requierePermiso("leads");
   const { id } = await params;
+  if (!(await puedeVerLead(u, Number(id)))) notFound();
 
   const [l] = await sql`
     SELECT l.*, v.marca, v.modelo, v.anio, v.dominio, v.precio_venta,
@@ -63,6 +65,7 @@ export default async function Lead({ params }: { params: Promise<any> }) {
   async function registrar(fd: FormData) {
     "use server";
     const usr = await requierePermiso("leads");
+    if (!(await puedeVerLead(usr, Number(id)))) return;
     const detalle = String(fd.get("detalle") || "").trim();
     if (!detalle) return;
     await sql`INSERT INTO lead_interacciones (lead_id, tipo, detalle, usuario_id)
@@ -85,6 +88,7 @@ export default async function Lead({ params }: { params: Promise<any> }) {
   async function cambiarEstado(fd: FormData) {
     "use server";
     const usr = await requierePermiso("leads");
+    if (!(await puedeVerLead(usr, Number(id)))) return;
     const nuevo = String(fd.get("estado") || "");
     const etapa = ESTADOS_LEAD[nuevo]?.etapa;
     if (!etapa) return;
@@ -98,6 +102,7 @@ export default async function Lead({ params }: { params: Promise<any> }) {
   async function marcarPerdido(fd: FormData) {
     "use server";
     const usr = await requierePermiso("leads");
+    if (!(await puedeVerLead(usr, Number(id)))) return;
     const motivo = String(fd.get("motivo") || "").trim();
     await sql`UPDATE leads SET estado = 'perdido', etapa = 'cerrado',
                                motivo_perdida = ${motivo || null}, actualizado_en = now()
