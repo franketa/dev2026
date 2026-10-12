@@ -442,12 +442,12 @@ router.get('/reportes', (req, res) => {
   const plata = (c) => (c / 100).toFixed(2).replace('.', ',');
   const deServicios = req.query.de === 'servicios';
   const filas = deServicios
-    ? [['Fecha', 'Ticket', 'A cargo de', 'Aeronave', 'Detalle', 'Total', 'Cobro', 'Cargado por']]
+    ? [['Fecha', 'Ticket', 'A cargo de', 'Aeronave', 'Detalle', 'Total', 'Pago', 'Cargado por']]
     : [['Fecha', 'Salida', 'Llegada', 'Avión', 'Piloto', 'Instructor', 'Horas', 'Precio/h', 'Importe', 'Estado', 'Novedades']];
   if (deServicios) {
     for (const t of [...r.tickets].reverse()) {
       filas.push([t.fecha, t.numero_txt, nombreCompleto(t), t.matricula || '', t.resumen || '', plata(t.total),
-        t.cobrado_en_acto ? `En el acto (${t.pago_medio}${t.pago_movimiento_id ? '' : ', a confirmar'})` : 'A cuenta', t.origen === 'cierre' ? 'Cierre automático' : (t.creado_por_nombre || '')]);
+        t.cobrado_en_acto ? `En el acto (${t.pago_medio}${t.pago_movimiento_id ? '' : ', a confirmar'})` : `A su cuenta (${t.pendiente === 0 ? 'pagado' : t.pendiente < t.total ? 'pago parcial' : 'sin pagar'})`, t.origen === 'cierre' ? 'Cierre automático' : (t.creado_por_nombre || '')]);
     }
   } else {
     for (const v of [...r.vuelos].reverse()) {

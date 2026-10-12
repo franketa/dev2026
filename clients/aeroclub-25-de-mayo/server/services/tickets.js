@@ -337,7 +337,39 @@ function detalle(id) {
   if (!t) throw new ErrorNegocio('Ticket inexistente', 404);
   const items = db.prepare('SELECT * FROM ticket_items WHERE ticket_id = ? ORDER BY id').all(id)
     .map(i => ({ ...i, cantidad_txt: fmtCantidad(i.cantidad, i.unidad) }));
-  return { ...t, numero_txt: fmtNumero(t.numero), items };
+  return { ...conPendiente([t])[0], numero_txt: fmtNumero(t.numero), items };
+}
+
+// Qué parte de cada cargo de la cuenta sigue sin pagar: los pagos y créditos se aplican a los cargos
+// más viejos primero. Lo anulado no cuenta, y un ticket cobrado en el acto se cancela con su propio pago.
+function impagoPorCargo(usuarioId) {
+  const movs = db.prepare(`
+    SELECT m.id, m.importe FROM movimientos m
+    WHERE m.usuario_id = @u AND m.tipo <> 'anulacion'
+      AND NOT EXISTS (SELECT 1 FROM movimientos a WHERE a.anula_id = m.id)
+      AND m.id NOT IN (SELECT movimiento_id FROM tickets WHERE usuario_id = @u AND pago_movimiento_id IS NOT NULL AND movimiento_id IS NOT NULL
+                       UNION SELECT pago_movimiento_id FROM tickets WHERE usuario_id = @u AND pago_movimiento_id IS NOT NULL)
+    ORDER BY m.fecha, m.id`).all({ u: usuarioId });
+  let credito = movs.filter(m => m.importe < 0).reduce((s, m) => s - m.importe, 0);
+  const impago = new Map();
+  for (const m of movs) {
+    if (m.importe <= 0) continue;
+    const cubre = Math.min(credito, m.importe);
+    credito -= cubre;
+    impago.set(m.id, m.importe - cubre);
+  }
+  return impago;
+}
+
+// `pendiente`: lo que falta pagar de cada ticket que quedó a la cuenta (0 = pagado).
+function conPendiente(lista) {
+  const porUsuario = new Map();
+  for (const t of lista) {
+    if (t.estado !== 'vigente' || t.cobrado_en_acto || !t.movimiento_id) continue;
+    if (!porUsuario.has(t.usuario_id)) porUsuario.set(t.usuario_id, impagoPorCargo(t.usuario_id));
+    t.pendiente = porUsuario.get(t.usuario_id).get(t.movimiento_id) ?? t.total;
+  }
+  return lista;
 }
 
 function listar(filtros = {}) {
@@ -350,8 +382,9 @@ function listar(filtros = {}) {
   if (['vigente', 'anulado'].includes(filtros.estado)) { where.push('t.estado = @estado'); params.estado = filtros.estado; }
   if (['rampa', 'tesoreria', 'cierre'].includes(filtros.origen)) { where.push('t.origen = @origen'); params.origen = filtros.origen; }
   const limite = Math.min(Number(filtros.limite) || 300, 1000);
-  return db.prepare(`${SELECT_TICKET} ${where.length ? 'WHERE ' + where.join(' AND ') : ''}
+  const lista = db.prepare(`${SELECT_TICKET} ${where.length ? 'WHERE ' + where.join(' AND ') : ''}
     ORDER BY t.fecha DESC, t.id DESC LIMIT ${limite}`).all(params).map(t => ({ ...t, numero_txt: fmtNumero(t.numero) }));
+  return conPendiente(lista);
 }
 
 // Servicios facturados en un mes, valorizados (para el panel y los reportes).
@@ -395,5 +428,5 @@ function porToken(token) {
 
 module.exports = {
   crearExterno, editarExterno, cuentasParaTicket, listarAeronaves, getAeronave, guardarAeronave,
-  crear, anular, detalle, listar, resumenServicios, cobrarDerechos, ticketDeMovimiento, porToken, fmtNumero
+  crear, anular, detalle, listar, resumenServicios, cobrarDerechos, ticketDeMovimiento, porToken, fmtNumero, impagoPorCargo
 };

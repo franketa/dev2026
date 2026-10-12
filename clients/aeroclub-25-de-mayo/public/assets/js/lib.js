@@ -176,7 +176,10 @@ export function chipTicket(t) {
   if (t.estado === 'anulado') return html`<span class="chip chip--neutro">Anulado</span>`;
   if (t.pago_movimiento_id) return html`<span class="chip chip--ok">Cobrado en el acto</span>`;
   if (t.cobrado_en_acto) return html`<span class="chip chip--pend">Cobrado por rampa, a confirmar</span>`;
-  return html`<span class="chip">A cuenta</span>`;
+  // Quedó a la cuenta del socio: se muestra si ya se pagó con los pagos de la cuenta.
+  if (t.pendiente === 0) return html`<span class="chip chip--ok">Pagado</span>`;
+  if (t.pendiente != null && t.pendiente < t.total) return html`<span class="chip chip--pend">Pago parcial</span>`;
+  return html`<span class="chip chip--pend">Sin pagar</span>`;
 }
 export function chipInforme(p) {
   const [clase, txt] = { pendiente: ['pend', 'En revisión'], confirmado: ['ok', 'Confirmado'], rechazado: ['mal', 'Rechazado'], anulado: ['neutro', 'Anulado'] }[p.estado] || ['neutro', p.estado];

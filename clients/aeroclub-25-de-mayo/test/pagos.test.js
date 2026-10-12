@@ -63,3 +63,15 @@ test('corregir el importe del pago en la cuenta actualiza el historial', () => {
   correcciones.editar(mov.id, { importe: '15000', motivo: 'era 15 mil' }, admin);
   assert.equal(pagosInformados.get(pago.id).importe, 1500000);
 });
+
+test('los pagos cubren primero los cargos más viejos (para saber si un ticket a la cuenta está pagado)', () => {
+  const tickets = require('../server/services/tickets');
+  const r2 = db.prepare(`INSERT INTO usuarios (nombre, apellido, email, rol, password_hash, debe_cambiar_password) VALUES ('Beto', 'Test', 'beto@test.com', 'piloto', 'x', 0)`).run();
+  const beto = Number(r2.lastInsertRowid);
+  const c1 = ledger.registrar({ usuario_id: beto, tipo: 'servicio', concepto: 'Hangaraje', importe: 3000000, fecha: '2026-01-05' });
+  const c2 = ledger.registrar({ usuario_id: beto, tipo: 'servicio', concepto: 'Combustible', importe: 2000000, fecha: '2026-01-10' });
+  ledger.registrar({ usuario_id: beto, tipo: 'pago', concepto: 'Pago', importe: -4000000, fecha: '2026-01-20', medio: 'efectivo' });
+  const impago = tickets.impagoPorCargo(beto);
+  assert.equal(impago.get(c1.id), 0);            // pagado
+  assert.equal(impago.get(c2.id), 1000000);      // faltan 10.000
+});

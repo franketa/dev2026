@@ -61,8 +61,12 @@ function waTicket(t) {
   return linkWa(t.telefono, `Hola ${t.nombre}. Te enviamos el ticket ${t.numero_txt} del Aeroclub 25 de Mayo${t.matricula ? ` por servicios a ${t.matricula}` : ''}: ${t.resumen}. Total ${pesos(t.total)}. ${estado} Descargalo acá: ${location.origin}/t/${t.token}`);
 }
 
+// A un socio no se le manda un ticket suelto: se le manda el cupón con toda la deuda. El WhatsApp
+// queda para rampa y para externos y tránsitos, que pagan en el momento.
+const mandaTicket = (ctx, t) => ctx.usuario.rol === 'rampa' || t.usuario_rol === 'externo' || !!t.transitos;
+
 function accionesTicket(ctx, t, { anular = false } = {}) {
-  const wa = t.estado !== 'anulado' ? waTicket(t) : null;
+  const wa = t.estado !== 'anulado' && mandaTicket(ctx, t) ? waTicket(t) : null;
   return html`
     ${wa ? html`<a class="btn btn--wa btn--chico" href="${wa}" target="_blank" rel="noopener">${icono('wa')} WhatsApp</a>` : ''}
     <a class="btn btn--sec btn--chico" href="${urlTicketPdf(ctx, t)}" target="_blank" rel="noopener">${icono('pdf')} PDF</a>
@@ -72,13 +76,13 @@ function accionesTicket(ctx, t, { anular = false } = {}) {
 function tablaTickets(ctx, lista, { anular = false } = {}) {
   if (!lista.length) return vacio('No hay tickets en este mes.');
   return html`<div class="tabla-caja"><table class="tabla tabla--tarjetas">
-    <thead><tr><th>Ticket</th><th>A cargo de</th><th>Detalle</th><th class="num">Total</th><th>Cobro</th><th></th></tr></thead>
+    <thead><tr><th>Ticket</th><th>A cargo de</th><th>Detalle</th><th class="num">Total</th><th>Pago</th><th></th></tr></thead>
     <tbody>${lista.map(t => html`<tr class="${t.estado === 'anulado' ? 'fila--anulada' : ''}">
       <td class="celda-ppal"><strong>${t.numero_txt}</strong> ${t.matricula ? html`<span class="matricula">${t.matricula}</span>` : ''}${t.piloto ? html`<div class="chico">Piloto: ${t.piloto}</div>` : ''}<div class="muted chico">${fecha(t.fecha)}${t.origen === 'cierre' ? ', cierre del mes' : t.creado_por_nombre ? `, ${t.creado_por_nombre}` : ''}</div></td>
       <td data-label="A cargo de">${t.transitos ? html`<span class="chip chip--neutro">Tránsito</span>` : html`${nombreLista(t)}${t.usuario_rol === 'externo' ? html` <span class="chip chip--neutro">Externo</span>` : ''}`}</td>
       <td data-label="Detalle" class="chico">${t.resumen}${t.motivo_anulacion ? html`<div class="muted">Anulado: ${t.motivo_anulacion}</div>` : ''}</td>
       <td class="num monto" data-label="Total">${pesos(t.total)}</td>
-      <td data-label="Cobro">${chipTicket(t)}</td>
+      <td data-label="Pago">${chipTicket(t)}${t.estado === 'vigente' && !t.cobrado_en_acto ? html`<div class="muted chico">${t.pendiente > 0 && t.pendiente < t.total ? `Falta ${pesos(t.pendiente)}. ` : ''}Cargado a su cuenta</div>` : ''}</td>
       <td class="celda-acciones"><div class="tabla__acciones">${accionesTicket(ctx, t, { anular })}</div></td>
     </tr>`)}</tbody></table></div>`;
 }
@@ -165,7 +169,7 @@ export async function nuevoTicket(ctx) {
     <div class="vista__cab"><div>
       ${admin ? html`<a class="volver" href="${ctx.query.usuario ? `#/admin/cuentas/${ctx.query.usuario}` : '#/admin/tickets'}">${icono('izq')} Volver</a>` : ''}
       <h1>Nuevo ticket</h1>
-      <p>${admin ? 'Servicios u otros conceptos a la cuenta de un socio o externo. Si es a cuenta, entra en su cupón del mes.' : 'Servicios a una aeronave. A los socios se les puede dejar a cuenta; a externos y tránsitos se les cobra en el momento.'}</p>
+      <p>${admin ? 'Servicios u otros conceptos a la cuenta de un socio o externo. Si queda a su cuenta, entra en su cupón del mes.' : 'Servicios a una aeronave. A los socios se les puede cargar a su cuenta; a externos y tránsitos se les cobra en el momento.'}</p>
     </div></div>
     <form class="carga" id="form-ticket" novalidate>
       <div class="carga__paso">
@@ -191,7 +195,7 @@ export async function nuevoTicket(ctx) {
       <div class="carga__paso">
         <h2><span class="num">4</span> Cobro</h2>
         <div class="segmentado" id="cobro">
-          <label><input type="radio" name="cobro" value="cuenta" checked><span>A cuenta<small>Entra en el cupón del mes</small></span></label>
+          <label><input type="radio" name="cobro" value="cuenta" checked><span>A su cuenta<small>Entra en el cupón del mes</small></span></label>
           <label><input type="radio" name="cobro" value="ahora"><span>Pagó ahora<small>Queda registrado el pago</small></span></label>
         </div>
         <p class="campo__ayuda" id="ayuda-cobro" hidden></p>
@@ -279,7 +283,7 @@ export async function nuevoTicket(ctx) {
     }, 0);
     const n = estado.items.length;
     pintar($total, html`<div><span>Total</span><strong>${pesos(total)}</strong><small>${n} ${n === 1 ? 'ítem' : 'ítems'}</small></div>
-      <div><span>Cobro</span><strong style="font-size:1.2rem">${estado.cobrado ? `Pagó ahora (${MEDIOS[form.medio.value]})` : 'A cuenta'}</strong><small>${estado.cobrado ? 'Se registra el pago' : 'Se suma al cupón del mes'}</small></div>`);
+      <div><span>Cobro</span><strong style="font-size:1.2rem">${estado.cobrado ? `Pagó ahora (${MEDIOS[form.medio.value]})` : 'A su cuenta'}</strong><small>${estado.cobrado ? 'Se registra el pago' : 'Se suma al cupón del mes'}</small></div>`);
   }
 
   // Cambios en los inputs de los ítems: se actualiza el estado sin repintar la fila (no perder el foco).
@@ -386,7 +390,7 @@ export async function nuevoTicket(ctx) {
           <dt>A cargo de</dt><dd>${c.transitos ? 'Tránsitos (aeronave de paso)' : nombreCompleto(c)}</dd>
           <dt>Servicios</dt><dd>${lineas}</dd>
           <dt>Total</dt><dd><strong>${pesos(total)}</strong></dd>
-          <dt>Cobro</dt><dd>${estado.cobrado ? `Pagó ahora (${MEDIOS[d.medio]})` : 'A cuenta, entra en el cupón del mes'}</dd>
+          <dt>Cobro</dt><dd>${estado.cobrado ? `Pagó ahora (${MEDIOS[d.medio]})` : 'A su cuenta: entra en el cupón del mes'}</dd>
           <dt>Fecha</dt><dd>${fecha(d.fecha)}</dd>
           ${d.notas.trim() ? html`<dt>Notas</dt><dd>${d.notas.trim()}</dd>` : ''}
         </dl>
@@ -423,7 +427,7 @@ export async function nuevoTicket(ctx) {
 }
 
 function listo(ctx, t) {
-  const wa = waTicket(t);
+  const wa = mandaTicket(ctx, t) ? waTicket(t) : null;
   pintar(ctx.el, html`
     <div class="vista" style="justify-items:center">
       <div class="listo">
@@ -434,14 +438,14 @@ function listo(ctx, t) {
           <p>${t.matricula ? html`<strong class="matricula">${t.matricula}</strong>${t.piloto ? `, piloto ${t.piloto}` : ''}, ` : ''}${t.items.map(i => i.detalle ? `${i.concepto}: ${i.detalle}` : i.cantidad === 100 ? i.concepto : `${i.concepto} ${i.cantidad_txt}`).join(', ')}</p>
           <p class="muted">${t.pago_movimiento_id ? `Pagado en el acto (${MEDIOS[t.pago_medio]}).`
             : t.cobrado_en_acto ? `Cobrado en el acto (${MEDIOS[t.pago_medio]}). Tesorería lo confirma en Pagos informados.`
-            : `A cuenta de ${nombreCompleto(t)}: entra en su cupón del mes.`}</p>
+            : `Cargado a la cuenta de ${nombreCompleto(t)}: entra en su cupón del mes.`}</p>
         </div>
         <div class="listo__acciones">
           ${wa ? html`<a class="btn btn--wa" href="${wa}" target="_blank" rel="noopener">${icono('wa')} Mandar por WhatsApp</a>` : ''}
           <a class="btn btn--sec" href="${urlTicketPdf(ctx, t)}" target="_blank" rel="noopener">${icono('pdf')} Ver PDF</a>
           <a class="btn btn--principal" href="${ctx.usuario.rol === 'rampa' ? '#/rampa' : '#/admin/tickets/nuevo'}" data-otro>${icono('mas')} Otro ticket</a>
         </div>
-        ${!wa && !t.transitos && t.estado !== 'anulado' ? html`<p class="muted chico">${nombreCompleto(t)} no tiene celular cargado: mandale el PDF por otro medio.</p>` : ''}
+        ${!wa && mandaTicket(ctx, t) && !t.transitos && t.estado !== 'anulado' ? html`<p class="muted chico">${nombreCompleto(t)} no tiene celular cargado: mandale el PDF por otro medio.</p>` : ''}
       </div>
     </div>`);
   ctx.el.querySelector('[data-otro]').addEventListener('click', (e) => {
@@ -481,6 +485,7 @@ export async function ticketsAdmin(ctx) {
   const total = vigentes.reduce((s, t) => s + t.total, 0);
   const enElActo = vigentes.filter(t => t.cobrado_en_acto).reduce((s, t) => s + t.total, 0);
   const aConfirmar = vigentes.filter(t => t.cobrado_en_acto && !t.pago_movimiento_id).reduce((s, t) => s + t.total, 0);
+  const sinPagar = vigentes.filter(t => t.pendiente > 0);
   const sel = (v) => (v === origen ? raw('selected') : '');
 
   pintar(ctx.el, html`
@@ -505,7 +510,7 @@ export async function ticketsAdmin(ctx) {
     <div class="cifras">
       <div class="cifra"><span>Servicios facturados</span><strong>${pesos(total)}</strong><small>${vigentes.length} ${vigentes.length === 1 ? 'ticket' : 'tickets'}</small></div>
       <div class="cifra"><span>Cobrado en el acto</span><strong>${pesos(enElActo)}</strong>${aConfirmar ? html`<small><a href="#/admin/pagos">${pesos(aConfirmar)} de rampa a confirmar</a></small>` : ''}</div>
-      <div class="cifra"><span>A cuenta</span><strong>${pesos(total - enElActo)}</strong><small>Entra en los cupones</small></div>
+      <div class="cifra"><span>Sin pagar</span><strong>${pesos(sinPagar.reduce((s, t) => s + t.pendiente, 0))}</strong><small>${sinPagar.length ? `${sinPagar.length} ${sinPagar.length === 1 ? 'ticket cargado a la cuenta' : 'tickets cargados a la cuenta'} de socios` : 'Lo cargado a las cuentas está pagado'}</small></div>
     </div>
     <section class="panel">${tablaTickets(ctx, tickets, { anular: true })}</section>
   </div>`);
