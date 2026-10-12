@@ -1,20 +1,22 @@
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
-import { Plus, Receipt, Wrench, FileText } from "lucide-react";
+import { Plus, Receipt, Wrench, FileText, Pencil, Globe, Trash2, Star, ChevronLeft, ChevronRight } from "lucide-react";
 import { sql } from "@/lib/db";
-import { requiereSesion, veCostos } from "@/lib/auth";
+import { requierePermiso, veCostos, puede } from "@/lib/auth";
 import { plata, numero, km as fkm, dominio, porcentaje, fecha } from "@/lib/format";
 import { ESTADOS_VEHICULO, ALERTAS, TIPO_ADQUISICION, TIPOS_COSTO } from "@/lib/constantes";
 import {
   Encabezado, KPI, GrillaKPI, Panel, PanelTitulo, Chip, Tabla, TH, TD,
   FilaVacia, Boton, Dato, Campo,
 } from "@/components/ui";
+import SubirFotos from "@/components/subir-fotos";
 
 export const dynamic = "force-dynamic";
 
 const TABS = [
   { v: "general", l: "General" },
+  { v: "fotos", l: "Fotos" },
   { v: "costos", l: "Costos" },
   { v: "ficha", l: "Ficha técnica" },
   { v: "movimientos", l: "Movimientos" },
@@ -22,7 +24,7 @@ const TABS = [
 ];
 
 export default async function Vehiculo({ params, searchParams }: { params: Promise<any>; searchParams: Promise<any> }) {
-  const u = await requiereSesion();
+  const u = await requierePermiso("vehiculos");
   const verCostos = veCostos(u);
   const { id } = await params;
   const { tab = "general" } = await searchParams;
@@ -30,7 +32,9 @@ export default async function Vehiculo({ params, searchParams }: { params: Promi
   const [v] = await sql`SELECT * FROM v_vehiculos WHERE id = ${id}`;
   if (!v) notFound();
 
-  const [costos, movimientos, ficha, documentos, proveedores, ordenes] = await Promise.all([
+  const editar = puede(u, "vehiculos.editar");
+
+  const [costos, movimientos, ficha, documentos, proveedores, ordenes, fotos] = await Promise.all([
     sql`SELECT c.*, p.nombre AS proveedor FROM vehiculo_costos c
         LEFT JOIN proveedores p ON p.id = c.proveedor_id
         WHERE c.vehiculo_id = ${id} ORDER BY c.fecha DESC, c.id DESC`,
@@ -43,7 +47,9 @@ export default async function Vehiculo({ params, searchParams }: { params: Promi
     sql`SELECT o.*, (SELECT count(*) FROM orden_items i WHERE i.orden_id = o.id)::int AS total,
                (SELECT count(*) FROM orden_items i WHERE i.orden_id = o.id AND i.hecho)::int AS hechos
         FROM ordenes_taller o WHERE o.vehiculo_id = ${id} ORDER BY o.id DESC`,
+    sql`SELECT id FROM vehiculo_fotos WHERE vehiculo_id = ${id} ORDER BY posicion, id`,
   ]);
+  const enLaWeb = v.publicado && v.estado === "disponible";
 
   const f = ficha[0] || {};
   const e = ESTADOS_VEHICULO[v.estado] || { label: v.estado, tono: "gris" as const };
@@ -52,7 +58,7 @@ export default async function Vehiculo({ params, searchParams }: { params: Promi
   /* ---------------------------------------------------------- acciones */
   async function agregarCosto(fd: FormData) {
     "use server";
-    const usr = await requiereSesion();
+    const usr = await requierePermiso("vehiculos");
     if (!veCostos(usr)) return;
     const monto = Number(fd.get("monto") || 0);
     if (!monto) return;
@@ -69,12 +75,66 @@ export default async function Vehiculo({ params, searchParams }: { params: Promi
 
   async function cambiarEstado(fd: FormData) {
     "use server";
-    const usr = await requiereSesion();
+    const usr = await requierePermiso("vehiculos");
     const nuevo = String(fd.get("estado") || "");
     if (!nuevo) return;
     await sql`UPDATE vehiculos SET estado = ${nuevo} WHERE id = ${id}`;
     await sql`INSERT INTO auditoria (usuario_id, entidad, entidad_id, accion, detalle)
               VALUES (${usr.id}, 'vehiculo', ${id}, 'estado', ${nuevo})`;
+    revalidatePath(`/vehiculos/${id}`);
+  }
+
+  /* ------------------------------------------------------------- fotos */
+  async function fotoAccion(fd: FormData) {
+    "use server";
+    const usr = await requierePermiso("vehiculos");
+    if (!puede(usr, "vehiculos.editar")) return;
+    const foto = Number(fd.get("foto"));
+    const que = String(fd.get("que"));
+    const lista = (await sql`SELECT id FROM vehiculo_fotos WHERE vehiculo_id = ${id}
+                             ORDER BY posicion, id`).map((r: any) => Number(r.id));
+    const i = lista.indexOf(foto);
+    if (i < 0) return;
+
+    if (que === "borrar") {
+      await sql`DELETE FROM vehiculo_fotos WHERE id = ${foto} AND vehiculo_id = ${id}`;
+      lista.splice(i, 1);
+    } else if (que === "portada") {
+      lista.splice(i, 1);
+      lista.unshift(foto);
+    } else if (que === "izq" && i > 0) {
+      [lista[i - 1], lista[i]] = [lista[i], lista[i - 1]];
+    } else if (que === "der" && i < lista.length - 1) {
+      [lista[i + 1], lista[i]] = [lista[i], lista[i + 1]];
+    }
+    // Se renumera todo: así la posición nunca queda con huecos ni repetidos.
+    for (let k = 0; k < lista.length; k++) {
+      await sql`UPDATE vehiculo_fotos SET posicion = ${k} WHERE id = ${lista[k]}`;
+    }
+    revalidatePath(`/vehiculos/${id}`);
+  }
+
+  /* -------------------------------------------------------------- ficha */
+  async function guardarFicha(fd: FormData) {
+    "use server";
+    const usr = await requierePermiso("vehiculos");
+    if (!puede(usr, "vehiculos.editar")) return;
+    const si = (k: string) => fd.get(k) === "on";
+    const n = (k: string) => Number(fd.get(k) || 0);
+    const vence = String(fd.get("vtv_vence") || "") || null;
+    await sql`
+      INSERT INTO vehiculo_ficha (vehiculo_id, vtv, vtv_vence, titulo, cedula, form_08, informe_dominio,
+                                  deuda_patentes, infracciones, prenda, notas)
+      VALUES (${id}, ${si("vtv")}, ${vence}, ${si("titulo")}, ${si("cedula")}, ${si("form_08")},
+              ${si("informe_dominio")}, ${n("deuda_patentes")}, ${n("infracciones")}, ${si("prenda")},
+              ${String(fd.get("notas") || "") || null})
+      ON CONFLICT (vehiculo_id) DO UPDATE SET
+        vtv = EXCLUDED.vtv, vtv_vence = EXCLUDED.vtv_vence, titulo = EXCLUDED.titulo,
+        cedula = EXCLUDED.cedula, form_08 = EXCLUDED.form_08, informe_dominio = EXCLUDED.informe_dominio,
+        deuda_patentes = EXCLUDED.deuda_patentes, infracciones = EXCLUDED.infracciones,
+        prenda = EXCLUDED.prenda, notas = EXCLUDED.notas`;
+    await sql`INSERT INTO auditoria (usuario_id, entidad, entidad_id, accion, detalle)
+              VALUES (${usr.id}, 'vehiculo', ${id}, 'ficha', null)`;
     revalidatePath(`/vehiculos/${id}`);
   }
 
@@ -89,6 +149,15 @@ export default async function Vehiculo({ params, searchParams }: { params: Promi
         acciones={
           <>
             <Chip tono={e.tono}>{e.label}</Chip>
+            <span title={enLaWeb ? "Se ve en garrahanautomotores.com.ar"
+                        : v.publicado ? "Sale en la web cuando esté disponible" : "No está publicada"}>
+              <Chip tono={enLaWeb ? "verde" : "gris"}>
+                <Globe size={11} className="inline -mt-px mr-1" />{enLaWeb ? "En la web" : "Fuera de la web"}
+              </Chip>
+            </span>
+            {editar && (
+              <Boton href={`/vehiculos/${id}/editar`} variante="suave"><Pencil size={14} /> Editar</Boton>
+            )}
             <form action={cambiarEstado} className="flex gap-2">
               <select name="estado" defaultValue={v.estado} className="campo w-auto py-1.5 text-[12.5px]">
                 {Object.entries(ESTADOS_VEHICULO).map(([k, x]) => (
@@ -137,7 +206,8 @@ export default async function Vehiculo({ params, searchParams }: { params: Promi
         {TABS.map((t) => {
           const n = t.v === "costos" ? costos.length
                   : t.v === "movimientos" ? movimientos.length
-                  : t.v === "documentos" ? documentos.length : null;
+                  : t.v === "documentos" ? documentos.length
+                  : t.v === "fotos" ? fotos.length : null;
           if (t.v === "costos" && !verCostos) return null;
           if (t.v === "movimientos" && !verCostos) return null;
           return (
@@ -153,6 +223,20 @@ export default async function Vehiculo({ params, searchParams }: { params: Promi
       {/* ---------------------------------------------------------- general */}
       {tab === "general" && (
         <div className="grid lg:grid-cols-2 gap-4">
+          <div className="space-y-4">
+          {fotos.length > 0 ? (
+            <Link href={tabUrl("fotos")} className="block">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={`/api/fotos/${fotos[0].id}`} alt={`${v.marca} ${v.modelo}`}
+                className="w-full aspect-[4/3] object-cover rounded-xl border border-[var(--c-borde)]" />
+            </Link>
+          ) : editar && (
+            <Link href={tabUrl("fotos")}
+              className="flex items-center justify-center aspect-[4/3] rounded-xl border-2 border-dashed
+                border-[var(--c-borde)] text-[13px] text-[var(--c-tinta-tenue)] hover:border-[var(--c-primario)]">
+              Sin fotos todavía · tocá para cargar
+            </Link>
+          )}
           <Panel>
             <PanelTitulo titulo="Datos del vehículo" />
             <Dato label="Dominio">{dominio(v.dominio)}</Dato>
@@ -168,6 +252,7 @@ export default async function Vehiculo({ params, searchParams }: { params: Promi
             <Dato label="N° de motor">{v.nro_motor || "—"}</Dato>
             <Dato label="N° de chasis">{v.nro_chasis || "—"}</Dato>
           </Panel>
+          </div>
 
           <div className="space-y-4">
             <Panel>
@@ -208,6 +293,44 @@ export default async function Vehiculo({ params, searchParams }: { params: Promi
             )}
           </div>
         </div>
+      )}
+
+      {/* ------------------------------------------------------------ fotos */}
+      {tab === "fotos" && (
+        <Panel>
+          <PanelTitulo titulo="Fotos"
+            detalle="La primera es la portada en la web. Se pueden subir varias juntas, desde el celular también."
+            accion={editar ? <SubirFotos vehiculoId={Number(id)} /> : undefined} />
+          {fotos.length === 0 ? (
+            <p className="text-[13px] text-[var(--c-tinta-tenue)] py-10 text-center">
+              Esta unidad todavía no tiene fotos.
+            </p>
+          ) : (
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+              {fotos.map((f: any, i: number) => (
+                <div key={f.id} className="relative rounded-lg overflow-hidden border border-[var(--c-borde)]">
+                  <a href={`/api/fotos/${f.id}`} target="_blank" rel="noreferrer">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={`/api/fotos/${f.id}`} alt="" loading="lazy" className="w-full aspect-[4/3] object-cover" />
+                  </a>
+                  {i === 0 && (
+                    <span className="absolute top-2 left-2"><Chip tono="verde">Portada</Chip></span>
+                  )}
+                  {editar && (
+                    <div className="flex justify-between gap-1 p-1.5 bg-[var(--c-panel)]">
+                      <div className="flex gap-1">
+                        <BotonFoto accion={fotoAccion} foto={f.id} que="izq" titulo="Mover a la izquierda"><ChevronLeft size={14} /></BotonFoto>
+                        <BotonFoto accion={fotoAccion} foto={f.id} que="der" titulo="Mover a la derecha"><ChevronRight size={14} /></BotonFoto>
+                        {i > 0 && <BotonFoto accion={fotoAccion} foto={f.id} que="portada" titulo="Usar de portada"><Star size={14} /></BotonFoto>}
+                      </div>
+                      <BotonFoto accion={fotoAccion} foto={f.id} que="borrar" titulo="Borrar la foto"><Trash2 size={14} /></BotonFoto>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
+        </Panel>
       )}
 
       {/* ----------------------------------------------------------- costos */}
@@ -300,6 +423,39 @@ export default async function Vehiculo({ params, searchParams }: { params: Promi
             </div>
           </div>
           {f.notas && <p className="mt-4 text-[13px] text-[var(--c-tinta-media)]">{f.notas}</p>}
+
+          {editar && (
+            <details className="mt-5 pt-4 border-t border-[var(--c-borde)]">
+              <summary className="cursor-pointer text-[13px] font-semibold text-[var(--c-enlace)]">Actualizar la ficha</summary>
+              <form action={guardarFicha} className="mt-4 space-y-4">
+                <div className="flex flex-wrap gap-x-6 gap-y-2 text-[13px]">
+                  {[["titulo", "Título"], ["cedula", "Cédula verde"], ["form_08", "08 firmado"],
+                    ["informe_dominio", "Informe de dominio"], ["vtv", "VTV vigente"], ["prenda", "Tiene prenda"]]
+                    .map(([k, l]) => (
+                      <label key={k} className="inline-flex items-center gap-2 cursor-pointer">
+                        <input type="checkbox" name={k} defaultChecked={!!f[k]} className="h-4 w-4 accent-[var(--c-primario)]" />{l}
+                      </label>
+                    ))}
+                </div>
+                <div className="grid sm:grid-cols-3 gap-4">
+                  <Campo label="VTV vence">
+                    <input name="vtv_vence" type="date" className="campo"
+                      defaultValue={f.vtv_vence ? new Date(f.vtv_vence).toISOString().slice(0, 10) : ""} />
+                  </Campo>
+                  <Campo label="Deuda de patentes">
+                    <input name="deuda_patentes" type="number" step="0.01" min="0" className="campo" defaultValue={f.deuda_patentes ?? 0} />
+                  </Campo>
+                  <Campo label="Infracciones">
+                    <input name="infracciones" type="number" step="0.01" min="0" className="campo" defaultValue={f.infracciones ?? 0} />
+                  </Campo>
+                  <Campo label="Notas" ancho="sm:col-span-3">
+                    <input name="notas" className="campo" defaultValue={f.notas ?? ""} />
+                  </Campo>
+                </div>
+                <Boton tipo="submit">Guardar la ficha</Boton>
+              </form>
+            </details>
+          )}
         </Panel>
       )}
 
@@ -347,5 +503,21 @@ export default async function Vehiculo({ params, searchParams }: { params: Promi
         </Panel>
       )}
     </>
+  );
+}
+
+function BotonFoto({ accion, foto, que, titulo, children }: {
+  accion: (fd: FormData) => Promise<void>; foto: number; que: string; titulo: string; children: React.ReactNode;
+}) {
+  return (
+    <form action={accion}>
+      <input type="hidden" name="foto" value={foto} />
+      <input type="hidden" name="que" value={que} />
+      <button type="submit" title={titulo} aria-label={titulo}
+        className={`h-7 w-7 grid place-items-center rounded-md text-[var(--c-tinta-media)] hover:bg-[var(--c-activo)]
+          ${que === "borrar" ? "hover:text-[var(--c-rojo-alto)]" : "hover:text-[var(--c-tinta)]"}`}>
+        {children}
+      </button>
+    </form>
   );
 }

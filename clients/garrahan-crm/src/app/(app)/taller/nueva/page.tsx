@@ -1,13 +1,13 @@
 import { redirect } from "next/navigation";
 import { sql } from "@/lib/db";
-import { requiereSesion } from "@/lib/auth";
+import { requierePermiso } from "@/lib/auth";
 import { ESTADOS_TALLER, CHECKLIST_TALLER } from "@/lib/constantes";
 import { Encabezado, Panel, PanelTitulo, Boton, Campo } from "@/components/ui";
 
 export const dynamic = "force-dynamic";
 
 export default async function NuevaOrden({ searchParams }: { searchParams: Promise<any> }) {
-  await requiereSesion();
+  await requierePermiso("taller");
   const p = await searchParams;
 
   const vehiculos = await sql`
@@ -16,7 +16,7 @@ export default async function NuevaOrden({ searchParams }: { searchParams: Promi
 
   async function crear(fd: FormData) {
     "use server";
-    const usr = await requiereSesion();
+    const usr = await requierePermiso("taller");
     const vehiculoId = Number(fd.get("vehiculo_id") || 0);
     if (!vehiculoId) return;
 

@@ -1,5 +1,5 @@
 import { sql } from "@/lib/db";
-import { usuarioActual, veCostos } from "@/lib/auth";
+import { usuarioActual, veCostos, puede } from "@/lib/auth";
 
 export const dynamic = "force-dynamic";
 
@@ -26,6 +26,8 @@ export async function GET(req: Request, { params }: { params: Promise<{ que: str
   const u = await usuarioActual();
   if (!u) return new Response("No autorizado", { status: 401 });
   const { que } = await params;
+  // Exportar es ver: pide el mismo permiso que la pantalla de donde sale.
+  if (!puede(u, que === "reporte" ? "reportes" : que)) return new Response("Sin permiso", { status: 403 });
   const verCostos = veCostos(u);
   const qs = new URL(req.url).searchParams;
 

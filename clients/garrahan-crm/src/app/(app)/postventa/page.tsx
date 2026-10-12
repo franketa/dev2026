@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { revalidatePath } from "next/cache";
 import { sql } from "@/lib/db";
-import { requiereSesion } from "@/lib/auth";
+import { requierePermiso } from "@/lib/auth";
 import { fecha, numero } from "@/lib/format";
 import {
   Encabezado, KPI, GrillaKPI, Panel, PanelTitulo, Chip, Tabla, TH, TD,
@@ -15,7 +15,7 @@ export const dynamic = "force-dynamic";
  * cortesía — de acá salen los referidos, que son el lead más barato que hay.
  */
 export default async function Postventa({ searchParams }: { searchParams: Promise<any> }) {
-  await requiereSesion();
+  await requierePermiso("ventas");
   const p = await searchParams;
   const filtro = p.ver || "pendientes";
 
@@ -44,7 +44,7 @@ export default async function Postventa({ searchParams }: { searchParams: Promis
 
   async function registrar(fd: FormData) {
     "use server";
-    await requiereSesion();
+    await requierePermiso("ventas");
     const id = Number(fd.get("id") || 0);
     const hito = String(fd.get("hito") || "30");
     const resultado = String(fd.get("resultado") || "").trim();

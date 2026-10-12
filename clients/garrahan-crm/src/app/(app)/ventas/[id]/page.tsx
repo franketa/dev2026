@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { FileText, Plus } from "lucide-react";
 import { sql } from "@/lib/db";
-import { requiereSesion, veCostos } from "@/lib/auth";
+import { requierePermiso, veCostos } from "@/lib/auth";
 import { plata, plataCorta, fecha, porcentaje, dominio as fdom } from "@/lib/format";
 import { ESTADOS_VENTA, ESTADOS_TRAMITE, MEDIOS_PAGO } from "@/lib/constantes";
 import {
@@ -18,7 +18,7 @@ export const dynamic = "force-dynamic";
 const MEDIOS_A_CAJA = ["efectivo", "transferencia", "tarjeta", "mercadopago", "cheque"];
 
 export default async function Venta({ params }: { params: Promise<any> }) {
-  const u = await requiereSesion();
+  const u = await requierePermiso("ventas");
   const verCostos = veCostos(u);
   const { id } = await params;
 
@@ -57,7 +57,7 @@ export default async function Venta({ params }: { params: Promise<any> }) {
   /* ------------------------------------------------------------ acciones */
   async function agregarPago(fd: FormData) {
     "use server";
-    const usr = await requiereSesion();
+    const usr = await requierePermiso("ventas");
     const monto = Number(fd.get("monto") || 0);
     if (!monto) return;
     const medio = String(fd.get("medio") || "efectivo");
@@ -115,7 +115,7 @@ export default async function Venta({ params }: { params: Promise<any> }) {
 
   async function extenderSena(fd: FormData) {
     "use server";
-    const usr = await requiereSesion();
+    const usr = await requierePermiso("ventas");
     const nueva = String(fd.get("sena_vence") || "");
     if (!/^\d{4}-\d{2}-\d{2}$/.test(nueva)) return;
     await sql`UPDATE ventas SET sena_vence = ${nueva} WHERE id = ${id}`;
@@ -126,7 +126,7 @@ export default async function Venta({ params }: { params: Promise<any> }) {
 
   async function cambiarEstado(fd: FormData) {
     "use server";
-    const usr = await requiereSesion();
+    const usr = await requierePermiso("ventas");
     const nuevo = String(fd.get("estado") || "");
     if (!ESTADOS_VENTA[nuevo]) return;
     await sql`UPDATE ventas SET estado = ${nuevo} WHERE id = ${id}`;
@@ -157,7 +157,7 @@ export default async function Venta({ params }: { params: Promise<any> }) {
 
   async function cambiarTramite(fd: FormData) {
     "use server";
-    await requiereSesion();
+    await requierePermiso("ventas");
     const nuevo = String(fd.get("estado") || "");
     if (!ESTADOS_TRAMITE[nuevo]) return;
     await sql`UPDATE ventas SET estado_tramite = ${nuevo},

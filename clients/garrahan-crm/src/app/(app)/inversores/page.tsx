@@ -2,7 +2,7 @@ import Link from "next/link";
 import { revalidatePath } from "next/cache";
 import { Plus, ArrowRight } from "lucide-react";
 import { sql } from "@/lib/db";
-import { requiereSesion, veCostos } from "@/lib/auth";
+import { requierePermiso, veCostos } from "@/lib/auth";
 import { plata, plataCorta, fecha, numero } from "@/lib/format";
 import {
   Encabezado, KPI, GrillaKPI, Panel, PanelTitulo, Chip, Tabla, TH, TD,
@@ -12,7 +12,7 @@ import {
 export const dynamic = "force-dynamic";
 
 export default async function Inversores() {
-  const u = await requiereSesion();
+  const u = await requierePermiso("inversores");
   if (!veCostos(u)) {
     return <Panel><p className="text-[13px] text-[var(--c-tinta-media)] py-8 text-center">
       Tu perfil no tiene acceso al panel de inversores.</p></Panel>;
@@ -54,7 +54,7 @@ export default async function Inversores() {
 
   async function nuevoMovimiento(fd: FormData) {
     "use server";
-    await requiereSesion();
+    await requierePermiso("inversores");
     const monto = Number(fd.get("monto") || 0);
     if (!monto) return;
     await sql`INSERT INTO inversor_movimientos (inversor_id, tipo, monto, moneda, descripcion, fecha, contraparte_id)
@@ -67,7 +67,7 @@ export default async function Inversores() {
 
   async function marcarDevuelta(fd: FormData) {
     "use server";
-    await requiereSesion();
+    await requierePermiso("inversores");
     await sql`UPDATE inversor_movimientos SET devuelto = true WHERE id = ${Number(fd.get("id"))}`;
     revalidatePath("/inversores");
   }

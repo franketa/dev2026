@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Plus, FileText } from "lucide-react";
 import { sql } from "@/lib/db";
-import { requiereSesion, veCostos } from "@/lib/auth";
+import { requierePermiso, veCostos } from "@/lib/auth";
 import { plata, plataCorta, fecha, numero, dominio, porcentaje } from "@/lib/format";
 import { ESTADOS_VENTA, MEDIOS_PAGO, ESTADOS_TRAMITE } from "@/lib/constantes";
 import { Encabezado, KPI, GrillaKPI, Chip, Tabla, TH, TD, FilaVacia, Boton } from "@/components/ui";
@@ -11,7 +11,7 @@ import ImprimirListado from "@/components/imprimir-listado";
 export const dynamic = "force-dynamic";
 
 export default async function Ventas({ searchParams }: { searchParams: Promise<any> }) {
-  const u = await requiereSesion();
+  const u = await requierePermiso("ventas");
   const costos = veCostos(u);
   const p = await searchParams;
   const estado = p.estado || "";

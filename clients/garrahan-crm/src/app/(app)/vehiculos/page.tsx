@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Plus, Search, Wrench, Receipt, Columns3, LayoutGrid, Table2 } from "lucide-react";
 import { sql } from "@/lib/db";
-import { requiereSesion, veCostos } from "@/lib/auth";
+import { requierePermiso, veCostos } from "@/lib/auth";
 import { plata, plataCorta, numero, km as fkm, dominio, porcentaje } from "@/lib/format";
 import { ESTADOS_VEHICULO, ALERTAS } from "@/lib/constantes";
 import {
@@ -45,7 +45,7 @@ const COLUMNAS = [
 ];
 
 export default async function Vehiculos({ searchParams }: { searchParams: Promise<any> }) {
-  const u = await requiereSesion();
+  const u = await requierePermiso("vehiculos");
   const costos = veCostos(u);
   const p = await searchParams;
   const tab = p.tab || "activos";

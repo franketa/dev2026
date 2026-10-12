@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Plus } from "lucide-react";
 import { sql } from "@/lib/db";
-import { requiereSesion, veCostos } from "@/lib/auth";
+import { requierePermiso, veCostos } from "@/lib/auth";
 import { plata, fecha, numero, dominio } from "@/lib/format";
 import { ESTADOS_TALLER } from "@/lib/constantes";
 import { Encabezado, KPI, GrillaKPI, Chip, Tabla, TH, TD, FilaVacia, Boton, Progreso } from "@/components/ui";
@@ -9,7 +9,7 @@ import { Encabezado, KPI, GrillaKPI, Chip, Tabla, TH, TD, FilaVacia, Boton, Prog
 export const dynamic = "force-dynamic";
 
 export default async function Taller({ searchParams }: { searchParams: Promise<any> }) {
-  const u = await requiereSesion();
+  const u = await requierePermiso("taller");
   const costos = veCostos(u);
   const p = await searchParams;
   const estado = p.estado || "";

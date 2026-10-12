@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import { sql } from "@/lib/db";
-import { requiereSesion } from "@/lib/auth";
+import { requierePermiso } from "@/lib/auth";
 import { plata, fecha, km as fkm } from "@/lib/format";
 import { enLetras } from "@/lib/letras";
 import BotonImprimir from "@/components/boton-imprimir";
@@ -13,7 +13,7 @@ export const dynamic = "force-dynamic";
  * antes de que haya comprador.
  */
 export default async function Mandato({ params }: { params: Promise<any> }) {
-  await requiereSesion();
+  await requierePermiso("vehiculos");
   const { id } = await params;
 
   const [v] = await sql`

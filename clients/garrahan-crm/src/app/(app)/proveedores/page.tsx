@@ -1,5 +1,5 @@
 import { sql } from "@/lib/db";
-import { requiereSesion } from "@/lib/auth";
+import { requierePermiso } from "@/lib/auth";
 import { plata, fecha, numero } from "@/lib/format";
 import { Encabezado, KPI, GrillaKPI, Chip, Tabla, TH, TD, FilaVacia, Panel } from "@/components/ui";
 
@@ -7,7 +7,7 @@ export const dynamic = "force-dynamic";
 
 
 export default async function Proveedores() {
-  await requiereSesion();
+  await requierePermiso("proveedores");
   const filas = await sql`
     SELECT p.*,
       (SELECT COALESCE(SUM(monto),0) FROM vehiculo_costos c WHERE c.proveedor_id = p.id) AS facturado,

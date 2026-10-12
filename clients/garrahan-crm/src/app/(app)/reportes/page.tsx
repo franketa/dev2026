@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { sql } from "@/lib/db";
-import { requiereSesion, veCostos } from "@/lib/auth";
+import { requierePermiso, veCostos } from "@/lib/auth";
 import { plata, plataCorta, numero, porcentaje } from "@/lib/format";
 import { CATEGORIAS } from "@/lib/constantes";
 import { sucursalActiva } from "@/lib/sucursal";
@@ -22,7 +22,7 @@ const TABS = [
 ] as const;
 
 export default async function Reportes({ searchParams }: { searchParams: Promise<any> }) {
-  const u = await requiereSesion();
+  const u = await requierePermiso("reportes");
   if (!veCostos(u)) {
     return <Panel><p className="text-[13px] text-[var(--c-tinta-media)] py-8 text-center">
       Tu perfil no tiene acceso a los reportes.</p></Panel>;

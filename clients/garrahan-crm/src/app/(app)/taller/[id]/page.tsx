@@ -3,7 +3,7 @@ import { notFound, redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { Check, Plus, CheckCheck } from "lucide-react";
 import { sql } from "@/lib/db";
-import { requiereSesion, veCostos } from "@/lib/auth";
+import { requierePermiso, veCostos } from "@/lib/auth";
 import { plata, fecha, dominio } from "@/lib/format";
 import { ESTADOS_TALLER } from "@/lib/constantes";
 import {
@@ -13,7 +13,7 @@ import {
 export const dynamic = "force-dynamic";
 
 export default async function Orden({ params }: { params: Promise<any> }) {
-  const u = await requiereSesion();
+  const u = await requierePermiso("taller");
   const costos = veCostos(u);
   const { id } = await params;
 
@@ -40,7 +40,7 @@ export default async function Orden({ params }: { params: Promise<any> }) {
   /* ------------------------------------------------------------ acciones */
   async function tildar(fd: FormData) {
     "use server";
-    await requiereSesion();
+    await requierePermiso("taller");
     const itemId = Number(fd.get("item"));
     await sql`UPDATE orden_items SET hecho = NOT hecho WHERE id = ${itemId}`;
     revalidatePath(`/taller/${id}`);
@@ -48,7 +48,7 @@ export default async function Orden({ params }: { params: Promise<any> }) {
 
   async function agregarTarea(fd: FormData) {
     "use server";
-    await requiereSesion();
+    await requierePermiso("taller");
     const tarea = String(fd.get("tarea") || "").trim();
     if (!tarea) return;
     await sql`INSERT INTO orden_items (orden_id, tarea, costo, proveedor_id, posicion)
@@ -60,7 +60,7 @@ export default async function Orden({ params }: { params: Promise<any> }) {
 
   async function cambiarEstado(fd: FormData) {
     "use server";
-    const usr = await requiereSesion();
+    const usr = await requierePermiso("taller");
     const nuevo = String(fd.get("estado"));
     await sql`UPDATE ordenes_taller SET estado = ${nuevo} WHERE id = ${id}`;
     // El estado del auto sigue al de la orden: no hay que tocarlo dos veces.
@@ -77,7 +77,7 @@ export default async function Orden({ params }: { params: Promise<any> }) {
   /** Al cerrar la orden, el costo del taller pasa a ser costo de la unidad. */
   async function cerrarOrden() {
     "use server";
-    const usr = await requiereSesion();
+    const usr = await requierePermiso("taller");
     const its = await sql`SELECT * FROM orden_items WHERE orden_id = ${id} AND costo > 0`;
     for (const i of its) {
       const [ya] = await sql`SELECT id FROM vehiculo_costos

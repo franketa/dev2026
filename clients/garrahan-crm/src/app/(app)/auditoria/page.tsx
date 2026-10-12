@@ -1,5 +1,5 @@
 import { sql } from "@/lib/db";
-import { requiereSesion } from "@/lib/auth";
+import { requierePermiso } from "@/lib/auth";
 import { plata, fecha, numero } from "@/lib/format";
 import { Encabezado, KPI, GrillaKPI, Chip, Tabla, TH, TD, FilaVacia, Panel } from "@/components/ui";
 
@@ -7,7 +7,7 @@ export const dynamic = "force-dynamic";
 
 
 export default async function Auditoria() {
-  await requiereSesion();
+  await requierePermiso("auditoria");
   const filas = await sql`
     SELECT a.*, u.nombre AS usuario FROM auditoria a
     LEFT JOIN usuarios u ON u.id = a.usuario_id

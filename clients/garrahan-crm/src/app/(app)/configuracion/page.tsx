@@ -1,5 +1,5 @@
 import { sql } from "@/lib/db";
-import { requiereSesion } from "@/lib/auth";
+import { requierePermiso } from "@/lib/auth";
 import { plata, fecha, numero } from "@/lib/format";
 import { Encabezado, KPI, GrillaKPI, Chip, Tabla, TH, TD, FilaVacia, Panel } from "@/components/ui";
 
@@ -9,13 +9,13 @@ import { revalidatePath } from "next/cache";
 import { Boton, Campo, PanelTitulo } from "@/components/ui";
 
 export default async function Configuracion() {
-  await requiereSesion();
+  await requierePermiso("configuracion");
   const [e] = await sql`SELECT * FROM empresa WHERE id = 1`;
   const [cot] = await sql`SELECT * FROM cotizaciones ORDER BY fecha DESC LIMIT 1`;
 
   async function guardar(fd: FormData) {
     "use server";
-    await requiereSesion();
+    await requierePermiso("configuracion");
     await sql`
       INSERT INTO empresa (id, razon_social, cuit, domicilio, localidad, provincia, telefono, email)
       VALUES (1, ${String(fd.get("razon_social"))}, ${String(fd.get("cuit"))},
@@ -30,7 +30,7 @@ export default async function Configuracion() {
 
   async function guardarCotizacion(fd: FormData) {
     "use server";
-    await requiereSesion();
+    await requierePermiso("configuracion");
     const v = Number(fd.get("valor") || 0);
     if (!v) return;
     await sql`INSERT INTO cotizaciones (fecha, valor) VALUES (current_date, ${v})

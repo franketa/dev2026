@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 import { sql } from "@/lib/db";
-import { requiereSesion, veCostos } from "@/lib/auth";
+import { requierePermiso, veCostos } from "@/lib/auth";
 import { plata } from "@/lib/format";
 import { ESTADOS_VENTA, ESTADOS_TRAMITE } from "@/lib/constantes";
 import { Encabezado, Panel, PanelTitulo, Boton, Campo } from "@/components/ui";
@@ -13,7 +13,7 @@ export const dynamic = "force-dynamic";
 const MEDIOS_A_CAJA = ["efectivo", "transferencia", "tarjeta", "mercadopago", "cheque"];
 
 export default async function NuevaVenta({ searchParams }: { searchParams: Promise<any> }) {
-  const u = await requiereSesion();
+  const u = await requierePermiso("ventas.crear");
   const p = await searchParams;
 
   const [vehiculos, clientes, vendedores, sucursales, cuentas, lead] = await Promise.all([
@@ -37,7 +37,7 @@ export default async function NuevaVenta({ searchParams }: { searchParams: Promi
 
   async function crear(fd: FormData) {
     "use server";
-    const usr = await requiereSesion();
+    const usr = await requierePermiso("ventas.crear");
     const txt = (k: string) => {
       const v = String(fd.get(k) ?? "").trim();
       return v === "" ? null : v;

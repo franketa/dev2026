@@ -1,5 +1,5 @@
 import { sql } from "@/lib/db";
-import { requiereSesion } from "@/lib/auth";
+import { requierePermiso } from "@/lib/auth";
 import { plata, fecha, numero } from "@/lib/format";
 import { Encabezado, KPI, GrillaKPI, Chip, Tabla, TH, TD, FilaVacia, Panel } from "@/components/ui";
 import Exportar from "@/components/exportar";
@@ -9,7 +9,7 @@ export const dynamic = "force-dynamic";
 
 
 export default async function Clientes() {
-  await requiereSesion();
+  await requierePermiso("clientes");
   const filas = await sql`
     SELECT c.*,
       (SELECT count(*) FROM ventas v WHERE v.cliente_id = c.id)::int AS compras,

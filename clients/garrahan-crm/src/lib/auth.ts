@@ -4,7 +4,7 @@ import crypto from "crypto";
 import bcrypt from "bcryptjs";
 import { sql } from "./db";
 
-export type Rol = "dueno" | "gerente" | "vendedor" | "administrativo" | "taller";
+export type Rol = "dueno" | "gerente" | "vendedor" | "administrativo" | "taller" | "referente" | "reportes";
 
 export type Usuario = {
   id: number;
@@ -25,14 +25,23 @@ const PERMISOS: Record<Rol, string[]> = {
   dueno: ["*"],
   gerente: ["*"],
   vendedor: [
-    "dashboard", "vehiculos", "vehiculos.ver", "leads", "leads.editar",
+    "dashboard", "vehiculos", "vehiculos.ver", "vehiculos.editar", "leads", "leads.editar",
     "clientes", "clientes.editar", "ventas", "ventas.crear", "taller",
   ],
   administrativo: [
-    "dashboard", "vehiculos", "vehiculos.ver", "vehiculos.costos", "clientes",
+    "dashboard", "vehiculos", "vehiculos.ver", "vehiculos.editar", "vehiculos.costos", "clientes",
     "ventas", "caja", "caja.editar", "cobranzas", "deudas", "proveedores", "reportes",
   ],
   taller: ["dashboard", "vehiculos", "vehiculos.ver", "taller", "taller.editar", "proveedores"],
+  // Acotado: ve el stock sin costos y carga sus propios leads. Nada de plata.
+  referente: ["dashboard", "vehiculos", "vehiculos.ver", "leads", "leads.editar"],
+  // Mira los números para decidir y puede corregir datos. No administra
+  // usuarios ni configuración.
+  reportes: [
+    "dashboard", "reportes", "vehiculos", "vehiculos.ver", "vehiculos.editar", "vehiculos.costos",
+    "leads", "leads.editar", "clientes", "clientes.editar", "ventas", "ventas.crear", "taller",
+    "caja", "caja.editar", "cobranzas", "deudas", "inversores", "proveedores",
+  ],
 };
 
 /** Lista plana de permisos, para pasarle al menú (que es client component). */
@@ -51,7 +60,12 @@ export function puede(u: Usuario | null, permiso: string): boolean {
 
 /** Los montos sensibles se ocultan a quien no los tiene que ver. */
 export function veCostos(u: Usuario | null): boolean {
-  return !!u && ["dueno", "gerente", "administrativo"].includes(u.rol);
+  return !!u && ["dueno", "gerente", "administrativo", "reportes"].includes(u.rol);
+}
+
+/** Leads: el vendedor ve los suyos y los sin asignar; el referente, solo los suyos. */
+export function veTodosLosLeads(u: Usuario) {
+  return !["vendedor", "referente"].includes(u.rol);
 }
 
 /* -------------------------------------------------------------------- sesion */
@@ -98,6 +112,16 @@ export async function requiereSesion(): Promise<Usuario> {
   return u;
 }
 
+/**
+ * Sesión más permiso. El menú ya esconde lo que no corresponde, pero esconder
+ * no alcanza: sin esto, cualquiera entraba a una pantalla escribiendo la URL.
+ */
+export async function requierePermiso(permiso: string): Promise<Usuario> {
+  const u = await requiereSesion();
+  if (!puede(u, permiso)) redirect("/");
+  return u;
+}
+
 export const hash = (p: string) => bcrypt.hash(p, 10);
 
 export const ROLES: { valor: Rol; label: string; detalle: string }[] = [
@@ -106,4 +130,6 @@ export const ROLES: { valor: Rol; label: string; detalle: string }[] = [
   { valor: "vendedor", label: "Vendedor", detalle: "Stock, leads y ventas. No ve costos ni márgenes" },
   { valor: "administrativo", label: "Administrativo", detalle: "Caja, cobranzas y deudas" },
   { valor: "taller", label: "Taller", detalle: "Solo preparación de unidades" },
+  { valor: "referente", label: "Referente", detalle: "Acceso acotado: stock sin costos y sus propios leads" },
+  { valor: "reportes", label: "Reportes", detalle: "Ve los reportes y puede corregir datos. No administra usuarios" },
 ];

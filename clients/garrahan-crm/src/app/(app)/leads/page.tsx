@@ -2,7 +2,7 @@ import Link from "next/link";
 import { revalidatePath } from "next/cache";
 import { Plus, Search, Globe, MessageCircle, Instagram, Facebook, Phone, Users, Store } from "lucide-react";
 import { sql } from "@/lib/db";
-import { requiereSesion } from "@/lib/auth";
+import { requierePermiso } from "@/lib/auth";
 import { plata, fecha, numero } from "@/lib/format";
 import { ESTADOS_LEAD, ETAPAS_LEAD, ORIGENES_LEAD } from "@/lib/constantes";
 import { Encabezado, KPI, GrillaKPI, Chip, Tabla, TH, TD, FilaVacia, Boton, Etapas } from "@/components/ui";
@@ -18,7 +18,7 @@ const ICONO_ORIGEN: Record<string, any> = {
 };
 
 export default async function Leads({ searchParams }: { searchParams: Promise<any> }) {
-  await requiereSesion();
+  await requierePermiso("leads");
   const p = await searchParams;
   const estado = p.estado || "";
   const q = (p.q || "").trim();
@@ -53,7 +53,7 @@ export default async function Leads({ searchParams }: { searchParams: Promise<an
 
   async function cambiarEstado(fd: FormData) {
     "use server";
-    const usr = await requiereSesion();
+    const usr = await requierePermiso("leads");
     const id = Number(fd.get("id"));
     const nuevo = String(fd.get("estado"));
     const etapa = ESTADOS_LEAD[nuevo]?.etapa || "captacion";

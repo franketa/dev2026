@@ -1,5 +1,5 @@
 import { sql } from "@/lib/db";
-import { requiereSesion } from "@/lib/auth";
+import { requierePermiso } from "@/lib/auth";
 import { plata, fecha, numero } from "@/lib/format";
 import { Encabezado, KPI, GrillaKPI, Chip, Tabla, TH, TD, FilaVacia, Panel } from "@/components/ui";
 
@@ -7,7 +7,7 @@ export const dynamic = "force-dynamic";
 
 
 export default async function Catalogo() {
-  await requiereSesion();
+  await requierePermiso("catalogo");
   const marcas = await sql`
     SELECT m.id, m.nombre,
       (SELECT count(*) FROM catalogo_modelos mo WHERE mo.marca_id = m.id)::int AS modelos,

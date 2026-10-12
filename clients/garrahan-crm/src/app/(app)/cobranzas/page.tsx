@@ -1,5 +1,5 @@
 import { sql } from "@/lib/db";
-import { requiereSesion } from "@/lib/auth";
+import { requierePermiso } from "@/lib/auth";
 import { plata, fecha, numero } from "@/lib/format";
 import { Encabezado, KPI, GrillaKPI, Chip, Tabla, TH, TD, FilaVacia } from "@/components/ui";
 import Exportar from "@/components/exportar";
@@ -8,7 +8,7 @@ import ImprimirListado from "@/components/imprimir-listado";
 export const dynamic = "force-dynamic";
 
 export default async function Cobranzas() {
-  await requiereSesion();
+  await requierePermiso("cobranzas");
   const filas = await sql`
     SELECT co.*, c.nombre, c.apellido, (co.monto - co.cobrado) AS saldo,
            (co.vencimiento < current_date AND co.estado <> 'cobrado') AS vencida

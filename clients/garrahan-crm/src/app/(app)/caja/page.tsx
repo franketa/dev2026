@@ -2,7 +2,7 @@ import Link from "next/link";
 import { revalidatePath } from "next/cache";
 import { Plus } from "lucide-react";
 import { sql } from "@/lib/db";
-import { requiereSesion, veCostos } from "@/lib/auth";
+import { requierePermiso, veCostos } from "@/lib/auth";
 import { plata, plataCorta, fecha } from "@/lib/format";
 import { CATEGORIAS, CATEGORIAS_INVENTARIO } from "@/lib/constantes";
 import {
@@ -15,7 +15,7 @@ import ImprimirListado from "@/components/imprimir-listado";
 export const dynamic = "force-dynamic";
 
 export default async function Caja({ searchParams }: { searchParams: Promise<any> }) {
-  const u = await requiereSesion();
+  const u = await requierePermiso("caja");
   if (!veCostos(u)) {
     return <Panel><p className="text-[13px] text-[var(--c-tinta-media)] py-8 text-center">
       Tu perfil no tiene acceso a la caja.</p></Panel>;
@@ -57,7 +57,7 @@ export default async function Caja({ searchParams }: { searchParams: Promise<any
 
   async function nuevoMovimiento(fd: FormData) {
     "use server";
-    const usr = await requiereSesion();
+    const usr = await requierePermiso("caja");
     if (!veCostos(usr)) return;
     const monto = Number(fd.get("monto") || 0);
     if (!monto) return;

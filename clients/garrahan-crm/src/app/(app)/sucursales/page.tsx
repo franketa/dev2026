@@ -1,5 +1,5 @@
 import { sql } from "@/lib/db";
-import { requiereSesion } from "@/lib/auth";
+import { requierePermiso } from "@/lib/auth";
 import { plata, fecha, numero } from "@/lib/format";
 import { Encabezado, KPI, GrillaKPI, Chip, Tabla, TH, TD, FilaVacia, Panel } from "@/components/ui";
 
@@ -7,7 +7,7 @@ export const dynamic = "force-dynamic";
 
 
 export default async function Sucursales() {
-  await requiereSesion();
+  await requierePermiso("sucursales");
   const filas = await sql`
     SELECT s.*,
       (SELECT count(*) FROM vehiculos v WHERE v.sucursal_id = s.id

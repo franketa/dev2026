@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import { sql } from "@/lib/db";
-import { requiereSesion } from "@/lib/auth";
+import { requierePermiso } from "@/lib/auth";
 import { plata, fecha } from "@/lib/format";
 import { MEDIOS_PAGO } from "@/lib/constantes";
 import { enLetras } from "@/lib/letras";
@@ -13,7 +13,7 @@ export const dynamic = "force-dynamic";
  * deja una seña o paga una cuota, y hoy lo hacen a mano.
  */
 export default async function Recibo({ params }: { params: Promise<any> }) {
-  await requiereSesion();
+  await requierePermiso("ventas");
   const { id } = await params;
 
   const [p] = await sql`

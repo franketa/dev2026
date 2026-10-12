@@ -1,5 +1,5 @@
 import { sql } from "@/lib/db";
-import { requiereSesion } from "@/lib/auth";
+import { requierePermiso } from "@/lib/auth";
 import { plata, fecha, numero } from "@/lib/format";
 import { Encabezado, KPI, GrillaKPI, Chip, Tabla, TH, TD, FilaVacia, Panel } from "@/components/ui";
 
@@ -7,7 +7,7 @@ export const dynamic = "force-dynamic";
 
 
 export default async function Deudas() {
-  await requiereSesion();
+  await requierePermiso("deudas");
   const filas = await sql`
     SELECT *, (monto - pagado) AS saldo,
            (vencimiento < current_date AND estado <> 'pagado') AS vencida

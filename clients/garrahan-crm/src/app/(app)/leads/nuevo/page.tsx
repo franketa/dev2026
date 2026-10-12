@@ -1,13 +1,13 @@
 import { redirect } from "next/navigation";
 import { sql } from "@/lib/db";
-import { requiereSesion } from "@/lib/auth";
+import { requierePermiso } from "@/lib/auth";
 import { ORIGENES_LEAD, ESTADOS_LEAD } from "@/lib/constantes";
 import { Encabezado, Panel, PanelTitulo, Boton, Campo } from "@/components/ui";
 
 export const dynamic = "force-dynamic";
 
 export default async function NuevoLead({ searchParams }: { searchParams: Promise<any> }) {
-  const u = await requiereSesion();
+  const u = await requierePermiso("leads");
   const p = await searchParams;
 
   const [vehiculos, asesores, sucursales, clientes] = await Promise.all([
@@ -20,7 +20,7 @@ export default async function NuevoLead({ searchParams }: { searchParams: Promis
 
   async function crear(fd: FormData) {
     "use server";
-    const usr = await requiereSesion();
+    const usr = await requierePermiso("leads");
     const txt = (k: string) => {
       const v = String(fd.get(k) ?? "").trim();
       return v === "" ? null : v;
