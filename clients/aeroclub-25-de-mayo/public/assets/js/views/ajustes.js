@@ -3,7 +3,7 @@ import { get, put, html, raw, pintar, icono, toast, error, conBoton, datosForm }
 // Imagen del QR para pagar → data URL (máximo 1 MB, como pide el servidor).
 function leerQr(archivo) {
   return new Promise((ok, mal) => {
-    if (!/^image\/(png|jpeg|webp)$/.test(archivo.type)) return mal(new Error('Elegí una imagen PNG o JPG'));
+    if (!/^image\/(png|jpeg)$/.test(archivo.type)) return mal(new Error('Elegí una imagen PNG o JPG'));
     if (archivo.size > 1024 * 1024) return mal(new Error('La imagen es muy pesada (máximo 1 MB)'));
     const r = new FileReader();
     r.onload = () => ok(r.result);
@@ -36,7 +36,7 @@ export default async function ajustes(ctx) {
           <span class="campo__label">QR para pagar <span class="muted">(opcional)</span></span>
           <div class="pagar__qr" data-qr-vista style="justify-items:start">${c.pago_qr ? html`<img src="${c.pago_qr}" alt="QR cargado">` : html`<span class="muted chico">Sin QR cargado.</span>`}</div>
           <div class="tabla__acciones" data-escritura>
-            <label class="btn btn--sec btn--chico"><input type="file" accept="image/png,image/jpeg,image/webp" class="sr" data-qr-archivo>${icono('foto')} ${c.pago_qr ? 'Cambiar QR' : 'Subir QR'}</label>
+            <label class="btn btn--sec btn--chico"><input type="file" accept="image/png,image/jpeg" class="sr" data-qr-archivo>${icono('foto')} ${c.pago_qr ? 'Cambiar QR' : 'Subir QR'}</label>
             ${c.pago_qr ? html`<button class="btn btn--fantasma btn--chico" type="button" data-qr-quitar style="color:var(--peligro)">${icono('x')} Quitar</button>` : ''}
           </div>
           <p class="campo__ayuda">El de Mercado Pago o el del banco. Los socios lo ven junto a los datos para transferir.</p>

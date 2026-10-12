@@ -534,7 +534,7 @@ router.put('/config', (req, res) => {
   if ('pago_qr' in body) {
     const qr = String(body.pago_qr || '');
     if (qr) {
-      const m = /^data:image\/(png|jpeg|webp);base64,([A-Za-z0-9+/=]+)$/.exec(qr);
+      const m = /^data:image\/(png|jpeg);base64,([A-Za-z0-9+/=]+)$/.exec(qr);
       if (!m) throw new ErrorNegocio('El QR tiene que ser una imagen (PNG o JPG)');
       if (Buffer.from(m[2], 'base64').length > 1024 * 1024) throw new ErrorNegocio('La imagen del QR es muy pesada (máximo 1 MB)');
     }
