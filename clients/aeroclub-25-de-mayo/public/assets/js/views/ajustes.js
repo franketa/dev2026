@@ -1,5 +1,17 @@
 import { get, put, html, raw, pintar, icono, toast, error, conBoton, datosForm } from '../lib.js';
 
+// Imagen del QR para pagar → data URL (máximo 1 MB, como pide el servidor).
+function leerQr(archivo) {
+  return new Promise((ok, mal) => {
+    if (!/^image\/(png|jpeg|webp)$/.test(archivo.type)) return mal(new Error('Elegí una imagen PNG o JPG'));
+    if (archivo.size > 1024 * 1024) return mal(new Error('La imagen es muy pesada (máximo 1 MB)'));
+    const r = new FileReader();
+    r.onload = () => ok(r.result);
+    r.onerror = () => mal(new Error('No se pudo leer la imagen'));
+    r.readAsDataURL(archivo);
+  });
+}
+
 export default async function ajustes(ctx) {
   const { config: c } = await get('/api/admin/config');
   const horasOpc = Array.from({ length: 24 }, (_, h) => h);
@@ -20,6 +32,15 @@ export default async function ajustes(ctx) {
         </div>
         <div class="campo"><label for="c-banco">Banco</label><input class="input" id="c-banco" name="pago_banco" value="${c.pago_banco}"></div>
         <div class="campo"><label for="c-inst">Instrucciones</label><textarea class="textarea" id="c-inst" name="pago_instrucciones" maxlength="600">${c.pago_instrucciones}</textarea></div>
+        <div class="campo">
+          <span class="campo__label">QR para pagar <span class="muted">(opcional)</span></span>
+          <div class="pagar__qr" data-qr-vista style="justify-items:start">${c.pago_qr ? html`<img src="${c.pago_qr}" alt="QR cargado">` : html`<span class="muted chico">Sin QR cargado.</span>`}</div>
+          <div class="tabla__acciones" data-escritura>
+            <label class="btn btn--sec btn--chico"><input type="file" accept="image/png,image/jpeg,image/webp" class="sr" data-qr-archivo>${icono('foto')} ${c.pago_qr ? 'Cambiar QR' : 'Subir QR'}</label>
+            ${c.pago_qr ? html`<button class="btn btn--fantasma btn--chico" type="button" data-qr-quitar style="color:var(--peligro)">${icono('x')} Quitar</button>` : ''}
+          </div>
+          <p class="campo__ayuda">El de Mercado Pago o el del banco. Los socios lo ven junto a los datos para transferir.</p>
+        </div>
       </section>
 
       <section class="panel form">
@@ -54,9 +75,25 @@ export default async function ajustes(ctx) {
   </div>`);
 
   const form = ctx.el.querySelector('#form-config');
+  // undefined: no se tocó el QR; '' lo saca; un data URL lo reemplaza.
+  let qr;
+  const $vista = ctx.el.querySelector('[data-qr-vista]');
+  ctx.el.querySelector('[data-qr-archivo]').addEventListener('change', async (e) => {
+    const archivo = e.target.files[0];
+    if (!archivo) return;
+    try {
+      qr = await leerQr(archivo);
+      pintar($vista, html`<img src="${qr}" alt="QR nuevo"><small>Se guarda con "Guardar configuración"</small>`);
+    } catch (err) { e.target.value = ''; error(err); }
+  });
+  ctx.el.querySelector('[data-qr-quitar]')?.addEventListener('click', () => {
+    qr = '';
+    pintar($vista, html`<span class="muted chico">El QR se quita con "Guardar configuración".</span>`);
+  });
   form.addEventListener('submit', (e) => {
     e.preventDefault();
     const d = datosForm(form);
+    if (qr !== undefined) d.pago_qr = qr;
     d.cierre_automatico = d.cierre_automatico ? '1' : '0';
     conBoton(form.querySelector('[type=submit]'), async () => {
       try { await put('/api/admin/config', d); toast('Configuración guardada', 'ok'); } catch (err) { error(err); }

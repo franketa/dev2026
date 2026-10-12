@@ -1,8 +1,8 @@
 import {
   get, post, put, html, raw, pintar, icono, pesos, horas, fecha, nombrePeriodo, chipCupon, modal, pedirTexto, toast, error, conBoton,
-  hoyAR, pesosInput, datosForm, ala, nombreCompleto, opcionesMedio, leerComprobante
+  hoyAR, pesosInput, datosForm, ala, nombreCompleto, opcionesMedio, leerComprobante, ayuda
 } from '../lib.js';
-import { listaMovimientos, sinAnulados } from './comun.js';
+import { listaMovimientos, sinAnulados, detalleSaldo, detalleProximoCierre, cajaPago } from './comun.js';
 import { tablaInformes, revisarPago } from './pagos.js';
 import { cambiarEstado } from './socios.js';
 
@@ -12,12 +12,12 @@ function bloqueSaldo(d, { admin }) {
     <section class="saldo">
       ${ala('saldo__ala')}
       <div>
-        <div class="saldo__etiqueta">${debe ? (admin ? 'Debe' : 'Tu saldo a pagar') : d.saldo < 0 ? 'Saldo a favor' : 'Saldo'}</div>
+        <div class="saldo__etiqueta">${debe ? (admin ? 'Debe' : 'Tu saldo a pagar') : d.saldo < 0 ? 'Saldo a favor' : 'Saldo'} ${ayuda(detalleSaldo(d.composicion, { abiertos: d.usuario.rol === 'externo' ? null : d.abiertos, proximo: d.proximo_cierre, propio: !admin }), '¿De dónde sale el saldo?')}</div>
         <div class="saldo__monto">${pesos(Math.abs(d.saldo))}</div>
         <div class="saldo__estado">${debe ? html`<span class="chip chip--pend">Pendiente de pago</span>` : html`<span class="chip chip--ok">Al día</span>`}</div>
       </div>
       ${d.usuario.rol === 'externo' ? '' : html`<div class="saldo__pie">
-        <div><span>Vuelos a facturar en el próximo cierre</span><strong>${pesos(d.abiertos.importe)}</strong></div>
+        <div><span>Vuelos para el próximo cierre ${ayuda(detalleProximoCierre(d.composicion, d.abiertos, d.proximo_cierre), '¿Qué son los vuelos para el próximo cierre?')}</span><strong>${pesos(d.abiertos.importe)}</strong></div>
         <div><span>Horas sin facturar</span><strong>${horas(d.abiertos.decimas)}</strong></div>
       </div>`}
     </section>`;
@@ -48,6 +48,7 @@ export async function miCuenta(ctx) {
       <div class="vista__acciones"><button class="btn btn--principal" type="button" data-informar>${icono('informar')} Informar un pago</button></div>
     </div>
     ${bloqueSaldo(d, { admin: false })}
+    ${cajaPago(d.pago)}
     ${informes.length ? html`<section class="panel"><div class="panel__cab"><h2>Tus pagos</h2><p>Los que informaste vos y los que cargó tesorería. Los que informás se descuentan de tu saldo cuando tesorería los confirma.</p></div>${tablaInformes(informes, { socio: false })}</section>` : ''}
     <section class="panel"><div class="panel__cab"><h2>Cupones</h2></div>${tablaCupones(d.cupones, { admin: false })}</section>
     <section class="panel"><div class="panel__cab"><h2>Movimientos</h2><p>Los vuelos aparecen acá cuando entran en el cierre del mes.</p></div>${listaMovimientos(sinAnulados(d.movimientos))}</section>
@@ -58,7 +59,7 @@ export async function miCuenta(ctx) {
 }
 
 // El socio avisa que pagó (con foto del comprobante si quiere). No toca el saldo hasta que tesorería lo confirma.
-function modalInformarPago(saldo, alTerminar) {
+export function modalInformarPago(saldo, alTerminar) {
   let comprobante = null;
   const m = modal({
     titulo: 'Informar un pago',

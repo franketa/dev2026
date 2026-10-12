@@ -1,21 +1,32 @@
-import { get, html, raw, pintar, icono, pesos, horas, periodoHoy, selectorMes, datosForm } from '../lib.js';
+import { get, html, raw, pintar, icono, pesos, horas, periodoHoy, selectorMes, datosForm, ayuda } from '../lib.js';
 import { tiraVuelo, mapaOrden, abrirVuelo, vacio } from './comun.js';
 
 function resumen(vuelos) {
   const validos = vuelos.filter(v => v.estado !== 'anulado');
+  const suma = (lista, campo) => lista.reduce((s, v) => s + v[campo], 0);
+  const facturados = validos.filter(v => v.estado === 'cerrado');
+  const abiertos = validos.filter(v => v.estado === 'abierto');
   return {
     n: validos.length,
-    decimas: validos.reduce((s, v) => s + v.decimas, 0),
-    importe: validos.reduce((s, v) => s + v.importe, 0),
-    instruccion: validos.filter(v => v.tipo === 'instruccion').reduce((s, v) => s + v.decimas, 0)
+    decimas: suma(validos, 'decimas'),
+    importe: suma(validos, 'importe'),
+    instruccion: suma(validos.filter(v => v.tipo === 'instruccion'), 'decimas'),
+    facturados: { n: facturados.length, decimas: suma(facturados, 'decimas'), importe: suma(facturados, 'importe') },
+    abiertos: { n: abiertos.length, decimas: suma(abiertos, 'decimas'), importe: suma(abiertos, 'importe') }
   };
 }
 
+const cantVuelos = (n) => `${n} ${n === 1 ? 'vuelo' : 'vuelos'}`;
+
+// Lo volado en el mes, separado en lo que ya entró en un cupón y lo que entra en el próximo cierre:
+// sumado en un solo importe confundía (parecía una deuda).
 function cifrasResumen(r, { instructor = false } = {}) {
+  const solos = r.decimas - r.instruccion;
   return html`<div class="cifras">
-    <div class="cifra"><span>Horas</span><strong>${horas(r.decimas)}</strong><small>${r.n} ${r.n === 1 ? 'vuelo' : 'vuelos'}</small></div>
-    ${instructor ? html`<div class="cifra"><span>Alumnos distintos</span><strong>${r.alumnos}</strong></div>`
-      : html`<div class="cifra"><span>Importe</span><strong>${pesos(r.importe)}</strong><small>${horas(r.instruccion)} con instructor</small></div>`}
+    <div class="cifra"><span>Horas</span><strong>${horas(r.decimas)}</strong><small>${cantVuelos(r.n)}${r.instruccion ? `: ${horas(r.instruccion)} con instructor${solos ? ` y ${horas(solos)} solo` : ''}` : ''}</small></div>
+    ${instructor ? html`<div class="cifra"><span>Alumnos distintos</span><strong>${r.alumnos}</strong></div>` : html`
+      <div class="cifra"><span>Ya facturado ${ayuda(html`<p>Vuelos de este mes que ya entraron en un cierre: ${cantVuelos(r.facturados.n)}, ${horas(r.facturados.decimas)}. Están en tu cupón y en tu saldo; no se vuelven a cobrar.</p>`, '¿Qué es lo ya facturado?')}</span><strong>${pesos(r.facturados.importe)}</strong><small>${r.facturados.n ? `${cantVuelos(r.facturados.n)}, ${horas(r.facturados.decimas)}` : 'Ninguno todavía'}</small></div>
+      <div class="cifra"><span>Para el próximo cierre ${ayuda(html`<p>Vuelos de este mes que todavía no entraron en un cierre: ${cantVuelos(r.abiertos.n)}, ${horas(r.abiertos.decimas)}. No están en tu saldo: se suman en el próximo cierre y van en ese cupón.</p>`, '¿Qué es para el próximo cierre?')}</span><strong>${pesos(r.abiertos.importe)}</strong><small>${r.abiertos.n ? `${cantVuelos(r.abiertos.n)}, ${horas(r.abiertos.decimas)}` : 'Nada pendiente'}</small></div>`}
   </div>`;
 }
 
@@ -87,7 +98,7 @@ export async function vuelosAdmin(ctx) {
       <select class="select" name="piloto_id" aria-label="Piloto"><option value="">Todos los pilotos</option>${usuarios.map(u => html`<option value="${u.id}" ${sel(u.id, q.piloto_id)}>${u.apellido}, ${u.nombre}</option>`)}</select>
       <select class="select" name="estado" aria-label="Estado">
         <option value="">Vigentes</option>
-        <option value="abierto" ${sel('abierto', q.estado)}>A facturar</option>
+        <option value="abierto" ${sel('abierto', q.estado)}>Para el próximo cierre</option>
         <option value="cerrado" ${sel('cerrado', q.estado)}>Facturados</option>
         <option value="anulado" ${sel('anulado', q.estado)}>Anulados</option>
       </select>

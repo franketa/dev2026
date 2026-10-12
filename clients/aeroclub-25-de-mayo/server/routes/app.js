@@ -31,6 +31,8 @@ router.get('/inicio', (req, res) => {
     periodo,
     saldo: ledger.saldo(uid),
     abiertos: vuelos.resumenAbiertos(uid),
+    composicion: cuentas.composicionSaldo(uid),
+    pago: cuentas.datosPago(),
     mes,
     instruccion,
     ultimo_cupon: ultimoCupon ? { ...ultimoCupon, ...cierres.estadoCupon(ultimoCupon) } : null,
@@ -43,6 +45,15 @@ router.get('/inicio', (req, res) => {
 });
 
 router.get('/aviones', (req, res) => res.json({ aviones: flota.listarAviones({ pilotoId: req.user.id }) }));
+
+// QR para pagar (lo sube tesorería en Configuración).
+router.get('/pago-qr', (req, res) => {
+  const m = /^data:(image\/(?:png|jpeg|webp));base64,(.+)$/.exec(getConfig().pago_qr || '');
+  if (!m) throw new ErrorNegocio('No hay QR cargado', 404);
+  res.setHeader('Content-Type', m[1]);
+  res.setHeader('Cache-Control', 'private, max-age=300');
+  res.send(Buffer.from(m[2], 'base64'));
+});
 
 router.get('/instructores', (req, res) => {
   res.json({

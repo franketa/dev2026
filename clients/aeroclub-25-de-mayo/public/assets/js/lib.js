@@ -188,8 +188,64 @@ export function chipInforme(p) {
 export function chipVuelo(v) {
   if (v.estado === 'anulado') return html`<span class="chip chip--neutro">Anulado</span>`;
   if (v.estado === 'cerrado') return html`<span class="chip chip--ok">Facturado</span>`;
-  return html`<span class="chip">A facturar</span>`;
+  return html`<span class="chip">Va al próximo cierre</span>`;
 }
+
+// ── Ayudas "?": de dónde sale cada número ──────────────────────────────────
+// Al tocar el "?" (o pasar el mouse en la compu) se abre un globo con el detalle. El globo va suelto en
+// el body para que no lo recorten las cajas con overflow; en el celular aparece abajo, ancho.
+export function ayuda(contenido, etiqueta = '¿De dónde sale este número?') {
+  return html`<button type="button" class="ayuda" aria-label="${etiqueta}" aria-expanded="false" data-ayuda>?<template>${contenido}</template></button>`;
+}
+let globo = null;
+let globoDe = null;
+let globoFijo = false;
+function cerrarAyuda() {
+  globo?.remove();
+  globoDe?.setAttribute('aria-expanded', 'false');
+  globo = null; globoDe = null; globoFijo = false;
+}
+function abrirAyuda(btn, fijo) {
+  cerrarAyuda();
+  globo = document.createElement('div');
+  globo.className = 'ayuda-globo';
+  globo.setAttribute('role', 'tooltip');
+  globo.append(btn.querySelector('template').content.cloneNode(true));
+  document.body.append(globo);
+  globoDe = btn; globoFijo = fijo;
+  btn.setAttribute('aria-expanded', 'true');
+  if (window.innerWidth <= 640) { globo.classList.add('ayuda-globo--abajo'); return; }
+  const r = btn.getBoundingClientRect();
+  const w = globo.offsetWidth; const h = globo.offsetHeight;
+  const left = Math.min(Math.max(12, r.left + r.width / 2 - w / 2), window.innerWidth - w - 12);
+  let top = r.bottom + 8;
+  if (top + h > window.innerHeight - 12) top = Math.max(12, r.top - h - 8);
+  globo.style.left = `${left}px`;
+  globo.style.top = `${top}px`;
+}
+document.addEventListener('click', (e) => {
+  const b = e.target.closest('[data-ayuda]');
+  if (b) {
+    e.preventDefault(); e.stopPropagation();
+    if (globoDe === b && globoFijo) cerrarAyuda(); else abrirAyuda(b, true);
+    return;
+  }
+  if (globo && !e.target.closest('.ayuda-globo')) cerrarAyuda();
+}, true);
+if (window.matchMedia?.('(hover: hover)').matches) {
+  document.addEventListener('mouseover', (e) => { const b = e.target.closest?.('[data-ayuda]'); if (b && !globoFijo && globoDe !== b) abrirAyuda(b, false); });
+  document.addEventListener('mouseout', (e) => { const b = e.target.closest?.('[data-ayuda]'); if (b && !globoFijo && !b.contains(e.relatedTarget)) cerrarAyuda(); });
+}
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape') cerrarAyuda(); });
+window.addEventListener('hashchange', cerrarAyuda);
+window.addEventListener('resize', cerrarAyuda);
+
+// Botones "Copiar" (alias, CBU).
+document.addEventListener('click', async (e) => {
+  const b = e.target.closest('[data-copiar]');
+  if (!b) return;
+  try { await navigator.clipboard.writeText(b.dataset.copiar); toast('Copiado', 'ok'); } catch { toast('No se pudo copiar: mantené apretado el texto para copiarlo', 'mal'); }
+});
 
 // ── Toasts ──────────────────────────────────────────────────────────────────
 export function toast(msg, tipo = '') {

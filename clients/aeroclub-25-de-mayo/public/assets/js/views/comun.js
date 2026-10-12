@@ -1,7 +1,7 @@
 // Piezas compartidas entre vistas.
 import {
   html, raw, get, post, icono, modal, pesos, horas, fecha, fechaCorta, fechaHora, tambor, chipVuelo,
-  colorAvion, pedirTexto, toast, error, conBoton
+  colorAvion, pedirTexto, toast, error, conBoton, nombrePeriodo
 } from '../lib.js';
 
 const TIPOS_MOV = { vuelo: 'avion', servicio: 'ticket', pago: 'pago', ajuste: 'ajuste', saldo_inicial: 'ajuste', anulacion: 'anular' };
@@ -123,6 +123,64 @@ export function listaMovimientos(movs, { admin = false } = {}) {
           <button class="btn btn--fantasma btn--chico" type="button" data-borrar-mov="${m.id}" data-escritura style="color:var(--peligro)">${icono('x')} Borrar</button>` : ''}
       </div>` : ''}
     </div>`)}</div>`;
+}
+
+// Filas "concepto … importe" que terminan en un total: el contenido de los "?" de saldos.
+function cuenta(filas, total, nota = '') {
+  return html`<div class="compo">
+    ${filas.filter(Boolean).map(([k, v]) => html`<div class="compo__fila"><span>${k}</span><b>${pesos(v, { signo: true })}</b></div>`)}
+    <div class="compo__fila compo__total"><span>${total[0]}</span><b>${pesos(total[1])}</b></div>
+    ${nota ? html`<p class="compo__nota">${nota}</p>` : ''}
+  </div>`;
+}
+
+// Cómo se forma el saldo: el último cupón y lo que pasó después del cierre. Los vuelos abiertos no
+// están en el saldo: se avisa aparte.
+export function detalleSaldo(c, { abiertos, proximo, propio = true } = {}) {
+  const filas = [
+    c.cupon ? [`Cupón de ${nombrePeriodo(c.cupon.periodo)} (N.º ${c.cupon.numero})`, c.cupon.total] : c.anterior ? ['Saldo anterior', c.anterior] : null,
+    c.pagos ? ['Pagos desde el cierre', c.pagos] : null,
+    c.servicios ? ['Servicios cargados a la cuenta', c.servicios] : null,
+    c.ajustes ? ['Ajustes', c.ajustes] : null,
+    c.vuelos ? ['Vuelos', c.vuelos] : null
+  ];
+  if (!filas.some(Boolean)) filas.push(['Sin movimientos todavía', 0]);
+  const nota = abiertos?.importe
+    ? `Los vuelos que ${propio ? 'cargaste' : 'cargó'} después del último cierre (${pesos(abiertos.importe)}) todavía no están en este saldo: se suman${proximo ? ` en el cierre de ${nombrePeriodo(proximo.periodo)}, el ${fecha(proximo.fecha)}` : ' en el próximo cierre'}.`
+    : '';
+  return cuenta(filas, [c.saldo < 0 ? 'Saldo a favor' : 'Saldo', Math.abs(c.saldo)], nota);
+}
+
+// Los vuelos que todavía no entraron en un cierre y lo que quedaría en el próximo cupón.
+export function detalleProximoCierre(c, abiertos, proximo) {
+  return cuenta([
+    [`${abiertos.vuelos} ${abiertos.vuelos === 1 ? 'vuelo' : 'vuelos'} sin facturar (${horas(abiertos.decimas)})`, abiertos.importe],
+    c.saldo ? [c.saldo > 0 ? 'Más lo que debés hoy' : 'Menos tu saldo a favor', c.saldo] : null
+  ], ['Próximo cupón, si no pagás antes', Math.max(c.saldo + abiertos.importe, 0)],
+  `Los vuelos se facturan en el cierre de ${nombrePeriodo(proximo.periodo)}, el ${fecha(proximo.fecha)}. El derecho de aeronave del mes también se suma ese día.`);
+}
+
+// Datos para transferir, con el botón para informar el pago al lado (que nadie diga "no lo vi").
+export function cajaPago(p) {
+  const hay = p.alias || p.cbu;
+  return html`<section class="panel pagar">
+    <div class="panel__cab"><div><h2>Cómo pagar</h2><p>Transferí y después informá el pago: así tesorería lo encuentra y lo descuenta de tu saldo.</p></div></div>
+    <div class="pagar__cuerpo">
+      <div class="pagar__datos">
+        ${hay ? '' : html`<p class="muted">Tesorería todavía no cargó los datos para transferir. Consultalos en el club.</p>`}
+        ${p.alias ? html`<div class="pagar__alias"><span>Alias</span><strong>${p.alias}</strong><button class="btn btn--sec btn--chico" type="button" data-copiar="${p.alias}">Copiar</button></div>` : ''}
+        <dl class="detalle">
+          ${p.cbu ? html`<dt>CBU / CVU</dt><dd><span class="pagar__cbu">${p.cbu}</span> <button class="btn btn--fantasma btn--chico" type="button" data-copiar="${p.cbu}">Copiar</button></dd>` : ''}
+          ${p.titular ? html`<dt>Titular</dt><dd>${p.titular}</dd>` : ''}
+          ${p.cuit ? html`<dt>CUIT</dt><dd>${p.cuit}</dd>` : ''}
+          ${p.banco ? html`<dt>Banco</dt><dd>${p.banco}</dd>` : ''}
+        </dl>
+      </div>
+      ${p.qr ? html`<a class="pagar__qr" href="/api/pago-qr" target="_blank" rel="noopener" aria-label="Ver el QR en grande"><img src="/api/pago-qr" alt="QR para pagar"><small>Tocá para agrandar</small></a>` : ''}
+    </div>
+    ${p.instrucciones ? html`<p class="muted chico">${p.instrucciones}</p>` : ''}
+    <button class="btn btn--principal btn--ancho" type="button" data-informar>${icono('informar')} Informar el pago</button>
+  </section>`;
 }
 
 export function vacio(texto, accion = '') {

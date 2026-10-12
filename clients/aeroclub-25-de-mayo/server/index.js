@@ -44,6 +44,7 @@ app.use((req, res, next) => {
 
 // El pago informado puede traer la foto del comprobante (hasta 3 MB, en base64).
 app.use('/api/pagos-informados', express.json({ limit: '5mb' }));
+app.use('/api/admin/config', express.json({ limit: '2mb' }));   // puede traer la imagen del QR para pagar
 app.use(express.json({ limit: '100kb' }));
 
 app.get('/salud', (req, res) => {

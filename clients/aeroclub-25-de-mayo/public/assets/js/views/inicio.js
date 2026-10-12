@@ -1,5 +1,6 @@
-import { get, html, pintar, icono, pesos, horas, fecha, fechaCorta, nombrePeriodo, mesDe, chipCupon, ala, hoyLargo } from '../lib.js';
-import { tiraVuelo, tarjetaAvion, mapaOrden, abrirVuelo, vacio } from './comun.js';
+import { get, html, pintar, icono, pesos, horas, fecha, fechaCorta, nombrePeriodo, mesDe, chipCupon, ala, hoyLargo, ayuda } from '../lib.js';
+import { tiraVuelo, tarjetaAvion, mapaOrden, abrirVuelo, vacio, detalleSaldo, detalleProximoCierre, cajaPago } from './comun.js';
+import { modalInformarPago } from './cuenta.js';
 
 export default async function inicio(ctx) {
   const d = await get('/api/inicio');
@@ -21,7 +22,7 @@ export default async function inicio(ctx) {
     <section class="saldo" aria-label="Tu saldo">
       ${ala('saldo__ala')}
       <div>
-        <div class="saldo__etiqueta">${debe ? 'Tu saldo a pagar' : d.saldo < 0 ? 'Tenés saldo a favor' : 'Tu cuenta'}</div>
+        <div class="saldo__etiqueta">${debe ? 'Tu saldo a pagar' : d.saldo < 0 ? 'Tenés saldo a favor' : 'Tu cuenta'} ${ayuda(detalleSaldo(d.composicion, { abiertos: d.abiertos, proximo: cierre }), '¿De dónde sale tu saldo?')}</div>
         <div class="saldo__monto">${pesos(Math.abs(d.saldo))}</div>
         <div class="saldo__estado">${debe
           ? html`<span class="chip chip--pend">${cup && cup.estado === 'parcial' ? 'Pago parcial registrado' : cup?.vencido ? 'Cupón vencido' : cup ? `Vence el ${fecha(cup.vencimiento)}` : 'Pendiente'}</span>`
@@ -29,10 +30,12 @@ export default async function inicio(ctx) {
       </div>
       <div class="saldo__pie">
         <div><span>Volaste en ${mesDe(d.periodo)}</span><strong>${horas(d.mes.decimas)}</strong></div>
-        <div><span>A facturar en el cierre</span><strong>${pesos(d.abiertos.importe)}</strong></div>
+        <div><span>Vuelos para el próximo cierre ${ayuda(detalleProximoCierre(d.composicion, d.abiertos, cierre), '¿Qué son los vuelos para el próximo cierre?')}</span><strong>${pesos(d.abiertos.importe)}</strong></div>
         ${d.instruccion ? html`<div><span>Como instructor</span><strong>${horas(d.instruccion.decimas)}</strong></div>` : ''}
       </div>
     </section>
+
+    ${debe ? cajaPago(d.pago) : ''}
 
     ${usuario.bloqueado
       ? html`<div class="cta-cargar cta-cargar--bloqueada" aria-disabled="true">${icono('candado')}<div><strong>Cargar vuelo</strong><span>Bloqueado por falta de pago</span></div></div>`
@@ -74,6 +77,7 @@ export default async function inicio(ctx) {
   </div>`);
 
   ctx.el.addEventListener('click', (e) => {
+    if (e.target.closest('[data-informar]')) return modalInformarPago(d.saldo, ctx.recargar);
     const t = e.target.closest('[data-vuelo]');
     if (t) abrirVuelo(Number(t.dataset.vuelo), ctx, { alCambiar: ctx.recargar });
   });

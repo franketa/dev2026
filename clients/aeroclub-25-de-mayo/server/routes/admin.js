@@ -530,6 +530,16 @@ router.put('/config', (req, res) => {
     if (k === 'email_tesoreria' && v && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)) throw new ErrorNegocio('El email de tesorería es inválido');
     if (String(actual[k] ?? '') !== v) { set.run(k, v); cambios.push(`${k}: ${actual[k] || '—'} → ${v || '—'}`); }
   }
+  // QR para pagar: una imagen chica (data URL). '' lo saca.
+  if ('pago_qr' in body) {
+    const qr = String(body.pago_qr || '');
+    if (qr) {
+      const m = /^data:image\/(png|jpeg|webp);base64,([A-Za-z0-9+/=]+)$/.exec(qr);
+      if (!m) throw new ErrorNegocio('El QR tiene que ser una imagen (PNG o JPG)');
+      if (Buffer.from(m[2], 'base64').length > 1024 * 1024) throw new ErrorNegocio('La imagen del QR es muy pesada (máximo 1 MB)');
+    }
+    if (qr !== (actual.pago_qr || '')) { set.run('pago_qr', qr); cambios.push(qr ? 'QR para pagar actualizado' : 'QR para pagar quitado'); }
+  }
   if (cambios.length) auditar(req.user.id, 'config.edicion', cambios.join('; '));
   res.json({ config: getConfig() });
 });

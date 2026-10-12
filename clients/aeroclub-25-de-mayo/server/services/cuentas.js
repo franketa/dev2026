@@ -1,9 +1,34 @@
-const { db, cuentaTransitos } = require('../db');
+const { db, cuentaTransitos, getConfig } = require('../db');
 const ledger = require('./ledger');
 const cierres = require('./cierres');
 const vuelos = require('./vuelos');
 const pagosInformados = require('./pagosInformados');
 const { ErrorNegocio } = require('../util');
+
+// De qué se compone el saldo: lo que quedó del último cupón más lo que pasó después del cierre.
+// Los vuelos abiertos no están en el saldo: entran en el próximo cierre (van aparte, en `abiertos`).
+function composicionSaldo(usuarioId) {
+  const cupon = db.prepare(`
+    SELECT cu.numero, cu.vencimiento, ci.periodo, ci.hasta_movimiento_id hasta FROM cupones cu JOIN cierres ci ON ci.id = cu.cierre_id
+    WHERE cu.usuario_id = ? ORDER BY cu.id DESC LIMIT 1`).get(usuarioId);
+  const desde = cupon?.hasta ?? 0;
+  const t = cierres.totalesRango(usuarioId, desde, Number.MAX_SAFE_INTEGER);
+  return {
+    cupon: cupon ? { numero: cupon.numero, periodo: cupon.periodo, vencimiento: cupon.vencimiento, total: ledger.saldo(usuarioId, desde) } : null,
+    anterior: cupon ? 0 : ledger.saldo(usuarioId, desde),
+    vuelos: t.vuelos, servicios: t.servicios, pagos: t.pagos, ajustes: t.ajustes,
+    saldo: ledger.saldo(usuarioId)
+  };
+}
+
+// Datos para pagar por transferencia (los mismos del cupón).
+function datosPago() {
+  const c = getConfig();
+  return {
+    alias: c.pago_alias || '', cbu: c.pago_cbu || '', titular: c.pago_titular || '', cuit: c.pago_cuit || '', banco: c.pago_banco || '',
+    instrucciones: c.pago_instrucciones || '', qr: !!c.pago_qr
+  };
+}
 
 function estadoCuenta(usuarioId) {
   const usuario = db.prepare('SELECT id, nombre, apellido, email, telefono, dni, licencia, rol, es_instructor, activo, baja_motivo, bloqueado, bloqueo_motivo FROM usuarios WHERE id = ?').get(usuarioId);
@@ -25,7 +50,10 @@ function estadoCuenta(usuarioId) {
     abiertos: vuelos.resumenAbiertos(usuarioId),
     movimientos,
     cupones,
-    pagos_informados: pagosInformados.listar({ usuarioId, limite: 30 })
+    pagos_informados: pagosInformados.listar({ usuarioId, limite: 30 }),
+    composicion: composicionSaldo(usuarioId),
+    pago: datosPago(),
+    proximo_cierre: cierres.proximoCierreAutomatico()
   };
 }
 
@@ -41,4 +69,4 @@ function listarCuentas() {
     ORDER BY u.activo DESC, u.apellido, u.nombre`).all({ transitos: cuentaTransitos() });
 }
 
-module.exports = { estadoCuenta, listarCuentas };
+module.exports = { estadoCuenta, listarCuentas, composicionSaldo, datosPago };
