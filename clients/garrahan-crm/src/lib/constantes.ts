@@ -4,7 +4,7 @@ export type Tono = "verde" | "azul" | "violeta" | "naranja" | "rojo" | "amarillo
 
 export const ESTADOS_VEHICULO: Record<string, { label: string; tono: Tono }> = {
   disponible:   { label: "Disponible",   tono: "verde" },
-  reservado:    { label: "Reservado",    tono: "azul" },
+  reservado:    { label: "Señado",       tono: "azul" },
   en_revision:  { label: "En Revisión",  tono: "violeta" },
   en_taller:    { label: "En Taller",    tono: "naranja" },
   en_detailing: { label: "En Detailing", tono: "celeste" },

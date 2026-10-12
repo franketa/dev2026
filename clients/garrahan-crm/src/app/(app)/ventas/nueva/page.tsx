@@ -5,6 +5,7 @@ import { plata } from "@/lib/format";
 import { ESTADOS_VENTA, ESTADOS_TRAMITE } from "@/lib/constantes";
 import { Encabezado, Panel, PanelTitulo, Boton, Campo } from "@/components/ui";
 import PagosVenta from "@/components/pagos-venta";
+import { avisar, enlace, plataAviso, t } from "@/lib/telegram";
 
 export const dynamic = "force-dynamic";
 
@@ -54,6 +55,9 @@ export default async function NuevaVenta({ searchParams }: { searchParams: Promi
     const total = precio - descuento;
     const fechaVenta = txt("fecha") ?? new Date().toISOString().slice(0, 10);
     const estado = String(fd.get("estado") || "reserva");
+    // En una reserva, la plata que entra es la seña. Vence: si no se completa
+    // a tiempo hay que decidir qué pasa con la unidad, y el sistema lo avisa.
+    const esReserva = estado === "reserva";
 
     // Cliente: o se elige uno existente, o se crea al vuelo con lo que se tipeó.
     let clienteId = num("cliente_id");
@@ -74,7 +78,7 @@ export default async function NuevaVenta({ searchParams }: { searchParams: Promi
                           facturado, estado_tramite, observaciones)
       VALUES (${vehiculoId}, ${clienteId}, ${num("vendedor_id")}, ${veh?.inversor_id ?? null},
               ${num("sucursal_id") ?? veh?.sucursal_id ?? null}, ${num("lead_id")},
-              ${fechaVenta}, ${estado}, ${precio}, ${descuento}, ${num("sena") ?? 0},
+              ${fechaVenta}, ${estado}, ${precio}, ${descuento}, 0,
               ${num("comision") ?? 0},
               ${String(fd.get("facturado") || "pendiente")},
               ${String(fd.get("estado_tramite") || "iniciado")}, ${txt("observaciones")})
@@ -100,9 +104,9 @@ export default async function NuevaVenta({ searchParams }: { searchParams: Promi
       cobrado += enPesos;
 
       await sql`
-        INSERT INTO venta_pagos (venta_id, medio, monto, moneda, cotizacion, fecha, referencia)
+        INSERT INTO venta_pagos (venta_id, medio, monto, moneda, cotizacion, fecha, referencia, es_sena)
         VALUES (${venta.id}, ${medios[i]}, ${monto}, ${moneda}, ${cot}, ${fechaVenta},
-                ${refs[i] || null})`;
+                ${refs[i] || null}, ${esReserva})`;
 
       // La plata que entra de verdad impacta en la caja. La permuta y la
       // financiación no son plata en mano, así que no tocan ninguna cuenta.
@@ -114,6 +118,12 @@ export default async function NuevaVenta({ searchParams }: { searchParams: Promi
                   ${"Venta " + (veh?.marca || "") + " " + (veh?.modelo || "")},
                   ${monto}, ${moneda}, ${cot}, ${enPesos}, ${fechaVenta}, ${vehiculoId}, ${venta.id}, ${usr.id})`;
       }
+    }
+
+    if (esReserva && cobrado > 0) {
+      await sql`UPDATE ventas SET sena = ${cobrado},
+                  sena_vence = ${txt("sena_vence") ?? enDias(fechaVenta, 7)}
+                WHERE id = ${venta.id}`;
     }
 
     /* ------------------------------------------------- permuta que entra */
@@ -176,8 +186,28 @@ export default async function NuevaVenta({ searchParams }: { searchParams: Promi
                 VALUES (${leadId}, 'cambio_estado', ${"Se generó la venta #" + venta.id}, ${usr.id})`;
     }
 
+    // Una venta que se carga ya cerrada abre la postventa igual que si se
+    // cerrara después desde la ficha.
+    if (estado === "completada") {
+      await sql`INSERT INTO postventa (venta_id, vtv_vence)
+                SELECT ${venta.id}, (SELECT vtv_vence FROM vehiculo_ficha WHERE vehiculo_id = ${vehiculoId})
+                WHERE NOT EXISTS (SELECT 1 FROM postventa WHERE venta_id = ${venta.id})`;
+    }
+
     await sql`INSERT INTO auditoria (usuario_id, entidad, entidad_id, accion, detalle)
               VALUES (${usr.id}, 'venta', ${venta.id}, 'alta', ${plataSimple(total)})`;
+
+    const unidad = `${veh?.marca || ""} ${veh?.modelo || ""}`.trim();
+    if (estado === "completada") {
+      await avisar(`✅ <b>Venta cerrada</b> · ${enlace("/ventas/" + venta.id, "#" + venta.id)}\n` +
+        `${t(unidad)} por ${plataAviso(total)}\n` +
+        `La unidad sale del stock y de la web. Vendió ${t(usr.nombre)}.`);
+    } else if (esReserva && cobrado > 0) {
+      const [vt] = await sql`SELECT sena_vence FROM ventas WHERE id = ${venta.id}`;
+      await avisar(`💰 <b>Seña registrada</b> · ${enlace("/ventas/" + venta.id, "#" + venta.id)}\n` +
+        `${t(unidad)} · ${plataAviso(cobrado)}\n` +
+        `Vence el ${fechaCorta(vt?.sena_vence)}. Cargó ${t(usr.nombre)}.`);
+    }
 
     redirect(`/ventas/${venta.id}`);
   }
@@ -265,8 +295,9 @@ export default async function NuevaVenta({ searchParams }: { searchParams: Promi
                 ))}
               </select>
             </Campo>
-            <Campo label="Seña">
-              <input name="sena" type="number" step="0.01" min="0" className="campo" defaultValue={0} />
+            <Campo label="Si es reserva, la seña vence el">
+              <input name="sena_vence" type="date" className="campo"
+                defaultValue={enDias(new Date().toISOString().slice(0, 10), 7)} />
             </Campo>
             <Campo label="Vencimiento del saldo">
               <input name="vencimiento_saldo" type="date" className="campo" />
@@ -376,6 +407,19 @@ export default async function NuevaVenta({ searchParams }: { searchParams: Promi
       </form>
     </>
   );
+}
+
+/** Fecha ISO corrida n días. Se trabaja con strings para no pelear con husos. */
+function enDias(iso: string, n: number) {
+  const d = new Date(iso + "T12:00:00");
+  d.setDate(d.getDate() + n);
+  return d.toISOString().slice(0, 10);
+}
+
+function fechaCorta(d: any) {
+  if (!d) return "—";
+  const x = new Date(d);
+  return x.toLocaleDateString("es-AR", { day: "2-digit", month: "2-digit", timeZone: "UTC" });
 }
 
 function plataSimple(n: number) {

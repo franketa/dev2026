@@ -17,7 +17,7 @@ export default async function Recibo({ params }: { params: Promise<any> }) {
   const { id } = await params;
 
   const [p] = await sql`
-    SELECT vp.*, v.id AS venta_id, v.precio, v.descuento,
+    SELECT vp.*, v.id AS venta_id, v.precio, v.descuento, v.sena_vence,
            x.marca, x.modelo, x.anio, x.dominio,
            c.nombre AS c_nombre, c.apellido AS c_apellido, c.dni_cuit AS c_doc,
            c.direccion AS c_dir, c.localidad AS c_loc,
@@ -32,7 +32,10 @@ export default async function Recibo({ params }: { params: Promise<any> }) {
 
   const [emp, todos] = await Promise.all([
     sql`SELECT * FROM empresa WHERE id = 1`,
-    sql`SELECT monto, moneda, cotizacion FROM venta_pagos WHERE venta_id = ${p.venta_id}`,
+    // Solo lo cobrado hasta este recibo: reimprimir uno viejo no puede
+    // mostrar como entregados pagos que llegaron después.
+    sql`SELECT monto, moneda, cotizacion FROM venta_pagos
+        WHERE venta_id = ${p.venta_id} AND (fecha, id) <= (${p.fecha}::date, ${p.id})`,
   ]);
   const e = emp[0] || {};
 
@@ -62,7 +65,9 @@ export default async function Recibo({ params }: { params: Promise<any> }) {
         print:rounded-none shadow-2xl print:shadow-none">
 
         {/* ------------------------------------------------------ encabezado */}
-        <div className="flex justify-between items-start border-b-2 border-black pb-4 mb-6">
+        <div className="flex items-start gap-4 border-b-2 border-black pb-4 mb-6">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/logo.png" alt="Garrahan" className="h-16 w-16 shrink-0" />
           <div>
             <h1 className="text-[19px] font-bold uppercase tracking-tight">
               {e.razon_social || "Garrahan Automotores"}
@@ -74,8 +79,10 @@ export default async function Recibo({ params }: { params: Promise<any> }) {
               {e.cuit ? "CUIT " + e.cuit : ""} {e.telefono ? " · Tel. " + e.telefono : ""}
             </p>
           </div>
-          <div className="text-right">
-            <div className="text-[13px] font-bold uppercase tracking-wide">Recibo</div>
+          <div className="text-right ml-auto">
+            <div className="text-[13px] font-bold uppercase tracking-wide">
+              {p.es_sena ? "Recibo de seña" : "Recibo"}
+            </div>
             <div className="text-[19px] font-bold tabular">N° {String(p.id).padStart(6, "0")}</div>
             <div className="text-[11.5px] text-gray-600 print:text-black mt-1">{fecha(p.fecha)}</div>
           </div>
@@ -114,7 +121,8 @@ export default async function Recibo({ params }: { params: Promise<any> }) {
           <div>
             <h2 className="text-[11px] uppercase tracking-wide font-bold border-b border-gray-300
               print:border-black pb-1 mb-2">En concepto de</h2>
-            <L t="Operación">Venta N° {p.venta_id}</L>
+            <L t="Operación">{p.es_sena ? "Seña de reserva — " : ""}Venta N° {p.venta_id}</L>
+            {p.es_sena && p.sena_vence && <L t="Reserva válida hasta">{fecha(p.sena_vence)}</L>}
             <L t="Unidad">{p.marca} {p.modelo} {p.anio || ""}</L>
             <L t="Dominio">{p.dominio ? String(p.dominio).toUpperCase() : "—"}</L>
             <L t="Forma de pago">{MEDIOS_PAGO[p.medio] || p.medio}</L>

@@ -88,7 +88,9 @@ export default async function Mandato({ params }: { params: Promise<any> }) {
         print:rounded-none shadow-2xl print:shadow-none">
 
         {/* ------------------------------------------------------ encabezado */}
-        <div className="flex justify-between items-start border-b-2 border-black pb-4 mb-6">
+        <div className="flex items-start gap-4 border-b-2 border-black pb-4 mb-6">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/logo.png" alt="Garrahan" className="h-16 w-16 shrink-0" />
           <div>
             <h1 className="text-[19px] font-bold uppercase tracking-tight">
               {e.razon_social || "Garrahan Automotores"}
@@ -100,7 +102,7 @@ export default async function Mandato({ params }: { params: Promise<any> }) {
               {e.cuit ? "CUIT " + e.cuit : ""}{e.telefono ? " · Tel. " + e.telefono : ""}
             </p>
           </div>
-          <div className="text-right">
+          <div className="text-right ml-auto">
             <div className="text-[13px] font-bold uppercase tracking-wide">Mandato de venta</div>
             <div className="text-[11.5px] text-gray-600 print:text-black mt-1">
               Chivilcoy, {fecha(hoy)}

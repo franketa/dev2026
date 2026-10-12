@@ -11,6 +11,7 @@ import {
   FilaVacia, Boton, Dato, Campo, Monto, Progreso,
 } from "@/components/ui";
 import SelectEstado from "@/components/select-estado";
+import { avisar, enlace, plataAviso, t } from "@/lib/telegram";
 
 export const dynamic = "force-dynamic";
 
@@ -50,6 +51,8 @@ export default async function Venta({ params }: { params: Promise<any> }) {
   const saldo = total - cobrado;
   const margen = total - Number(v.costo_total || 0);
   const e = ESTADOS_VENTA[v.estado] || { label: v.estado, tono: "gris" as const };
+  const hoyIso = new Date().toISOString().slice(0, 10);
+  const senaVencida = !!v.sena_vence && new Date(v.sena_vence).toISOString().slice(0, 10) < hoyIso;
 
   /* ------------------------------------------------------------ acciones */
   async function agregarPago(fd: FormData) {
@@ -62,9 +65,16 @@ export default async function Venta({ params }: { params: Promise<any> }) {
     const cot = moneda === "USD" ? Number(fd.get("cotizacion") || 1) : 1;
     const f = String(fd.get("fecha") || new Date().toISOString().slice(0, 10));
 
-    await sql`INSERT INTO venta_pagos (venta_id, medio, monto, moneda, cotizacion, fecha, referencia)
+    // Mientras la operación está en reserva, lo que entra es seña (o refuerzo).
+    const esSena = v.estado === "reserva";
+    await sql`INSERT INTO venta_pagos (venta_id, medio, monto, moneda, cotizacion, fecha, referencia, es_sena)
               VALUES (${id}, ${medio}, ${monto}, ${moneda}, ${cot}, ${f},
-                      ${String(fd.get("referencia") || "") || null})`;
+                      ${String(fd.get("referencia") || "") || null}, ${esSena})`;
+    if (esSena) {
+      await sql`UPDATE ventas SET sena = sena + ${monto * cot},
+                  sena_vence = COALESCE(sena_vence, ${f}::date + 7)
+                WHERE id = ${id}`;
+    }
 
     const cuenta = fd.get("cuenta_id") ? Number(fd.get("cuenta_id")) : null;
     if (cuenta && MEDIOS_A_CAJA.includes(medio)) {
@@ -96,6 +106,21 @@ export default async function Venta({ params }: { params: Promise<any> }) {
                     forma_cobro = ${MEDIOS_PAGO[medio] || medio}
                 WHERE id = ${ab.id}`;
     }
+    await avisar(`💵 <b>${esSena ? "Seña registrada" : "Cobro registrado"}</b> · ` +
+      `${enlace("/ventas/" + id, "venta #" + id)}\n` +
+      `${t(v.marca)} ${t(v.modelo)} · ${plataAviso(monto, moneda)} en ${t(MEDIOS_PAGO[medio] || medio)}. ` +
+      `Cargó ${t(usr.nombre)}.`);
+    revalidatePath(`/ventas/${id}`);
+  }
+
+  async function extenderSena(fd: FormData) {
+    "use server";
+    const usr = await requiereSesion();
+    const nueva = String(fd.get("sena_vence") || "");
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(nueva)) return;
+    await sql`UPDATE ventas SET sena_vence = ${nueva} WHERE id = ${id}`;
+    await sql`INSERT INTO auditoria (usuario_id, entidad, entidad_id, accion, detalle)
+              VALUES (${usr.id}, 'venta', ${id}, 'sena_vence', ${nueva})`;
     revalidatePath(`/ventas/${id}`);
   }
 
@@ -113,8 +138,17 @@ export default async function Venta({ params }: { params: Promise<any> }) {
 
     // Cerrar la venta abre el seguimiento de postventa, una sola vez.
     if (nuevo === "completada") {
-      await sql`INSERT INTO postventa (venta_id)
-                SELECT ${id} WHERE NOT EXISTS (SELECT 1 FROM postventa WHERE venta_id = ${id})`;
+      await sql`INSERT INTO postventa (venta_id, vtv_vence)
+                SELECT ${id}, (SELECT vtv_vence FROM vehiculo_ficha WHERE vehiculo_id = ${v.vehiculo_id})
+                WHERE NOT EXISTS (SELECT 1 FROM postventa WHERE venta_id = ${id})`;
+    }
+    if (nuevo !== v.estado && nuevo === "completada") {
+      await avisar(`✅ <b>Venta cerrada</b> · ${enlace("/ventas/" + id, "#" + id)}\n` +
+        `${t(v.marca)} ${t(v.modelo)} por ${plataAviso(total)}\n` +
+        `La unidad sale del stock y de la web. Cerró ${t(usr.nombre)}.`);
+    } else if (nuevo !== v.estado && nuevo === "cancelada") {
+      await avisar(`↩️ <b>Operación cancelada</b> · ${enlace("/ventas/" + id, "#" + id)}\n` +
+        `${t(v.marca)} ${t(v.modelo)} vuelve a estar disponible (y a la web).`);
     }
     await sql`INSERT INTO auditoria (usuario_id, entidad, entidad_id, accion, detalle)
               VALUES (${usr.id}, 'venta', ${id}, 'estado', ${nuevo})`;
@@ -140,6 +174,11 @@ export default async function Venta({ params }: { params: Promise<any> }) {
       <Encabezado volver="/ventas"
         titulo={<span className="flex items-center gap-3 flex-wrap">
           Venta #{v.id}<Chip tono={e.tono}>{e.label}</Chip>
+          {v.estado === "reserva" && v.sena_vence && (
+            <Chip tono={senaVencida ? "rojo" : "amarillo"}>
+              {senaVencida ? "Seña vencida el " : "Seña vence el "}{fecha(v.sena_vence)}
+            </Chip>
+          )}
         </span>}
         detalle={`${v.marca} ${v.modelo} ${v.anio || ""} · ${fecha(v.fecha)}`}
         acciones={
@@ -184,7 +223,10 @@ export default async function Venta({ params }: { params: Promise<any> }) {
                 {pagos.length === 0 && <FilaVacia cols={6} mensaje="Todavía no se registró ningún cobro." />}
                 {pagos.map((p: any) => (
                   <tr key={p.id} className="hover:bg-[var(--c-hover)]">
-                    <TD className="font-medium">{MEDIOS_PAGO[p.medio] || p.medio}</TD>
+                    <TD className="font-medium">
+                      {MEDIOS_PAGO[p.medio] || p.medio}
+                      {p.es_sena && <span className="ml-2"><Chip tono="azul">Seña</Chip></span>}
+                    </TD>
                     <TD className="text-[var(--c-tinta-media)]">{fecha(p.fecha)}</TD>
                     <TD className="text-[var(--c-tinta-tenue)]">{p.referencia || "—"}</TD>
                     <TD alinear="right">{plata(p.monto, p.moneda)}</TD>
@@ -309,6 +351,19 @@ export default async function Venta({ params }: { params: Promise<any> }) {
                 <SelectEstado id={Number(id)} valor={v.estado} accion={cambiarEstado}
                   opciones={Object.entries(ESTADOS_VENTA).map(([k, x]) => ({ valor: k, label: x.label }))} />
               </div>
+              {v.estado === "reserva" && (
+                <form action={extenderSena}>
+                  <span className="etiqueta block mb-1.5">La seña vence el</span>
+                  <div className="flex gap-2">
+                    <input name="sena_vence" type="date" className="campo py-1.5"
+                      defaultValue={v.sena_vence ? new Date(v.sena_vence).toISOString().slice(0, 10) : ""} />
+                    <Boton tipo="submit" variante="suave">Guardar</Boton>
+                  </div>
+                  {Number(v.sena) > 0 && (
+                    <p className="mt-1.5 text-[11.5px] text-[var(--c-tinta-tenue)]">Seña recibida: {plata(v.sena)}</p>
+                  )}
+                </form>
+              )}
               <div>
                 <span className="etiqueta block mb-1.5">Trámite de transferencia</span>
                 <SelectEstado id={Number(id)} valor={v.estado_tramite || "iniciado"} accion={cambiarTramite}

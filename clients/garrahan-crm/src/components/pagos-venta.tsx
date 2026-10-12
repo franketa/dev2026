@@ -92,7 +92,7 @@ export default function PagosVenta({ precioSugerido = 0 }: { precioSugerido?: nu
             <div className="col-span-4 sm:col-span-2">
               {i === 0 && <span className="etiqueta block mb-1.5">Cotización</span>}
               <input name="pago_cotizacion" type="number" step="0.01" min="0" value={f.cotizacion}
-                disabled={f.moneda !== "USD"} className="campo disabled:opacity-40"
+                readOnly={f.moneda !== "USD"} className={`campo ${f.moneda !== "USD" ? "opacity-40" : ""}`}
                 onChange={(e) => cambiar(i, "cotizacion", e.target.value)} />
             </div>
             <div className="col-span-7 sm:col-span-1">
@@ -133,8 +133,12 @@ export default function PagosVenta({ precioSugerido = 0 }: { precioSugerido?: nu
         )}
       </div>
 
+      {/* readOnly y no disabled en la cotización: un campo deshabilitado no
+          viaja en el formulario y los renglones en pesos corrían las
+          cotizaciones de los renglones en dólares. */}
       <p className="text-[11.5px] text-[var(--c-tinta-tenue)] leading-relaxed">
-        Lo que se cargue en efectivo, transferencia, tarjeta o Mercado Pago entra a la cuenta
+        Si la operación se guarda como <b>Reserva</b>, lo que se cargue acá es la seña y sale
+        con su recibo de seña. Lo que se cargue en efectivo, transferencia, tarjeta o Mercado Pago entra a la cuenta
         de caja que elijas abajo. Si queda un saldo sin cubrir, se abre solo en Cobranzas.
       </p>
     </div>

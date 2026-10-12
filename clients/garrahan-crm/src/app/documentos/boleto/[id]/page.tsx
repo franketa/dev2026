@@ -49,7 +49,9 @@ export default async function Boleto({ params }: { params: Promise<any> }) {
 
       <div className="hoja max-w-[800px] mx-auto bg-white text-black p-12 rounded-lg print:rounded-none shadow-2xl print:shadow-none">
         {/* ------------------------------------------------------ encabezado */}
-        <div className="flex justify-between items-start border-b-2 border-black pb-4 mb-6">
+        <div className="flex items-start gap-4 border-b-2 border-black pb-4 mb-6">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/logo.png" alt="Garrahan" className="h-16 w-16 shrink-0" />
           <div>
             <h1 className="text-[19px] font-bold uppercase tracking-tight">
               {e.razon_social || "Garrahan Automotores"}
@@ -59,7 +61,7 @@ export default async function Boleto({ params }: { params: Promise<any> }) {
             </p>
             {e.cuit && <p className="text-[11px] text-gray-700">CUIT {e.cuit}</p>}
           </div>
-          <div className="text-right">
+          <div className="text-right ml-auto">
             <div className="text-[13px] font-bold uppercase">Boleto de compraventa</div>
             <div className="text-[11px] text-gray-700 mt-0.5">N° {String(v.id).padStart(6, "0")}</div>
             <div className="text-[11px] text-gray-700">{fecha(v.fecha)}</div>

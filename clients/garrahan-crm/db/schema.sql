@@ -436,10 +436,79 @@ DO $$ BEGIN
   ALTER TABLE cobranzas ADD CONSTRAINT cobranzas_moneda_ck CHECK (moneda IN ('ARS','USD'));
 EXCEPTION WHEN duplicate_object THEN NULL; END $$;
 
+-- ---------------------------------------------------- publicación en la web
+-- La web lee el stock de acá. Las unidades que ya existían nacen sin publicar
+-- (pueden ser datos de prueba); las que se cargan de ahora en más, publicadas.
+DO $$ BEGIN
+  IF NOT EXISTS (SELECT 1 FROM information_schema.columns
+                 WHERE table_name = 'vehiculos' AND column_name = 'publicado') THEN
+    ALTER TABLE vehiculos ADD COLUMN publicado boolean NOT NULL DEFAULT false;
+    ALTER TABLE vehiculos ALTER COLUMN publicado SET DEFAULT true;
+  END IF;
+END $$;
+ALTER TABLE vehiculos ADD COLUMN IF NOT EXISTS destacado boolean NOT NULL DEFAULT false;
+ALTER TABLE vehiculos ADD COLUMN IF NOT EXISTS carroceria text;
+ALTER TABLE vehiculos ADD COLUMN IF NOT EXISTS motor text;
+ALTER TABLE vehiculos ADD COLUMN IF NOT EXISTS puertas int;
+ALTER TABLE vehiculos ADD COLUMN IF NOT EXISTS traccion text;
+ALTER TABLE vehiculos ADD COLUMN IF NOT EXISTS equipamiento text;
+ALTER TABLE vehiculos ADD COLUMN IF NOT EXISTS descripcion_web text;
+ALTER TABLE vehiculos ADD COLUMN IF NOT EXISTS moneda_venta text NOT NULL DEFAULT 'ARS';
+ALTER TABLE vehiculos ADD COLUMN IF NOT EXISTS precio_oferta numeric(16,2);
+ALTER TABLE vehiculos ADD COLUMN IF NOT EXISTS mostrar_precio boolean NOT NULL DEFAULT true;
+ALTER TABLE vehiculos ADD COLUMN IF NOT EXISTS acepta_permuta boolean NOT NULL DEFAULT true;
+ALTER TABLE vehiculos ADD COLUMN IF NOT EXISTS acepta_financiacion boolean NOT NULL DEFAULT true;
+
+-- Las fotos van en la base y no en disco: el contenedor no tiene volumen y un
+-- redeploy las borraría. Llegan ya achicadas desde el navegador (~250 KB).
+CREATE TABLE IF NOT EXISTS vehiculo_fotos (
+  id          serial PRIMARY KEY,
+  vehiculo_id int NOT NULL REFERENCES vehiculos(id) ON DELETE CASCADE,
+  posicion    int NOT NULL DEFAULT 0,
+  tipo        text NOT NULL DEFAULT 'image/jpeg',
+  datos       bytea NOT NULL,
+  ancho       int,
+  alto        int,
+  creado_en   timestamptz NOT NULL DEFAULT now()
+);
+CREATE INDEX IF NOT EXISTS vehiculo_fotos_idx ON vehiculo_fotos(vehiculo_id, posicion);
+
+-- ------------------------------------------------------- señas que vencen
+ALTER TABLE ventas ADD COLUMN IF NOT EXISTS sena_vence date;
+ALTER TABLE venta_pagos ADD COLUMN IF NOT EXISTS es_sena boolean NOT NULL DEFAULT false;
+
+-- ------------------------------------------------------------- postventa
+-- El primer llamado es a los 7 días de la entrega. Los de 30 y 90 siguen.
+ALTER TABLE postventa ADD COLUMN IF NOT EXISTS contacto_7 date;
+ALTER TABLE postventa ADD COLUMN IF NOT EXISTS resultado_7 text;
+ALTER TABLE postventa ADD COLUMN IF NOT EXISTS vtv_vence date;
+
+-- ----------------------------------------------------------------- roles
+-- referente: acceso acotado. reportes: mira los números y puede corregir datos.
+DO $$ BEGIN
+  ALTER TABLE usuarios DROP CONSTRAINT IF EXISTS usuarios_rol_check;
+  ALTER TABLE usuarios ADD CONSTRAINT usuarios_rol_check
+    CHECK (rol IN ('dueno','gerente','vendedor','administrativo','taller','referente','reportes'));
+END $$;
+
+ALTER TABLE leads ADD COLUMN IF NOT EXISTS creado_por int REFERENCES usuarios(id);
+
+-- ------------------------------------------------------------- Telegram
+ALTER TABLE empresa ADD COLUMN IF NOT EXISTS telegram_chat text;
+
+-- Cada aviso programado se manda una sola vez, aunque haya dos procesos.
+CREATE TABLE IF NOT EXISTS avisos_enviados (
+  clave      text PRIMARY KEY,
+  enviado_en timestamptz NOT NULL DEFAULT now()
+);
+
 -- ============================================================================
 -- Vista: costo real y margen por unidad. Una sola fuente de verdad.
 -- La compra NO es un gasto del mes: es el valor de toma de la unidad.
 -- ============================================================================
+-- Se tira y se vuelve a crear: usa v.* y Postgres no deja sumar columnas
+-- en el medio de una vista con CREATE OR REPLACE.
+DROP VIEW IF EXISTS v_vehiculos;
 CREATE OR REPLACE VIEW v_vehiculos AS
 SELECT
   v.*,
