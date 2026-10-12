@@ -343,9 +343,37 @@
     return l.join('\n');
   }
 
+  /* =========================================================
+     Copia en el sistema de gestión
+     Además del WhatsApp, la cotización queda cargada como lead en el CRM
+     de la agencia, con aviso por Telegram. Si falla, el WhatsApp sale igual.
+     ========================================================= */
+  function registrarEnSistema() {
+    var d = datos();
+    try {
+      fetch('/api/leads', {
+        method: 'POST',
+        keepalive: true,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          tipo: 'vender',
+          nombre: d.nombre,
+          telefono: d.tel,
+          localidad: d.localidad,
+          usado: {
+            vehiculo: d.vehiculo, anio: d.anio, km: d.km, combustible: d.combustible,
+            transmision: d.transmision, estado: d.estado, precio: d.precio,
+            parte_de_pago: d.parte, interes: d.interes
+          }
+        })
+      }).catch(function () {});
+    } catch (err) { /* navegador sin fetch: queda solo el WhatsApp */ }
+  }
+
   btnSend.addEventListener('click', function (e) {
     if (!validar(TOTAL_PASOS)) { e.preventDefault(); return; }
 
+    registrarEnSistema();
     var url = 'https://wa.me/' + WA_FELIPE + '?text=' + encodeURIComponent(mensaje());
     btnSend.href = url;
     $('#wzDoneLink').href = url;

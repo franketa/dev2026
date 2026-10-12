@@ -4,8 +4,20 @@ const path = require('path');
 const fs = require('fs');
 const { getDB, rowToVehicle } = require('../db');
 const { authMiddleware } = require('../middleware/auth');
+const crm = require('../crm');
 
 const router = express.Router();
+
+// Con el CRM conectado, el stock se carga allá. El panel viejo de la web no
+// puede seguir escribiendo en una base que ya no es la que se muestra.
+router.use((req, res, next) => {
+  if (crm.activo() && req.method !== 'GET') {
+    return res.status(409).json({
+      error: 'El stock ahora se carga desde el sistema de gestión (' + crm.CRM_URL + ')'
+    });
+  }
+  next();
+});
 
 const MAX_GALLERY = 10;
 
@@ -64,7 +76,17 @@ function marcasCatalog(db) {
 }
 
 // GET /api/vehicles
-router.get('/', (req, res) => {
+router.get('/', async (req, res) => {
+  if (crm.activo()) {
+    try {
+      const vehicles = await crm.listar();
+      const marcas = [...new Set([...CATALOGOS.marcas, ...vehicles.map(v => v.marca)])]
+        .sort((a, b) => a.localeCompare(b, 'es'));
+      return res.json({ vehicles, catalogos: { ...CATALOGOS, marcas } });
+    } catch (err) {
+      return res.status(502).json({ error: 'No se pudo cargar el stock' });
+    }
+  }
   const db = getDB();
   const rows = db.prepare('SELECT * FROM vehicles ORDER BY destacado DESC, id DESC').all();
   res.json({
@@ -74,7 +96,16 @@ router.get('/', (req, res) => {
 });
 
 // GET /api/vehicles/:id
-router.get('/:id', (req, res) => {
+router.get('/:id', async (req, res) => {
+  if (crm.activo()) {
+    try {
+      const v = await crm.uno(req.params.id);
+      if (!v) return res.status(404).json({ error: 'Vehículo no encontrado' });
+      return res.json(v);
+    } catch (err) {
+      return res.status(502).json({ error: 'No se pudo cargar el vehículo' });
+    }
+  }
   const db = getDB();
   const row = db.prepare('SELECT * FROM vehicles WHERE id = ?').get(req.params.id);
   if (!row) {

@@ -31,6 +31,8 @@ app.use(express.static(path.join(__dirname, '..'), {
 app.use('/api/vehicles', vehiclesRouter);
 app.use('/api/auth', authRouter);
 app.use('/api/qr', qrRouter.stats);
+// Consultas de los formularios, que van al CRM como leads
+app.use('/api/leads', require('./routes/leads'));
 
 // Multer / generic error handler
 app.use((err, req, res, next) => {
