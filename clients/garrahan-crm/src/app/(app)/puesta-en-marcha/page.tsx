@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Check } from "lucide-react";
 import { sql } from "@/lib/db";
+import { telegramConfigurado } from "@/lib/telegram";
 import { requiereSesion, veCostos } from "@/lib/auth";
 import { Encabezado, Panel, Boton, Progreso } from "@/components/ui";
 
@@ -17,11 +18,14 @@ export default async function PuestaEnMarcha() {
   const verPlata = veCostos(u);
 
   const [emp, suc, cuentas, usuarios, vehiculos, catalogo, cot] = await Promise.all([
-    sql`SELECT razon_social, cuit, domicilio FROM empresa WHERE id = 1`,
+    sql`SELECT razon_social, cuit, domicilio, telegram_chat FROM empresa WHERE id = 1`,
     sql`SELECT count(*)::int AS n FROM sucursales WHERE activa`,
     sql`SELECT count(*)::int AS n FROM caja_cuentas WHERE activa`,
     sql`SELECT count(*)::int AS n FROM usuarios WHERE activo`,
-    sql`SELECT count(*)::int AS n FROM vehiculos`,
+    sql`SELECT count(*)::int AS n,
+               count(*) FILTER (WHERE publicado AND estado = 'disponible')::int AS web,
+               count(*) FILTER (WHERE EXISTS (SELECT 1 FROM vehiculo_fotos f WHERE f.vehiculo_id = vehiculos.id))::int AS con_fotos
+        FROM vehiculos WHERE estado NOT IN ('vendido','baja')`,
     sql`SELECT count(*)::int AS n FROM catalogo_marcas`,
     sql`SELECT valor FROM cotizaciones ORDER BY fecha DESC LIMIT 1`,
   ]);
@@ -51,8 +55,8 @@ export default async function PuestaEnMarcha() {
       detalle: "Efectivo, banco, Mercado Pago, dólares. Sin cuentas no se puede registrar de dónde sale ni a dónde entra la plata.",
       hecho: Number(cuentas[0]?.n || 0) > 0,
       falta: "",
-      href: "/caja",
-      accion: "Ver la caja",
+      href: "/caja/cuentas",
+      accion: "Cargar las cuentas",
       dato: `${cuentas[0]?.n || 0} cuentas`,
       soloPlata: true,
     },
@@ -82,6 +86,25 @@ export default async function PuestaEnMarcha() {
       href: "/catalogo",
       accion: "Ver el catálogo",
       dato: `${catalogo[0]?.n || 0} marcas`,
+    },
+    {
+      titulo: "Fotos y publicación en la web",
+      detalle: "Cada unidad disponible con «Publicar en la web» tildado aparece sola en garrahanautomotores.com.ar, con sus fotos. La primera foto es la portada. Al señarla o venderla, sale sola.",
+      hecho: Number(vehiculos[0]?.n || 0) > 0 && Number(vehiculos[0]?.con_fotos || 0) >= Number(vehiculos[0]?.n || 0),
+      falta: Number(vehiculos[0]?.n || 0) > Number(vehiculos[0]?.con_fotos || 0)
+        ? `${Number(vehiculos[0]?.n || 0) - Number(vehiculos[0]?.con_fotos || 0)} unidades sin fotos` : "",
+      href: "/vehiculos",
+      accion: "Ver el stock",
+      dato: `${vehiculos[0]?.web || 0} en la web`,
+    },
+    {
+      titulo: "Avisos por Telegram",
+      detalle: "Leads nuevos, señas, ventas y cobros llegan al momento; cada mañana, lo que vence y lo que está atrasado. Se elige el chat o grupo que los recibe y se manda una prueba.",
+      hecho: telegramConfigurado() && Boolean(emp[0]?.telegram_chat || process.env.TELEGRAM_CHAT_ID),
+      falta: telegramConfigurado() ? "Falta elegir el chat" : "Falta conectar el bot en el servidor",
+      href: "/configuracion",
+      accion: "Configurar avisos",
+      soloPlata: true,
     },
     {
       titulo: "Cotización del dólar",
