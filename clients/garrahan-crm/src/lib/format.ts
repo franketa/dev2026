@@ -39,17 +39,26 @@ export function porcentaje(v: any, decimales = 1): string {
   }) + " %";
 }
 
+/**
+ * Una columna date llega como medianoche UTC: mostrada en hora argentina sería
+ * el día anterior. Un timestamp, en cambio, se muestra en hora argentina, y no
+ * en la del servidor (que es UTC: lo cargado después de las 21 caía al otro día).
+ */
+const zona = (d: Date) =>
+  d.getUTCHours() === 0 && d.getUTCMinutes() === 0 && d.getUTCSeconds() === 0 && d.getUTCMilliseconds() === 0
+    ? "UTC" : "America/Argentina/Buenos_Aires";
+
 export function fecha(v: any): string {
   if (!v) return "—";
   const d = v instanceof Date ? v : new Date(v);
   if (isNaN(d.getTime())) return "—";
-  return d.toLocaleDateString(AR, { day: "2-digit", month: "2-digit", year: "numeric" });
+  return d.toLocaleDateString(AR, { day: "2-digit", month: "2-digit", year: "numeric", timeZone: zona(d) });
 }
 
 export function fechaLarga(v: any): string {
   if (!v) return "—";
   const d = v instanceof Date ? v : new Date(v);
-  return d.toLocaleDateString(AR, { weekday: "long", day: "numeric", month: "long", year: "numeric" });
+  return d.toLocaleDateString(AR, { weekday: "long", day: "numeric", month: "long", year: "numeric", timeZone: zona(d) });
 }
 
 export function km(v: any): string {
