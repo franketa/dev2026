@@ -6,8 +6,10 @@
  *   node scripts/importar-stock.mjs datos.json              → muestra qué haría
  *   node scripts/importar-stock.mjs datos.json --confirmar  → carga
  *   (o el JSON por entrada estándar: ... < datos.json)
+ *   node scripts/importar-stock.mjs --clave=XXXX [--confirmar] → usa datos/stock-inicial.enc
  *
- * Los datos NO están en el repositorio a propósito: tienen costos y nombres.
+ * Los datos tienen costos y nombres: al repositorio (que es público) solo van
+ * cifrados, y la clave no se guarda en ningún archivo.
  *
  * Se puede correr dos veces: cada unidad queda marcada en la auditoría con su
  * clave ("excel:12", "web:30") y la segunda vez se saltea.
@@ -16,6 +18,7 @@
  */
 import postgres from "postgres";
 import { readFileSync } from "fs";
+import crypto from "crypto";
 
 const url = process.env.DATABASE_URL;
 if (!url) { console.error("Falta DATABASE_URL."); process.exit(1); }
@@ -24,7 +27,21 @@ const archivo = process.argv.slice(2).find((a) => !a.startsWith("--"));
 const SITIO = (process.env.SITIO_URL || "https://www.garrahanautomotores.com.ar").replace(/\/$/, "");
 const sql = postgres(url, { max: 1, onnotice: () => {} });
 
-const datos = JSON.parse(readFileSync(archivo || 0, "utf8"));
+// Con --clave=… se lee scripts/datos/stock-inicial.enc: el JSON cifrado, que
+// sí puede estar en el repositorio porque sin la clave no se puede leer.
+function leerDatos() {
+  const clave = process.argv.find((a) => a.startsWith("--clave="))?.slice(8);
+  if (!clave) return readFileSync(archivo || 0, "utf8");
+  const crudo = Buffer.from(readFileSync(new URL("./datos/stock-inicial.enc", import.meta.url), "utf8"), "base64");
+  const d = crypto.createDecipheriv("aes-256-gcm", crypto.scryptSync(clave.trim(), "garrahan-stock", 32), crudo.subarray(0, 12));
+  d.setAuthTag(crudo.subarray(12, 28));
+  try {
+    return Buffer.concat([d.update(crudo.subarray(28)), d.final()]).toString("utf8");
+  } catch {
+    console.error("La clave no es correcta."); process.exit(1);
+  }
+}
+const datos = JSON.parse(leerDatos());
 const plata = (n) => "$ " + Math.round(Number(n || 0)).toLocaleString("es-AR");
 
 async function fotosDeLaWeb(webId) {
