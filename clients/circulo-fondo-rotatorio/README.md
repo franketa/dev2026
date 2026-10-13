@@ -53,7 +53,8 @@ Con Docker: `docker compose up --build` (app) o `docker compose --profile minio 
 ## Deploy en Coolify
 
 - Recurso nuevo apuntando a este repo, **base directory** `clients/circulo-fondo-rotatorio`, branch `master`.
-- Build pack: **Dockerfile**. Puerto **3000**. Healthcheck: `GET /salud`.
+- Build pack: **Dockerfile**. Puerto **3000**. **Healthcheck de Coolify desactivado**: la imagen `node:22-slim` no trae
+  curl ni wget y Coolify da el contenedor por muerto. El Dockerfile ya tiene su propio `HEALTHCHECK` contra `/salud`.
 - **Volumen persistente obligatorio** en `/app/data`: base (`fondo.sqlite`), secreto de sesiones, adjuntos y
   copias de seguridad diarias (`/app/data/respaldos`, quedan 30). Sin volumen, cada deploy borra todo.
 
@@ -70,7 +71,8 @@ Después del primer deploy, como superadmin:
 3. **Parámetros**: CUIT y domicilio del Círculo, topes vigentes y **alícuotas que pase el contador**.
 4. **Asignar fondos → Ingreso a la Central**: el saldo inicial al 31/12.
 
-Flujo de deploy desde esta PC: merge a `master`, `git push`, y `ssh venturebyte "coolify deploy circulo"`.
+En producción: `https://faa.venturebyte.com.ar` (app `circulo-fondo-rotatorio`, volumen `circulo-fondo-data`).
+Flujo de deploy desde esta PC: merge a `master`, `git push`, y `ssh venturebyte "coolify deploy circulo-fondo"`.
 
 ## Cómo está pensado
 
