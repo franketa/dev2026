@@ -2,6 +2,7 @@
 
 import { cookies } from "next/headers";
 import { revalidatePath } from "next/cache";
+import { sql } from "./db";
 
 const COOKIE = "garrahan_sucursal";
 
@@ -19,7 +20,11 @@ export async function sucursalActiva(): Promise<number | null> {
   const v = ck.get(COOKIE)?.value;
   if (!v || v === "todas") return null;
   const n = Number(v);
-  return Number.isFinite(n) && n > 0 ? n : null;
+  if (!Number.isFinite(n) || n <= 0) return null;
+  // Si la sucursal elegida se desactivó, filtrar por ella dejaría todo vacío
+  // sin forma de verla en el selector: se vuelve a "Todas".
+  const [s] = await sql`SELECT 1 FROM sucursales WHERE id = ${n} AND activa`;
+  return s ? n : null;
 }
 
 export async function elegirSucursal(fd: FormData) {
