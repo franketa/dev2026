@@ -102,6 +102,11 @@ function passwordTemporal() {
   return `${PALABRAS[crypto.randomInt(PALABRAS.length)]}-${crypto.randomInt(1000, 9999)}`;
 }
 
+function leerFecha(v, error) {
+  if (!esFecha(String(v))) throw new ErrorNegocio(error);
+  return String(v);
+}
+
 function leerSocio(body, existente = null) {
   const nombre = limpiarTexto(body.nombre, 60);
   const apellido = limpiarTexto(body.apellido, 60);
@@ -123,6 +128,8 @@ function leerSocio(body, existente = null) {
     es_instructor_sim: body.es_instructor_sim && vuela ? 1 : 0,
     // Tesorería ya verifica novedades; consulta sólo mira.
     es_mantenimiento: body.es_mantenimiento && rol === 'piloto' ? 1 : 0,
+    cma_vence: vuela && body.cma_vence ? leerFecha(body.cma_vence, 'Vencimiento del CMA inválido') : null,
+    exento_cuota: body.exento_cuota && vuela ? 1 : 0,
     // La baja y la reactivación van por sus propias rutas (con motivo), no por la edición.
     activo: existente ? existente.activo : 1
   };
@@ -135,8 +142,8 @@ router.post('/usuarios', (req, res) => {
   const temporal = passwordTemporal();
   try {
     const r = db.prepare(`
-      INSERT INTO usuarios (nombre, apellido, email, telefono, dni, licencia, rol, es_instructor, es_instructor_sim, es_mantenimiento, activo, password_hash, debe_cambiar_password)
-      VALUES (@nombre, @apellido, @email, @telefono, @dni, @licencia, @rol, @es_instructor, @es_instructor_sim, @es_mantenimiento, 1, @hash, 1)`)
+      INSERT INTO usuarios (nombre, apellido, email, telefono, dni, licencia, rol, es_instructor, es_instructor_sim, es_mantenimiento, cma_vence, exento_cuota, activo, password_hash, debe_cambiar_password)
+      VALUES (@nombre, @apellido, @email, @telefono, @dni, @licencia, @rol, @es_instructor, @es_instructor_sim, @es_mantenimiento, @cma_vence, @exento_cuota, 1, @hash, 1)`)
       .run({ ...s, hash: bcrypt.hashSync(temporal, 10) });
     const extras = [s.es_instructor && 'instructor de vuelo', s.es_instructor_sim && 'instructor de simulador', s.es_mantenimiento && 'mantenimiento'].filter(Boolean);
     auditar(req.user.id, 'usuario.alta', `${s.nombre} ${s.apellido} (${s.email}), rol ${s.rol}${extras.length ? `, ${extras.join(', ')}` : ''}`);
@@ -175,6 +182,7 @@ router.put('/usuarios/:id', (req, res) => {
     db.prepare(`
       UPDATE usuarios SET nombre=@nombre, apellido=@apellido, email=@email, telefono=@telefono, dni=@dni, licencia=@licencia,
         rol=@rol, es_instructor=@es_instructor, es_instructor_sim=@es_instructor_sim, es_mantenimiento=@es_mantenimiento,
+        cma_vence=@cma_vence, exento_cuota=@exento_cuota,
         activo=@activo, token_version = token_version + @corta,
         -- Con otro email hay que volver a verificarlo.
         email_verificado_en = CASE WHEN email = @email THEN email_verificado_en END,

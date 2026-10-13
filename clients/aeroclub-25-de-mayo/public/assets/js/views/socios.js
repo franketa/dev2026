@@ -1,5 +1,6 @@
 import {
-  get, post, put, html, raw, pintar, icono, pesos, modal, confirmar, pedirTexto, toast, error, conBoton, datosForm, fechaHora, linkWa, nombreLista, rolTexto, extrasRol
+  get, post, put, html, raw, pintar, icono, pesos, modal, confirmar, pedirTexto, toast, error, conBoton, datosForm, fechaHora, linkWa, nombreLista, rolTexto, extrasRol,
+  estadoCma
 } from '../lib.js';
 
 const PARA_QUE = {
@@ -54,6 +55,12 @@ function formSocio(u = {}) {
       <label class="check"><input type="checkbox" name="es_instructor_sim" ${sel(u.es_instructor_sim)}><span>Instructor de simulador<br><small class="muted">Da clases en el simulador, no en vuelo.</small></span></label>
       <label class="check" data-mant><input type="checkbox" name="es_mantenimiento" ${sel(u.es_mantenimiento)}><span>Mantenimiento<br><small class="muted">Además de volar, revisa y verifica las novedades de la flota.</small></span></label>
     </fieldset>
+    <div class="pila" data-socio-vuela style="gap:14px">
+      <div class="campo"><label for="s-cma">Vencimiento del CMA <span class="muted">(certificado médico)</span></label>
+        <input class="input" id="s-cma" name="cma_vence" type="date" value="${u.cma_vence || ''}">
+        <p class="campo__ayuda">El piloto ve un aviso 30 días antes de que venza y cuando ya está vencido.</p></div>
+      <label class="check"><input type="checkbox" name="exento_cuota" ${sel(u.exento_cuota)}><span>No paga cuota social<br><small class="muted">Socios honorarios u otros casos. Al resto se le cobra la cuota en el cierre de cada mes.</small></span></label>
+    </div>
     <div class="modal__acciones"><button class="btn btn--sec" type="button" data-cerrar>Cancelar</button><button class="btn btn--principal" type="submit">${u.id ? 'Guardar cambios' : 'Dar de alta'}</button></div>
   </form>`;
 }
@@ -65,6 +72,7 @@ function abrirForm(ctx, u = null) {
   // (tesorería ya verifica novedades).
   const instructor = () => {
     m.el.querySelector('[data-extras]').hidden = ['rampa', 'mantenimiento'].includes(form.rol.value);
+    m.el.querySelector('[data-socio-vuela]').hidden = ['rampa', 'mantenimiento'].includes(form.rol.value);
     m.el.querySelector('[data-mant]').hidden = form.rol.value !== 'piloto';
   };
   form.rol.addEventListener('change', instructor);
@@ -195,7 +203,9 @@ export default async function socios(ctx) {
             ${u.rol !== 'externo' && u.email ? (u.email_verificado_en
               ? html`<span class="chip chip--ok">Email verificado</span>`
               : html`<span class="chip chip--pend">Email sin verificar</span>${u.activo ? html` <button class="btn btn--fantasma btn--chico" type="button" data-verificar="${u.id}" data-escritura>Mandar link</button>` : ''}`) : ''}</td>
-          <td data-label="Rol">${u.rol === 'piloto' ? 'Piloto' : rolTexto(u)}${extrasRol(u).length ? html`<div class="muted chico">${extrasRol(u).join(', ').replace(/^./, c => c.toUpperCase())}</div>` : ''}</td>
+          <td data-label="Rol">${u.rol === 'piloto' ? 'Piloto' : rolTexto(u)}${extrasRol(u).length ? html`<div class="muted chico">${extrasRol(u).join(', ').replace(/^./, c => c.toUpperCase())}</div>` : ''}
+            ${(() => { const c = estadoCma(u.cma_vence); return c && c.clase !== 'ok' ? html`<div><span class="chip chip--${c.clase}">${c.dias < 0 ? 'CMA vencido' : 'CMA por vencer'}</span></div>` : ''; })()}
+            ${u.exento_cuota && u.activo && ['piloto', 'admin', 'consulta'].includes(u.rol) ? html`<div class="muted chico">No paga cuota social</div>` : ''}</td>
           <td class="num" data-label="Saldo">${['rampa', 'mantenimiento'].includes(u.rol) ? html`<span class="muted">—</span>` : html`<a href="#/admin/cuentas/${u.id}" class="monto">${pesos(u.saldo)}</a>`}</td>
           <td class="celda-acciones"><div class="tabla__acciones">
             ${u.rol === 'externo'

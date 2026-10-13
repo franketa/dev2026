@@ -45,7 +45,7 @@ let ana, beto, rampa, consulta;
 
 test('tabla de servicios inicial, sin precio', () => {
   const lista = servicios.listar();
-  assert.deepEqual(lista.map(s => s.nombre), ['Hangaraje mensual', 'Hangaraje diario', 'Combustible', 'Nocturno', 'Derecho de aeronave', 'Derecho de examen', 'Hora de simulador', 'Limpieza de avión']);
+  assert.deepEqual(lista.map(s => s.nombre), ['Hangaraje mensual', 'Hangaraje diario', 'Combustible', 'Nocturno', 'Derecho de aeronave', 'Cuota social', 'Derecho de examen', 'Hora de simulador', 'Limpieza de avión']);
   assert.equal(servicio('Hangaraje diario').unidad, 'dia');
   assert.ok(lista.every(s => s.precio === 0));
   assert.equal(servicios.derechoAeronave(), null);          // sin precio no se cobra

@@ -1,4 +1,4 @@
-import { get, post, put, html, pintar, icono, toast, error, conBoton, datosForm, rolTexto, verContrasenas, modal } from '../lib.js';
+import { get, post, put, html, pintar, icono, toast, error, conBoton, datosForm, rolTexto, verContrasenas, modal, estadoCma } from '../lib.js';
 
 export default async function perfil(ctx) {
   const u = ctx.usuario;
@@ -37,6 +37,7 @@ export default async function perfil(ctx) {
         <dt>Celular</dt><dd>${u.telefono || html`<span class="muted">Sin cargar</span>`}</dd>
         ${u.dni ? html`<dt>DNI</dt><dd>${u.dni}</dd>` : ''}
         ${u.licencia ? html`<dt>Licencia</dt><dd>${u.licencia}</dd>` : ''}
+        ${u.cma_vence ? html`<dt>CMA</dt><dd>${estadoCma(u.cma_vence).texto}</dd>` : ''}
       </dl>
       <p class="muted chico" style="margin:16px 0 12px">Si algún dato está mal o cambió, pedile a tesorería que lo actualice.</p>
       <button class="btn btn--sec" type="button" data-pedir-cambio>${icono('editar')} Pedir un cambio de datos</button>`

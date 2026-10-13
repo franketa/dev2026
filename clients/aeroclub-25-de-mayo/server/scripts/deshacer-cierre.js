@@ -36,6 +36,7 @@ const deshacer = db.transaction(() => {
   if (tickets.length) {
     const lista = tickets.join(',');
     db.exec(`DELETE FROM derechos_aeronave WHERE ticket_id IN (${lista})`);
+    db.exec(`DELETE FROM cuotas_sociales WHERE ticket_id IN (${lista})`);
     db.exec(`DELETE FROM ticket_items WHERE ticket_id IN (${lista})`);
     db.exec(`DELETE FROM tickets WHERE id IN (${lista})`);
   }
@@ -52,7 +53,7 @@ const deshacer = db.transaction(() => {
   const cadena = ledger.verificarCadena();
   if (!cadena.ok) throw new Error(`La cadena del libro quedó mal: ${cadena.error}`);
 
-  const detalle = `${nombrePeriodo(periodo)} (cierre de prueba): ${vuelos.length} vuelos reabiertos, ${cupones} cupones, ${tickets.length} derechos de aeronave y ${movs.length} movimientos borrados${envios ? `, ${envios} envíos registrados` : ''}`;
+  const detalle = `${nombrePeriodo(periodo)} (cierre de prueba): ${vuelos.length} vuelos reabiertos, ${cupones} cupones, ${tickets.length} tickets del cierre (derechos de aeronave y cuotas sociales) y ${movs.length} movimientos borrados${envios ? `, ${envios} envíos registrados` : ''}`;
   auditar(null, 'cierre.deshecho', detalle);
   return detalle;
 });

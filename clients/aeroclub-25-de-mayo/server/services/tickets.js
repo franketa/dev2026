@@ -421,6 +421,27 @@ function cobrarDerechos(vuelos, cierreId, actor) {
   return n;
 }
 
+// Cuota social: en el cierre de cada mes, una vez a cada socio activo que no esté exento. No van ni
+// rampa ni mantenimiento "solo" (no son socios que vuelan), ni externos ni la cuenta de tránsitos.
+function cobrarCuotas(periodo, cierreId, actor) {
+  const cuota = servicios.cuotaSocial();
+  if (!cuota) return 0;
+  const socios = db.prepare(`
+    SELECT id FROM usuarios
+    WHERE activo = 1 AND exento_cuota = 0 AND rol IN ('piloto','admin','consulta')
+      AND NOT EXISTS (SELECT 1 FROM cuotas_sociales c WHERE c.usuario_id = usuarios.id AND c.periodo = ?)
+    ORDER BY id`).all(periodo);
+  const marcar = db.prepare('INSERT INTO cuotas_sociales (usuario_id, periodo, ticket_id) VALUES (?, ?, ?)');
+  for (const s of socios) {
+    const t = insertar({
+      usuario_id: s.id, fecha: ultimoDia(periodo), origen: 'cierre', cierre_id: cierreId, creado_por: actor?.id ?? null,
+      items: [{ servicio_id: cuota.id, concepto: `${cuota.nombre} de ${nombrePeriodo(periodo)}`, unidad: cuota.unidad, cantidad: 100, precio: cuota.precio, importe: cuota.precio }]
+    });
+    marcar.run(s.id, periodo, t.id);
+  }
+  return socios.length;
+}
+
 function porToken(token) {
   const t = db.prepare('SELECT id FROM tickets WHERE token = ?').get(String(token));
   return t ? detalle(t.id) : null;
@@ -428,5 +449,5 @@ function porToken(token) {
 
 module.exports = {
   crearExterno, editarExterno, cuentasParaTicket, listarAeronaves, getAeronave, guardarAeronave,
-  crear, anular, detalle, listar, resumenServicios, cobrarDerechos, ticketDeMovimiento, porToken, fmtNumero, impagoPorCargo
+  crear, anular, detalle, listar, resumenServicios, cobrarDerechos, cobrarCuotas, ticketDeMovimiento, porToken, fmtNumero, impagoPorCargo
 };

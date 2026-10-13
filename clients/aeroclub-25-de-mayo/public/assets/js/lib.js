@@ -119,6 +119,15 @@ export const nombreCompleto = (u) => [u.nombre, u.apellido].filter(Boolean).join
 
 export const ROLES = { admin: 'Tesorería', consulta: 'Consulta', rampa: 'Rampa', mantenimiento: 'Mantenimiento', piloto: 'Piloto', externo: 'Externo' };
 export const rolTexto = (u) => (u.rol === 'piloto' && u.es_instructor ? 'Instructor' : ROLES[u.rol] || u.rol);
+// Vencimiento del CMA (certificado médico aeronáutico): vencido, por vencer (30 días) o vigente.
+export function estadoCma(vence) {
+  if (!vence) return null;
+  const dias = Math.round((new Date(`${vence}T12:00:00`) - new Date(`${hoyAR()}T12:00:00`)) / 86400000);
+  if (dias < 0) return { clase: 'mal', dias, texto: `CMA vencido el ${fecha(vence)}` };
+  if (dias <= 30) return { clase: 'pend', dias, texto: dias === 0 ? 'El CMA vence hoy' : `El CMA vence en ${dias} ${dias === 1 ? 'día' : 'días'} (${fecha(vence)})` };
+  return { clase: 'ok', dias, texto: `CMA vigente hasta el ${fecha(vence)}` };
+}
+
 // Lo que hace además de su rol: "instructor de vuelo, de simulador y mantenimiento".
 export function extrasRol(u) {
   const inst = [u.es_instructor && 'de vuelo', u.es_instructor_sim && 'de simulador'].filter(Boolean);

@@ -51,6 +51,7 @@ function modalServicio(s, ctx) {
         <div class="campo"><label for="sv-uni">Se cobra</label><select class="select" id="sv-uni" name="unidad">${Object.entries(UNIDADES).map(([v, t]) => html`<option value="${v}" ${v === s.unidad ? raw('selected') : ''}>${t}</option>`)}</select></div>
       </div>
       ${s.codigo === 'derecho_aeronave' ? html`<p class="aviso aviso--info">${icono('info')}<span>Se cobra solo en el cierre: una vez por mes a cada piloto que voló. Con precio en cero, no se cobra.</span></p>` : ''}
+      ${s.codigo === 'cuota_social' ? html`<p class="aviso aviso--info">${icono('info')}<span>Se cobra sola en el cierre: una vez por mes a cada socio activo (pilotos, tesorería y consulta), salvo a los marcados "No paga cuota social" en Socios. Con precio en cero, no se cobra.</span></p>` : ''}
       ${nuevo ? '' : html`<label class="check"><input type="checkbox" name="activo" ${s.activo ? raw('checked') : ''}><span>Activo<br><small class="muted">Si lo das de baja, no aparece para cargar tickets. Lo ya cobrado se conserva.</small></span></label>`}
       <div class="modal__acciones"><button class="btn btn--sec" type="button" data-cerrar>Cancelar</button><button class="btn btn--principal" type="submit">${nuevo ? 'Agregar' : 'Guardar'}</button></div>
     </form>`
@@ -78,7 +79,7 @@ function seccionServicios(servicios) {
     <div class="tabla-caja"><table class="tabla tabla--tarjetas">
       <thead><tr><th>Servicio</th><th class="num">Precio</th><th>Se cobra</th><th></th></tr></thead>
       <tbody>${servicios.map(s => html`<tr ${s.activo ? '' : raw('style="opacity:.55"')}>
-        <td class="celda-ppal"><strong>${s.nombre}</strong>${s.activo ? '' : html` <span class="chip chip--neutro">Baja</span>`}${s.codigo === 'derecho_aeronave' ? html`<div class="muted chico">Automático en el cierre, una vez por mes por piloto</div>` : ''}</td>
+        <td class="celda-ppal"><strong>${s.nombre}</strong>${s.activo ? '' : html` <span class="chip chip--neutro">Baja</span>`}${s.codigo === 'derecho_aeronave' ? html`<div class="muted chico">Automático en el cierre, una vez por mes por piloto</div>` : ''}${s.codigo === 'cuota_social' ? html`<div class="muted chico">Automática en el cierre, una vez por mes a cada socio activo</div>` : ''}</td>
         <td class="num" data-label="Precio">${s.precio ? html`<span class="monto">${pesos(s.precio)}</span>` : html`<span class="chip chip--pend">Sin precio</span>`}</td>
         <td data-label="Se cobra">${UNIDADES[s.unidad]}</td>
         <td class="celda-acciones"><div class="tabla__acciones"><button class="btn btn--sec btn--chico" type="button" data-servicio="${s.id}" data-escritura>${icono('editar')} ${s.precio ? 'Cambiar precio' : 'Poner precio'}</button></div></td>

@@ -1,6 +1,6 @@
 import {
   get, post, put, html, raw, pintar, icono, pesos, horas, horasInput, parseHoras, tambor, rodar, hoyAR, colorAvion, error, conBoton, nombrePeriodo, datosForm,
-  fecha, confirmar, minutosADecimas, minutosEntre
+  fecha, confirmar, minutosADecimas, minutosEntre, estadoCma
 } from '../lib.js';
 
 // En el celular, el selector de hora del teléfono: un solo toque abre la rueda (o el reloj) con hora y
@@ -76,6 +76,7 @@ export default async function cargar(ctx) {
       <p>${editando ? 'Se puede corregir hasta el cierre del mes. El cambio queda registrado.' : ctx.esAdmin ? 'Cargalo apenas bajes del avión.' : 'Cargalo apenas bajes del avión. Revisalo bien: una vez aceptado, no se puede modificar.'}</p>
     </div></div>
 
+    ${(() => { const c = !editando && !ctx.esAdmin ? estadoCma(ctx.usuario.cma_vence) : null; return c?.clase === 'mal' ? html`<p class="aviso aviso--mal">${icono('alerta')}<span><b>${c.texto}.</b> Renovalo y pasale la fecha nueva a tesorería.</span></p>` : ''; })()}
     <form class="carga" id="form-vuelo" novalidate>
       ${pilotos ? html`
         <div class="carga__paso">

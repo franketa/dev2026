@@ -4,6 +4,7 @@ const { db, auditar } = require('../db');
 const { ErrorNegocio, fmtPesos, limpiarTexto, UNIDADES } = require('../util');
 
 const CODIGO_DERECHO = 'derecho_aeronave';
+const CODIGO_CUOTA = 'cuota_social';
 
 function listar({ incluirInactivos = false } = {}) {
   return db.prepare(`SELECT * FROM servicios ${incluirInactivos ? '' : 'WHERE activo = 1'} ORDER BY activo DESC, orden, nombre`).all();
@@ -18,6 +19,12 @@ function getServicio(id) {
 // El derecho de aeronave se cobra solo en el cierre. Si está inactivo o sin precio, no se cobra.
 function derechoAeronave() {
   const s = db.prepare('SELECT * FROM servicios WHERE codigo = ?').get(CODIGO_DERECHO);
+  return s && s.activo && s.precio > 0 ? s : null;
+}
+
+// La cuota social también se cobra sola en el cierre, con las mismas reglas.
+function cuotaSocial() {
+  const s = db.prepare('SELECT * FROM servicios WHERE codigo = ?').get(CODIGO_CUOTA);
   return s && s.activo && s.precio > 0 ? s : null;
 }
 
@@ -53,4 +60,4 @@ function guardar(input, actor, id = null) {
   }
 }
 
-module.exports = { listar, getServicio, derechoAeronave, guardar, CODIGO_DERECHO };
+module.exports = { listar, getServicio, derechoAeronave, cuotaSocial, guardar, CODIGO_DERECHO, CODIGO_CUOTA };

@@ -4,7 +4,8 @@
 //   1. Cada vuelo abierto con fecha hasta el último día del mes pasa al libro como cargo
 //      y queda cerrado (ya no se puede editar). Los vuelos cargados tarde de meses ya
 //      cerrados entran acá también, con su fecha real.
-//      Además se cobra el derecho de aeronave: una vez por piloto y por mes volado.
+//      Además se cobra el derecho de aeronave (una vez por piloto y por mes volado) y la cuota
+//      social del mes (a cada socio activo que no esté exento).
 //   2. Se genera un cupón por socio (o externo) con: saldo del cierre anterior + movimientos
 //      del período (vuelos, servicios, pagos, ajustes) = total a pagar.
 //   3. El cierre queda sellado con el rango de movimientos que abarca, así cualquier
@@ -104,6 +105,7 @@ const correrCierre = db.transaction((periodo, actor, simular) => {
     totalVuelos += v.importe;
   }
   const derechos = tickets.cobrarDerechos(vuelos, cierreId, actor);
+  const cuotas = tickets.cobrarCuotas(periodo, cierreId, actor);
 
   const hasta = db.prepare('SELECT COALESCE(MAX(id), 0) id FROM movimientos').get().id;
   const sello = ledger.ultimoHash();
@@ -147,7 +149,7 @@ const correrCierre = db.transaction((periodo, actor, simular) => {
   const resultado = detalleCierre(cierreId);
   if (simular) throw new Simulacion(resultado);   // rollback: la vista previa es exactamente lo que va a pasar
   auditar(actor?.id ?? null, actor ? 'cierre.manual' : 'cierre.automatico',
-    `${nombrePeriodo(periodo)}: ${vuelos.length} vuelos, ${fmtHoras(totalDecimas)}${derechos ? `, ${derechos} derechos de aeronave` : ''}, ${nro} cupones, ${fmtPesos(totalCupones)} a cobrar`);
+    `${nombrePeriodo(periodo)}: ${vuelos.length} vuelos, ${fmtHoras(totalDecimas)}${derechos ? `, ${derechos} derechos de aeronave` : ''}${cuotas ? `, ${cuotas} cuotas sociales` : ''}, ${nro} cupones, ${fmtPesos(totalCupones)} a cobrar`);
   return resultado;
 });
 

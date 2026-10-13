@@ -34,6 +34,8 @@ CREATE TABLE IF NOT EXISTS usuarios (
   es_instructor INTEGER NOT NULL DEFAULT 0 CHECK (es_instructor IN (0,1)),       -- instructor de vuelo
   es_instructor_sim INTEGER NOT NULL DEFAULT 0 CHECK (es_instructor_sim IN (0,1)), -- instructor de simulador
   es_mantenimiento INTEGER NOT NULL DEFAULT 0 CHECK (es_mantenimiento IN (0,1)),   -- verifica las novedades de la flota
+  cma_vence TEXT,                 -- vencimiento del certificado médico aeronáutico (AAAA-MM-DD)
+  exento_cuota INTEGER NOT NULL DEFAULT 0 CHECK (exento_cuota IN (0,1)),           -- no paga cuota social
   activo INTEGER NOT NULL DEFAULT 1 CHECK (activo IN (0,1)),
   baja_motivo TEXT,
   -- Bloqueado por falta de pago: entra a ver su cuenta e informar pagos, pero no carga vuelos.
@@ -281,6 +283,14 @@ CREATE TABLE IF NOT EXISTS ticket_items (
 );
 CREATE INDEX IF NOT EXISTS idx_items_ticket ON ticket_items(ticket_id);
 
+-- Cuota social: una vez por mes a cada socio activo (salvo los exentos), en el cierre.
+CREATE TABLE IF NOT EXISTS cuotas_sociales (
+  usuario_id INTEGER NOT NULL REFERENCES usuarios(id),
+  periodo TEXT NOT NULL,
+  ticket_id INTEGER REFERENCES tickets(id),
+  PRIMARY KEY (usuario_id, periodo)
+);
+
 -- Derecho de aeronave: una sola vez por piloto y por mes volado.
 CREATE TABLE IF NOT EXISTS derechos_aeronave (
   usuario_id INTEGER NOT NULL REFERENCES usuarios(id),
@@ -407,6 +417,13 @@ function migrar() {
     db.exec(`UPDATE pagos_informados SET origen = 'rampa' WHERE ticket_id IS NOT NULL`);
   }
   // v1.005: instructor de simulador y mantenimiento son tildes del usuario, además de su rol.
+  // v1.006: vencimiento del CMA y exención de la cuota social.
+  if (usuarios && !columnas('usuarios').includes('cma_vence')) {
+    db.exec('ALTER TABLE usuarios ADD COLUMN cma_vence TEXT');
+    db.exec('ALTER TABLE usuarios ADD COLUMN exento_cuota INTEGER NOT NULL DEFAULT 0 CHECK (exento_cuota IN (0,1))');
+    // La cuenta genérica de tesorería no es un socio: no paga cuota.
+    db.exec(`UPDATE usuarios SET exento_cuota = 1 WHERE nombre = 'Tesorería' AND apellido = 'Aeroclub'`);
+  }
   if (usuarios && !columnas('usuarios').includes('es_mantenimiento')) {
     db.exec('ALTER TABLE usuarios ADD COLUMN es_instructor_sim INTEGER NOT NULL DEFAULT 0 CHECK (es_instructor_sim IN (0,1))');
     db.exec('ALTER TABLE usuarios ADD COLUMN es_mantenimiento INTEGER NOT NULL DEFAULT 0 CHECK (es_mantenimiento IN (0,1))');
@@ -434,6 +451,7 @@ const SERVICIOS_INICIALES = [
   [null, 'Combustible', 'litro'],
   [null, 'Nocturno', 'noche'],
   ['derecho_aeronave', 'Derecho de aeronave', 'mes'],
+  ['cuota_social', 'Cuota social', 'mes'],
   [null, 'Derecho de examen', 'unidad'],
   [null, 'Hora de simulador', 'hora'],
   [null, 'Limpieza de avión', 'unidad']
@@ -457,6 +475,13 @@ function initDB() {
   if (!db.prepare(`SELECT 1 FROM servicios WHERE nombre = 'Hangaraje diario'`).get()) {
     const orden = db.prepare(`SELECT orden FROM servicios WHERE nombre = 'Hangaraje mensual'`).get()?.orden ?? 0;
     db.prepare(`INSERT INTO servicios (nombre, unidad, orden) VALUES ('Hangaraje diario', 'dia', ?)`).run(orden);
+  }
+
+  // v1.006: cuota social (se cobra en el cierre). Arranca sin precio: con precio en cero no se cobra.
+  if (!db.prepare(`SELECT 1 FROM servicios WHERE codigo = 'cuota_social'`).get()) {
+    const libre = !db.prepare(`SELECT 1 FROM servicios WHERE nombre = 'Cuota social'`).get();
+    if (libre) db.prepare(`INSERT INTO servicios (codigo, nombre, unidad, orden) VALUES ('cuota_social', 'Cuota social', 'mes', (SELECT COALESCE(MAX(orden),0)+1 FROM servicios))`).run();
+    else db.prepare(`UPDATE servicios SET codigo = 'cuota_social' WHERE nombre = 'Cuota social'`).run();
   }
 
   const setDefault = db.prepare('INSERT OR IGNORE INTO config (clave, valor) VALUES (?, ?)');
@@ -500,8 +525,9 @@ function initDB() {
   if (db.prepare('SELECT COUNT(*) n FROM usuarios').get().n === 0) {
     const email = process.env.ADMIN_EMAIL || 'tesoreria@aeroclub25demayo.com.ar';
     const pass = process.env.ADMIN_PASSWORD || crypto.randomBytes(6).toString('base64url');
-    db.prepare(`INSERT INTO usuarios (nombre, apellido, email, rol, password_hash, debe_cambiar_password)
-                VALUES ('Tesorería', 'Aeroclub', ?, 'admin', ?, 1)`).run(email, bcrypt.hashSync(pass, 10));
+    // Es la cuenta genérica del club, no un socio: no paga cuota social.
+    db.prepare(`INSERT INTO usuarios (nombre, apellido, email, rol, password_hash, debe_cambiar_password, exento_cuota)
+                VALUES ('Tesorería', 'Aeroclub', ?, 'admin', ?, 1, 1)`).run(email, bcrypt.hashSync(pass, 10));
     console.log('──────────────────────────────────────────────');
     console.log(' Administrador inicial creado');
     console.log(` Usuario:    ${email}`);

@@ -31,7 +31,7 @@ function datosPago() {
 }
 
 function estadoCuenta(usuarioId) {
-  const usuario = db.prepare('SELECT id, nombre, apellido, email, telefono, dni, licencia, rol, es_instructor, es_instructor_sim, es_mantenimiento, activo, baja_motivo, bloqueado, bloqueo_motivo FROM usuarios WHERE id = ?').get(usuarioId);
+  const usuario = db.prepare('SELECT id, nombre, apellido, email, telefono, dni, licencia, rol, es_instructor, es_instructor_sim, es_mantenimiento, cma_vence, exento_cuota, activo, baja_motivo, bloqueado, bloqueo_motivo FROM usuarios WHERE id = ?').get(usuarioId);
   if (!usuario) throw new ErrorNegocio('Socio inexistente', 404);
   const movimientos = db.prepare(`
     SELECT m.id, m.tipo, m.concepto, m.importe, m.fecha, m.medio, m.vuelo_id, m.anula_id, m.creado_en,
@@ -59,7 +59,7 @@ function estadoCuenta(usuarioId) {
 
 function listarCuentas() {
   return db.prepare(`
-    SELECT u.id, u.nombre, u.apellido, u.email, u.telefono, u.dni, u.licencia, u.rol, u.es_instructor, u.es_instructor_sim, u.es_mantenimiento, u.activo, u.ultimo_acceso,
+    SELECT u.id, u.nombre, u.apellido, u.email, u.telefono, u.dni, u.licencia, u.rol, u.es_instructor, u.es_instructor_sim, u.es_mantenimiento, u.cma_vence, u.exento_cuota, u.activo, u.ultimo_acceso,
       u.baja_motivo, u.bloqueado, u.bloqueo_motivo, u.email_verificado_en, (u.id = @transitos) transitos,
       COALESCE((SELECT SUM(importe) FROM movimientos m WHERE m.usuario_id = u.id), 0) saldo,
       COALESCE((SELECT SUM(importe) FROM vuelos v WHERE v.piloto_id = u.id AND v.estado = 'abierto'), 0) a_facturar,

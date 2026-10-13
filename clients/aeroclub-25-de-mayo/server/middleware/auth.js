@@ -40,6 +40,7 @@ function publico(u) {
   return {
     id: u.id, nombre: u.nombre, apellido: u.apellido, email: u.email, telefono: u.telefono, dni: u.dni, licencia: u.licencia,
     rol: u.rol, es_instructor: !!u.es_instructor, es_instructor_sim: !!u.es_instructor_sim, es_mantenimiento: !!u.es_mantenimiento,
+    cma_vence: u.cma_vence || null,
     activo: !!u.activo, debe_cambiar_password: !!u.debe_cambiar_password,
     bloqueado: !!u.bloqueado, bloqueo_motivo: u.bloqueo_motivo, email_verificado: !!u.email_verificado_en
   };
