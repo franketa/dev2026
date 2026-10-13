@@ -4,8 +4,8 @@ const ExcelJS = require('exceljs');
 const { fmtFechaHora, fmtCuit, nombrePeriodo } = require('../util');
 
 const PESOS = '"$" #,##0.00;[Red]-"$" #,##0.00';
-const AZUL = 'FF14233F';
-const CELESTE = 'FFEAF3FB';
+const AZUL = 'FF12406E';
+const CELESTE = 'FFE9F3FB';
 const TIPO = { fijo: 'Fijo', caja_chica: 'Sin solicitud (caja chica)', con_solicitud: 'Con solicitud' };
 
 function encabezar(fila) {

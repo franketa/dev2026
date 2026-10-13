@@ -8,8 +8,8 @@ const { fmtPesos2, fmtFechaCorta, fmtFechaHora, fmtCuit, fmtAlicuota, nombrePeri
 const FONTS = path.join(__dirname, '..', 'fonts');
 
 const C = {
-  tinta: '#14233F', azul: '#1F4E8C', celeste: '#6CACE4', celesteClaro: '#EAF3FB', gris: '#5B6880',
-  linea: '#D6DEE9', fondo: '#F4F7FB', rojo: '#B42318', ambar: '#9A6212'
+  tinta: '#0F2D4D', marca: '#12406E', azul: '#1F6DB5', celeste: '#74ACDF', celesteClaro: '#E9F3FB', gris: '#5B6880',
+  linea: '#D3E0EC', fondo: '#F2F7FC', rojo: '#B42318', ambar: '#9A6212'
 };
 const TNUM = { features: ['tnum'] };
 const capital = (s) => s.charAt(0).toUpperCase() + s.slice(1);
@@ -28,24 +28,22 @@ function nuevoDocumento(info, layout = 'portrait') {
   return doc;
 }
 
-// Marca simple: dos alas en chevron (sin usar escudos oficiales).
-function marca(doc, x, y, s = 1) {
-  doc.save().translate(x, y).scale(s);
-  doc.path('M0 14 L18 4 L36 14 L30 14 L18 8 L6 14 Z').fill(C.celeste);
-  doc.path('M4 22 L18 13 L32 22 L26 22 L18 17 L10 22 Z').fill('#FFFFFF');
-  doc.restore();
+const ESCUDO = path.join(__dirname, '..', 'img', 'escudo.png');
+function marca(doc, x, y, lado) {
+  doc.circle(x + lado / 2, y + lado / 2, lado / 2 + 1.5).fill('#FFFFFF');
+  doc.image(ESCUDO, x, y, { width: lado, height: lado });
 }
 
 function banda(doc, { titulo, subtitulo, derecha, derechaSub }) {
   const W = doc.page.width;
-  doc.rect(0, 0, W, 70).fill(C.tinta);
+  doc.rect(0, 0, W, 70).fill(C.marca);
   doc.rect(0, 70, W, 3).fill(C.celeste);
-  marca(doc, 36, 22, 1.1);
+  marca(doc, 30, 9, 52);
   const apaisado = W > 700;
-  doc.font('CB').fontSize(apaisado ? 16 : 13).fillColor('#FFFFFF').text(titulo, 84, apaisado ? 18 : 20, { width: W - 84 - 220, lineBreak: false });
-  doc.font('R').fontSize(9.5).fillColor('#BFD3EA').text(subtitulo, 84, 40, { width: W - 84 - 220 });
+  doc.font('CB').fontSize(apaisado ? 16 : 13).fillColor('#FFFFFF').text(titulo, 94, apaisado ? 18 : 20, { width: W - 94 - 220, lineBreak: false });
+  doc.font('R').fontSize(9.5).fillColor('#C2DCF1').text(subtitulo, 94, 40, { width: W - 94 - 220 });
   doc.font('CB').fontSize(15).fillColor('#FFFFFF').text(derecha, W - 236, 18, { width: 200, align: 'right' });
-  doc.font('M').fontSize(10).fillColor('#BFD3EA').text(derechaSub, W - 236, 40, { width: 200, align: 'right' });
+  doc.font('M').fontSize(10).fillColor('#C2DCF1').text(derechaSub, W - 236, 40, { width: 200, align: 'right' });
 }
 
 function pie(doc, texto) {
@@ -144,7 +142,7 @@ function generarRendicion({ contenido: c, version: v, rendicion, estadoTexto }) 
 
   // Detalle, separado por quién pagó.
   const encabezado = () => {
-    doc.rect(M, y, ancho, 16).fill(C.tinta);
+    doc.rect(M, y, ancho, 16).fill(C.marca);
     let x = M + 4;
     for (const col of COLS) {
       doc.font('SB').fontSize(7.8).fillColor('#FFFFFF').text(col.t, x, y + 4.5, { width: col.w - 6, align: col.derecha ? 'right' : 'left', lineBreak: false });
@@ -289,7 +287,7 @@ function generarCertificado({ certificado: cert, gasto, retenciones }) {
   y += 26;
 
   const cols = [['Impuesto', 84], ['Régimen', 170], ['Jurisdicción', 80], ['Base imponible', 70, true], ['Alícuota', 40, true], ['Importe retenido', 57, true]];
-  doc.rect(M, y, ancho, 18).fill(C.tinta);
+  doc.rect(M, y, ancho, 18).fill(C.marca);
   let x = M + 6;
   for (const [t, w, der] of cols) { doc.font('SB').fontSize(8.5).fillColor('#FFFFFF').text(t, x, y + 5, { width: w - 6, align: der ? 'right' : 'left' }); x += w; }
   y += 22;

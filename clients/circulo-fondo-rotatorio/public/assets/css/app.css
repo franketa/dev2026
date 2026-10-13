@@ -1,29 +1,31 @@
 /* Fondo rotatorio · Círculo de Oficiales de la Fuerza Aérea Argentina
-   Sobrio e institucional: azul noche + celeste. Botones grandes, pensado para el celular.
+   Institucional: los celestes del escudo y un azul del mismo tono para superficies y botones. Botones grandes, pensado para el celular.
    La pieza protagonista es el saldo (banco / efectivo): grande, legible, siempre arriba. */
 
 :root {
-  --tinta: #14233F;
-  --tinta-2: #34445F;
+  --tinta: #0F2D4D;
+  --tinta-2: #2E4763;
+  --marca: #12406E;
   --gris: #5B6880;
   --gris-2: #8792A8;
-  --azul: #1F4E8C;
-  --azul-osc: #163A69;
-  --celeste: #6CACE4;
-  --celeste-2: #D7E9F8;
-  --celeste-3: #EAF3FB;
-  --papel: #F4F7FB;
+  --azul: #1F6DB5;
+  --azul-osc: #175A97;
+  --celeste: #74ACDF;
+  --celeste-2: #C2DCF1;
+  --celeste-3: #E9F3FB;
+  --celeste-txt: #C2DCF1;
+  --papel: #F2F7FC;
   --blanco: #FFFFFF;
-  --linea: #D6DEE9;
-  --linea-2: #E7ECF3;
+  --linea: #D3E0EC;
+  --linea-2: #E5EEF6;
   --verde: #1E7048;
   --verde-fondo: #E3F2E9;
   --ambar: #8A5A0B;
   --ambar-fondo: #FBF0DA;
   --rojo: #B42318;
   --rojo-fondo: #FCE8E6;
-  --info: #1F4E8C;
-  --info-fondo: #E4EEFA;
+  --info: #1F6DB5;
+  --info-fondo: #E4EFFA;
 
   --f-texto: 'Barlow', system-ui, sans-serif;
   --f-titulo: 'Barlow Semi Condensed', 'Barlow', system-ui, sans-serif;
@@ -31,8 +33,8 @@
   --r-s: 6px;
   --r-m: 10px;
   --r-l: 16px;
-  --sombra: 0 1px 2px rgba(20, 35, 63, .06), 0 4px 16px rgba(20, 35, 63, .06);
-  --sombra-alta: 0 12px 40px rgba(20, 35, 63, .24);
+  --sombra: 0 1px 2px rgba(15, 45, 77, .06), 0 4px 16px rgba(15, 45, 77, .06);
+  --sombra-alta: 0 12px 40px rgba(15, 45, 77, .24);
   --nav-alto: 66px;
   --lateral: 252px;
   color-scheme: light;
@@ -59,17 +61,17 @@ p { margin: 0; }
 .chico { font-size: .875rem; }
 .derecha { text-align: right; }
 .mono { font-family: ui-monospace, 'SFMono-Regular', Consolas, monospace; font-size: .85em; word-break: break-all; }
-.marca { width: 36px; height: 24px; color: #fff; flex: none; }
+.marca { width: 36px; height: 36px; border-radius: 50%; flex: none; box-shadow: 0 0 0 2px rgba(255,255,255,.18); }
 
 /* ── Estructura ─────────────────────────────────────────────────────────── */
 .app { min-height: 100vh; padding-bottom: calc(var(--nav-alto) + env(safe-area-inset-bottom)); }
 .barra {
   position: sticky; top: 0; z-index: 20; display: flex; align-items: center; gap: 12px;
   padding: 10px 16px; padding-top: calc(10px + env(safe-area-inset-top));
-  background: var(--tinta); color: #fff;
+  background: var(--marca); color: #fff; border-bottom: 3px solid var(--celeste);
 }
 .barra__titulo { flex: 1; min-width: 0; font-family: var(--f-titulo); font-weight: 700; font-size: 1.02rem; line-height: 1.15; }
-.barra__titulo small { display: block; font-family: var(--f-texto); font-weight: 500; font-size: .78rem; color: #B9CBE3; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.barra__titulo small { display: block; font-family: var(--f-texto); font-weight: 500; font-size: .78rem; color: var(--celeste-txt); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .campana { position: relative; display: grid; place-items: center; width: 42px; height: 42px; border-radius: 50%; color: #fff; text-decoration: none; }
 .campana svg { width: 22px; height: 22px; }
 .campana__n { position: absolute; top: 4px; right: 2px; min-width: 18px; height: 18px; padding: 0 5px; border-radius: 9px; background: #E5484D; color: #fff; font-size: .7rem; font-weight: 700; display: grid; place-items: center; }
@@ -91,7 +93,7 @@ p { margin: 0; }
 .nav-inf [aria-current="page"] { color: var(--azul); }
 .nav-inf__central .boton-central {
   display: grid; place-items: center; width: 52px; height: 52px; margin-top: -22px; border-radius: 50%;
-  background: var(--azul); color: #fff; box-shadow: 0 6px 18px rgba(31, 78, 140, .4); border: 4px solid var(--papel);
+  background: var(--azul); color: #fff; box-shadow: 0 6px 18px rgba(31, 109, 181, .4); border: 4px solid var(--papel);
 }
 .nav-inf__central .boton-central svg { width: 26px; height: 26px; }
 
@@ -101,13 +103,14 @@ p { margin: 0; }
   .nav-inf { display: none; }
   .lateral {
     display: flex; flex-direction: column; position: sticky; top: 0; height: 100vh; overflow-y: auto;
-    background: var(--tinta); color: #fff; padding: 18px 12px;
+    background: var(--marca); color: #fff; padding: 18px 12px; border-right: 3px solid var(--celeste);
   }
   .contenido { padding: 28px 32px 48px; width: 100%; }
 }
 .lateral__marca { display: flex; align-items: center; gap: 10px; padding: 4px 8px 18px; color: #fff; text-decoration: none; }
 .lateral__marca strong { font-family: var(--f-titulo); font-size: 1rem; line-height: 1.1; display: block; }
-.lateral__marca small { color: #B9CBE3; font-size: .78rem; display: block; }
+.lateral__marca .marca { width: 46px; height: 46px; }
+.lateral__marca small { color: var(--celeste-txt); font-size: .78rem; display: block; }
 .lateral__pie { margin-top: auto; display: flex; align-items: center; gap: 10px; padding: 14px 8px 4px; border-top: 1px solid rgba(255,255,255,.12); }
 .lateral__pie div { min-width: 0; flex: 1; }
 .lateral__pie strong { display: block; font-size: .88rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -128,7 +131,7 @@ p { margin: 0; }
 .menu__cargar { background: var(--azul) !important; color: #fff !important; margin-bottom: 6px; font-weight: 700 !important; }
 
 .cajon-fondo { position: fixed; inset: 0; z-index: 40; background: rgba(20, 35, 63, .45); opacity: 0; transition: opacity .2s; }
-.cajon { position: fixed; top: 0; bottom: 0; right: 0; z-index: 41; width: min(320px, 86vw); overflow-y: auto; background: var(--tinta); padding: 18px 12px calc(18px + env(safe-area-inset-bottom)); transform: translateX(100%); transition: transform .22s ease; }
+.cajon { position: fixed; top: 0; bottom: 0; right: 0; z-index: 41; width: min(320px, 86vw); overflow-y: auto; background: var(--marca); padding: 18px 12px calc(18px + env(safe-area-inset-bottom)); transform: translateX(100%); transition: transform .22s ease; }
 .cajon-fondo.abierto { opacity: 1; }
 .cajon.abierto { transform: none; }
 
@@ -155,11 +158,13 @@ p { margin: 0; }
 /* Saldo: la pieza principal */
 .saldo {
   position: relative; overflow: hidden; border-radius: var(--r-l); padding: 20px; color: #fff;
-  background: linear-gradient(135deg, var(--tinta) 0%, var(--azul-osc) 70%, var(--azul) 100%);
-  box-shadow: 0 10px 30px rgba(20, 35, 63, .25);
+  background: linear-gradient(135deg, var(--marca) 0%, var(--azul-osc) 60%, var(--azul) 100%);
+  box-shadow: 0 10px 30px rgba(18, 64, 110, .25);
 }
-.saldo::after { content: ''; position: absolute; right: -40px; top: -60px; width: 220px; height: 220px; border-radius: 50%; border: 28px solid rgba(108, 172, 228, .12); }
-.saldo__etiqueta { font-size: .85rem; color: #B9CBE3; font-weight: 500; }
+/* Anillos celestes, como los del escudo */
+.saldo::after { content: ''; position: absolute; right: -60px; top: -80px; width: 240px; height: 240px; border-radius: 50%;
+  background: radial-gradient(circle, transparent 38%, rgba(194, 220, 241, .14) 38% 46%, transparent 46% 56%, rgba(194, 220, 241, .1) 56% 64%, transparent 64%); }
+.saldo__etiqueta { font-size: .85rem; color: var(--celeste-txt); font-weight: 500; }
 .saldo__total { font-family: var(--f-titulo); font-size: 2.4rem; font-weight: 700; line-height: 1.1; margin: 2px 0 14px; }
 .saldo__cuentas { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; position: relative; z-index: 1; }
 .saldo__cuenta { background: rgba(255,255,255,.08); border-radius: var(--r-m); padding: 10px 12px; }
@@ -392,13 +397,14 @@ a.item:hover { background: var(--celeste-3); }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
 
 /* ── Login ──────────────────────────────────────────────────────────────── */
-.login { min-height: 100vh; display: grid; place-items: center; padding: 24px 16px; background: radial-gradient(1200px 600px at 80% -10%, #2A5A9A 0%, transparent 60%), var(--tinta); }
+.login { min-height: 100vh; display: grid; place-items: center; padding: 24px 16px; background: radial-gradient(900px 520px at 50% -8%, rgba(116, 172, 223, .55) 0%, transparent 62%), linear-gradient(180deg, var(--marca) 0%, var(--tinta) 100%); }
 .login__caja { width: 100%; max-width: 400px; background: var(--blanco); border-radius: 18px; padding: 28px 24px; box-shadow: var(--sombra-alta); }
-.login__marca { display: flex; align-items: center; gap: 12px; margin-bottom: 22px; }
-.login__marca .marca { width: 48px; height: 32px; color: var(--tinta); }
-.login__marca strong { display: block; font-family: var(--f-titulo); font-size: 1.15rem; line-height: 1.15; }
+.login__marca { display: flex; flex-direction: column; align-items: center; gap: 12px; margin-bottom: 22px; text-align: center; }
+.login__escudo { width: 112px; height: 112px; margin-top: -84px; border-radius: 50%; background: #fff; box-shadow: 0 0 0 6px #fff, 0 10px 30px rgba(15, 45, 77, .3); }
+.login__caja { margin-top: 64px; border-top: 4px solid var(--celeste); }
+.login__marca strong { display: block; font-family: var(--f-titulo); font-size: 1.2rem; line-height: 1.15; color: var(--marca); }
 .login__marca small { color: var(--gris); }
-.login__pie { margin-top: 18px; text-align: center; color: #A8B9D3; font-size: .82rem; }
+.login__pie { margin-top: 18px; text-align: center; color: var(--celeste-txt); font-size: .82rem; }
 
 @media print {
   .barra, .lateral, .nav-inf, .vista__acciones, .toasts { display: none !important; }

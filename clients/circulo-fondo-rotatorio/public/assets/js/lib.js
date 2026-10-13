@@ -354,7 +354,7 @@ export function verContrasenas(raiz) {
 }
 
 // Marca: dos alas en chevron (no usa escudos oficiales).
-export const marca = (clase = '') => raw(`<svg class="marca ${clase}" viewBox="0 0 36 24" aria-hidden="true"><path d="M0 14 L18 4 L36 14 L30 14 L18 8 L6 14 Z" fill="#6CACE4"/><path d="M4 22 L18 13 L32 22 L26 22 L18 17 L10 22 Z" fill="currentColor"/></svg>`);
+export const marca = (clase = '') => raw(`<img class="marca ${clase}" src="/assets/img/escudo-160.png" alt="">`);
 
 // Catálogos (rubros, reglas, alícuotas…): se piden una vez por sesión.
 let catalogos = null;
