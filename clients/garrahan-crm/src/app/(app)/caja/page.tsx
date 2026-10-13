@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { revalidatePath } from "next/cache";
 import { Plus } from "lucide-react";
+import { avisoOk, avisoError, SIN_PERMISO } from "@/lib/aviso";
 import { sql } from "@/lib/db";
 import { requierePermiso, veCostos } from "@/lib/auth";
 import { plata, plataCorta, fecha } from "@/lib/format";
@@ -59,9 +60,10 @@ export default async function Caja({ searchParams }: { searchParams: Promise<any
   async function nuevoMovimiento(fd: FormData) {
     "use server";
     const usr = await requierePermiso("caja");
-    if (!veCostos(usr)) return;
+    if (!veCostos(usr)) return avisoError(SIN_PERMISO);
     const monto = Number(fd.get("monto") || 0);
-    if (!monto) return;
+    if (!monto) return avisoError("Falta el monto.");
+    if (!Number(fd.get("cuenta"))) return avisoError("Elegí la cuenta.");
     const moneda = String(fd.get("moneda") || "ARS");
     const cot = Number(fd.get("cotizacion") || 1) || 1;
     const tipo = String(fd.get("tipo") || "egreso");
@@ -77,6 +79,7 @@ export default async function Caja({ searchParams }: { searchParams: Promise<any
               ${moneda === "USD" ? monto * cot : monto},
               ${String(fd.get("forma_pago") || "")}, ${usr.id})`;
     revalidatePath("/caja");
+    await avisoOk(tipo === "ingreso" ? "Ingreso registrado" : tipo === "transferencia" ? "Transferencia registrada" : "Egreso registrado");
   }
 
   return (

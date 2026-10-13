@@ -1,5 +1,6 @@
 import { notFound, redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
+import { avisoOk, avisoError, SIN_PERMISO } from "@/lib/aviso";
 import { sql } from "@/lib/db";
 import { requiereSesion, veCostos, puede } from "@/lib/auth";
 import { leerVehiculo, definidos } from "@/lib/vehiculo-form";
@@ -28,14 +29,15 @@ export default async function EditarVehiculo({ params }: { params: Promise<any> 
   async function guardar(fd: FormData) {
     "use server";
     const usr = await requiereSesion();
-    if (!puede(usr, "vehiculos.editar")) return;
+    if (!puede(usr, "vehiculos.editar")) return avisoError(SIN_PERMISO);
     const d = leerVehiculo(fd, veCostos(usr));
-    if (!d.marca || !d.modelo) return;
+    if (!d.marca || !d.modelo) return avisoError("Faltan la marca o el modelo.");
 
     await sql`UPDATE vehiculos SET ${sql(definidos(d) as any)} WHERE id = ${id}`;
     await sql`INSERT INTO auditoria (usuario_id, entidad, entidad_id, accion, detalle)
               VALUES (${usr.id}, 'vehiculo', ${id}, 'edicion', ${d.marca + " " + d.modelo})`;
     revalidatePath(`/vehiculos/${id}`);
+    await avisoOk("Cambios guardados");
     redirect(`/vehiculos/${id}`);
   }
 

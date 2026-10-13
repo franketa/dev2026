@@ -1,5 +1,5 @@
 import { revalidatePath } from "next/cache";
-import { redirect } from "next/navigation";
+import { avisoOk, avisoError, SIN_PERMISO } from "@/lib/aviso";
 import { sql } from "@/lib/db";
 import { requiereSesion, hash, ROLES, type Rol } from "@/lib/auth";
 
@@ -13,9 +13,8 @@ export const dynamic = "force-dynamic";
 /** Solo el dueño y el gerente administran usuarios. */
 const ADMINISTRA: Rol[] = ["dueno", "gerente"];
 
-export default async function Usuarios({ searchParams }: { searchParams: Promise<any> }) {
+export default async function Usuarios() {
   const u = await requiereSesion();
-  const p = await searchParams;
   const administra = ADMINISTRA.includes(u.rol);
 
   const [filas, sucursales] = await Promise.all([
@@ -30,16 +29,16 @@ export default async function Usuarios({ searchParams }: { searchParams: Promise
   async function crear(fd: FormData) {
     "use server";
     const usr = await requiereSesion();
-    if (!ADMINISTRA.includes(usr.rol)) return;
+    if (!ADMINISTRA.includes(usr.rol)) return avisoError(SIN_PERMISO);
 
     const nombre = String(fd.get("nombre") || "").trim();
     const email = String(fd.get("email") || "").trim().toLowerCase();
     const clave = String(fd.get("clave") || "");
-    if (!nombre || !email) return;
-    if (clave.length < 8) redirect("/usuarios?e=corta");
+    if (!nombre || !email) return avisoError("Faltan el nombre o el email.");
+    if (clave.length < 8) return avisoError("La contraseña tiene que tener al menos 8 caracteres.");
 
     const [existe] = await sql`SELECT id FROM usuarios WHERE lower(email) = ${email}`;
-    if (existe) redirect("/usuarios?e=repetido");
+    if (existe) return avisoError("Ya existe un usuario con ese email.");
 
     const [nuevo] = await sql`
       INSERT INTO usuarios (nombre, email, password_hash, rol, sucursal_id, telefono,
@@ -55,18 +54,18 @@ export default async function Usuarios({ searchParams }: { searchParams: Promise
     await sql`INSERT INTO auditoria (usuario_id, entidad, entidad_id, accion, detalle)
               VALUES (${usr.id}, 'usuario', ${nuevo.id}, 'alta', ${nombre + " · " + email})`;
     revalidatePath("/usuarios");
-    redirect("/usuarios?ok=alta");
+    await avisoOk(`Usuario creado. Pasale la contraseña a ${nombre} y que la cambie desde Mi cuenta.`);
   }
 
   async function resetearClave(fd: FormData) {
     "use server";
     const usr = await requiereSesion();
-    if (!ADMINISTRA.includes(usr.rol)) return;
+    if (!ADMINISTRA.includes(usr.rol)) return avisoError(SIN_PERMISO);
 
     const id = Number(fd.get("id") || 0);
     const clave = String(fd.get("clave") || "");
     if (!id) return;
-    if (clave.length < 8) redirect("/usuarios?e=corta");
+    if (clave.length < 8) return avisoError("La contraseña tiene que tener al menos 8 caracteres.");
 
     await sql`UPDATE usuarios SET password_hash = ${await hash(clave)} WHERE id = ${id}`;
     // Se cortan las sesiones abiertas de esa persona: si le resetean la clave,
@@ -75,33 +74,42 @@ export default async function Usuarios({ searchParams }: { searchParams: Promise
     await sql`INSERT INTO auditoria (usuario_id, entidad, entidad_id, accion, detalle)
               VALUES (${usr.id}, 'usuario', ${id}, 'clave_reseteada', 'por administrador')`;
     revalidatePath("/usuarios");
-    redirect("/usuarios?ok=reset");
+    await avisoOk("Contraseña cambiada. Se cerraron las sesiones de esa persona.");
   }
 
   async function cambiarRol(fd: FormData) {
     "use server";
     const usr = await requiereSesion();
-    if (!ADMINISTRA.includes(usr.rol)) return;
+    if (!ADMINISTRA.includes(usr.rol)) return avisoError(SIN_PERMISO);
     const id = Number(fd.get("id") || 0);
     const rol = String(fd.get("estado") || "");
-    if (!id || !ROLES.some((r) => r.valor === rol)) return;
+    if (!id || !ROLES.some((r) => r.valor === rol)) return avisoError("Ese rol no existe.");
 
     // Nadie se saca a sí mismo el acceso: quedaría el sistema sin dueño.
-    if (id === usr.id) return;
+    if (id === usr.id) return avisoError("No podés cambiarte el rol a vos mismo.");
 
+    // Y tampoco se le saca al último dueño o gerente activo.
+    if (!ADMINISTRA.includes(rol as Rol)) {
+      const [{ n }] = await sql`SELECT count(*)::int AS n FROM usuarios
+                                WHERE activo AND rol IN ('dueno','gerente') AND id <> ${id}`;
+      if (n === 0) return avisoError("Tiene que quedar al menos un dueño o gerente activo.");
+    }
+
+    const [antes] = await sql`SELECT nombre FROM usuarios WHERE id = ${id}`;
     await sql`UPDATE usuarios SET rol = ${rol} WHERE id = ${id}`;
     await sql`DELETE FROM sesiones WHERE usuario_id = ${id}`;
     await sql`INSERT INTO auditoria (usuario_id, entidad, entidad_id, accion, detalle)
               VALUES (${usr.id}, 'usuario', ${id}, 'rol', ${rol})`;
     revalidatePath("/usuarios");
+    await avisoOk(`${antes?.nombre || "El usuario"} ahora es ${ROLES.find((r) => r.valor === rol)?.label}. Tiene que volver a entrar.`);
   }
 
   async function alternarActivo(fd: FormData) {
     "use server";
     const usr = await requiereSesion();
-    if (!ADMINISTRA.includes(usr.rol)) return;
+    if (!ADMINISTRA.includes(usr.rol)) return avisoError(SIN_PERMISO);
     const id = Number(fd.get("id") || 0);
-    if (!id || id === usr.id) return;
+    if (!id || id === usr.id) return avisoError("No podés desactivarte a vos mismo.");
 
     const [row] = await sql`SELECT activo, nombre FROM usuarios WHERE id = ${id}`;
     if (!row) return;
@@ -111,7 +119,7 @@ export default async function Usuarios({ searchParams }: { searchParams: Promise
     if (!nuevo) {
       const [{ n }] = await sql`SELECT count(*)::int AS n FROM usuarios
                                 WHERE activo AND rol IN ('dueno','gerente') AND id <> ${id}`;
-      if (n === 0) redirect("/usuarios?e=ultimo");
+      if (n === 0) return avisoError("No se puede desactivar al último dueño o gerente activo.");
     }
 
     await sql`UPDATE usuarios SET activo = ${nuevo} WHERE id = ${id}`;
@@ -119,29 +127,12 @@ export default async function Usuarios({ searchParams }: { searchParams: Promise
     await sql`INSERT INTO auditoria (usuario_id, entidad, entidad_id, accion, detalle)
               VALUES (${usr.id}, 'usuario', ${id}, ${nuevo ? "reactivado" : "desactivado"}, ${row.nombre})`;
     revalidatePath("/usuarios");
+    await avisoOk(`${row.nombre} ${nuevo ? "reactivado" : "desactivado"}`);
   }
-
-  const MENSAJES: Record<string, { texto: string; mal?: boolean }> = {
-    corta: { texto: "La contraseña tiene que tener al menos 8 caracteres.", mal: true },
-    repetido: { texto: "Ya existe un usuario con ese email.", mal: true },
-    ultimo: { texto: "No se puede desactivar al último dueño o gerente activo.", mal: true },
-    alta: { texto: "Usuario creado. Pasale la contraseña y que la cambie desde Mi cuenta." },
-    reset: { texto: "Contraseña cambiada. Se cerraron las sesiones de esa persona." },
-  };
-  const aviso = MENSAJES[p.e] || MENSAJES[p.ok];
 
   return (
     <>
       <Encabezado titulo="Usuarios" detalle="Quién entra al sistema y qué puede ver." />
-
-      {aviso && (
-        <p className={`mb-4 rounded-lg px-3.5 py-2.5 text-[12.5px] border
-          ${aviso.mal
-            ? "border-[var(--c-rojo-borde)] bg-[var(--c-rojo-fondo)] text-[var(--c-rojo-alto)]"
-            : "border-[var(--c-verde-borde)] bg-[var(--c-verde-fondo)] text-[var(--c-verde-alto)]"}`}>
-          {aviso.texto}
-        </p>
-      )}
 
       <Panel className="mb-4">
         <PanelTitulo titulo="Los roles" detalle="El rol define qué ve cada uno, no es solo una etiqueta." />

@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import { avisarLeadNuevo } from "@/lib/leads";
+import { avisoOk, avisoError } from "@/lib/aviso";
 import { sql } from "@/lib/db";
 import { requierePermiso } from "@/lib/auth";
 import { ORIGENES_LEAD, ESTADOS_LEAD } from "@/lib/constantes";
@@ -32,7 +33,7 @@ export default async function NuevoLead({ searchParams }: { searchParams: Promis
     };
 
     const nombre = txt("nombre");
-    if (!nombre) return;
+    if (!nombre) return avisoError("Falta el nombre.");
 
     const estado = String(fd.get("estado") || "nuevo");
     const etapa = ESTADOS_LEAD[estado]?.etapa || "captacion";
@@ -57,6 +58,7 @@ export default async function NuevoLead({ searchParams }: { searchParams: Promis
               VALUES (${usr.id}, 'lead', ${l.id}, 'alta', ${nombre})`;
 
     await avisarLeadNuevo(l.id);
+    await avisoOk("Lead cargado");
     redirect(`/leads/${l.id}`);
   }
 

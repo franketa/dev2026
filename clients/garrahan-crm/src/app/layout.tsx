@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { scriptTema } from "@/components/tema";
+import Avisos from "@/components/avisos";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -24,7 +25,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             cada carga de página. */}
         <script dangerouslySetInnerHTML={{ __html: scriptTema }} />
       </head>
-      <body>{children}</body>
+      <body>
+        {children}
+        <Avisos />
+      </body>
     </html>
   );
 }

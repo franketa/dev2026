@@ -1,5 +1,6 @@
 import { revalidatePath } from "next/cache";
 import { Plus } from "lucide-react";
+import { avisoOk, avisoError } from "@/lib/aviso";
 import { sql } from "@/lib/db";
 import { requierePermiso, puede } from "@/lib/auth";
 import { plata } from "@/lib/format";
@@ -31,7 +32,7 @@ export default async function Cuentas() {
     "use server";
     const usr = await requierePermiso("caja.editar");
     const nombre = String(fd.get("nombre") || "").trim();
-    if (!nombre) return;
+    if (!nombre) return avisoError("Falta el nombre de la cuenta.");
     const tipo = TIPOS[String(fd.get("tipo"))] ? String(fd.get("tipo")) : "efectivo";
     const moneda = String(fd.get("moneda")) === "USD" ? "USD" : "ARS";
     const [c] = await sql`
@@ -43,6 +44,7 @@ export default async function Cuentas() {
               VALUES (${usr.id}, 'cuenta', ${c.id}, 'alta', ${nombre})`;
     revalidatePath("/caja/cuentas");
     revalidatePath("/caja");
+    await avisoOk(`Cuenta "${nombre}" creada`);
   }
 
   async function guardar(fd: FormData) {
@@ -50,7 +52,7 @@ export default async function Cuentas() {
     const usr = await requierePermiso("caja.editar");
     const id = Number(fd.get("id"));
     const nombre = String(fd.get("nombre") || "").trim();
-    if (!id || !nombre) return;
+    if (!id || !nombre) return avisoError("Falta el nombre de la cuenta.");
     await sql`UPDATE caja_cuentas SET nombre = ${nombre},
                 saldo_inicial = ${Number(fd.get("saldo_inicial") || 0)},
                 activa = ${fd.get("activa") === "on"}
@@ -59,6 +61,7 @@ export default async function Cuentas() {
               VALUES (${usr.id}, 'cuenta', ${id}, 'edicion', ${nombre})`;
     revalidatePath("/caja/cuentas");
     revalidatePath("/caja");
+    await avisoOk("Cuenta guardada");
   }
 
   return (

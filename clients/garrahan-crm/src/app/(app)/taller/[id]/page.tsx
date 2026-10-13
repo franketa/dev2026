@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { Check, Plus, CheckCheck } from "lucide-react";
+import { avisoOk, avisoError } from "@/lib/aviso";
 import { sql } from "@/lib/db";
 import { requierePermiso, veCostos } from "@/lib/auth";
 import { plata, fecha, dominio } from "@/lib/format";
@@ -42,26 +43,30 @@ export default async function Orden({ params }: { params: Promise<any> }) {
     "use server";
     await requierePermiso("taller");
     const itemId = Number(fd.get("item"));
-    await sql`UPDATE orden_items SET hecho = NOT hecho WHERE id = ${itemId}`;
+    const [it] = await sql`UPDATE orden_items SET hecho = NOT hecho WHERE id = ${itemId} RETURNING hecho`;
     revalidatePath(`/taller/${id}`);
+    if (!it) return avisoError("No se encontró la tarea.");
+    await avisoOk(it.hecho ? "Tarea hecha" : "Tarea pendiente otra vez");
   }
 
   async function agregarTarea(fd: FormData) {
     "use server";
     await requierePermiso("taller");
     const tarea = String(fd.get("tarea") || "").trim();
-    if (!tarea) return;
+    if (!tarea) return avisoError("Escribí la tarea.");
     await sql`INSERT INTO orden_items (orden_id, tarea, costo, proveedor_id, posicion)
               VALUES (${id}, ${tarea}, ${Number(fd.get("costo") || 0)},
                       ${fd.get("proveedor") ? Number(fd.get("proveedor")) : null},
                       (SELECT COALESCE(MAX(posicion),0)+1 FROM orden_items WHERE orden_id = ${id}))`;
     revalidatePath(`/taller/${id}`);
+    await avisoOk("Tarea agregada");
   }
 
   async function cambiarEstado(fd: FormData) {
     "use server";
     const usr = await requierePermiso("taller");
     const nuevo = String(fd.get("estado"));
+    if (!ESTADOS_TALLER[nuevo]) return avisoError("Ese estado no existe.");
     await sql`UPDATE ordenes_taller SET estado = ${nuevo} WHERE id = ${id}`;
     // El estado del auto sigue al de la orden: no hay que tocarlo dos veces.
     const mapa: Record<string, string> = {
@@ -72,6 +77,7 @@ export default async function Orden({ params }: { params: Promise<any> }) {
     await sql`INSERT INTO auditoria (usuario_id, entidad, entidad_id, accion, detalle)
               VALUES (${usr.id}, 'orden_taller', ${id}, 'estado', ${nuevo})`;
     revalidatePath(`/taller/${id}`);
+    await avisoOk(`Orden: ${ESTADOS_TALLER[nuevo].label}`);
   }
 
   /** Al cerrar la orden, el costo del taller pasa a ser costo de la unidad. */
@@ -91,6 +97,7 @@ export default async function Orden({ params }: { params: Promise<any> }) {
     await sql`UPDATE vehiculos SET estado = 'disponible' WHERE id = ${o.vid}`;
     await sql`INSERT INTO auditoria (usuario_id, entidad, entidad_id, accion, detalle)
               VALUES (${usr.id}, 'orden_taller', ${id}, 'cerrada', ${"costos imputados a la unidad"})`;
+    await avisoOk(its.length ? "Orden cerrada. Los costos del taller pasaron a la unidad." : "Orden cerrada. La unidad quedó disponible.");
     redirect(`/vehiculos/${o.vid}?tab=costos`);
   }
 

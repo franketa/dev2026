@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { Phone, MessageCircle, Mail, Receipt, CalendarClock } from "lucide-react";
+import { avisoOk, avisoError } from "@/lib/aviso";
 import { sql } from "@/lib/db";
 import { requierePermiso } from "@/lib/auth";
 import { puedeVerLead } from "@/lib/leads";
@@ -65,9 +66,9 @@ export default async function Lead({ params }: { params: Promise<any> }) {
   async function registrar(fd: FormData) {
     "use server";
     const usr = await requierePermiso("leads");
-    if (!(await puedeVerLead(usr, Number(id)))) return;
+    if (!(await puedeVerLead(usr, Number(id)))) return avisoError("Ese lead no es tuyo.");
     const detalle = String(fd.get("detalle") || "").trim();
-    if (!detalle) return;
+    if (!detalle) return avisoError("Escribí qué pasó.");
     await sql`INSERT INTO lead_interacciones (lead_id, tipo, detalle, usuario_id)
               VALUES (${id}, ${String(fd.get("tipo") || "nota")}, ${detalle}, ${usr.id})`;
 
@@ -83,26 +84,28 @@ export default async function Lead({ params }: { params: Promise<any> }) {
       await sql`UPDATE leads SET actualizado_en = now() WHERE id = ${id}`;
     }
     revalidatePath(`/leads/${id}`);
+    await avisoOk("Seguimiento registrado");
   }
 
   async function cambiarEstado(fd: FormData) {
     "use server";
     const usr = await requierePermiso("leads");
-    if (!(await puedeVerLead(usr, Number(id)))) return;
+    if (!(await puedeVerLead(usr, Number(id)))) return avisoError("Ese lead no es tuyo.");
     const nuevo = String(fd.get("estado") || "");
     const etapa = ESTADOS_LEAD[nuevo]?.etapa;
-    if (!etapa) return;
+    if (!etapa) return avisoError("Ese estado no existe.");
     await sql`UPDATE leads SET estado = ${nuevo}, etapa = ${etapa}, actualizado_en = now()
               WHERE id = ${id}`;
     await sql`INSERT INTO lead_interacciones (lead_id, tipo, detalle, usuario_id)
               VALUES (${id}, 'cambio_estado', ${"Pasó a " + ESTADOS_LEAD[nuevo].label}, ${usr.id})`;
     revalidatePath(`/leads/${id}`);
+    await avisoOk(`Lead pasado a ${ESTADOS_LEAD[nuevo].label}`);
   }
 
   async function marcarPerdido(fd: FormData) {
     "use server";
     const usr = await requierePermiso("leads");
-    if (!(await puedeVerLead(usr, Number(id)))) return;
+    if (!(await puedeVerLead(usr, Number(id)))) return avisoError("Ese lead no es tuyo.");
     const motivo = String(fd.get("motivo") || "").trim();
     await sql`UPDATE leads SET estado = 'perdido', etapa = 'cerrado',
                                motivo_perdida = ${motivo || null}, actualizado_en = now()
@@ -110,6 +113,7 @@ export default async function Lead({ params }: { params: Promise<any> }) {
     await sql`INSERT INTO lead_interacciones (lead_id, tipo, detalle, usuario_id)
               VALUES (${id}, 'cambio_estado', ${"Perdido" + (motivo ? ": " + motivo : "")}, ${usr.id})`;
     revalidatePath(`/leads/${id}`);
+    await avisoOk("Lead marcado como perdido");
   }
 
   return (

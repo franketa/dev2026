@@ -1,15 +1,15 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import bcrypt from "bcryptjs";
+import { avisoOk, avisoError } from "@/lib/aviso";
 import { sql } from "@/lib/db";
 import { requiereSesion, hash, ROLES } from "@/lib/auth";
 import { Encabezado, Panel, PanelTitulo, Boton, Campo, Dato, Chip } from "@/components/ui";
 
 export const dynamic = "force-dynamic";
 
-export default async function Cuenta({ searchParams }: { searchParams: Promise<any> }) {
+export default async function Cuenta() {
   const u = await requiereSesion();
-  const p = await searchParams;
 
   const [yo] = await sql`SELECT nombre, email, telefono, rol, creado_en FROM usuarios WHERE id = ${u.id}`;
   const rol = ROLES.find((r) => r.valor === u.rol);
@@ -21,13 +21,13 @@ export default async function Cuenta({ searchParams }: { searchParams: Promise<a
     const nueva = String(fd.get("nueva") || "");
     const repetir = String(fd.get("repetir") || "");
 
-    if (nueva.length < 8) redirect("/cuenta?e=corta");
-    if (nueva !== repetir) redirect("/cuenta?e=distintas");
+    if (nueva.length < 8) return avisoError("La clave nueva tiene que tener al menos 8 caracteres.");
+    if (nueva !== repetir) return avisoError("Las dos claves nuevas no coinciden.");
 
     // Se pide la clave actual aunque haya sesión: si alguien deja la pantalla
     // abierta, que no le puedan cambiar la clave y dejarlo afuera.
     const [row] = await sql`SELECT password_hash FROM usuarios WHERE id = ${usr.id}`;
-    if (!row || !(await bcrypt.compare(actual, row.password_hash))) redirect("/cuenta?e=actual");
+    if (!row || !(await bcrypt.compare(actual, row.password_hash))) return avisoError("La clave actual no es correcta.");
 
     await sql`UPDATE usuarios SET password_hash = ${await hash(nueva)} WHERE id = ${usr.id}`;
     // Las demás sesiones se caen: cambiar la clave tiene que echar al que la sepa.
@@ -41,18 +41,14 @@ export default async function Cuenta({ searchParams }: { searchParams: Promise<a
     "use server";
     const usr = await requiereSesion();
     const nombre = String(fd.get("nombre") || "").trim();
-    if (!nombre) return;
+    if (!nombre) return avisoError("El nombre no puede quedar vacío.");
     await sql`UPDATE usuarios SET nombre = ${nombre},
                 telefono = ${String(fd.get("telefono") || "") || null}
               WHERE id = ${usr.id}`;
     revalidatePath("/cuenta");
+    await avisoOk("Tus datos se guardaron");
   }
 
-  const ERRORES: Record<string, string> = {
-    corta: "La clave nueva tiene que tener al menos 8 caracteres.",
-    distintas: "Las dos claves nuevas no coinciden.",
-    actual: "La clave actual no es correcta.",
-  };
 
   return (
     <>
@@ -84,11 +80,6 @@ export default async function Cuenta({ searchParams }: { searchParams: Promise<a
         <Panel>
           <PanelTitulo titulo="Cambiar contraseña"
             detalle="Al cambiarla se cierran todas tus sesiones y tenés que volver a entrar." />
-
-          {p.e && ERRORES[p.e] && (
-            <p className="mb-4 rounded-lg border border-[var(--c-rojo-borde)] bg-[var(--c-rojo-fondo)] px-3.5 py-2.5
-              text-[12.5px] text-[var(--c-rojo-alto)]">{ERRORES[p.e]}</p>
-          )}
 
           <form action={cambiarClave} className="space-y-4">
             <Campo label="Contraseña actual">

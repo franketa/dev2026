@@ -32,7 +32,9 @@ export default function TableroLeads({ leads, columnas, accion, horasLimite }: {
     fd.set("estado", estado);
     empezar(async () => {
       mover({ id, estado });
-      await accion(fd);
+      // Si falla, el aviso de error lo muestra <Avisos /> y la tarjeta vuelve
+      // sola a su columna: el movimiento optimista se descarta al terminar.
+      try { await accion(fd); } catch { /* ya avisado */ }
     });
   }
 

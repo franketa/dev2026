@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 import type { Tono } from "@/lib/constantes";
+import BotonEnviar from "./boton-enviar";
 
 /* ------------------------------------------------------------------- tonos */
 const TONOS: Record<Tono, string> = {
@@ -101,6 +102,7 @@ export function Boton({ children, href, onClick, variante = "primario", tipo = "
   };
   const cls = `${base} ${v[variante] || v.primario} ${className}`;
   if (href) return <Link href={href} className={cls} {...rest}>{children}</Link>;
+  if (tipo === "submit" && !onClick) return <BotonEnviar className={cls} {...rest}>{children}</BotonEnviar>;
   return <button type={tipo} onClick={onClick} className={cls} {...rest}>{children}</button>;
 }
 

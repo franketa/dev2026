@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { revalidatePath } from "next/cache";
+import { avisoOk, avisoError } from "@/lib/aviso";
 import { sql } from "@/lib/db";
 import { requierePermiso } from "@/lib/auth";
 import { fecha, numero } from "@/lib/format";
@@ -65,7 +66,7 @@ export default async function Postventa({ searchParams }: { searchParams: Promis
     const hito = String(fd.get("hito") || "7");
     const resultado = String(fd.get("resultado") || "").trim() || null;
     const hoy = new Date().toISOString().slice(0, 10);
-    if (!id) return;
+    if (!id) return avisoError("No se encontró la entrega.");
 
     if (hito === "7") {
       await sql`UPDATE postventa SET contacto_7 = ${hoy}, resultado_7 = ${resultado} WHERE id = ${id}`;
@@ -88,6 +89,7 @@ export default async function Postventa({ searchParams }: { searchParams: Promis
                         ${"Referido por un cliente (postventa #" + id + ")"})`;
     }
     revalidatePath("/postventa");
+    await avisoOk(ref ? "Contacto registrado y referido cargado como lead" : `Contacto de los ${hito} días registrado`);
   }
 
   async function cambiarTramite(fd: FormData) {
@@ -95,11 +97,12 @@ export default async function Postventa({ searchParams }: { searchParams: Promis
     const usr = await requierePermiso("ventas");
     const ventaId = Number(fd.get("id"));
     const nuevo = String(fd.get("estado") || "");
-    if (!ventaId || !ESTADOS_TRAMITE[nuevo]) return;
+    if (!ventaId || !ESTADOS_TRAMITE[nuevo]) return avisoError("Ese estado de trámite no existe.");
     await sql`UPDATE ventas SET estado_tramite = ${nuevo} WHERE id = ${ventaId}`;
     await sql`INSERT INTO auditoria (usuario_id, entidad, entidad_id, accion, detalle)
               VALUES (${usr.id}, 'venta', ${ventaId}, 'tramite', ${nuevo})`;
     revalidatePath("/postventa");
+    await avisoOk(`Trámite: ${ESTADOS_TRAMITE[nuevo]}`);
   }
 
   async function guardarVtv(fd: FormData) {
@@ -107,9 +110,10 @@ export default async function Postventa({ searchParams }: { searchParams: Promis
     await requierePermiso("ventas");
     const id = Number(fd.get("id"));
     const vence = String(fd.get("vtv_vence") || "") || null;
-    if (!id) return;
+    if (!id) return avisoError("No se encontró la entrega.");
     await sql`UPDATE postventa SET vtv_vence = ${vence} WHERE id = ${id}`;
     revalidatePath("/postventa");
+    await avisoOk(vence ? "Vencimiento de VTV guardado" : "Vencimiento de VTV borrado");
   }
 
   const TABS = [

@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import crypto from "crypto";
 import bcrypt from "bcryptjs";
 import { sql } from "./db";
+import { avisoError, SIN_PERMISO } from "./aviso";
 
 export type Rol = "dueno" | "gerente" | "vendedor" | "administrativo" | "taller" | "referente" | "reportes";
 
@@ -118,7 +119,12 @@ export async function requiereSesion(): Promise<Usuario> {
  */
 export async function requierePermiso(permiso: string): Promise<Usuario> {
   const u = await requiereSesion();
-  if (!puede(u, permiso)) redirect("/");
+  if (!puede(u, permiso)) {
+    // Desde una acción, el aviso explica por qué no pasó nada. Al abrir una
+    // pantalla no se puede escribir la cookie, y alcanza con volver al inicio.
+    try { await avisoError(SIN_PERMISO); } catch { /* render de una página */ }
+    redirect("/");
+  }
   return u;
 }
 

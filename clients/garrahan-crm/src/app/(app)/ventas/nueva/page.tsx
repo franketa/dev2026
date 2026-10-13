@@ -1,4 +1,5 @@
 import { redirect } from "next/navigation";
+import { avisoOk, avisoError } from "@/lib/aviso";
 import { sql } from "@/lib/db";
 import { requierePermiso, veCostos } from "@/lib/auth";
 import { plata } from "@/lib/format";
@@ -49,7 +50,8 @@ export default async function NuevaVenta({ searchParams }: { searchParams: Promi
 
     const vehiculoId = num("vehiculo_id");
     const precio = num("precio") ?? 0;
-    if (!vehiculoId || !precio) return;
+    if (!vehiculoId) return avisoError("Elegí la unidad.");
+    if (!precio) return avisoError("Falta el precio.");
 
     const descuento = num("descuento") ?? 0;
     const total = precio - descuento;
@@ -209,6 +211,8 @@ export default async function NuevaVenta({ searchParams }: { searchParams: Promi
         `Vence el ${fechaCorta(vt?.sena_vence)}. Cargó ${t(usr.nombre)}.`);
     }
 
+    await avisoOk(estado === "completada" ? "Venta cerrada. La unidad salió del stock y de la web."
+      : esReserva ? "Reserva cargada. La unidad quedó señada y salió de la web." : "Operación cargada");
     redirect(`/ventas/${venta.id}`);
   }
 

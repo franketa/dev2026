@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { FileText, Plus } from "lucide-react";
+import { avisoOk, avisoError } from "@/lib/aviso";
 import { sql } from "@/lib/db";
 import { requierePermiso, veCostos } from "@/lib/auth";
 import { plata, plataCorta, fecha, porcentaje, dominio as fdom } from "@/lib/format";
@@ -59,7 +60,7 @@ export default async function Venta({ params }: { params: Promise<any> }) {
     "use server";
     const usr = await requierePermiso("ventas");
     const monto = Number(fd.get("monto") || 0);
-    if (!monto) return;
+    if (!monto) return avisoError("Falta el monto.");
     const medio = String(fd.get("medio") || "efectivo");
     const moneda = String(fd.get("moneda") || "ARS") === "USD" ? "USD" : "ARS";
     const cot = moneda === "USD" ? Number(fd.get("cotizacion") || 1) : 1;
@@ -111,24 +112,26 @@ export default async function Venta({ params }: { params: Promise<any> }) {
       `${t(v.marca)} ${t(v.modelo)} · ${plataAviso(monto, moneda)} en ${t(MEDIOS_PAGO[medio] || medio)}. ` +
       `Cargó ${t(usr.nombre)}.`);
     revalidatePath(`/ventas/${id}`);
+    await avisoOk(esSena ? "Seña registrada" : "Cobro registrado");
   }
 
   async function extenderSena(fd: FormData) {
     "use server";
     const usr = await requierePermiso("ventas");
     const nueva = String(fd.get("sena_vence") || "");
-    if (!/^\d{4}-\d{2}-\d{2}$/.test(nueva)) return;
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(nueva)) return avisoError("Elegí la fecha nueva.");
     await sql`UPDATE ventas SET sena_vence = ${nueva} WHERE id = ${id}`;
     await sql`INSERT INTO auditoria (usuario_id, entidad, entidad_id, accion, detalle)
               VALUES (${usr.id}, 'venta', ${id}, 'sena_vence', ${nueva})`;
     revalidatePath(`/ventas/${id}`);
+    await avisoOk(`La seña ahora vence el ${nueva.split("-").reverse().join("/")}`);
   }
 
   async function cambiarEstado(fd: FormData) {
     "use server";
     const usr = await requierePermiso("ventas");
     const nuevo = String(fd.get("estado") || "");
-    if (!ESTADOS_VENTA[nuevo]) return;
+    if (!ESTADOS_VENTA[nuevo]) return avisoError("Ese estado no existe.");
     await sql`UPDATE ventas SET estado = ${nuevo} WHERE id = ${id}`;
 
     // El estado del auto sigue al de la venta: cancelarla lo devuelve al stock.
@@ -153,17 +156,21 @@ export default async function Venta({ params }: { params: Promise<any> }) {
     await sql`INSERT INTO auditoria (usuario_id, entidad, entidad_id, accion, detalle)
               VALUES (${usr.id}, 'venta', ${id}, 'estado', ${nuevo})`;
     revalidatePath(`/ventas/${id}`);
+    await avisoOk(nuevo === "completada" ? "Venta cerrada. La unidad salió del stock y de la web."
+      : nuevo === "cancelada" ? "Operación cancelada. La unidad volvió al stock y a la web."
+      : `Operación: ${ESTADOS_VENTA[nuevo].label}`);
   }
 
   async function cambiarTramite(fd: FormData) {
     "use server";
     await requierePermiso("ventas");
     const nuevo = String(fd.get("estado") || "");
-    if (!ESTADOS_TRAMITE[nuevo]) return;
+    if (!ESTADOS_TRAMITE[nuevo]) return avisoError("Ese estado de trámite no existe.");
     await sql`UPDATE ventas SET estado_tramite = ${nuevo},
                 fecha_entrega = ${nuevo === "entregado" ? new Date().toISOString().slice(0, 10) : null}
               WHERE id = ${id}`;
     revalidatePath(`/ventas/${id}`);
+    await avisoOk(`Trámite: ${ESTADOS_TRAMITE[nuevo]}`);
   }
 
   const pasosTramite = Object.keys(ESTADOS_TRAMITE);

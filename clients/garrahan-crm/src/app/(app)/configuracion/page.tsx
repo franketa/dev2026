@@ -1,3 +1,4 @@
+import { avisoOk, avisoError } from "@/lib/aviso";
 import { sql } from "@/lib/db";
 import { requierePermiso } from "@/lib/auth";
 import { plata, fecha, numero } from "@/lib/format";
@@ -6,14 +7,12 @@ import { Encabezado, KPI, GrillaKPI, Chip, Tabla, TH, TD, FilaVacia, Panel } fro
 export const dynamic = "force-dynamic";
 
 import { revalidatePath } from "next/cache";
-import { redirect } from "next/navigation";
 import { Boton, Campo, PanelTitulo } from "@/components/ui";
 import { avisar, telegramConfigurado } from "@/lib/telegram";
 import { mandarResumen } from "@/lib/avisos";
 
-export default async function Configuracion({ searchParams }: { searchParams: Promise<any> }) {
+export default async function Configuracion() {
   await requierePermiso("configuracion");
-  const { tg } = await searchParams;
   const [e] = await sql`SELECT * FROM empresa WHERE id = 1`;
   const [cot] = await sql`SELECT * FROM cotizaciones ORDER BY fecha DESC LIMIT 1`;
 
@@ -30,16 +29,18 @@ export default async function Configuracion({ searchParams }: { searchParams: Pr
         domicilio = EXCLUDED.domicilio, localidad = EXCLUDED.localidad,
         provincia = EXCLUDED.provincia, telefono = EXCLUDED.telefono, email = EXCLUDED.email`;
     revalidatePath("/configuracion");
+    await avisoOk("Datos de la empresa guardados");
   }
 
   async function guardarCotizacion(fd: FormData) {
     "use server";
     await requierePermiso("configuracion");
     const v = Number(fd.get("valor") || 0);
-    if (!v) return;
+    if (!v) return avisoError("Poné el valor del dólar.");
     await sql`INSERT INTO cotizaciones (fecha, valor) VALUES (current_date, ${v})
               ON CONFLICT (fecha) DO UPDATE SET valor = EXCLUDED.valor`;
     revalidatePath("/configuracion");
+    await avisoOk("Cotización actualizada");
   }
 
   async function guardarTelegram(fd: FormData) {
@@ -48,30 +49,27 @@ export default async function Configuracion({ searchParams }: { searchParams: Pr
     const chat = String(fd.get("telegram_chat") || "").trim() || null;
     await sql`UPDATE empresa SET telegram_chat = ${chat} WHERE id = 1`;
     revalidatePath("/configuracion");
+    await avisoOk(chat ? "Chat de Telegram guardado. Probalo con el mensaje de prueba." : "Chat de Telegram borrado");
   }
 
   async function probarTelegram() {
     "use server";
     const usr = await requierePermiso("configuracion");
     const ok = await avisar(`✅ Prueba de avisos del sistema de Garrahan. Mandada por ${usr.nombre}.`);
-    redirect(`/configuracion?tg=${ok ? "ok" : "error"}`);
+    if (ok) await avisoOk("Listo: el mensaje de prueba salió. Revisá el chat.");
+    else await avisoError("No salió. Revisá que el bot esté en el chat y que el ID sea el correcto.");
   }
 
   async function resumenAhora() {
     "use server";
     await requierePermiso("configuracion");
     const ok = await mandarResumen();
-    redirect(`/configuracion?tg=${ok ? "resumen" : "vacio"}`);
+    if (ok) await avisoOk("Resumen mandado");
+    else await avisoError("No había nada para avisar hoy, o no se pudo mandar.");
   }
 
   const tokenOk = telegramConfigurado();
   const chatActual = e?.telegram_chat || process.env.TELEGRAM_CHAT_ID || "";
-  const MENSAJES: Record<string, string> = {
-    ok: "Listo: el mensaje de prueba salió. Revisá el chat.",
-    error: "No salió. Revisá que el bot esté agregado al chat y que el ID sea el correcto.",
-    resumen: "Resumen mandado.",
-    vacio: "No había nada para avisar hoy (o no se pudo mandar).",
-  };
 
   return (
     <>
@@ -138,9 +136,6 @@ export default async function Configuracion({ searchParams }: { searchParams: Pr
                   <form action={probarTelegram}><Boton tipo="submit" variante="suave">Mandar un mensaje de prueba</Boton></form>
                   <form action={resumenAhora}><Boton tipo="submit" variante="suave">Mandar el resumen de hoy</Boton></form>
                 </div>
-                {tg && MENSAJES[tg] && (
-                  <Chip tono={tg === "ok" || tg === "resumen" ? "verde" : "amarillo"}>{MENSAJES[tg]}</Chip>
-                )}
               </div>
             </div>
           )}

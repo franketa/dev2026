@@ -1,4 +1,5 @@
 import { redirect } from "next/navigation";
+import { avisoOk, avisoError } from "@/lib/aviso";
 import { sql } from "@/lib/db";
 import { requierePermiso, veCostos } from "@/lib/auth";
 import { leerVehiculo, definidos } from "@/lib/vehiculo-form";
@@ -32,7 +33,7 @@ export default async function NuevoVehiculo({ searchParams }: { searchParams: Pr
 
     const d = leerVehiculo(fd, puedeCostos);
     const { marca, modelo } = d;
-    if (!marca || !modelo) return;
+    if (!marca || !modelo) return avisoError("Faltan la marca o el modelo.");
 
     // El vendedor puede dar de alta una unidad pero no fijar su costo de compra.
     const valorCompra = d.valor_compra ?? 0;
@@ -63,6 +64,7 @@ export default async function NuevoVehiculo({ searchParams }: { searchParams: Pr
               VALUES (${usr.id}, 'vehiculo', ${v.id}, 'alta', ${marca + " " + modelo})`;
 
     // Lo siguiente que se hace con un auto que entra es sacarle fotos.
+    await avisoOk("Unidad cargada. Ahora sumale las fotos.");
     redirect(`/vehiculos/${v.id}?tab=fotos`);
   }
 

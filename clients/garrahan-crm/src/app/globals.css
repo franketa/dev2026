@@ -253,3 +253,12 @@ input:focus-visible, select:focus-visible, textarea:focus-visible, button:focus-
   thead { display: table-header-group; }
 }
 .solo-imprimir { display: none; }
+
+/* ------------------------------------------------------------------ avisos
+   "Guardado" y errores, abajo de la pantalla (components/avisos.tsx).        */
+@keyframes aviso-entra {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: none; }
+}
+.aviso-entra { animation: aviso-entra .18s ease-out; }
+@media (prefers-reduced-motion: reduce) { .aviso-entra { animation: none; } }

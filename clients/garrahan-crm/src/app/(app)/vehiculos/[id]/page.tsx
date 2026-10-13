@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { Plus, Receipt, Wrench, FileText, Pencil, Globe, Trash2, Star, ChevronLeft, ChevronRight } from "lucide-react";
+import { avisoOk, avisoError, SIN_PERMISO } from "@/lib/aviso";
 import { sql } from "@/lib/db";
 import { requierePermiso, veCostos, puede } from "@/lib/auth";
 import { plata, numero, km as fkm, dominio, porcentaje, fecha } from "@/lib/format";
@@ -59,9 +60,9 @@ export default async function Vehiculo({ params, searchParams }: { params: Promi
   async function agregarCosto(fd: FormData) {
     "use server";
     const usr = await requierePermiso("vehiculos");
-    if (!veCostos(usr)) return;
+    if (!veCostos(usr)) return avisoError(SIN_PERMISO);
     const monto = Number(fd.get("monto") || 0);
-    if (!monto) return;
+    if (!monto) return avisoError("Falta el monto.");
     await sql`
       INSERT INTO vehiculo_costos (vehiculo_id, tipo, detalle, proveedor_id, fecha, monto, origen)
       VALUES (${id}, ${String(fd.get("tipo") || "Otro")}, ${String(fd.get("detalle") || "")},
@@ -71,30 +72,32 @@ export default async function Vehiculo({ params, searchParams }: { params: Promi
     await sql`INSERT INTO auditoria (usuario_id, entidad, entidad_id, accion, detalle)
               VALUES (${usr.id}, 'vehiculo', ${id}, 'costo_agregado', ${"$" + monto})`;
     revalidatePath(`/vehiculos/${id}`);
+    await avisoOk("Costo agregado");
   }
 
   async function cambiarEstado(fd: FormData) {
     "use server";
     const usr = await requierePermiso("vehiculos");
     const nuevo = String(fd.get("estado") || "");
-    if (!nuevo) return;
+    if (!ESTADOS_VEHICULO[nuevo]) return avisoError("Ese estado no existe.");
     await sql`UPDATE vehiculos SET estado = ${nuevo} WHERE id = ${id}`;
     await sql`INSERT INTO auditoria (usuario_id, entidad, entidad_id, accion, detalle)
               VALUES (${usr.id}, 'vehiculo', ${id}, 'estado', ${nuevo})`;
     revalidatePath(`/vehiculos/${id}`);
+    await avisoOk(`Unidad: ${ESTADOS_VEHICULO[nuevo].label}`);
   }
 
   /* ------------------------------------------------------------- fotos */
   async function fotoAccion(fd: FormData) {
     "use server";
     const usr = await requierePermiso("vehiculos");
-    if (!puede(usr, "vehiculos.editar")) return;
+    if (!puede(usr, "vehiculos.editar")) return avisoError(SIN_PERMISO);
     const foto = Number(fd.get("foto"));
     const que = String(fd.get("que"));
     const lista = (await sql`SELECT id FROM vehiculo_fotos WHERE vehiculo_id = ${id}
                              ORDER BY posicion, id`).map((r: any) => Number(r.id));
     const i = lista.indexOf(foto);
-    if (i < 0) return;
+    if (i < 0) return avisoError("Esa foto ya no está.");
 
     if (que === "borrar") {
       await sql`DELETE FROM vehiculo_fotos WHERE id = ${foto} AND vehiculo_id = ${id}`;
@@ -112,13 +115,14 @@ export default async function Vehiculo({ params, searchParams }: { params: Promi
       await sql`UPDATE vehiculo_fotos SET posicion = ${k} WHERE id = ${lista[k]}`;
     }
     revalidatePath(`/vehiculos/${id}`);
+    await avisoOk(que === "borrar" ? "Foto borrada" : que === "portada" ? "Foto de portada cambiada" : "Orden de fotos guardado");
   }
 
   /* -------------------------------------------------------------- ficha */
   async function guardarFicha(fd: FormData) {
     "use server";
     const usr = await requierePermiso("vehiculos");
-    if (!puede(usr, "vehiculos.editar")) return;
+    if (!puede(usr, "vehiculos.editar")) return avisoError(SIN_PERMISO);
     const si = (k: string) => fd.get(k) === "on";
     const n = (k: string) => Number(fd.get(k) || 0);
     const vence = String(fd.get("vtv_vence") || "") || null;
@@ -136,6 +140,7 @@ export default async function Vehiculo({ params, searchParams }: { params: Promi
     await sql`INSERT INTO auditoria (usuario_id, entidad, entidad_id, accion, detalle)
               VALUES (${usr.id}, 'vehiculo', ${id}, 'ficha', null)`;
     revalidatePath(`/vehiculos/${id}`);
+    await avisoOk("Ficha guardada");
   }
 
   const tabUrl = (t: string) => `/vehiculos/${id}?tab=${t}`;

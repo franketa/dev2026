@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { revalidatePath } from "next/cache";
 import { Plus, ArrowRight } from "lucide-react";
+import { avisoOk, avisoError } from "@/lib/aviso";
 import { sql } from "@/lib/db";
 import { requierePermiso, veCostos } from "@/lib/auth";
 import { plata, plataCorta, fecha, numero } from "@/lib/format";
@@ -56,13 +57,15 @@ export default async function Inversores() {
     "use server";
     await requierePermiso("inversores");
     const monto = Number(fd.get("monto") || 0);
-    if (!monto) return;
+    if (!monto) return avisoError("Falta el monto.");
+    if (!Number(fd.get("inversor"))) return avisoError("Elegí el inversor.");
     await sql`INSERT INTO inversor_movimientos (inversor_id, tipo, monto, moneda, descripcion, fecha, contraparte_id)
               VALUES (${Number(fd.get("inversor"))}, ${String(fd.get("tipo"))}, ${monto},
                       ${String(fd.get("moneda") || "ARS")}, ${String(fd.get("descripcion") || "")},
                       ${String(fd.get("fecha"))},
                       ${fd.get("contraparte") ? Number(fd.get("contraparte")) : null})`;
     revalidatePath("/inversores");
+    await avisoOk("Movimiento registrado");
   }
 
   async function marcarDevuelta(fd: FormData) {
@@ -70,6 +73,7 @@ export default async function Inversores() {
     await requierePermiso("inversores");
     await sql`UPDATE inversor_movimientos SET devuelto = true WHERE id = ${Number(fd.get("id"))}`;
     revalidatePath("/inversores");
+    await avisoOk("Marcado como devuelto");
   }
 
   return (

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { revalidatePath } from "next/cache";
 import { Plus, Search, Globe, MessageCircle, Instagram, Facebook, Phone, Users, Store } from "lucide-react";
+import { avisoOk, avisoError } from "@/lib/aviso";
 import { sql } from "@/lib/db";
 import { requierePermiso } from "@/lib/auth";
 import { plata, fecha, numero } from "@/lib/format";
@@ -63,13 +64,15 @@ export default async function Leads({ searchParams }: { searchParams: Promise<an
     const usr = await requierePermiso("leads");
     const id = Number(fd.get("id"));
     const [visible] = await sql`SELECT 1 FROM leads l WHERE l.id = ${id} AND ${leadsVisibles(usr)}`;
-    if (!visible || !ESTADOS_LEAD[String(fd.get("estado"))]) return;
+    if (!visible) return avisoError("Ese lead no es tuyo.");
+    if (!ESTADOS_LEAD[String(fd.get("estado"))]) return avisoError("Ese estado no existe.");
     const nuevo = String(fd.get("estado"));
     const etapa = ESTADOS_LEAD[nuevo]?.etapa || "captacion";
     await sql`UPDATE leads SET estado = ${nuevo}, etapa = ${etapa}, actualizado_en = now() WHERE id = ${id}`;
     await sql`INSERT INTO auditoria (usuario_id, entidad, entidad_id, accion, detalle)
               VALUES (${usr.id}, 'lead', ${id}, 'estado', ${nuevo})`;
     revalidatePath("/leads");
+    await avisoOk(`Lead pasado a ${ESTADOS_LEAD[nuevo].label}`);
   }
 
   return (

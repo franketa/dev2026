@@ -1,4 +1,5 @@
 import { redirect } from "next/navigation";
+import { avisoOk, avisoError } from "@/lib/aviso";
 import { sql } from "@/lib/db";
 import { requierePermiso } from "@/lib/auth";
 import { ESTADOS_TALLER, CHECKLIST_TALLER } from "@/lib/constantes";
@@ -18,7 +19,7 @@ export default async function NuevaOrden({ searchParams }: { searchParams: Promi
     "use server";
     const usr = await requierePermiso("taller");
     const vehiculoId = Number(fd.get("vehiculo_id") || 0);
-    if (!vehiculoId) return;
+    if (!vehiculoId) return avisoError("Elegí la unidad.");
 
     const estado = String(fd.get("estado") || "en_revision");
     const [o] = await sql`
@@ -49,6 +50,7 @@ export default async function NuevaOrden({ searchParams }: { searchParams: Promi
     await sql`INSERT INTO auditoria (usuario_id, entidad, entidad_id, accion, detalle)
               VALUES (${usr.id}, 'orden_taller', ${o.id}, 'alta', ${"vehículo " + vehiculoId})`;
 
+    await avisoOk("Orden de taller abierta");
     redirect(`/taller/${o.id}`);
   }
 
