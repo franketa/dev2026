@@ -15,7 +15,7 @@ function tablaSimulacion(r) {
 async function cerrarMes(periodo, ctx) {
   const ok = await confirmar({
     titulo: `Cerrar ${nombrePeriodo(periodo)}`,
-    texto: 'Los vuelos del mes quedan facturados y ya no se pueden editar. Se cobra el derecho de aeronave a cada piloto que voló y la cuota social a cada socio activo, y se genera un cupón por socio (y por externo con saldo). Esta acción no se deshace.',
+    texto: 'Los vuelos del mes quedan facturados y ya no se pueden editar. Se cobra el derecho de aeronave a cada piloto que voló y la cuota social a cada socio, y se genera un cupón por socio (y por externo con saldo). Esta acción no se deshace.',
     boton: `Cerrar ${nombrePeriodo(periodo).split(' ')[0]}`
   });
   if (!ok) return;

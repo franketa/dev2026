@@ -54,6 +54,14 @@ function armar(input, actor, previo = null) {
   const fecha = input.fecha ?? previo?.fecha;
   if (!esFecha(fecha)) throw new ErrorNegocio('Fecha inválida');
   if (fecha > hoy()) throw new ErrorNegocio('La fecha del vuelo no puede ser futura');
+  // Con el CMA vencido no se vuela: no entra ningún vuelo con fecha posterior al vencimiento. Cuando lo
+  // renueva, tesorería carga la fecha nueva en Socios. Sin fecha cargada no se controla.
+  if (piloto.cma_vence && fecha > piloto.cma_vence && fecha !== previo?.fecha) {
+    const [a, m, d] = piloto.cma_vence.split('-');
+    throw new ErrorNegocio(esAdmin && pilotoId !== actor.id
+      ? `${piloto.nombre} ${piloto.apellido} tiene el CMA vencido desde el ${d}/${m}/${a}: no se le pueden cargar vuelos posteriores. Si ya lo renovó, actualizá la fecha en Socios.`
+      : `Tu CMA venció el ${d}/${m}/${a}: no podés cargar vuelos hasta renovarlo. Cuando lo tengas, pasale la fecha nueva a tesorería.`, 403);
+  }
   if (!esAdmin && fecha !== previo?.fecha && fecha < sumarDias(hoy(), -DIAS_ATRAS_PILOTO)) {
     throw new ErrorNegocio(`Sólo podés cargar vuelos de los últimos ${DIAS_ATRAS_PILOTO} días. Para uno más viejo, pedíselo al tesorero.`);
   }

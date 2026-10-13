@@ -33,6 +33,12 @@ const leerHora = (d, nombre) => (nombre in d ? (d[nombre] || '').slice(0, 5)
 
 export default async function cargar(ctx) {
   const editando = ctx.params.id ? Number(ctx.params.id) : null;
+  const cma = estadoCma(ctx.usuario.cma_vence);
+  if (cma?.clase === 'mal' && !ctx.esAdmin && !editando) {
+    pintar(ctx.el, html`<div class="vista"><div class="vista__cab"><div><h1>Cargar vuelo</h1></div></div>
+      <p class="aviso aviso--mal">${icono('candado')}<span><b>${cma.texto}.</b> No podés cargar vuelos hasta renovarlo. Cuando lo tengas, pasale la fecha nueva a tesorería.</span></p></div>`);
+    return;
+  }
   if (ctx.usuario.bloqueado && !ctx.esAdmin && !editando) {
     pintar(ctx.el, html`<div class="vista"><div class="vista__cab"><div><h1>Cargar vuelo</h1></div></div>
       <p class="aviso aviso--mal">${icono('candado')}<span><b>Tu cuenta está bloqueada por falta de pago.</b> No podés cargar vuelos hasta regularizarla. Si ya pagaste, <a href="#/cuenta">informá el pago</a> o comunicate con tesorería.</span></p></div>`);
@@ -76,7 +82,6 @@ export default async function cargar(ctx) {
       <p>${editando ? 'Se puede corregir hasta el cierre del mes. El cambio queda registrado.' : ctx.esAdmin ? 'Cargalo apenas bajes del avión.' : 'Cargalo apenas bajes del avión. Revisalo bien: una vez aceptado, no se puede modificar.'}</p>
     </div></div>
 
-    ${(() => { const c = !editando && !ctx.esAdmin ? estadoCma(ctx.usuario.cma_vence) : null; return c?.clase === 'mal' ? html`<p class="aviso aviso--mal">${icono('alerta')}<span><b>${c.texto}.</b> Renovalo y pasale la fecha nueva a tesorería.</span></p>` : ''; })()}
     <form class="carga" id="form-vuelo" novalidate>
       ${pilotos ? html`
         <div class="carga__paso">

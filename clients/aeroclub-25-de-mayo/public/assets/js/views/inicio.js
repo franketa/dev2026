@@ -17,7 +17,7 @@ export default async function inicio(ctx) {
     <div class="vista__cab"><div><h1>Hola, ${usuario.nombre}</h1><p>${hoyLargo()}</p></div></div>
 
     ${usuario.bloqueado ? html`<p class="aviso aviso--mal">${icono('candado')}<span><b>Tu cuenta está bloqueada por falta de pago.</b> No podés cargar vuelos hasta regularizarla. Si ya pagaste, <a href="#/cuenta">informá el pago</a> o comunicate con tesorería.</span></p>` : ''}
-    ${(() => { const c = estadoCma(usuario.cma_vence); return c && c.clase !== 'ok' ? html`<p class="aviso ${c.clase === 'mal' ? 'aviso--mal' : ''}">${icono('alerta')}<span><b>${c.texto}.</b> Cuando lo renueves, pasale la fecha nueva a tesorería.</span></p>` : ''; })()}
+    ${(() => { const c = estadoCma(usuario.cma_vence); return c && c.clase !== 'ok' ? html`<p class="aviso ${c.clase === 'mal' ? 'aviso--mal' : ''}">${icono('alerta')}<span><b>${c.texto}.</b> ${c.clase === 'mal' ? 'No podés cargar vuelos hasta renovarlo. ' : ''}Cuando lo renueves, pasale la fecha nueva a tesorería.</span></p>` : ''; })()}
     ${usuario.email_verificado ? '' : html`<a class="aviso aviso--info aviso--link" href="#/perfil">${icono('info')}<span><b>Confirmá tu email.</b> Tocá acá y te mandamos un link a ${usuario.email}.</span></a>`}
 
     <section class="saldo" aria-label="Tu saldo">
@@ -41,8 +41,8 @@ export default async function inicio(ctx) {
 
     ${debe ? cajaPago(d.pago) : ''}
 
-    ${usuario.bloqueado
-      ? html`<div class="cta-cargar cta-cargar--bloqueada" aria-disabled="true">${icono('candado')}<div><strong>Cargar vuelo</strong><span>Bloqueado por falta de pago</span></div></div>`
+    ${usuario.bloqueado || estadoCma(usuario.cma_vence)?.clase === 'mal'
+      ? html`<div class="cta-cargar cta-cargar--bloqueada" aria-disabled="true">${icono('candado')}<div><strong>Cargar vuelo</strong><span>${usuario.bloqueado ? 'Bloqueado por falta de pago' : 'Bloqueado: CMA vencido'}</span></div></div>`
       : html`<a class="cta-cargar" href="#/cargar">${icono('avion')}<div><strong>Cargar vuelo</strong><span>Recién aterrizaste: anotá las horas</span></div>${icono('der')}</a>`}
 
     <div class="grilla grilla--2">

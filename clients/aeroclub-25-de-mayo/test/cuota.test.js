@@ -40,10 +40,13 @@ test('en el cierre se cobra una cuota a cada socio activo no exento', () => {
   honorario = usuario('Honorario', 'piloto', 'exento');
   rampa = usuario('Rampa', 'rampa');
   externo = usuario('Externo', 'externo');
+  usuario('Tesorero', 'admin');
+  usuario('Comision', 'consulta');
+  usuario('Taller', 'mantenimiento');
 
   cierres.cerrar(INICIO, admin);
   const cuotas = db.prepare('SELECT usuario_id FROM cuotas_sociales WHERE periodo = ? ORDER BY usuario_id').all(INICIO).map(c => c.usuario_id);
-  assert.deepEqual(cuotas, [ana, beto]);                     // ni exentos, ni rampa, ni externos, ni la tesorería genérica
+  assert.deepEqual(cuotas, [ana, beto]);                     // sólo los socios pilotos no exentos
   assert.equal(ledger.saldo(ana), 2500000);
   assert.equal(ledger.saldo(honorario), 0);
   const t = db.prepare(`SELECT t.*, i.concepto FROM tickets t JOIN ticket_items i ON i.ticket_id = t.id WHERE t.usuario_id = ?`).get(ana);
@@ -61,4 +64,19 @@ test('el que está dado de baja al cierre no paga; nadie paga dos veces el mismo
   assert.equal(db.prepare('SELECT COUNT(*) n FROM cuotas_sociales WHERE periodo = ?').get(MES2).n, 1);
   assert.equal(db.prepare('SELECT COUNT(*) n FROM cuotas_sociales WHERE usuario_id = ?').get(ana).n, 2);
   assert.equal(ledger.saldo(beto), 2500000);
+});
+
+test('con el CMA vencido no se cargan vuelos posteriores al vencimiento', () => {
+  const flota = require('../server/services/flota');
+  const vuelos = require('../server/services/vuelos');
+  flota.nuevaTarifa(1, { tipo: 'solo', precio_hora: 10000000, vigente_desde: '2020-01-01' }, admin);
+  const ayer = util.sumarDias(util.hoy(), -1);
+  const anteayer = util.sumarDias(util.hoy(), -2);
+  db.prepare('UPDATE usuarios SET cma_vence = ? WHERE id = ?').run(anteayer, ana);
+  const vuelo = (fecha) => ({ avion_id: 1, fecha, hora_salida: '10:00', hora_llegada: '11:00' });
+  assert.throws(() => vuelos.crear(vuelo(ayer), { id: ana, rol: 'piloto' }), /Tu CMA venció/);
+  assert.throws(() => vuelos.crear({ ...vuelo(ayer), piloto_id: ana }, admin), /tiene el CMA vencido/);   // tampoco tesorería
+  assert.ok(vuelos.crear(vuelo(anteayer), { id: ana, rol: 'piloto' }).vuelo);                     // un vuelo de antes del vencimiento sí
+  db.prepare('UPDATE usuarios SET cma_vence = ? WHERE id = ?').run(util.sumarDias(util.hoy(), 365), ana);
+  assert.ok(vuelos.crear(vuelo(ayer), { id: ana, rol: 'piloto' }).vuelo);                         // renovado: vuelve a cargar
 });

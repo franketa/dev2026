@@ -421,14 +421,14 @@ function cobrarDerechos(vuelos, cierreId, actor) {
   return n;
 }
 
-// Cuota social: en el cierre de cada mes, una vez a cada socio activo que no esté exento. No van ni
-// rampa ni mantenimiento "solo" (no son socios que vuelan), ni externos ni la cuenta de tránsitos.
+// Cuota social: en el cierre de cada mes, una vez a cada socio (usuario piloto) activo que no esté
+// exento. No pagan tesorería, consulta, rampa, mantenimiento, externos ni la cuenta de tránsitos.
 function cobrarCuotas(periodo, cierreId, actor) {
   const cuota = servicios.cuotaSocial();
   if (!cuota) return 0;
   const socios = db.prepare(`
     SELECT id FROM usuarios
-    WHERE activo = 1 AND exento_cuota = 0 AND rol IN ('piloto','admin','consulta')
+    WHERE activo = 1 AND exento_cuota = 0 AND rol = 'piloto'
       AND NOT EXISTS (SELECT 1 FROM cuotas_sociales c WHERE c.usuario_id = usuarios.id AND c.periodo = ?)
     ORDER BY id`).all(periodo);
   const marcar = db.prepare('INSERT INTO cuotas_sociales (usuario_id, periodo, ticket_id) VALUES (?, ?, ?)');
