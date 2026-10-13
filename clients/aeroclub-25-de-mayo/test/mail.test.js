@@ -107,3 +107,26 @@ test('si Resend falla, se avisa sin romper nada', async () => {
     assert.match((await r.json()).error, /No se pudo mandar el mail/);
   } finally { global.fetch = antes; }
 });
+
+test('cada novedad nueva le llega por mail a los de mantenimiento', async () => {
+  const flota = require('../server/services/flota');
+  flota.nuevaTarifa(1, { tipo: 'solo', precio_hora: 10000000, vigente_desde: '2020-01-01' }, { id: 1, rol: 'admin' });
+  const nuevo = (nombre, email, rol, extra = 0) => Number(db.prepare(`INSERT INTO usuarios (nombre, apellido, email, rol, es_mantenimiento, password_hash, debe_cambiar_password)
+    VALUES (?, 'Test', ?, ?, ?, ?, 0)`).run(nombre, email, rol, extra, bcrypt.hashSync('clave-1234', 4)).lastInsertRowid);
+  nuevo('Jorge', 'jorge@test.com', 'mantenimiento');
+  nuevo('Andres', 'andres@test.com', 'piloto', 1);         // piloto con el tilde de mantenimiento
+  const baja = nuevo('Viejo', 'viejo@test.com', 'mantenimiento');
+  db.prepare('UPDATE usuarios SET activo = 0 WHERE id = ?').run(baja);
+
+  nuevo('Mario', 'mario@test.com', 'piloto');
+  const p = await entrar('mario@test.com', 'clave-1234');
+  const antes = enviados.length;
+  const vuelo = { avion_id: 1, fecha: require('../server/util').hoy(), hora_salida: '10:00', hora_llegada: '11:00' };
+  assert.equal((await p('POST', '/api/vuelos', vuelo)).status, 201);            // sin novedad: no avisa
+  assert.equal((await p('POST', '/api/vuelos', { ...vuelo, hora_salida: '12:00', hora_llegada: '13:00', notas: 'Cubierta izquierda baja' })).status, 201);
+  await new Promise(r => setTimeout(r, 100));               // el aviso sale después de responder
+  const nuevos = enviados.slice(antes);
+  assert.deepEqual(nuevos.map(m => m.to[0]).sort(), ['andres@test.com', 'jorge@test.com']);
+  assert.match(nuevos[0].subject, /^Novedad en LV-APH: Cubierta izquierda baja/);
+  assert.match(nuevos[0].text, /Mario Test anotó una novedad/);
+});

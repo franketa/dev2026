@@ -1,8 +1,9 @@
 // Novedades de la flota: lo que anotan los pilotos al cargar el vuelo (aceite, cubiertas, radio).
 // Mantenimiento las revisa y las marca como verificadas: ahí salen de los paneles, pero quedan en
 // el historial con quién, cuándo y el comentario.
-const { db, auditar } = require('../db');
-const { ErrorNegocio, limpiarTexto, esPeriodo } = require('../util');
+const { db, auditar, getConfig } = require('../db');
+const mail = require('./mail');
+const { ErrorNegocio, limpiarTexto, esPeriodo, fmtFechaCorta } = require('../util');
 
 const SELECT = `
   SELECT v.id, v.fecha, v.hora_salida, v.hora_llegada, v.notas, v.avion_id, v.creado_en,
@@ -37,4 +38,47 @@ const revisar = db.transaction((vueloId, comentario, actor) => {
   return db.prepare(`${SELECT} AND v.id = ?`).get(vueloId);
 });
 
-module.exports = { listar, revisar };
+// Los responsables de mantenimiento: por rol o pilotos con el tilde, activos y con email.
+function responsables() {
+  return db.prepare(`SELECT id, nombre, apellido, email FROM usuarios
+    WHERE activo = 1 AND email IS NOT NULL AND (rol = 'mantenimiento' OR es_mantenimiento = 1) ORDER BY id`).all();
+}
+
+// Cada novedad nueva le llega por mail a mantenimiento. No frena la carga del vuelo: si un mail
+// falla, queda en el log y la novedad igual aparece en el sistema. Al que la escribió no se le manda.
+async function avisarMantenimiento(vueloId, autorId = null) {
+  if (!mail.configurado()) return 0;
+  const v = db.prepare(`${SELECT} AND v.id = ?`).get(vueloId);
+  if (!v || v.novedad_revisada_en) return 0;
+  const para = responsables().filter(u => u.id !== autorId);
+  if (!para.length) return 0;
+  const link = `${(getConfig().url_publica || 'https://aeroclub25demayo.com.ar').replace(/\/$/, '')}/app#/mantenimiento`;
+  const horario = v.hora_salida ? ` (${v.hora_salida} a ${v.hora_llegada})` : '';
+  let enviados = 0;
+  for (const u of para) {
+    try {
+      await mail.enviar({
+        para: u.email,
+        asunto: `Novedad en ${v.matricula}: ${v.notas.replace(/\s+/g, ' ').slice(0, 60)}`,
+        html: mail.plantilla({
+          titulo: `Novedad en ${v.matricula}`,
+          parrafos: [
+            `Hola ${mail.escapar(u.nombre)}: <b>${mail.escapar(v.piloto)}</b> anotó una novedad al cargar su vuelo del ${fmtFechaCorta(v.fecha)}${horario} en <b>${mail.escapar(v.matricula)}</b> (${mail.escapar(v.modelo)}):`,
+            `<span style="display:block;padding:12px 14px;background:#fbf0dc;border-radius:8px;white-space:pre-line">${mail.escapar(v.notas)}</span>`,
+            'Cuando la revises, marcala como verificada en el sistema.'
+          ],
+          boton: { texto: 'Ver novedades', url: link },
+          pie: 'Te llega porque sos responsable de mantenimiento en el sistema del aeroclub.'
+        }),
+        texto: `Hola ${u.nombre}: ${v.piloto} anotó una novedad al cargar su vuelo del ${fmtFechaCorta(v.fecha)}${horario} en ${v.matricula} (${v.modelo}):\n\n${v.notas}\n\nCuando la revises, marcala como verificada: ${link}`
+      });
+      enviados++;
+    } catch (e) {
+      console.error(`[novedades] no se pudo avisar a ${u.email}:`, e.message);
+    }
+  }
+  if (enviados) auditar(null, 'novedad.aviso', `${v.matricula} del ${v.fecha}: aviso por mail a ${enviados} de mantenimiento`);
+  return enviados;
+}
+
+module.exports = { listar, revisar, avisarMantenimiento, responsables };

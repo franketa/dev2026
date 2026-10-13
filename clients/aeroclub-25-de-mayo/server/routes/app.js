@@ -10,6 +10,12 @@ const tickets = require('../services/tickets');
 const pagosInformados = require('../services/pagosInformados');
 const mail = require('../services/mail');
 const novedades = require('../services/novedades');
+
+// Si el vuelo trae una novedad nueva, se avisa a mantenimiento por mail (sin esperar la respuesta).
+function avisarNovedad(vuelo, notasAntes, actor) {
+  if (!vuelo.notas?.trim() || vuelo.notas === notasAntes) return;
+  novedades.avisarMantenimiento(vuelo.id, actor.id).catch(e => console.error('[novedades]', e.message));
+}
 const { generarCupon } = require('../services/pdf');
 const { requireSocio } = require('../middleware/auth');
 const { enviarTicket } = require('./rampa');
@@ -86,10 +92,14 @@ router.get('/vuelos/:id', (req, res) => {
 router.post('/vuelos', (req, res) => {
   const r = vuelos.crear(req.body || {}, req.user);
   res.status(201).json(r);
+  avisarNovedad(r.vuelo, null, req.user);
 });
 
 router.put('/vuelos/:id', (req, res) => {
-  res.json(vuelos.editar(Number(req.params.id), req.body || {}, req.user));
+  const antes = db.prepare('SELECT notas FROM vuelos WHERE id = ?').get(Number(req.params.id))?.notas ?? null;
+  const r = vuelos.editar(Number(req.params.id), req.body || {}, req.user);
+  res.json(r);
+  avisarNovedad(r.vuelo, antes, req.user);
 });
 
 router.post('/vuelos/:id/anular', (req, res) => {

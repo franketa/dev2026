@@ -45,7 +45,7 @@ function formSocio(u = {}) {
            ['admin', 'Tesorería: administra todo (tarifas, pagos, ajustes, cierres)'],
            ['consulta', 'Consulta: ve toda la administración, sin poder cambiar nada'],
            ['rampa', 'Rampa: registra aeronaves y carga tickets de servicios'],
-           ['mantenimiento', 'Mantenimiento: revisa y verifica las novedades de la flota']]
+           ['mantenimiento', 'Mantenimiento: revisa y verifica las novedades de la flota (le llegan por mail)']]
           .map(([v, t]) => html`<option value="${v}" ${(u.rol || 'piloto') === v ? raw('selected') : ''}>${t}</option>`)}
       </select>
       <p class="campo__ayuda">Tesorería y consulta también pueden cargar sus propios vuelos.</p></div>
@@ -53,7 +53,7 @@ function formSocio(u = {}) {
       <legend class="campo__label" style="padding:0;margin-bottom:6px">Además es…</legend>
       <label class="check"><input type="checkbox" name="es_instructor" ${sel(u.es_instructor)}><span>Instructor de vuelo<br><small class="muted">Aparece en la lista cuando un alumno carga un vuelo con instructor.</small></span></label>
       <label class="check"><input type="checkbox" name="es_instructor_sim" ${sel(u.es_instructor_sim)}><span>Instructor de simulador<br><small class="muted">Da clases en el simulador, no en vuelo.</small></span></label>
-      <label class="check" data-mant><input type="checkbox" name="es_mantenimiento" ${sel(u.es_mantenimiento)}><span>Mantenimiento<br><small class="muted">Además de volar, revisa y verifica las novedades de la flota.</small></span></label>
+      <label class="check" data-mant><input type="checkbox" name="es_mantenimiento" ${sel(u.es_mantenimiento)}><span>Mantenimiento<br><small class="muted">Además de volar, revisa y verifica las novedades de la flota. Le llega un mail con cada novedad nueva.</small></span></label>
     </fieldset>
     <div class="pila" data-socio-vuela style="gap:14px">
       <div class="campo"><label for="s-cma">Vencimiento del CMA <span class="muted">(certificado médico)</span></label>
