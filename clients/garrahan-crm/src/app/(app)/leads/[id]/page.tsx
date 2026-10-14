@@ -1,12 +1,12 @@
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
-import { Phone, MessageCircle, Mail, Receipt, CalendarClock } from "lucide-react";
+import { Phone, MessageCircle, Mail, Receipt, CalendarClock, FileText } from "lucide-react";
 import { avisoOk, avisoError } from "@/lib/aviso";
 import { sql } from "@/lib/db";
 import { requierePermiso } from "@/lib/auth";
 import { puedeVerLead } from "@/lib/leads";
-import { plata, fecha, numero } from "@/lib/format";
+import { plata, fecha, numero, numeroWhatsApp } from "@/lib/format";
 import { ESTADOS_LEAD, ETAPAS_LEAD, ORIGENES_LEAD } from "@/lib/constantes";
 import {
   Encabezado, Panel, PanelTitulo, Chip, Boton, Dato, Campo, Etapas,
@@ -26,13 +26,6 @@ const TIPOS_INTERACCION: Record<string, { label: string; icono: string }> = {
   cambio_estado: { label: "Cambio de estado", icono: "→" },
 };
 
-/** Solo dígitos: es lo que espera wa.me. */
-function soloNumeros(t: string | null) {
-  const n = (t || "").replace(/\D/g, "");
-  if (!n) return null;
-  return n.startsWith("54") ? n : "54" + n;
-}
-
 export default async function Lead({ params }: { params: Promise<any> }) {
   const u = await requierePermiso("leads");
   const { id } = await params;
@@ -50,16 +43,21 @@ export default async function Lead({ params }: { params: Promise<any> }) {
     WHERE l.id = ${id}`;
   if (!l) notFound();
 
-  const [interacciones, venta] = await Promise.all([
+  const [interacciones, venta, propuestas] = await Promise.all([
     sql`SELECT i.*, us.nombre AS usuario FROM lead_interacciones i
         LEFT JOIN usuarios us ON us.id = i.usuario_id
         WHERE i.lead_id = ${id} ORDER BY i.fecha DESC, i.id DESC`,
     sql`SELECT id, estado FROM ventas WHERE lead_id = ${id} ORDER BY id DESC LIMIT 1`,
+    sql`SELECT p.id, p.creado_en,
+               (SELECT string_agg(concat_ws(' ', v.marca, v.modelo, v.anio), ' · ' ORDER BY u.n)
+                FROM jsonb_array_elements(p.unidades) WITH ORDINALITY u(x, n)
+                JOIN vehiculos v ON v.id = (u.x->>'vehiculo_id')::int) AS autos
+        FROM propuestas p WHERE p.lead_id = ${id} ORDER BY p.id DESC`,
   ]);
 
   const e = ESTADOS_LEAD[l.estado] || { label: l.estado, tono: "gris" as const, etapa: "captacion" };
   const iEtapa = ETAPAS_LEAD.findIndex((x) => x.valor === e.etapa);
-  const wa = soloNumeros(l.telefono);
+  const wa = numeroWhatsApp(l.telefono);
   const cerrado = ["vendido", "perdido"].includes(l.estado);
 
   /* ------------------------------------------------------------ acciones */
@@ -131,6 +129,7 @@ export default async function Lead({ params }: { params: Promise<any> }) {
             {l.telefono && (
               <Boton href={`tel:${l.telefono}`} variante="suave"><Phone size={15} /> Llamar</Boton>
             )}
+            <Boton href={`/leads/${id}/propuesta`} variante="suave"><FileText size={15} /> Armar propuesta</Boton>
             {venta.length > 0 ? (
               <Boton href={`/ventas/${venta[0].id}`}><Receipt size={15} /> Ver la venta</Boton>
             ) : l.vehiculo_id && !cerrado ? (
@@ -271,6 +270,24 @@ export default async function Lead({ params }: { params: Promise<any> }) {
               </>
             )}
           </Panel>
+
+          {propuestas.length > 0 && (
+            <Panel>
+              <PanelTitulo titulo="Propuestas" />
+              {propuestas.map((p: any) => (
+                <Link key={p.id} href={`/documentos/propuesta/${p.id}`}
+                  className="block py-2 border-b border-[var(--c-borde-suave)] last:border-0 group">
+                  <span className="flex items-baseline justify-between gap-3">
+                    <span className="text-[13px] font-medium text-[var(--c-enlace)] group-hover:underline">
+                      N° {p.id}
+                    </span>
+                    <span className="text-[11.5px] text-[var(--c-tinta-tenue)]">{fecha(p.creado_en)}</span>
+                  </span>
+                  <span className="block text-[12.5px] text-[var(--c-tinta-media)] mt-0.5">{p.autos || "—"}</span>
+                </Link>
+              ))}
+            </Panel>
+          )}
 
           {l.observaciones && (
             <Panel>

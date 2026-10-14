@@ -254,6 +254,12 @@ input:focus-visible, select:focus-visible, textarea:focus-visible, button:focus-
 }
 .solo-imprimir { display: none; }
 
+/* La propuesta conserva en papel el rojo del membrete y las fotos, y va en
+   A4 con márgenes más chicos: así dos autos entran en una sola hoja.        */
+.propuesta, .propuesta * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+.propuesta { page: propuesta; }
+@page propuesta { size: A4; margin: 12mm 14mm; }
+
 /* ------------------------------------------------------------------ avisos
    "Guardado" y errores, abajo de la pantalla (components/avisos.tsx).        */
 @keyframes aviso-entra {

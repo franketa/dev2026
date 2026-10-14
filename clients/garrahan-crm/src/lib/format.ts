@@ -69,6 +69,13 @@ export function dominio(v: any): string {
   return v ? String(v).toUpperCase() : "—";
 }
 
+/** Solo dígitos y con el 54 adelante: es lo que espera wa.me. */
+export function numeroWhatsApp(t: string | null | undefined) {
+  const n = (t || "").replace(/\D/g, "");
+  if (!n) return null;
+  return n.startsWith("54") ? n : "54" + n;
+}
+
 export function iniciales(nombre: string): string {
   return (nombre || "")
     .split(" ").filter(Boolean).slice(0, 2)

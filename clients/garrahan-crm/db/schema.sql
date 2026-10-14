@@ -508,6 +508,27 @@ CREATE TABLE IF NOT EXISTS avisos_enviados (
   enviado_en timestamptz NOT NULL DEFAULT now()
 );
 
+-- ------------------------------------------------------------ propuestas
+-- La hoja con membrete que se le da o se le manda al cliente: una a tres
+-- unidades con el precio que se le ofrece. El precio y la moneda se guardan
+-- acá y no se leen del auto, porque se negocian. El token es el link que se
+-- manda por WhatsApp: se puede ver sin entrar al sistema.
+CREATE TABLE IF NOT EXISTS propuestas (
+  id            serial PRIMARY KEY,
+  token         text NOT NULL UNIQUE,
+  lead_id       int NOT NULL REFERENCES leads(id) ON DELETE CASCADE,
+  usuario_id    int REFERENCES usuarios(id),
+  cliente       text NOT NULL,
+  unidades      jsonb NOT NULL,          -- [{ vehiculo_id, precio, moneda }]
+  usado_detalle text,
+  usado_valor   numeric(16,2),
+  usado_moneda  text NOT NULL DEFAULT 'ARS' CHECK (usado_moneda IN ('ARS','USD')),
+  condiciones   text,
+  validez_dias  int NOT NULL DEFAULT 7,
+  creado_en     timestamptz NOT NULL DEFAULT now()
+);
+CREATE INDEX IF NOT EXISTS propuestas_lead_idx ON propuestas(lead_id);
+
 -- ============================================================================
 -- Vista: costo real y margen por unidad. Una sola fuente de verdad.
 -- La compra NO es un gasto del mes: es el valor de toma de la unidad.
