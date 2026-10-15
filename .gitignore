@@ -30,3 +30,11 @@ build/
 *.tmp
 .cache/
 e2e-tmp/
+
+# Python
+__pycache__/
+*.pyc
+
+# SQLite (archivos temporales de WAL)
+*.sqlite-shm
+*.sqlite-wal
