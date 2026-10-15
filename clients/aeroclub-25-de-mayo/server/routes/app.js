@@ -19,7 +19,7 @@ function avisarNovedad(vuelo, notasAntes, actor) {
 const { generarCupon } = require('../services/pdf');
 const { requireSocio } = require('../middleware/auth');
 const { enviarTicket } = require('./rampa');
-const { ErrorNegocio, periodoActual, esPeriodo, limpiarTexto, telefonoWhatsApp } = require('../util');
+const { ErrorNegocio, hoy, periodoActual, esPeriodo, limpiarTexto, telefonoWhatsApp, fmtFechaCorta, enviarCsv } = require('../util');
 
 const router = express.Router();
 router.use(requireSocio);
@@ -77,6 +77,32 @@ router.get('/vuelos', (req, res) => {
   }
   if (f.periodo && !esPeriodo(f.periodo)) delete f.periodo;
   res.json({ vuelos: vuelos.listar(f) });
+});
+
+// Todo lo volado por el socio desde el principio: los totales para "Mis vuelos" y la planilla para descargar.
+// Un instructor puede pedir lo que dio (como=instructor).
+router.get('/mis-horas', (req, res) => {
+  const comoInstructor = req.query.como === 'instructor' && !!req.user.es_instructor;
+  const persona = comoInstructor ? { instructorId: req.user.id } : { pilotoId: req.user.id };
+  if (req.query.formato !== 'csv') return res.json(vuelos.horasHistoricas(persona));
+
+  const lista = vuelos.planillaHoras(persona);
+  const num = (d) => (d / 10).toFixed(1).replace('.', ',');
+  const filas = [comoInstructor
+    ? ['Fecha', 'Salida', 'Llegada', 'Avión', 'Modelo', 'Alumno', 'Horas', 'Novedades']
+    : ['Fecha', 'Salida', 'Llegada', 'Avión', 'Modelo', 'Instructor', 'Tipo', 'Horas', 'Novedades']];
+  for (const v of lista) {
+    filas.push(comoInstructor
+      ? [fmtFechaCorta(v.fecha), v.hora_salida || '', v.hora_llegada || '', v.matricula, v.modelo, v.piloto, num(v.decimas), v.notas || '']
+      : [fmtFechaCorta(v.fecha), v.hora_salida || '', v.hora_llegada || '', v.matricula, v.modelo, v.instructor || '',
+        v.tipo === 'instruccion' ? 'Con instructor' : 'Solo', num(v.decimas), v.notas || '']);
+  }
+  const total = lista.reduce((s, v) => s + v.decimas, 0);
+  filas.push([], comoInstructor
+    ? ['Total', `${lista.length} vuelos`, '', '', '', '', num(total), '']
+    : ['Total', `${lista.length} vuelos`, '', '', '', '', '', num(total), '']);
+  const nombre = `${req.user.apellido}-${req.user.nombre}`.normalize('NFD').replace(/[^\w-]/g, '').toLowerCase();
+  enviarCsv(res, `horas-${comoInstructor ? 'instructor-' : ''}${nombre}-${hoy()}.csv`, filas);
 });
 
 function puedeVer(v, user) {

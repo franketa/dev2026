@@ -39,7 +39,7 @@ flota.nuevaTarifa(1, { tipo: 'solo', precio_hora: 10200000, vigente_desde: `${su
 // Precios de los servicios (de ejemplo)
 const PRECIOS = {
   'Hangaraje mensual': 8000000, 'Hangaraje diario': 500000, Combustible: 280000, Nocturno: 2500000, 'Derecho de aeronave': 1500000,
-  'Derecho de examen': 4000000, 'Hora de simulador': 3500000, 'Limpieza de avión': 2000000
+  'Derecho de examen': 4000000, 'Hora de simulador': 3500000, 'Limpieza de avión': 2000000, 'Cuota social': 2500000
 };
 const servicioId = {};
 for (const s of servicios.listar()) {

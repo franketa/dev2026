@@ -65,7 +65,7 @@ Copias de seguridad: el sistema guarda **una copia completa por mes** en el volu
 
 ## Roles
 
-- **Piloto** (incluye alumnos): carga vuelos, ve su historial, descarga sus cupones, informa pagos y consulta su estado de cuenta. No puede corregir ni anular vuelos. Además puede tener tildes: **instructor de vuelo** (ve los vuelos que dio y aparece al cargar un vuelo con instructor), **instructor de simulador** y **mantenimiento** (ve y verifica las novedades de la flota).
+- **Piloto** (incluye alumnos): carga vuelos, ve su historial (mes por mes y el total desde el principio, por avión), descarga su planilla de horas en CSV para Excel, descarga sus cupones, informa pagos y consulta su estado de cuenta. No puede corregir ni anular vuelos. Además puede tener tildes: **instructor de vuelo** (ve y descarga los vuelos que dio y aparece al cargar un vuelo con instructor), **instructor de simulador** y **mantenimiento** (ve y verifica las novedades de la flota).
 - **Administrador** (tesorería): todo lo anterior, más socios, flota, tarifas y servicios, pagos, ajustes, tickets con otros conceptos, cierres, reportes, registro y configuración.
 - **Consulta**: ve todo el módulo de administración sin poder cambiar nada (el servidor rechaza cualquier escritura).
 - **Rampa**: registra aeronaves y propietarios y carga tickets de servicios. No ve cuentas ni vuelos.

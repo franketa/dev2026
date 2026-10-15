@@ -203,6 +203,32 @@ function listar(filtros = {}) {
     ORDER BY v.fecha DESC, v.id DESC LIMIT ${limite}`).all(params);
 }
 
+// Historial completo de un socio, como piloto ({ pilotoId }) o como instructor ({ instructorId }). Sin anulados.
+function condPersona({ pilotoId, instructorId }) {
+  return instructorId ? ['v.instructor_id = ?', Number(instructorId)] : ['v.piloto_id = ?', Number(pilotoId)];
+}
+
+function horasHistoricas(persona) {
+  const [cond, id] = condPersona(persona);
+  const porAvion = db.prepare(`
+    SELECT a.matricula, a.modelo, COUNT(*) vuelos, SUM(v.decimas) decimas,
+           SUM(CASE WHEN v.tipo = 'instruccion' THEN v.decimas ELSE 0 END) decimas_instruccion, MIN(v.fecha) desde
+    FROM vuelos v JOIN aviones a ON a.id = v.avion_id
+    WHERE ${cond} AND v.estado <> 'anulado'
+    GROUP BY a.id ORDER BY decimas DESC, a.matricula`).all(id);
+  const suma = (campo) => porAvion.reduce((s, a) => s + a[campo], 0);
+  return {
+    vuelos: suma('vuelos'), decimas: suma('decimas'), decimas_instruccion: suma('decimas_instruccion'),
+    desde: porAvion.reduce((m, a) => (!m || a.desde < m ? a.desde : m), null),
+    por_avion: porAvion
+  };
+}
+
+function planillaHoras(persona) {
+  const [cond, id] = condPersona(persona);
+  return db.prepare(`${SELECT_VUELO} WHERE ${cond} AND v.estado <> 'anulado' ORDER BY v.fecha, v.hora_salida, v.id`).all(id);
+}
+
 function historial(id) {
   return db.prepare(`
     SELECT h.*, u.nombre || ' ' || u.apellido usuario FROM vuelos_historial h LEFT JOIN usuarios u ON u.id = h.usuario_id
@@ -214,4 +240,4 @@ function resumenAbiertos(pilotoId) {
                      FROM vuelos WHERE piloto_id = ? AND estado = 'abierto'`).get(pilotoId);
 }
 
-module.exports = { crear, editar, anular, listar, getVuelo, historial, resumenAbiertos, periodoCerrado, puedeModificar };
+module.exports = { crear, editar, anular, listar, getVuelo, historial, horasHistoricas, planillaHoras, resumenAbiertos, periodoCerrado, puedeModificar };

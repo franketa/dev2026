@@ -166,8 +166,24 @@ function limpiarTexto(v, max = 500) {
   return s || null;
 }
 
+// CSV para Excel en español: separador ";" y BOM, así abre directo con acentos y columnas bien.
+// Excel ejecuta celdas que empiezan con = + - @: se neutralizan con un apóstrofo (las notas las escriben los pilotos).
+function aCsv(filas) {
+  const esc = (v) => {
+    let s = String(v ?? '');
+    if (/^[=+\-@\t\r]/.test(s)) s = `'${s}`;
+    return /[";\r\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
+  };
+  return '﻿' + filas.map(f => f.map(esc).join(';')).join('\r\n');
+}
+function enviarCsv(res, archivo, filas) {
+  res.setHeader('Content-Type', 'text/csv; charset=utf-8');
+  res.setHeader('Content-Disposition', `attachment; filename="${archivo}"`);
+  res.send(aCsv(filas));
+}
+
 module.exports = {
-  TZ, ErrorNegocio, hoy, fechaDeSqlite, horaAR, periodoDe, periodoActual, sumarMeses, ultimoDia, sumarDias, nombrePeriodo,
+  TZ, aCsv, enviarCsv, ErrorNegocio, hoy, fechaDeSqlite, horaAR, periodoDe, periodoActual, sumarMeses, ultimoDia, sumarDias, nombrePeriodo,
   esFecha, esPeriodo, parseHoras, minutosADecimas, minutosEntre, parsePesos, fmtPesos, fmtHoras, fmtFechaCorta, importeVuelo,
   parseCantidad, fmtCantidad, importeItem, UNIDADES,
   telefonoWhatsApp, normalizarEmail, limpiarTexto, nombreCompleto, MEDIOS, MESES

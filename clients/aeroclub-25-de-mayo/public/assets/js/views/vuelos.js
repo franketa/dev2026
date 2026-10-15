@@ -1,4 +1,4 @@
-import { get, html, raw, pintar, icono, pesos, horas, periodoHoy, selectorMes, datosForm, ayuda } from '../lib.js';
+import { get, html, raw, pintar, icono, pesos, horas, fecha, periodoHoy, selectorMes, datosForm, ayuda } from '../lib.js';
 import { tiraVuelo, mapaOrden, abrirVuelo, vacio } from './comun.js';
 
 function resumen(vuelos) {
@@ -30,6 +30,27 @@ function cifrasResumen(r, { instructor = false } = {}) {
   </div>`;
 }
 
+// Todo lo volado desde el primer vuelo cargado en el sistema, con el desglose por avión.
+function historico(h, { instructor = false } = {}) {
+  if (!h.vuelos) return '';
+  const solos = h.decimas - h.decimas_instruccion;
+  return html`<section class="panel">
+    <div class="panel__cab"><div><h2>Desde el principio</h2><p>Todo lo ${instructor ? 'que diste' : 'que volaste'} desde el ${fecha(h.desde)}.</p></div></div>
+    <div class="pila"><div class="cifras">
+      <div class="cifra"><span>Horas totales</span><strong>${horas(h.decimas)}</strong><small>${cantVuelos(h.vuelos)}</small></div>
+      ${instructor ? '' : html`
+        <div class="cifra"><span>Con instructor</span><strong>${horas(h.decimas_instruccion)}</strong></div>
+        <div class="cifra"><span>Solo</span><strong>${horas(solos)}</strong></div>`}
+    </div>
+    ${h.por_avion.length > 1 ? html`<div class="tabla-caja"><table class="tabla">
+      <thead><tr><th>Avión</th><th class="num">Vuelos</th>${instructor ? '' : html`<th class="num">Con instructor</th>`}<th class="num">Horas</th></tr></thead>
+      <tbody>${h.por_avion.map(a => html`<tr>
+        <td><span class="matricula">${a.matricula}</span><div class="muted chico">${a.modelo}</div></td>
+        <td class="num">${a.vuelos}</td>${instructor ? '' : html`<td class="num">${horas(a.decimas_instruccion)}</td>`}<td class="num"><strong>${horas(a.decimas)}</strong></td></tr>`)}</tbody>
+    </table></div>` : ''}</div>
+  </section>`;
+}
+
 function conQuery(base, q) {
   const s = new URLSearchParams(Object.entries(q).filter(([, v]) => v)).toString();
   return `${base}${s ? '?' + s : ''}`;
@@ -38,9 +59,10 @@ function conQuery(base, q) {
 export async function misVuelos(ctx) {
   const periodo = ctx.query.periodo || periodoHoy();
   const como = ctx.usuario.es_instructor && ctx.query.como === 'instructor' ? 'instructor' : 'piloto';
-  const [{ vuelos }, { aviones }] = await Promise.all([
+  const [{ vuelos }, { aviones }, hist] = await Promise.all([
     get(conQuery('/api/vuelos', { periodo, como, incluir_anulados: 1 })),
-    get('/api/aviones')
+    get('/api/aviones'),
+    get(conQuery('/api/mis-horas', { como: como === 'instructor' ? 'instructor' : '' }))
   ]);
   const orden = mapaOrden(aviones);
   const r = resumen(vuelos);
@@ -50,7 +72,10 @@ export async function misVuelos(ctx) {
   <div class="vista">
     <div class="vista__cab">
       <div><h1>${como === 'instructor' ? 'Vuelos como instructor' : 'Mis vuelos'}</h1><p>Tocá un vuelo para ver el detalle.</p></div>
-      ${selectorMes(periodo)}
+      <div class="vista__acciones">
+        ${selectorMes(periodo)}
+        ${hist.vuelos ? html`<a class="btn btn--sec" href="${conQuery('/api/mis-horas', { formato: 'csv', como: como === 'instructor' ? 'instructor' : '' })}" download>${icono('descargar')} Descargar ${como === 'instructor' ? 'horas dadas' : 'mis horas'} (Excel)</a>` : ''}
+      </div>
     </div>
     ${ctx.usuario.es_instructor ? html`<div class="pestanas" role="tablist">
       <button role="tab" type="button" data-como="piloto" aria-selected="${como === 'piloto'}">Como piloto</button>
@@ -60,6 +85,7 @@ export async function misVuelos(ctx) {
     ${vuelos.length
       ? html`<div class="tiras">${vuelos.map(v => tiraVuelo(v, { piloto: como === 'instructor', ordenAvion: orden }))}</div>`
       : vacio(`No hay vuelos en este mes.`, como === 'piloto' ? html`<a class="btn btn--principal" href="#/cargar">${icono('mas')} Cargar vuelo</a>` : '')}
+    ${historico(hist, { instructor: como === 'instructor' })}
   </div>`);
 
   ctx.el.addEventListener('click', (e) => {

@@ -22,7 +22,7 @@ const { enviarPdf, enviarComprobante } = require('./app');
 const { enviarTicket } = require('./rampa');
 const {
   ErrorNegocio, hoy, periodoActual, sumarMeses, esFecha, esPeriodo, parsePesos, fmtPesos, fmtHoras,
-  limpiarTexto, normalizarEmail, telefonoWhatsApp, nombrePeriodo, fmtFechaCorta, nombreCompleto, MEDIOS
+  limpiarTexto, normalizarEmail, telefonoWhatsApp, nombrePeriodo, fmtFechaCorta, nombreCompleto, MEDIOS, enviarCsv
 } = require('../util');
 
 const router = express.Router();
@@ -448,12 +448,6 @@ router.get('/reportes', (req, res) => {
   const r = reporte(periodo);
   if (req.query.formato !== 'csv') return res.json(r);
 
-  // Excel ejecuta celdas que empiezan con = + - @: se neutralizan con un apóstrofo (las notas las escriben los pilotos).
-  const esc = (v) => {
-    let s = String(v ?? '');
-    if (/^[=+\-@\t\r]/.test(s)) s = `'${s}`;
-    return /[";\r\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
-  };
   const num = (d) => (d / 10).toFixed(1).replace('.', ',');
   const plata = (c) => (c / 100).toFixed(2).replace('.', ',');
   const deServicios = req.query.de === 'servicios';
@@ -470,11 +464,7 @@ router.get('/reportes', (req, res) => {
       filas.push([v.fecha, v.hora_salida || '', v.hora_llegada || '', v.matricula, v.piloto, v.instructor || '', num(v.decimas), plata(v.precio_hora), plata(v.importe), v.estado, v.notas || '']);
     }
   }
-  // Separador ";" y BOM: Excel en español lo abre directo con acentos y columnas bien.
-  const csv = '﻿' + filas.map(f => f.map(esc).join(';')).join('\r\n');
-  res.setHeader('Content-Type', 'text/csv; charset=utf-8');
-  res.setHeader('Content-Disposition', `attachment; filename="${deServicios ? 'servicios' : 'vuelos'}-${periodo}.csv"`);
-  res.send(csv);
+  enviarCsv(res, `${deServicios ? 'servicios' : 'vuelos'}-${periodo}.csv`, filas);
 });
 
 // ── Registro inmutable ──────────────────────────────────────────────────────
