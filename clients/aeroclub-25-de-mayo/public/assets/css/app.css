@@ -51,7 +51,7 @@ body {
   font-size: 16px;
   line-height: 1.45;
   color: var(--tinta);
-  background: var(--papel) url('/assets/img/pista.svg') center / auto 100vh no-repeat fixed;
+  background: var(--papel) url('/assets/img/pista.svg?v=2') center / auto 100vh no-repeat fixed;
   font-variant-numeric: tabular-nums;
   -webkit-font-smoothing: antialiased;
 }
