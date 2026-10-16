@@ -3,18 +3,21 @@ import {
   fecha, confirmar, minutosADecimas, minutosEntre, estadoCma
 } from '../lib.js';
 
-// En el celular, el selector de hora del teléfono: un solo toque abre la rueda (o el reloj) con hora y
-// minutos juntos. En la compu, hora y minutos en dos listas de 24 h, sin AM/PM.
+// En el celular, hora y minutos se escriben con el teclado numérico (dos campos, 24 h). En la compu,
+// hora y minutos en dos listas de 24 h, sin AM/PM.
 const tactil = () => window.matchMedia?.('(pointer: coarse)').matches;
 const dos = (n) => String(n).padStart(2, '0');
 function selectorHora(nombre, etiqueta, valor) {
-  if (tactil()) {
-    return html`<div class="campo hora-nativa">
-      <label for="hora-${nombre}">${etiqueta}</label>
-      <input class="input" type="time" id="hora-${nombre}" name="${nombre}" value="${valor || ''}" step="60" required>
-    </div>`;
-  }
   const [h, m] = valor ? valor.split(':') : ['', ''];
+  if (tactil()) {
+    const campo = (parte, max, val) => html`<input class="input" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="2"
+      autocomplete="off" name="${nombre}_${parte}" value="${val}" placeholder="${parte === 'h' ? 'hh' : 'mm'}"
+      aria-label="${etiqueta}: ${parte === 'h' ? 'hora' : 'minutos'}" data-hora-max="${max}">`;
+    return html`<fieldset class="hora-24 hora-24--teclas" style="border:0;padding:0;margin:0">
+      <legend class="campo__label">${etiqueta}</legend>
+      <div class="hora-24__selects">${campo('h', 23, h)}<span aria-hidden="true">:</span>${campo('m', 59, m)}</div>
+    </fieldset>`;
+  }
   return html`<fieldset class="hora-24" style="border:0;padding:0;margin:0">
     <legend class="campo__label">${etiqueta}</legend>
     <div class="hora-24__selects">
@@ -28,8 +31,13 @@ function selectorHora(nombre, etiqueta, valor) {
     </div>
   </fieldset>`;
 }
-const leerHora = (d, nombre) => (nombre in d ? (d[nombre] || '').slice(0, 5)
-  : d[`${nombre}_h`] && d[`${nombre}_m`] ? `${d[`${nombre}_h`]}:${d[`${nombre}_m`]}` : '');
+// "HH:MM" con hora y minutos completos y válidos; si no, ''. A mano puede venir "7" en vez de "07".
+function leerHora(d, nombre) {
+  const h = d[`${nombre}_h`] || '';
+  const m = d[`${nombre}_m`] || '';
+  if (!/^\d{1,2}$/.test(h) || !/^\d{1,2}$/.test(m) || Number(h) > 23 || Number(m) > 59) return '';
+  return `${dos(Number(h))}:${dos(Number(m))}`;
+}
 
 export default async function cargar(ctx) {
   const editando = ctx.params.id ? Number(ctx.params.id) : null;
@@ -117,7 +125,7 @@ export default async function cargar(ctx) {
           ${selectorHora('salida', 'Salida', previo?.hora_salida)}
           ${selectorHora('llegada', 'Llegada', previo?.hora_llegada)}
         </div>
-        <p class="campo__ayuda">${tactil() ? 'Tocá cada hora y elegila en la rueda del teléfono.' : 'En formato 24 h. Ejemplo: 14:30.'}</p>
+        <p class="campo__ayuda">${tactil() ? 'En formato 24 h: escribí la hora y los minutos. Ejemplo: 14 y 30.' : 'En formato 24 h. Ejemplo: 14:30.'}</p>
       </div>
 
       <div class="carga__paso">
@@ -227,7 +235,22 @@ export default async function cargar(ctx) {
     if (e.target.name === 'piloto_id') { estado.pilotoId = Number(e.target.value); pintarTipos(); }
     calcular();
   });
-  form.addEventListener('input', (e) => { if (e.target === $horas || e.target.type === 'time') calcular(); });
+  // Hora a mano (celular): sólo números. Con la hora o los minutos completos pasa solo al campo siguiente
+  // ("7" en la hora ya es 07: no hay hora 70); al salir del campo, "7" queda como "07".
+  const camposHora = [...form.querySelectorAll('[data-hora-max]')];
+  form.addEventListener('input', (e) => {
+    const t = e.target;
+    if (t.dataset.horaMax) {
+      t.value = t.value.replace(/\D/g, '').slice(0, 2);
+      const max = Number(t.dataset.horaMax);
+      const valido = t.value === '' || Number(t.value) <= max;
+      t.setAttribute('aria-invalid', valido ? 'false' : 'true');
+      if (valido && (t.value.length === 2 || Number(t.value) * 10 > max)) camposHora[camposHora.indexOf(t) + 1]?.focus();
+    }
+    if (e.target === $horas || t.dataset.horaMax) calcular();
+  });
+  form.addEventListener('focusin', (e) => { if (e.target.dataset?.horaMax) e.target.select(); });
+  form.addEventListener('focusout', (e) => { if (e.target.dataset?.horaMax && /^\d$/.test(e.target.value)) e.target.value = dos(e.target.value); });
 
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
