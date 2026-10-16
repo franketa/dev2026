@@ -41,7 +41,8 @@
 @media (min-width: 900px) {
   .ingreso__marco { grid-template-rows: none; grid-template-columns: 1.15fr 1fr; }
   .ingreso__ala { left: -4%; bottom: 14%; width: 104%; }
-  .ingreso__pista { left: 36px; top: 32px; font-size: 1.8rem; }
+  /* A la altura del centro del escudo: ingreso.js mide dónde quedó y lo pasa en --pista-y. */
+  .ingreso__pista { left: 36px; top: var(--pista-y, 50%); transform: translateY(-50%); font-size: 3.8rem; line-height: 1; }
   .ingreso__panel { align-content: center; padding: 48px; }
   .ingreso__escudo { margin-top: 0; }
 }

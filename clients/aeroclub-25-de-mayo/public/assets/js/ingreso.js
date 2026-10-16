@@ -5,6 +5,21 @@ const aviso = document.getElementById('ingreso-error');
 const sesion = document.getElementById('sesion-abierta');
 verContrasenas(form);
 
+// En pantalla ancha, el "03 | 21" del cielo va a la misma altura que el escudo, que sube o baja
+// según lo que muestre el panel (formulario o sesión abierta).
+const pista = document.querySelector('.ingreso__pista');
+const escudo = document.querySelector('.ingreso__escudo');
+function alinearPista() {
+  const r = escudo.getBoundingClientRect();
+  pista.style.setProperty('--pista-y', `${r.top + window.scrollY + r.height / 2}px`);
+}
+alinearPista();
+addEventListener('resize', alinearPista);
+new MutationObserver(alinearPista).observe(document.querySelector('.ingreso__panel'),
+  { subtree: true, childList: true, characterData: true, attributes: true, attributeFilter: ['hidden'] });
+escudo.addEventListener('load', alinearPista);
+document.fonts?.ready.then(alinearPista);
+
 // Si el celular ya tiene una sesión (por ejemplo, la de tesorería), se avisa con quién
 // y se ofrece cambiar de usuario, en vez de entrar directo.
 fetch('/api/auth/me', { credentials: 'same-origin' })
