@@ -51,7 +51,7 @@ Usuarios de la demo: `tesoreria@aeroclub25demayo.com.ar` / `demo1234` (tesorerí
 | Cada vuelo guarda el precio del día en que se voló; cambiar una tarifa no toca lo ya volado (salvo que tesorería lo pida para vuelos sin facturar) | `server/services/flota.js` |
 | Si un piloto carga dos veces el mismo vuelo (avión, fecha y horas), el sistema le avisa | `server/services/vuelos.js` |
 | El piloto corrige sus vuelos hasta el cierre; después el vuelo queda congelado (trigger en SQLite) | `server/db.js` |
-| Libro de movimientos encadenado con SHA-256 y sello impreso en cada cupón. Tesorería puede anular, editar o borrar movimientos: se rehace la cadena, se recalculan los cupones y queda en la auditoría | `server/services/ledger.js`, `correcciones.js` |
+| Libro de movimientos encadenado con SHA-256 y sello guardado en cada cupón (no se imprime). Tesorería puede anular, editar o borrar movimientos: se rehace la cadena, se recalculan los cupones y queda en la auditoría | `server/services/ledger.js`, `correcciones.js` |
 | Cierre mensual en una sola transacción; la "simulación" corre el cierre real y lo revierte | `server/services/cierres.js` |
 | Vuelos cargados tarde de un mes ya cerrado entran en el cierre siguiente con su fecha real | `cierres.correrCierre()` |
 | El período es el mes calendario; el cierre automático corre el día 5 del mes siguiente a las 9 (configurable), así los vuelos cargados tarde entran en su mes. En orden y sin saltear meses | `cierres.cierreAutomatico()` |

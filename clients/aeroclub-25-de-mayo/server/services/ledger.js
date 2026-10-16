@@ -5,7 +5,7 @@
 //   - Cadena de hashes: cada movimiento guarda el hash del anterior. Las correcciones hechas
 //     desde el sistema rehacen la cadena; un cambio hecho por fuera la rompe y
 //     verificarCadena() lo detecta.
-//   - Sello en los cupones: cada cupón imprime el hash del libro al cierre de su período.
+//   - Sello en los cupones: cada cupón guarda el hash del libro al cierre de su período (no se imprime).
 //
 // Convención de signo: importe > 0 aumenta la deuda del socio (vuelos, cargos);
 // importe < 0 la reduce (pagos, créditos).
