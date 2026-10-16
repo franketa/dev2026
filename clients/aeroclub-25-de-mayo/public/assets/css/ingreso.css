@@ -1,4 +1,4 @@
-/* Pantalla de ingreso: cielo del escudo con la pista 03/21 pegada a la izquierda y el ala cruzando. */
+/* Pantalla de ingreso: cielo del escudo, el ala cruzando y la cabecera de pista 03/21. */
 .ingreso { background: var(--blanco); }
 .ingreso__marco { min-height: 100vh; min-height: 100dvh; display: grid; grid-template-rows: 34vh 1fr; }
 
@@ -6,12 +6,20 @@
   position: relative;
   overflow: hidden;
   background:
-    url('/assets/img/pista.svg?v=2') left center / auto 100% no-repeat,
     radial-gradient(120% 90% at 20% 0%, #EAF3F7 0%, transparent 60%),
     linear-gradient(180deg, #D6E7EE 0%, var(--celeste) 100%);
 }
 .ingreso__ala { position: absolute; left: -6%; bottom: -30%; width: 118%; max-width: none; }
 .ingreso__ala path { fill: var(--rojo); }
+
+/* Números de cabecera de pista, pintados como en el césped */
+.ingreso__pista {
+  position: absolute; left: 18px; top: 18px;
+  display: flex; gap: 14px;
+  font-family: var(--f-titulo); font-weight: 700; font-size: 1.35rem; letter-spacing: .12em;
+  color: rgba(23, 42, 79, .35);
+}
+.ingreso__pista span + span { padding-left: 14px; border-left: 2px solid rgba(23, 42, 79, .2); }
 
 .ingreso__panel {
   position: relative;
@@ -33,6 +41,7 @@
 @media (min-width: 900px) {
   .ingreso__marco { grid-template-rows: none; grid-template-columns: 1.15fr 1fr; }
   .ingreso__ala { left: -4%; bottom: 14%; width: 104%; }
+  .ingreso__pista { left: 36px; top: 32px; font-size: 1.8rem; }
   .ingreso__panel { align-content: center; padding: 48px; }
   .ingreso__escudo { margin-top: 0; }
 }
