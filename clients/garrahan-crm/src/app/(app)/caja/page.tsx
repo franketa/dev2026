@@ -1,17 +1,19 @@
 import Link from "next/link";
 import { revalidatePath } from "next/cache";
-import { Plus } from "lucide-react";
+import { Plus, Pencil } from "lucide-react";
 import { avisoOk, avisoError, SIN_PERMISO } from "@/lib/aviso";
 import { sql } from "@/lib/db";
 import { requierePermiso, veCostos } from "@/lib/auth";
 import { plata, plataCorta, fecha } from "@/lib/format";
-import { CATEGORIAS, CATEGORIAS_INVENTARIO } from "@/lib/constantes";
+import { CATEGORIAS } from "@/lib/constantes";
+import { leerMovimiento } from "@/lib/caja";
 import {
   Encabezado, KPI, GrillaKPI, Panel, PanelTitulo, Chip, Tabla, TH, TD,
   FilaVacia, Boton, Campo, Monto,
 } from "@/components/ui";
 import Exportar from "@/components/exportar";
 import ImprimirListado from "@/components/imprimir-listado";
+import CamposMovimiento from "@/components/campos-movimiento";
 
 export const dynamic = "force-dynamic";
 
@@ -23,6 +25,7 @@ export default async function Caja({ searchParams }: { searchParams: Promise<any
   }
   const p = await searchParams;
   const cuentaF = p.cuenta || "";
+  const esDueno = u.rol === "dueno";
 
   const where = cuentaF ? sql`WHERE m.cuenta_id = ${Number(cuentaF)}` : sql``;
 
@@ -61,23 +64,16 @@ export default async function Caja({ searchParams }: { searchParams: Promise<any
     "use server";
     const usr = await requierePermiso("caja");
     if (!veCostos(usr)) return avisoError(SIN_PERMISO);
-    const monto = Number(fd.get("monto") || 0);
-    if (!monto) return avisoError("Falta el monto.");
-    if (!Number(fd.get("cuenta"))) return avisoError("Elegí la cuenta.");
-    const moneda = String(fd.get("moneda") || "ARS");
-    const cot = Number(fd.get("cotizacion") || 1) || 1;
-    const tipo = String(fd.get("tipo") || "egreso");
+    const d = leerMovimiento(fd);
+    if (typeof d === "string") return avisoError(d);
     await sql`
       INSERT INTO caja_movimientos
         (fecha, tipo, cuenta_id, cuenta_destino_id, categoria, descripcion, contraparte,
          monto, moneda, cotizacion, equivalente_ars, forma_pago, usuario_id)
-      VALUES (${String(fd.get("fecha"))}, ${tipo}, ${Number(fd.get("cuenta"))},
-              ${fd.get("destino") ? Number(fd.get("destino")) : null},
-              ${tipo === "transferencia" ? null : String(fd.get("categoria") || "")},
-              ${String(fd.get("descripcion") || "")}, ${String(fd.get("contraparte") || "")},
-              ${monto}, ${moneda}, ${cot},
-              ${moneda === "USD" ? monto * cot : monto},
-              ${String(fd.get("forma_pago") || "")}, ${usr.id})`;
+      VALUES (${d.fecha}, ${d.tipo}, ${d.cuenta}, ${d.destino}, ${d.categoria}, ${d.descripcion},
+              ${d.contraparte}, ${d.monto}, ${d.moneda}, ${d.cotizacion}, ${d.equivalente},
+              ${d.forma_pago}, ${usr.id})`;
+    const tipo = d.tipo;
     revalidatePath("/caja");
     await avisoOk(tipo === "ingreso" ? "Ingreso registrado" : tipo === "transferencia" ? "Transferencia registrada" : "Egreso registrado");
   }
@@ -123,55 +119,7 @@ export default async function Caja({ searchParams }: { searchParams: Promise<any
           <PanelTitulo titulo="Nuevo movimiento"
             detalle="Si el gasto es de un auto, cargalo desde la ficha de la unidad." />
           <form action={nuevoMovimiento} className="grid sm:grid-cols-4 gap-3 items-end">
-            <Campo label="Fecha">
-              <input name="fecha" type="date" required className="campo"
-                defaultValue={new Date().toISOString().slice(0, 10)} />
-            </Campo>
-            <Campo label="Tipo">
-              <select name="tipo" className="campo">
-                <option value="ingreso">Ingreso</option>
-                <option value="egreso">Egreso</option>
-                <option value="transferencia">Transferencia interna</option>
-              </select>
-            </Campo>
-            <Campo label="Cuenta">
-              <select name="cuenta" required className="campo">
-                {cuentas.map((c: any) => <option key={c.id} value={c.id}>{c.nombre}</option>)}
-              </select>
-            </Campo>
-            <Campo label="Cuenta destino">
-              <select name="destino" className="campo">
-                <option value="">— (solo transferencias)</option>
-                {cuentas.map((c: any) => <option key={c.id} value={c.id}>{c.nombre}</option>)}
-              </select>
-            </Campo>
-            <Campo label="Categoría" ancho="sm:col-span-2">
-              <select name="categoria" className="campo">
-                <option value="">—</option>
-                {CATEGORIAS.map((c) => <option key={c.valor} value={c.valor}>{c.label}</option>)}
-              </select>
-            </Campo>
-            <Campo label="Descripción" ancho="sm:col-span-2">
-              <input name="descripcion" required className="campo" placeholder="Qué se pagó o cobró" />
-            </Campo>
-            <Campo label="Cliente / Proveedor" ancho="sm:col-span-2">
-              <input name="contraparte" className="campo" placeholder="A quién" />
-            </Campo>
-            <Campo label="Monto">
-              <input name="monto" type="number" step="0.01" required className="campo" placeholder="0" />
-            </Campo>
-            <Campo label="Moneda">
-              <select name="moneda" className="campo">
-                <option value="ARS">Pesos</option>
-                <option value="USD">Dólares</option>
-              </select>
-            </Campo>
-            <Campo label="Cotización (si es USD)">
-              <input name="cotizacion" type="number" step="0.01" className="campo" placeholder="1" defaultValue={1} />
-            </Campo>
-            <Campo label="Forma de pago">
-              <input name="forma_pago" className="campo" placeholder="Efectivo, transferencia…" />
-            </Campo>
+            <CamposMovimiento cuentas={cuentas as any} />
             <div className="sm:col-span-4"><Boton tipo="submit"><Plus size={15} /> Registrar</Boton></div>
           </form>
         </Panel>
@@ -209,10 +157,11 @@ export default async function Caja({ searchParams }: { searchParams: Promise<any
           <tr>
             <TH>Fecha</TH><TH>Tipo</TH><TH>Cuenta</TH><TH>Categoría</TH>
             <TH>Descripción</TH><TH>Unidad</TH><TH alinear="right">Monto</TH>
+            {esDueno && <TH><span className="sr-only">Corregir</span></TH>}
           </tr>
         </thead>
         <tbody>
-          {movimientos.length === 0 && <FilaVacia cols={7} mensaje="No hay movimientos cargados." />}
+          {movimientos.length === 0 && <FilaVacia cols={esDueno ? 8 : 7} mensaje="No hay movimientos cargados." />}
           {movimientos.map((mv: any) => (
             <tr key={mv.id} className="hover:bg-[var(--c-hover)]">
               <TD className="text-[var(--c-tinta-media)]">{fecha(mv.fecha)}</TD>
@@ -243,6 +192,15 @@ export default async function Caja({ searchParams }: { searchParams: Promise<any
                   <div className="text-[11px] text-[var(--c-tinta-tenue)]">{plata(mv.monto, "USD")} @ {mv.cotizacion}</div>
                 )}
               </TD>
+              {esDueno && (
+                <TD alinear="right">
+                  <Link href={`/caja/${mv.id}`} aria-label="Corregir el movimiento"
+                    className="inline-grid place-items-center h-7 w-7 rounded-lg text-[var(--c-tinta-tenue)]
+                      hover:text-[var(--c-tinta)] hover:bg-[var(--c-activo)]">
+                    <Pencil size={14} />
+                  </Link>
+                </TD>
+              )}
             </tr>
           ))}
         </tbody>
