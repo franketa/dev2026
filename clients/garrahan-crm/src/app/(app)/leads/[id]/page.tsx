@@ -1,10 +1,10 @@
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
-import { Phone, MessageCircle, Mail, Receipt, CalendarClock, FileText } from "lucide-react";
+import { Phone, MessageCircle, Mail, Receipt, CalendarClock, FileText, Pencil } from "lucide-react";
 import { avisoOk, avisoError } from "@/lib/aviso";
 import { sql } from "@/lib/db";
-import { requierePermiso } from "@/lib/auth";
+import { requierePermiso, puede } from "@/lib/auth";
 import { puedeVerLead } from "@/lib/leads";
 import { plata, fecha, numero, numeroWhatsApp } from "@/lib/format";
 import { ESTADOS_LEAD, ETAPAS_LEAD, ORIGENES_LEAD } from "@/lib/constantes";
@@ -128,6 +128,9 @@ export default async function Lead({ params }: { params: Promise<any> }) {
             )}
             {l.telefono && (
               <Boton href={`tel:${l.telefono}`} variante="suave"><Phone size={15} /> Llamar</Boton>
+            )}
+            {puede(u, "leads.editar") && (
+              <Boton href={`/leads/${id}/editar`} variante="suave"><Pencil size={15} /> Editar</Boton>
             )}
             <Boton href={`/leads/${id}/propuesta`} variante="suave"><FileText size={15} /> Armar propuesta</Boton>
             {venta.length > 0 ? (
