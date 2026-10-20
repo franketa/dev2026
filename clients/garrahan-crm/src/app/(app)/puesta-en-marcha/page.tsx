@@ -25,7 +25,7 @@ export default async function PuestaEnMarcha() {
     sql`SELECT count(*)::int AS n,
                count(*) FILTER (WHERE publicado AND estado = 'disponible')::int AS web,
                count(*) FILTER (WHERE EXISTS (SELECT 1 FROM vehiculo_fotos f WHERE f.vehiculo_id = vehiculos.id))::int AS con_fotos
-        FROM vehiculos WHERE estado NOT IN ('vendido','baja')`,
+        FROM vehiculos WHERE estado NOT IN ('vendido','baja','promocion')`,
     sql`SELECT count(*)::int AS n FROM catalogo_marcas`,
     sql`SELECT valor FROM cotizaciones ORDER BY fecha DESC LIMIT 1`,
   ]);

@@ -15,7 +15,7 @@ export default async function NuevoLead({ searchParams }: { searchParams: Promis
 
   const [vehiculos, asesores, sucursales, clientes] = await Promise.all([
     sql`SELECT id, marca, modelo, anio, dominio FROM vehiculos
-        WHERE estado IN ('disponible','reservado') ORDER BY marca, modelo`,
+        WHERE estado IN ('disponible','reservado','promocion') ORDER BY marca, modelo`,
     sql`SELECT id, nombre FROM usuarios WHERE activo AND rol IN ('vendedor','gerente','dueno') ORDER BY nombre`,
     sql`SELECT id, nombre FROM sucursales WHERE activa ORDER BY nombre`,
     sql`SELECT id, nombre, apellido, telefono FROM clientes ORDER BY nombre LIMIT 500`,

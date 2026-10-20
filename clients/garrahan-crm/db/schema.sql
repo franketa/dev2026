@@ -137,7 +137,7 @@ CREATE TABLE IF NOT EXISTS vehiculos (
   moneda_compra   text NOT NULL DEFAULT 'ARS' CHECK (moneda_compra IN ('ARS','USD')),
   cotizacion_compra numeric(12,2) DEFAULT 1,
   estado          text NOT NULL DEFAULT 'disponible'
-                  CHECK (estado IN ('disponible','reservado','en_revision','en_taller','en_detailing','vendido','baja')),
+                  CHECK (estado IN ('disponible','reservado','en_revision','en_taller','en_detailing','vendido','baja','promocion')),
   observaciones   text,
   creado_en       timestamptz NOT NULL DEFAULT now()
 );
@@ -511,6 +511,20 @@ CREATE TABLE IF NOT EXISTS avisos_enviados (
   enviado_en timestamptz NOT NULL DEFAULT now()
 );
 
+-- -------------------------------------------------------- solo promoción web
+-- Un auto que se muestra en la web para atraer consultas (un 0 km a pedido,
+-- uno ya vendido que sirve de muestra) sin ser stock: no suma unidades, ni
+-- capital, ni días en playón. Las bases ya creadas tienen el CHECK viejo.
+DO $$ BEGIN
+  IF NOT EXISTS (SELECT 1 FROM pg_constraint
+                 WHERE conname = 'vehiculos_estado_check'
+                   AND pg_get_constraintdef(oid) LIKE '%promocion%') THEN
+    ALTER TABLE vehiculos DROP CONSTRAINT IF EXISTS vehiculos_estado_check;
+    ALTER TABLE vehiculos ADD CONSTRAINT vehiculos_estado_check
+      CHECK (estado IN ('disponible','reservado','en_revision','en_taller','en_detailing','vendido','baja','promocion'));
+  END IF;
+END $$;
+
 -- ------------------------------------------------------------ propuestas
 -- La hoja con membrete que se le da o se le manda al cliente: una a tres
 -- unidades con el precio que se le ofrece. El precio y la moneda se guardan
@@ -553,7 +567,7 @@ SELECT
        ELSE 0 END                                               AS margen_pct,
   (current_date - v.fecha_ingreso)                              AS dias_stock,
   CASE
-    WHEN v.estado IN ('vendido','baja') THEN NULL
+    WHEN v.estado IN ('vendido','baja','promocion') THEN NULL
     WHEN (current_date - v.fecha_ingreso) > 90 THEN 'rojo'
     WHEN (current_date - v.fecha_ingreso) > 60 THEN 'naranja'
     WHEN (current_date - v.fecha_ingreso) > 30 THEN 'amarillo'

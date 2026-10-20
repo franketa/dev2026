@@ -23,7 +23,7 @@ async function alternarActiva(fd: FormData) {
 
   if (!nueva) {
     const [{ n }] = await sql`SELECT count(*)::int AS n FROM vehiculos
-                              WHERE sucursal_id = ${id} AND estado NOT IN ('vendido','baja')`;
+                              WHERE sucursal_id = ${id} AND estado NOT IN ('vendido','baja','promocion')`;
     if (n > 0) return avisoError(`${s.nombre} tiene ${n} ${n === 1 ? "unidad" : "unidades"} en stock. Pasalas a otra sucursal antes de desactivarla.`);
     const [{ m }] = await sql`SELECT count(*)::int AS m FROM sucursales WHERE activa AND id <> ${id}`;
     if (m === 0) return avisoError("Tiene que quedar al menos una sucursal activa.");
@@ -41,9 +41,9 @@ export default async function Sucursales() {
   const filas = await sql`
     SELECT s.*,
       (SELECT count(*) FROM vehiculos v WHERE v.sucursal_id = s.id
-        AND v.estado NOT IN ('vendido','baja'))::int AS unidades,
+        AND v.estado NOT IN ('vendido','baja','promocion'))::int AS unidades,
       (SELECT COALESCE(SUM(x.costo_total),0) FROM v_vehiculos x WHERE x.sucursal_id = s.id
-        AND x.estado NOT IN ('vendido','baja')) AS capital
+        AND x.estado NOT IN ('vendido','baja','promocion')) AS capital
     FROM sucursales s ORDER BY s.activa DESC, s.nombre`;
 
   return (

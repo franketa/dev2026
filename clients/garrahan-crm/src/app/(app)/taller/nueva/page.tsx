@@ -13,7 +13,7 @@ export default async function NuevaOrden({ searchParams }: { searchParams: Promi
 
   const vehiculos = await sql`
     SELECT id, marca, modelo, anio, dominio, estado FROM vehiculos
-    WHERE estado NOT IN ('vendido','baja') ORDER BY marca, modelo`;
+    WHERE estado NOT IN ('vendido','baja','promocion') ORDER BY marca, modelo`;
 
   async function crear(fd: FormData) {
     "use server";

@@ -28,9 +28,9 @@ export default async function Inversores() {
             CASE WHEN m.tipo IN ('aporte','venta','devolucion') THEN m.monto ELSE -m.monto END
             ELSE 0 END),0) AS saldo_usd,
           (SELECT count(*) FROM vehiculos v
-           WHERE v.inversor_id = i.id AND v.estado NOT IN ('vendido','baja'))::int AS unidades,
+           WHERE v.inversor_id = i.id AND v.estado NOT IN ('vendido','baja','promocion'))::int AS unidades,
           (SELECT COALESCE(SUM(x.costo_total),0) FROM v_vehiculos x
-           WHERE x.inversor_id = i.id AND x.estado NOT IN ('vendido','baja')) AS capital
+           WHERE x.inversor_id = i.id AND x.estado NOT IN ('vendido','baja','promocion')) AS capital
         FROM inversores i
         LEFT JOIN inversor_movimientos m ON m.inversor_id = i.id
         WHERE i.activo

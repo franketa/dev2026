@@ -10,6 +10,8 @@ export const ESTADOS_VEHICULO: Record<string, { label: string; tono: Tono }> = {
   en_detailing: { label: "En Detailing", tono: "celeste" },
   vendido:      { label: "Vendido",      tono: "gris" },
   baja:         { label: "Dado de baja", tono: "rojo" },
+  // Se publica en la web pero no es stock: no suma unidades ni capital.
+  promocion:    { label: "Solo web (no es stock)", tono: "amarillo" },
 };
 
 export const ALERTAS: Record<string, { label: string; tono: Tono }> = {

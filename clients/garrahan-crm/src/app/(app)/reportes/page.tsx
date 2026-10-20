@@ -101,9 +101,9 @@ export default async function Reportes({ searchParams }: { searchParams: Promise
                  COALESCE(SUM(x.costo_total),0) AS costo,
                  COALESCE(SUM(v.precio - v.descuento - x.costo_total),0) AS resultado,
                  (SELECT count(*) FROM v_vehiculos w
-                  WHERE w.inversor_id = i.id AND w.estado NOT IN ('vendido','baja'))::int AS en_stock,
+                  WHERE w.inversor_id = i.id AND w.estado NOT IN ('vendido','baja','promocion'))::int AS en_stock,
                  (SELECT COALESCE(SUM(w.capital),0) FROM v_vehiculos w
-                  WHERE w.inversor_id = i.id AND w.estado NOT IN ('vendido','baja')) AS capital_parado
+                  WHERE w.inversor_id = i.id AND w.estado NOT IN ('vendido','baja','promocion')) AS capital_parado
           FROM inversores i
           LEFT JOIN v_vehiculos x ON x.inversor_id = i.id
           LEFT JOIN ventas v ON v.vehiculo_id = x.id AND v.estado = 'completada'

@@ -22,7 +22,7 @@ export default async function EstadoOperacion({ usuario }: { usuario: Usuario })
             WHERE estado <> 'cobrado' AND vencimiento < current_date`
       : Promise.resolve([{ n: 0 }]),
     sql`SELECT count(*)::int AS n FROM v_vehiculos
-        WHERE estado NOT IN ('vendido','baja') AND dias_stock > 90`,
+        WHERE estado NOT IN ('vendido','baja','promocion') AND dias_stock > 90`,
   ]);
 
   const items = [

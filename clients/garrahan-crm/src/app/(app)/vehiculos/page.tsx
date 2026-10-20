@@ -19,6 +19,7 @@ const TABS = [
   { valor: "reservado", label: "Reservados" },
   { valor: "en_taller", label: "En taller" },
   { valor: "vendido",   label: "Vendidos" },
+  { valor: "promocion", label: "Solo web" },
   { valor: "baja",      label: "Dados de baja" },
   { valor: "todos",     label: "Todos" },
 ];
@@ -80,7 +81,7 @@ export default async function Vehiculos({ searchParams }: { searchParams: Promis
 
   // ------------------------------------------------------------- filtros
   const donde: any[] = [];
-  if (tab === "activos") donde.push(sql`estado NOT IN ('vendido','baja')`);
+  if (tab === "activos") donde.push(sql`estado NOT IN ('vendido','baja','promocion')`);
   else if (tab !== "todos") donde.push(sql`estado = ${tab}`);
   if (q) donde.push(sql`(dominio ILIKE ${"%" + q + "%"} OR marca ILIKE ${"%" + q + "%"} OR modelo ILIKE ${"%" + q + "%"})`);
   if (filtroSucursal) donde.push(sql`sucursal_id = ${filtroSucursal}`);
@@ -110,13 +111,14 @@ export default async function Vehiculos({ searchParams }: { searchParams: Promis
                COALESCE(AVG(dias_stock),0) AS dias,
                count(*) FILTER (WHERE propiedad = 'consignacion')::int AS consig,
                count(*) FILTER (WHERE propiedad = 'inversor')::int AS de_inversor
-        FROM v_vehiculos WHERE estado NOT IN ('vendido','baja') ${soloSuc}`,
+        FROM v_vehiculos WHERE estado NOT IN ('vendido','baja','promocion') ${soloSuc}`,
     sql`SELECT id, nombre FROM sucursales WHERE activa ORDER BY nombre`,
     sql`SELECT
-          count(*) FILTER (WHERE estado NOT IN ('vendido','baja'))::int AS activos,
+          count(*) FILTER (WHERE estado NOT IN ('vendido','baja','promocion'))::int AS activos,
           count(*) FILTER (WHERE estado = 'reservado')::int AS reservado,
           count(*) FILTER (WHERE estado = 'en_taller')::int AS en_taller,
           count(*) FILTER (WHERE estado = 'vendido')::int AS vendido,
+          count(*) FILTER (WHERE estado = 'promocion')::int AS promocion,
           count(*) FILTER (WHERE estado = 'baja')::int AS baja,
           count(*)::int AS todos
         FROM vehiculos ${soloSucWhere}`,

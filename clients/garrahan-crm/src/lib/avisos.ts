@@ -31,9 +31,9 @@ export async function armarResumen(): Promise<string | null> {
           AND cb.monto > cb.cobrado
         ORDER BY cb.vencimiento`,
     sql`SELECT count(*)::int AS n FROM v_vehiculos
-        WHERE estado NOT IN ('vendido','baja') AND dias_stock > 60`,
+        WHERE estado NOT IN ('vendido','baja','promocion') AND dias_stock > 60`,
     sql`SELECT id, marca, modelo, anio, dias_stock FROM v_vehiculos
-        WHERE estado NOT IN ('vendido','baja')
+        WHERE estado NOT IN ('vendido','baja','promocion')
           AND (dias_stock = 61 OR (${diaSemanaAR() === "Mon"} AND dias_stock > 60))
         ORDER BY dias_stock DESC LIMIT 10`,
     sql`SELECT pv.venta_id, c.nombre AS cliente, c.telefono, x.marca, x.modelo

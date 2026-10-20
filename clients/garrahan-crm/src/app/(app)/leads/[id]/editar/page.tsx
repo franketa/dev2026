@@ -32,7 +32,7 @@ export default async function EditarLead({ params }: { params: Promise<any> }) {
   // La unidad y el cliente que ya tiene aparecen aunque la unidad se haya vendido.
   const [vehiculos, asesores, sucursales, clientes] = await Promise.all([
     sql`SELECT id, marca, modelo, anio, dominio FROM vehiculos
-        WHERE estado IN ('disponible','reservado') OR id = ${l.vehiculo_id ?? 0} ORDER BY marca, modelo`,
+        WHERE estado IN ('disponible','reservado','promocion') OR id = ${l.vehiculo_id ?? 0} ORDER BY marca, modelo`,
     sql`SELECT id, nombre FROM usuarios
         WHERE (activo AND rol IN ('vendedor','gerente','dueno')) OR id = ${l.asesor_id ?? 0} ORDER BY nombre`,
     sql`SELECT id, nombre FROM sucursales WHERE activa OR id = ${l.sucursal_id ?? 0} ORDER BY nombre`,

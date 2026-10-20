@@ -19,21 +19,21 @@ export default async function Dashboard() {
       sql`SELECT count(*)::int AS unidades,
                  COALESCE(SUM(costo_total),0) AS capital,
                  COALESCE(AVG(NULLIF(margen_pct,0)),0) AS margen
-          FROM v_vehiculos WHERE estado NOT IN ('vendido','baja')`,
+          FROM v_vehiculos WHERE estado NOT IN ('vendido','baja','promocion')`,
       sql`SELECT count(*)::int AS cantidad, COALESCE(SUM(precio - descuento),0) AS importe
           FROM ventas
           WHERE estado = 'completada'
             AND extract(month FROM fecha) = ${mes} AND extract(year FROM fecha) = ${anio}`,
       sql`SELECT estado, count(*)::int AS n FROM vehiculos
-          WHERE estado NOT IN ('vendido','baja') GROUP BY estado ORDER BY n DESC`,
+          WHERE estado NOT IN ('vendido','baja','promocion') GROUP BY estado ORDER BY n DESC`,
       sql`SELECT COALESCE(s.nombre,'Sin asignar') AS sucursal, count(*)::int AS n,
                  COALESCE(SUM(v.costo_total),0) AS capital
           FROM v_vehiculos v LEFT JOIN sucursales s ON s.id = v.sucursal_id
-          WHERE v.estado NOT IN ('vendido','baja')
+          WHERE v.estado NOT IN ('vendido','baja','promocion')
           GROUP BY s.nombre ORDER BY n DESC`,
       sql`SELECT id, dominio, marca, modelo, anio, dias_stock, alerta, costo_total, precio_venta
           FROM v_vehiculos
-          WHERE estado NOT IN ('vendido','baja') AND dias_stock > 60
+          WHERE estado NOT IN ('vendido','baja','promocion') AND dias_stock > 60
           ORDER BY dias_stock DESC LIMIT 6`,
       sql`SELECT l.id, l.nombre, l.proxima_accion, l.fecha_proxima, l.estado,
                  COALESCE(us.nombre,'—') AS asesor

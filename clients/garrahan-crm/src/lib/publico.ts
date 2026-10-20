@@ -20,7 +20,8 @@ export function basePublica(req: Request) {
 /** El vocabulario del sitio: sus filtros usan 'Diésel' y estos tres estados. */
 const COMBUSTIBLE_WEB: Record<string, string> = { Diesel: "Diésel" };
 function estadoWeb(estado: string) {
-  if (estado === "disponible") return "disponible";
+  // Para la web, un auto de promoción está a la venta como cualquier otro.
+  if (estado === "disponible" || estado === "promocion") return "disponible";
   if (estado === "reservado") return "reservado";
   return "vendido";
 }
@@ -66,11 +67,11 @@ function aWeb(r: any, base: string) {
   };
 }
 
-/** Lo que está a la venta. Señado o vendido sale solo de la lista. */
+/** Lo que está a la venta, más los de solo promoción. Señado o vendido sale solo de la lista. */
 export async function stockPublico(base: string) {
   const filas = await sql`
     SELECT ${COLUMNAS} FROM vehiculos v
-    WHERE v.publicado AND v.estado = 'disponible'
+    WHERE v.publicado AND v.estado IN ('disponible', 'promocion')
     ORDER BY v.destacado DESC, v.creado_en DESC`;
   return filas.map((r: any) => aWeb(r, base));
 }
@@ -84,6 +85,6 @@ export async function unidadPublica(id: number, base: string) {
   const [r] = await sql`
     SELECT ${COLUMNAS} FROM vehiculos v
     WHERE v.id = ${id} AND v.publicado
-      AND v.estado IN ('disponible', 'reservado', 'vendido')`;
+      AND v.estado IN ('disponible', 'promocion', 'reservado', 'vendido')`;
   return r ? aWeb(r, base) : null;
 }
