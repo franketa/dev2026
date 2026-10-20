@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { revalidatePath } from "next/cache";
-import { FileText, Plus } from "lucide-react";
+import { FileText, Plus, Pencil } from "lucide-react";
 import { avisoOk, avisoError } from "@/lib/aviso";
 import { sql } from "@/lib/db";
 import { requierePermiso, veCostos } from "@/lib/auth";
@@ -13,6 +13,7 @@ import {
 } from "@/components/ui";
 import SelectEstado from "@/components/select-estado";
 import { avisar, enlace, plataAviso, t } from "@/lib/telegram";
+import { ventaActiva, sincronizarAuto } from "@/lib/ventas";
 
 export const dynamic = "force-dynamic";
 
@@ -68,9 +69,11 @@ export default async function Venta({ params }: { params: Promise<any> }) {
 
     // Mientras la operación está en reserva, lo que entra es seña (o refuerzo).
     const esSena = v.estado === "reserva";
-    await sql`INSERT INTO venta_pagos (venta_id, medio, monto, moneda, cotizacion, fecha, referencia, es_sena)
-              VALUES (${id}, ${medio}, ${monto}, ${moneda}, ${cot}, ${f},
-                      ${String(fd.get("referencia") || "") || null}, ${esSena})`;
+    const [pago] = await sql`
+      INSERT INTO venta_pagos (venta_id, medio, monto, moneda, cotizacion, fecha, referencia, es_sena)
+      VALUES (${id}, ${medio}, ${monto}, ${moneda}, ${cot}, ${f},
+              ${String(fd.get("referencia") || "") || null}, ${esSena})
+      RETURNING id`;
     if (esSena) {
       await sql`UPDATE ventas SET sena = sena + ${monto * cot},
                   sena_vence = COALESCE(sena_vence, ${f}::date + 7)
@@ -81,9 +84,10 @@ export default async function Venta({ params }: { params: Promise<any> }) {
     if (cuenta && MEDIOS_A_CAJA.includes(medio)) {
       await sql`
         INSERT INTO caja_movimientos (cuenta_id, tipo, categoria, descripcion, monto, moneda,
-                                      cotizacion, equivalente_ars, fecha, vehiculo_id, venta_id, usuario_id)
+                                      cotizacion, equivalente_ars, fecha, vehiculo_id, venta_id,
+                                      venta_pago_id, usuario_id)
         VALUES (${cuenta}, 'ingreso', 'venta_usado', ${"Cobro venta #" + id}, ${monto},
-                ${moneda}, ${cot}, ${monto * cot}, ${f}, ${v.vehiculo_id}, ${id}, ${usr.id})`;
+                ${moneda}, ${cot}, ${monto * cot}, ${f}, ${v.vehiculo_id}, ${id}, ${pago.id}, ${usr.id})`;
     }
 
     // El saldo abierto se va descontando solo: si se salda, la cobranza se cierra.
@@ -132,12 +136,15 @@ export default async function Venta({ params }: { params: Promise<any> }) {
     const usr = await requierePermiso("ventas");
     const nuevo = String(fd.get("estado") || "");
     if (!ESTADOS_VENTA[nuevo]) return avisoError("Ese estado no existe.");
+    const otra = await ventaActiva(v.vehiculo_id, Number(id));
+    if (nuevo !== "cancelada" && otra) {
+      return avisoError(`La unidad ya tiene la venta #${otra.id}: no puede haber dos ventas vivas del mismo auto.`);
+    }
     await sql`UPDATE ventas SET estado = ${nuevo} WHERE id = ${id}`;
 
-    // El estado del auto sigue al de la venta: cancelarla lo devuelve al stock.
-    const estadoAuto = nuevo === "completada" ? "vendido"
-      : nuevo === "cancelada" ? "disponible" : "reservado";
-    await sql`UPDATE vehiculos SET estado = ${estadoAuto} WHERE id = ${v.vehiculo_id}`;
+    // El estado del auto sigue a sus ventas: cancelar esta lo devuelve al
+    // stock, salvo que haya otra venta del mismo auto.
+    const estadoAuto = await sincronizarAuto(v.vehiculo_id);
 
     // Cerrar la venta abre el seguimiento de postventa, una sola vez.
     if (nuevo === "completada") {
@@ -149,7 +156,7 @@ export default async function Venta({ params }: { params: Promise<any> }) {
       await avisar(`✅ <b>Venta cerrada</b> · ${enlace("/ventas/" + id, "#" + id)}\n` +
         `${t(v.marca)} ${t(v.modelo)} por ${plataAviso(total)}\n` +
         `La unidad sale del stock y de la web. Cerró ${t(usr.nombre)}.`);
-    } else if (nuevo !== v.estado && nuevo === "cancelada") {
+    } else if (nuevo !== v.estado && nuevo === "cancelada" && estadoAuto === "disponible") {
       await avisar(`↩️ <b>Operación cancelada</b> · ${enlace("/ventas/" + id, "#" + id)}\n` +
         `${t(v.marca)} ${t(v.modelo)} vuelve a estar disponible (y a la web).`);
     }
@@ -157,7 +164,8 @@ export default async function Venta({ params }: { params: Promise<any> }) {
               VALUES (${usr.id}, 'venta', ${id}, 'estado', ${nuevo})`;
     revalidatePath(`/ventas/${id}`);
     await avisoOk(nuevo === "completada" ? "Venta cerrada. La unidad salió del stock y de la web."
-      : nuevo === "cancelada" ? "Operación cancelada. La unidad volvió al stock y a la web."
+      : nuevo === "cancelada" ? (estadoAuto === "disponible" ? "Operación cancelada. La unidad volvió al stock y a la web."
+        : `Operación cancelada. La unidad sigue en la venta #${otra?.id}.`)
       : `Operación: ${ESTADOS_VENTA[nuevo].label}`);
   }
 
@@ -194,6 +202,9 @@ export default async function Venta({ params }: { params: Promise<any> }) {
               <FileText size={15} /> Boleto de compraventa
             </Boton>
             <Boton href={`/vehiculos/${v.vehiculo_id}`} variante="suave">Ver la unidad</Boton>
+            {u.rol === "dueno" && (
+              <Boton href={`/ventas/${v.id}/editar`} variante="suave"><Pencil size={15} /> Corregir</Boton>
+            )}
           </>
         } />
 

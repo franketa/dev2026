@@ -85,11 +85,11 @@ export default async function CorregirMovimiento({ params }: { params: Promise<a
         <Encabezado volver="/caja" titulo="Corregir movimiento" detalle={resumen(mv)} />
         <Panel>
           <p className="text-[13px] text-[var(--c-tinta-media)] leading-relaxed">
-            Este movimiento salió de {mv.venta_id ? "una venta" : "un costo de la unidad"} y se corrige desde ahí,
+            Este movimiento salió de {mv.venta_id ? "un cobro de una venta" : "un costo de la unidad"} y se corrige desde ahí{mv.venta_id ? " (Corregir → Quitar el cobro)" : ""},
             para que no quede distinto de la caja.
           </p>
           <div className="mt-4">
-            <Boton href={mv.venta_id ? `/ventas/${mv.venta_id}` : `/vehiculos/${mv.vehiculo_id}`} variante="suave">
+            <Boton href={mv.venta_id ? `/ventas/${mv.venta_id}/editar` : `/vehiculos/${mv.vehiculo_id}`} variante="suave">
               {mv.venta_id ? "Ir a la venta" : "Ir a la unidad"}
             </Boton>
           </div>

@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { redirect } from "next/navigation";
 import { avisoOk, avisoError } from "@/lib/aviso";
 import { sql } from "@/lib/db";
@@ -7,6 +8,7 @@ import { ESTADOS_VENTA, ESTADOS_TRAMITE } from "@/lib/constantes";
 import { Encabezado, Panel, PanelTitulo, Boton, Campo } from "@/components/ui";
 import PagosVenta from "@/components/pagos-venta";
 import { avisar, enlace, plataAviso, t } from "@/lib/telegram";
+import { ventaActiva } from "@/lib/ventas";
 
 export const dynamic = "force-dynamic";
 
@@ -35,6 +37,7 @@ export default async function NuevaVenta({ searchParams }: { searchParams: Promi
     ? vehiculos.find((v: any) => String(v.id) === String(p.vehiculo))
     : null;
   const l = lead[0] || null;
+  const yaVendida = elegido ? await ventaActiva(elegido.id) : undefined;
 
   async function crear(fd: FormData) {
     "use server";
@@ -52,6 +55,13 @@ export default async function NuevaVenta({ searchParams }: { searchParams: Promi
     const precio = num("precio") ?? 0;
     if (!vehiculoId) return avisoError("Elegí la unidad.");
     if (!precio) return avisoError("Falta el precio.");
+    // Dos ventas vivas del mismo auto descuadran la caja y el stock: la que ya
+    // existe se completa o se corrige desde su ficha.
+    const otra = await ventaActiva(vehiculoId);
+    if (otra) {
+      return avisoError(`Esta unidad ya tiene la venta #${otra.id} (${ESTADOS_VENTA[otra.estado]?.label || otra.estado}). ` +
+        "Completala o corregila desde ahí.");
+    }
 
     const descuento = num("descuento") ?? 0;
     const total = precio - descuento;
@@ -105,20 +115,23 @@ export default async function NuevaVenta({ searchParams }: { searchParams: Promi
       const enPesos = monto * cot;
       cobrado += enPesos;
 
-      await sql`
+      const [pago] = await sql`
         INSERT INTO venta_pagos (venta_id, medio, monto, moneda, cotizacion, fecha, referencia, es_sena)
         VALUES (${venta.id}, ${medios[i]}, ${monto}, ${moneda}, ${cot}, ${fechaVenta},
-                ${refs[i] || null}, ${esReserva})`;
+                ${refs[i] || null}, ${esReserva})
+        RETURNING id`;
 
       // La plata que entra de verdad impacta en la caja. La permuta y la
       // financiación no son plata en mano, así que no tocan ninguna cuenta.
       if (cuentaId && MEDIOS_A_CAJA.includes(medios[i])) {
         await sql`
           INSERT INTO caja_movimientos (cuenta_id, tipo, categoria, descripcion, monto, moneda,
-                                        cotizacion, equivalente_ars, fecha, vehiculo_id, venta_id, usuario_id)
+                                        cotizacion, equivalente_ars, fecha, vehiculo_id, venta_id,
+                                        venta_pago_id, usuario_id)
           VALUES (${cuentaId}, 'ingreso', 'venta_usado',
                   ${"Venta " + (veh?.marca || "") + " " + (veh?.modelo || "")},
-                  ${monto}, ${moneda}, ${cot}, ${enPesos}, ${fechaVenta}, ${vehiculoId}, ${venta.id}, ${usr.id})`;
+                  ${monto}, ${moneda}, ${cot}, ${enPesos}, ${fechaVenta}, ${vehiculoId}, ${venta.id},
+                  ${pago.id}, ${usr.id})`;
       }
     }
 
@@ -221,6 +234,16 @@ export default async function NuevaVenta({ searchParams }: { searchParams: Promi
       <Encabezado volver="/ventas" titulo="Nueva venta"
         detalle="Al guardar se marca la unidad, se registra el cobro en la caja y, si entra un usado, se da de alta en el stock." />
 
+      {yaVendida && (
+        <Panel className="max-w-5xl mb-4 border-[var(--c-amarillo-borde)]">
+          <p className="text-[13px] text-[var(--c-tinta-clara)]">
+            Esta unidad ya tiene la <Link href={`/ventas/${yaVendida.id}`} className="text-[var(--c-enlace)] hover:underline">
+            venta #{yaVendida.id}</Link> ({ESTADOS_VENTA[yaVendida.estado]?.label || yaVendida.estado}).
+            Para pasarla a completada o corregir algo, entrá a esa venta: no hace falta cargar otra.
+          </p>
+        </Panel>
+      )}
+
       <form action={crear} className="space-y-4 max-w-5xl">
         <input type="hidden" name="lead_id" value={l?.id ?? ""} />
 
@@ -307,6 +330,10 @@ export default async function NuevaVenta({ searchParams }: { searchParams: Promi
               <input name="vencimiento_saldo" type="date" className="campo" />
             </Campo>
           </div>
+
+          <p className="mt-2 text-[11.5px] text-[var(--c-tinta-tenue)]">
+            Si esta plata ya la anotaste en Caja, elegí «No registrar en caja» para que no cuente dos veces.
+          </p>
 
           <div className="grid sm:grid-cols-3 gap-4 mt-4">
             <Campo label="¿En qué moneda queda el saldo?">

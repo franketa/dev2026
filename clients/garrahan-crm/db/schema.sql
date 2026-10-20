@@ -476,6 +476,9 @@ CREATE INDEX IF NOT EXISTS vehiculo_fotos_idx ON vehiculo_fotos(vehiculo_id, pos
 -- ------------------------------------------------------- señas que vencen
 ALTER TABLE ventas ADD COLUMN IF NOT EXISTS sena_vence date;
 ALTER TABLE venta_pagos ADD COLUMN IF NOT EXISTS es_sena boolean NOT NULL DEFAULT false;
+-- Qué cobro de la venta generó cada ingreso de caja: al quitar un cobro
+-- cargado por error sale también de la caja, y no otro del mismo monto.
+ALTER TABLE caja_movimientos ADD COLUMN IF NOT EXISTS venta_pago_id int REFERENCES venta_pagos(id) ON DELETE SET NULL;
 
 -- ------------------------------------------------------------- postventa
 -- El primer llamado es a los 7 días de la entrega. Los de 30 y 90 siguen.
