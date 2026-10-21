@@ -127,6 +127,8 @@ export const CATEGORIAS: { valor: string; label: string; tipo: "ingreso" | "gast
   { valor: "gastos_banco",   label: "Gastos bancarios",   tipo: "gasto" },
   { valor: "viaticos",       label: "Viáticos/Movilidad", tipo: "gasto" },
   { valor: "garantia_postventa", label: "Garantías post-venta", tipo: "gasto" },
+  { valor: "pago_obra",      label: "Pago de obra",       tipo: "gasto" },
+  { valor: "retiro_socios",  label: "Retiro de efectivo (dueños)", tipo: "gasto" },
   { valor: "otros_gastos",   label: "Otros gastos",       tipo: "gasto" },
 ];
 
@@ -146,6 +148,9 @@ export const GANA_COMISION = ["consignacion"];
 
 /** La compra y la preparación NO son gasto del mes: son costo de la unidad. */
 export const CATEGORIAS_INVENTARIO = ["compra_unidad", "prep_unidad"];
+
+/** Lo que se llevan los dueños sale de la caja pero no es gasto: es lo que ganó el negocio. */
+export const CATEGORIA_RETIRO = "retiro_socios";
 
 export const TIPOS_COSTO = [
   "Mecánica", "Chapa y pintura", "Detailing", "Repuestos", "Neumáticos",

@@ -2,7 +2,7 @@ import Link from "next/link";
 import { sql } from "@/lib/db";
 import { requierePermiso, veCostos } from "@/lib/auth";
 import { plata, plataCorta, numero, porcentaje } from "@/lib/format";
-import { CATEGORIAS } from "@/lib/constantes";
+import { CATEGORIAS, CATEGORIA_RETIRO } from "@/lib/constantes";
 import { sucursalActiva } from "@/lib/sucursal";
 import {
   Encabezado, KPI, GrillaKPI, Panel, PanelTitulo, Tabla, TH, TD, FilaVacia, Boton, Monto, Chip,
@@ -41,7 +41,7 @@ export default async function Reportes({ searchParams }: { searchParams: Promise
   // Los gastos de estructura no se filtran por sucursal: las cuentas de caja
   // son de la agencia (Efectivo, Cuenta Lolo, Mercado Pago), no de cada local.
 
-  const [ventasMes, gastos, comisiones, evolucion, presupuesto, sucursales, inversoresMes] =
+  const [ventasMes, gastos, comisiones, evolucion, presupuesto, sucursales, inversoresMes, [retirosMes]] =
     await Promise.all([
       // Una unidad propia deja margen. Una en consignación deja comisión,
       // porque el auto nunca fue de la agencia. Sumarlas juntas miente.
@@ -63,13 +63,14 @@ export default async function Reportes({ searchParams }: { searchParams: Promise
             AND extract(month FROM v.fecha) = ${mes}
             AND extract(year FROM v.fecha) = ${anio} ${porSuc}`,
 
-      // Gastos de estructura: todo menos compra y preparación de unidades.
+      // Gastos de estructura: todo menos compra y preparación de unidades
+      // y lo que retiran los dueños, que va aparte.
       sql`SELECT m.categoria, COALESCE(SUM(m.equivalente_ars),0) AS total
           FROM caja_movimientos m
           WHERE m.tipo = 'egreso'
             AND extract(month FROM m.fecha) = ${mes}
             AND extract(year FROM m.fecha) = ${anio}
-            AND (m.categoria IS NULL OR m.categoria NOT IN ('compra_unidad','prep_unidad'))
+            AND (m.categoria IS NULL OR m.categoria NOT IN ('compra_unidad','prep_unidad',${CATEGORIA_RETIRO}))
           GROUP BY m.categoria ORDER BY total DESC`,
 
       sql`SELECT COALESCE(us.nombre,'Sin asignar') AS vendedor, count(*)::int AS unidades,
@@ -111,6 +112,12 @@ export default async function Reportes({ searchParams }: { searchParams: Promise
                AND extract(year FROM v.fecha) = ${anio}
           WHERE i.activo
           GROUP BY i.id, i.nombre ORDER BY resultado DESC`,
+
+      sql`SELECT COALESCE(SUM(equivalente_ars),0) AS total
+          FROM caja_movimientos
+          WHERE tipo = 'egreso' AND categoria = ${CATEGORIA_RETIRO}
+            AND extract(month FROM fecha) = ${mes}
+            AND extract(year FROM fecha) = ${anio}`,
     ]);
 
   const vm: any = ventasMes[0] || {};
@@ -247,6 +254,12 @@ export default async function Reportes({ searchParams }: { searchParams: Promise
                   <span>Resultado neto</span>
                   <Monto valor={resultado} signo />
                 </div>
+                {Number(retirosMes.total) > 0 && (
+                  <div className="flex justify-between py-2 text-[var(--c-tinta-media)]">
+                    <span>Retiros de los dueños <span className="text-[var(--c-tinta-tenue)]">(no son gasto)</span></span>
+                    <span className="tabular">{plata(retirosMes.total)}</span>
+                  </div>
+                )}
               </div>
 
               <p className="mt-4 pt-3 border-t border-[var(--c-borde)] text-[11.5px] text-[var(--c-tinta-tenue)] leading-relaxed">
@@ -261,7 +274,7 @@ export default async function Reportes({ searchParams }: { searchParams: Promise
               <PanelTitulo titulo="Gastos por categoría"
                 detalle={suc
                   ? "De toda la agencia: las cuentas de caja no son por sucursal"
-                  : "Sin contar compra ni preparación de unidades"} />
+                  : "Sin contar compra ni preparación de unidades ni retiros de los dueños"} />
               {gastos.length === 0 ? (
                 <p className="text-[13px] text-[var(--c-tinta-tenue)] py-8 text-center">Sin gastos cargados en el período.</p>
               ) : (
