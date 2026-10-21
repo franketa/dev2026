@@ -28,6 +28,7 @@ function plantilla({ titulo, parrafos, boton = null, pie = null }) {
       ${ps}${btn}
     </div>
     <p style="margin:14px 0 0;font-size:12px;color:#6b7690;text-align:center">${pie ? escapar(pie) : 'Mail automático del sistema del aeroclub. No hace falta responderlo.'}</p>
+    <p style="margin:6px 0 0;font-size:11px;color:#8a97ad;text-align:center">Powered by VentureByte and LcGlobal.</p>
   </div></body></html>`;
 }
 

@@ -276,7 +276,8 @@ function generarCupon({ cupon, movimientos, config, estado }) {
   // El sello del libro al cierre queda guardado en el cupón (y se verifica en Registro), pero no se imprime.
   doc.moveTo(M, pie - 2).lineTo(M + ancho, pie - 2).lineWidth(0.5).strokeColor(C.linea).stroke();
   doc.font('R').fontSize(7.5).fillColor(C.gris)
-    .text(`Cierre de ${nombrePeriodo(cupon.periodo)} generado el ${fmtFechaCorta(fechaDeSqlite(cupon.creado_en))}. Documento no válido como factura.`, M, pie + 6, { width: ancho, lineBreak: false });
+    .text(`Cierre de ${nombrePeriodo(cupon.periodo)} generado el ${fmtFechaCorta(fechaDeSqlite(cupon.creado_en))}. Documento no válido como factura.`, M, pie + 6, { width: ancho, lineBreak: false })
+    .text('Powered by VentureByte and LcGlobal.', M, pie + 16, { width: ancho, lineBreak: false });
 
   finalizar(doc);
   return doc;
@@ -362,7 +363,8 @@ function generarTicket(t, config) {
   doc.moveTo(M, pie - 10).lineTo(M + ancho, pie - 10).lineWidth(0.5).strokeColor(C.linea).stroke();
   const emitido = t.origen === 'cierre' ? 'Generado en el cierre del mes' : `Emitido por ${t.creado_por_nombre || 'tesorería'}`;
   doc.font('R').fontSize(7.5).fillColor(C.gris)
-    .text(`${emitido} el ${fmtFechaCorta(fechaDeSqlite(t.creado_en))}. Documento no válido como factura.`, M, pie - 2, { width: ancho, lineBreak: false });
+    .text(`${emitido} el ${fmtFechaCorta(fechaDeSqlite(t.creado_en))}. Documento no válido como factura.`, M, pie - 2, { width: ancho, lineBreak: false })
+    .text('Powered by VentureByte and LcGlobal.', M, pie + 8, { width: ancho, lineBreak: false });
 
   finalizar(doc);
   return doc;

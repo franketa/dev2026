@@ -247,7 +247,8 @@ p { margin: 0; }
 .avatar { width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center; background: var(--celeste); color: var(--tinta); font-weight: 700; font-size: .9rem; text-decoration: none; }
 
 .lateral { display: none; }
-.contenido { padding: 20px 16px calc(var(--nav-alto) + 32px + env(safe-area-inset-bottom)); max-width: 1180px; margin: 0 auto; }
+.contenido { padding: 20px 16px 24px; max-width: 1180px; margin: 0 auto; }
+.creditos { padding: 0 16px calc(var(--nav-alto) + 20px + env(safe-area-inset-bottom)); text-align: center; color: var(--gris-2); font-size: .74rem; }
 
 .nav-inf {
   position: fixed; left: 0; right: 0; bottom: 0; z-index: 30;
@@ -306,7 +307,8 @@ p { margin: 0; }
   .lateral__pie div { min-width: 0; }
   .lateral__pie strong, .lateral__pie small { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .lateral__pie small { color: var(--gris); font-size: .8rem; }
-  .contenido { margin-left: var(--lateral); padding: 32px 36px 48px; max-width: calc(1180px + var(--lateral)); }
+  .contenido { margin-left: var(--lateral); padding: 32px 36px 28px; max-width: calc(1180px + var(--lateral)); }
+  .creditos { margin-left: var(--lateral); padding: 0 36px 28px; }
 }
 
 /* ── Encabezado de vista ─────────────────────────────────────────────────── */
@@ -575,6 +577,7 @@ p { margin: 0; }
 @media print {
   .lateral, .barra, .nav-inf, .vista__acciones, .no-imprimir, .toasts { display: none !important; }
   .contenido { margin: 0; padding: 0; max-width: none; }
+  .creditos { margin: 0; padding: 12px 0 0; }
   body { background: #fff; }
   .panel { box-shadow: none; border-color: #ccc; break-inside: avoid; }
 }
