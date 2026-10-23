@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="es-AR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Propuesta Aluminios Ruta 5</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=Inter:wght@400;500;600&family=Instrument+Sans:wght@500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ink: #0b0b0d;
+      --blue: #0a7fbe;
+      --blue-100: #e3f1fa;
+      --blue-50: #f1f8fd;
+      --alu-100: #eef0f3;
+      --alu-200: #dfe3e8;
+      --alu-500: #8a93a0;
+      --alu-700: #4b535e;
+      --vb-ink: #0A0E20;
+      --vb-blue: #0A5CF5;
+    }
+
+    @page { size: A4; margin: 0; }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+
+    body {
+      background: var(--alu-100);
+      color: var(--ink);
+      font-family: "Inter", system-ui, sans-serif;
+      font-size: 10pt;
+      line-height: 1.45;
+    }
+
+    .sheet {
+      width: 210mm;
+      height: 297mm;
+      margin: 0 auto;
+      background: #fff;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    /* Header */
+    .head {
+      background: var(--ink);
+      color: #fff;
+      padding: 13mm 16mm 11mm;
+      position: relative;
+    }
+    .head::after {
+      content: "";
+      position: absolute;
+      left: 0; right: 0; bottom: 0;
+      height: 2.2mm;
+      background: var(--blue);
+    }
+    .head__top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 9mm;
+    }
+    .head__logo { height: 15mm; }
+    .head__meta {
+      text-align: right;
+      font-size: 8.5pt;
+      color: #c5cbd3;
+      line-height: 1.6;
+    }
+    .head__meta strong { color: #fff; font-weight: 600; }
+    .head__eyebrow {
+      font-size: 8pt;
+      font-weight: 600;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      color: var(--blue);
+      margin-bottom: 2mm;
+    }
+    .head__title {
+      font-family: "Archivo", sans-serif;
+      font-stretch: 112%;
+      font-weight: 800;
+      font-size: 25pt;
+      line-height: 1.05;
+      letter-spacing: -.01em;
+    }
+
+    /* Items */
+    .items {
+      flex: 1;
+      padding: 9mm 16mm 0;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 5.5mm;
+      align-content: start;
+    }
+    .item {
+      border: 1px solid var(--alu-200);
+      border-radius: 3.5mm;
+      padding: 5mm 5.5mm;
+    }
+    .item--new {
+      border-color: var(--blue);
+      background: var(--blue-50);
+    }
+    .item__head {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 3mm;
+      margin-bottom: 3.5mm;
+      padding-bottom: 3mm;
+      border-bottom: 1px solid var(--alu-200);
+    }
+    .item--new .item__head { border-bottom-color: var(--blue-100); }
+    .item__title {
+      font-family: "Archivo", sans-serif;
+      font-weight: 700;
+      font-size: 11.5pt;
+      line-height: 1.2;
+    }
+    .item__tag {
+      display: inline-block;
+      font-family: "Inter", sans-serif;
+      font-size: 6.5pt;
+      font-weight: 600;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: #fff;
+      background: var(--blue);
+      border-radius: 1mm;
+      padding: .4mm 1.6mm;
+      vertical-align: 2px;
+      margin-left: 1.5mm;
+    }
+    .item__price {
+      font-family: "Archivo", sans-serif;
+      font-weight: 700;
+      font-size: 11pt;
+      color: var(--blue);
+      white-space: nowrap;
+    }
+    .item__list { list-style: none; }
+    .item__list li {
+      position: relative;
+      padding-left: 7mm;
+      margin-bottom: 2.2mm;
+      font-size: 9.3pt;
+      color: var(--alu-700);
+    }
+    .item__list li:last-child { margin-bottom: 0; }
+    .item__list li::before {
+      content: "";
+      position: absolute;
+      left: 0; top: .6mm;
+      width: 4.2mm; height: 4.2mm;
+      border-radius: 1mm;
+      background: var(--blue) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3.5 8.3l3 3 6-6.6' fill='none' stroke='%23fff' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / 80% no-repeat;
+    }
+
+    /* Total */
+    .total {
+      margin: 6mm 16mm 0;
+      background: var(--ink);
+      color: #fff;
+      border-radius: 3.5mm;
+      padding: 6mm 7mm;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .total__label {
+      font-size: 8pt;
+      font-weight: 600;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      color: #c5cbd3;
+    }
+    .total__note {
+      font-size: 8.5pt;
+      color: var(--alu-500);
+      margin-top: 1mm;
+    }
+    .total__value {
+      font-family: "Archivo", sans-serif;
+      font-stretch: 112%;
+      font-weight: 800;
+      font-size: 26pt;
+      line-height: 1;
+    }
+    .total__value span { color: var(--blue); font-size: 14pt; margin-right: 1.5mm; }
+
+    /* Footer VentureByte */
+    .foot {
+      margin-top: 8mm;
+      padding: 6mm 16mm 9mm;
+      border-top: 1px solid var(--alu-200);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-family: "Instrument Sans", sans-serif;
+    }
+    .foot__brand {
+      font-weight: 700;
+      font-size: 13pt;
+      color: var(--vb-ink);
+      letter-spacing: -.01em;
+    }
+    .foot__brand span { color: var(--vb-blue); }
+    .foot__by {
+      font-size: 7.5pt;
+      font-weight: 500;
+      color: var(--alu-500);
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      margin-bottom: .5mm;
+    }
+    .foot__contact {
+      text-align: right;
+      font-size: 8.5pt;
+      color: var(--alu-700);
+      line-height: 1.6;
+    }
+
+    @media print {
+      body { background: #fff; }
+    }
+  </style>
+</head>
+<body>
+  <main class="sheet">
+
+    <header class="head">
+      <div class="head__top">
+        <img class="head__logo" src="../aluminios-ruta5/assets/img/logo-white.svg" alt="Aluminios Ruta 5">
+        <div class="head__meta">
+          <strong>Propuesta comercial</strong><br>
+          Preparada para Aluminios Ruta 5<br>
+          Octubre 2026
+        </div>
+      </div>
+      <p class="head__eyebrow">Presencia digital completa</p>
+      <h1 class="head__title">Todo lo que va a tener<br>Aluminios Ruta 5</h1>
+    </header>
+
+    <section class="items">
+
+      <article class="item">
+        <div class="item__head">
+          <h2 class="item__title">Sitio web con catálogo online</h2>
+          <span class="item__price">USD 124,50</span>
+        </div>
+        <ul class="item__list">
+          <li>Web propia en aluminiosruta5.com.ar, pensada para el celular</li>
+          <li>Catálogo de perfiles separado por línea, con PDF para descargar</li>
+          <li>Panel para cargar y editar productos sin depender de nadie</li>
+          <li>Botones directos a WhatsApp para consultas y presupuestos</li>
+        </ul>
+      </article>
+
+      <article class="item">
+        <div class="item__head">
+          <h2 class="item__title">5 publicaciones para redes</h2>
+          <span class="item__price">USD 105</span>
+        </div>
+        <ul class="item__list">
+          <li>Producción audiovisual en el depósito</li>
+          <li>Diseño de piezas con la identidad de AR5</li>
+          <li>Contenido potenciado con IA</li>
+          <li>5 publicaciones listas para Instagram y Facebook</li>
+        </ul>
+      </article>
+
+      <article class="item">
+        <div class="item__head">
+          <h2 class="item__title">Publicidad en Meta</h2>
+          <span class="item__price">USD 175</span>
+        </div>
+        <ul class="item__list">
+          <li>Seteo de la cuenta publicitaria de Meta</li>
+          <li>Armado de la campaña para Instagram y Facebook</li>
+          <li>Gestión y seguimiento de la campaña</li>
+        </ul>
+      </article>
+
+      <article class="item item--new">
+        <div class="item__head">
+          <h2 class="item__title">Google Maps + redes<span class="item__tag">Nuevo</span></h2>
+          <span class="item__price">USD 70,50</span>
+        </div>
+        <ul class="item__list">
+          <li>Alta y verificación del negocio en Google Maps</li>
+          <li>Ficha completa: dirección, horarios, fotos, teléfono y WhatsApp</li>
+          <li>Web, Instagram, Facebook y WhatsApp vinculados entre sí</li>
+          <li>Botón "Cómo llegar" y link para pedir reseñas a clientes</li>
+        </ul>
+      </article>
+
+    </section>
+
+    <section class="total">
+      <div>
+        <p class="total__label">Inversión total</p>
+        <p class="total__note">Todo lo anterior, en un solo paquete</p>
+      </div>
+      <p class="total__value"><span>USD</span>475</p>
+    </section>
+
+    <footer class="foot">
+      <div>
+        <p class="foot__by">Una propuesta de</p>
+        <p class="foot__brand">Venture<span>Byte</span></p>
+      </div>
+      <div class="foot__contact">
+        WhatsApp +54 9 2346 56-4757<br>
+        venturebytedigital@gmail.com
+      </div>
+    </footer>
+
+  </main>
+</body>
+</html>
