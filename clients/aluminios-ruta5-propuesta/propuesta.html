@@ -10,15 +10,8 @@
   <style>
     :root {
       --ink: #0b0b0d;
-      --blue: #0a7fbe;
-      --blue-100: #e3f1fa;
-      --blue-50: #f1f8fd;
-      --alu-100: #eef0f3;
-      --alu-200: #dfe3e8;
-      --alu-500: #8a93a0;
+      --alu-400: #a6aeb8;
       --alu-700: #4b535e;
-      --vb-ink: #0A0E20;
-      --vb-blue: #0A5CF5;
     }
 
     @page { size: A4; margin: 0; }
@@ -28,7 +21,7 @@
     html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
 
     body {
-      background: var(--alu-100);
+      background: #e5e5e5;
       color: var(--ink);
       font-family: "Inter", system-ui, sans-serif;
       font-size: 10pt;
@@ -47,38 +40,29 @@
 
     /* Header */
     .head {
-      background: var(--ink);
-      color: #fff;
-      padding: 13mm 16mm 11mm;
-      position: relative;
-    }
-    .head::after {
-      content: "";
-      position: absolute;
-      left: 0; right: 0; bottom: 0;
-      height: 2.2mm;
-      background: var(--blue);
+      padding: 14mm 16mm 9mm;
+      border-bottom: 1.2mm solid var(--ink);
     }
     .head__top {
       display: flex;
       justify-content: space-between;
       align-items: flex-start;
-      margin-bottom: 9mm;
+      margin-bottom: 8mm;
     }
-    .head__logo { height: 15mm; }
+    .head__logo { height: 15mm; filter: grayscale(1); }
     .head__meta {
       text-align: right;
       font-size: 8.5pt;
-      color: #c5cbd3;
+      color: var(--alu-700);
       line-height: 1.6;
     }
-    .head__meta strong { color: #fff; font-weight: 600; }
+    .head__meta strong { color: var(--ink); font-weight: 600; }
     .head__eyebrow {
       font-size: 8pt;
       font-weight: 600;
       letter-spacing: .18em;
       text-transform: uppercase;
-      color: var(--blue);
+      color: var(--alu-700);
       margin-bottom: 2mm;
     }
     .head__title {
@@ -100,14 +84,11 @@
       align-content: start;
     }
     .item {
-      border: 1px solid var(--alu-200);
+      border: 1px solid var(--alu-400);
       border-radius: 3.5mm;
       padding: 5mm 5.5mm;
     }
-    .item--new {
-      border-color: var(--blue);
-      background: var(--blue-50);
-    }
+    .item--new { border: .6mm solid var(--ink); }
     .item__head {
       display: flex;
       justify-content: space-between;
@@ -115,9 +96,8 @@
       gap: 3mm;
       margin-bottom: 3.5mm;
       padding-bottom: 3mm;
-      border-bottom: 1px solid var(--alu-200);
+      border-bottom: 1px solid var(--alu-400);
     }
-    .item--new .item__head { border-bottom-color: var(--blue-100); }
     .item__title {
       font-family: "Archivo", sans-serif;
       font-weight: 700;
@@ -131,18 +111,16 @@
       font-weight: 600;
       letter-spacing: .12em;
       text-transform: uppercase;
-      color: #fff;
-      background: var(--blue);
+      border: 1px solid var(--ink);
       border-radius: 1mm;
-      padding: .4mm 1.6mm;
+      padding: .3mm 1.6mm;
       vertical-align: 2px;
       margin-left: 1.5mm;
     }
     .item__price {
       font-family: "Archivo", sans-serif;
-      font-weight: 700;
+      font-weight: 800;
       font-size: 11pt;
-      color: var(--blue);
       white-space: nowrap;
     }
     .item__list { list-style: none; }
@@ -151,7 +129,7 @@
       padding-left: 7mm;
       margin-bottom: 2.2mm;
       font-size: 9.3pt;
-      color: var(--alu-700);
+      color: #2a2d33;
     }
     .item__list li:last-child { margin-bottom: 0; }
     .item__list li::before {
@@ -159,17 +137,17 @@
       position: absolute;
       left: 0; top: .6mm;
       width: 4.2mm; height: 4.2mm;
+      border: .35mm solid var(--ink);
       border-radius: 1mm;
-      background: var(--blue) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3.5 8.3l3 3 6-6.6' fill='none' stroke='%23fff' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / 80% no-repeat;
+      background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3.5 8.3l3 3 6-6.6' fill='none' stroke='%230b0b0d' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / 85% no-repeat;
     }
 
     /* Total */
     .total {
       margin: 6mm 16mm 0;
-      background: var(--ink);
-      color: #fff;
+      border: .6mm solid var(--ink);
       border-radius: 3.5mm;
-      padding: 6mm 7mm;
+      padding: 5.5mm 7mm;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -179,11 +157,10 @@
       font-weight: 600;
       letter-spacing: .18em;
       text-transform: uppercase;
-      color: #c5cbd3;
     }
     .total__note {
       font-size: 8.5pt;
-      color: var(--alu-500);
+      color: var(--alu-700);
       margin-top: 1mm;
     }
     .total__value {
@@ -193,13 +170,13 @@
       font-size: 26pt;
       line-height: 1;
     }
-    .total__value span { color: var(--blue); font-size: 14pt; margin-right: 1.5mm; }
+    .total__value span { font-size: 14pt; margin-right: 1.5mm; }
 
     /* Footer VentureByte */
     .foot {
       margin-top: 8mm;
       padding: 6mm 16mm 9mm;
-      border-top: 1px solid var(--alu-200);
+      border-top: 1px solid var(--alu-400);
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -208,14 +185,13 @@
     .foot__brand {
       font-weight: 700;
       font-size: 13pt;
-      color: var(--vb-ink);
       letter-spacing: -.01em;
     }
-    .foot__brand span { color: var(--vb-blue); }
+    .foot__brand span { font-weight: 500; }
     .foot__by {
       font-size: 7.5pt;
       font-weight: 500;
-      color: var(--alu-500);
+      color: var(--alu-700);
       letter-spacing: .14em;
       text-transform: uppercase;
       margin-bottom: .5mm;
@@ -237,7 +213,7 @@
 
     <header class="head">
       <div class="head__top">
-        <img class="head__logo" src="../aluminios-ruta5/assets/img/logo-white.svg" alt="Aluminios Ruta 5">
+        <img class="head__logo" src="../aluminios-ruta5/assets/img/logo.svg" alt="Aluminios Ruta 5">
         <div class="head__meta">
           <strong>Propuesta comercial</strong><br>
           Preparada para Aluminios Ruta 5<br>
@@ -269,7 +245,6 @@
           <span class="item__price">USD 105</span>
         </div>
         <ul class="item__list">
-          <li>Producción audiovisual en el depósito</li>
           <li>Diseño de piezas con la identidad de AR5</li>
           <li>Contenido potenciado con IA</li>
           <li>5 publicaciones listas para Instagram y Facebook</li>
