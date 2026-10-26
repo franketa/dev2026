@@ -111,13 +111,17 @@ export const CHECKLIST_TALLER = [
 ];
 
 /* ----------------------------------------------------------------- caja */
-export const CATEGORIAS: { valor: string; label: string; tipo: "ingreso" | "gasto" }[] = [
+/** La ayuda se ve al elegir la categoría: aclara dónde va lo que se presta a dudas. */
+export const CATEGORIAS: { valor: string; label: string; tipo: "ingreso" | "gasto"; ayuda?: string }[] = [
   { valor: "venta_usado",    label: "Operación usado",    tipo: "ingreso" },
   { valor: "venta_0km",      label: "Operación 0km",      tipo: "ingreso" },
-  { valor: "servicios_taller", label: "Servicios/Taller", tipo: "ingreso" },
+  { valor: "servicios_taller", label: "Servicios/Taller", tipo: "ingreso",
+    ayuda: "Lo que cobra el taller por trabajos a terceros." },
   { valor: "otros_ingresos", label: "Otros ingresos",     tipo: "ingreso" },
-  { valor: "compra_unidad",  label: "Compra de unidades", tipo: "gasto" },
-  { valor: "prep_unidad",    label: "Prep. de unidades",  tipo: "gasto" },
+  { valor: "compra_unidad",  label: "Compra de unidades", tipo: "gasto",
+    ayuda: "La compra de un auto. Conviene cargarla al dar de alta la unidad, que ya la registra en Caja." },
+  { valor: "prep_unidad",    label: "Prep. de unidades",  tipo: "gasto",
+    ayuda: "Arreglos, lustrado, repuestos o gestoría de un auto para vender. Se suma al costo del auto elegido." },
   { valor: "sueldos",        label: "Sueldos y RRSS",     tipo: "gasto" },
   { valor: "alquiler",       label: "Alquiler",           tipo: "gasto" },
   { valor: "publicidad",     label: "Publicidad",         tipo: "gasto" },
@@ -126,9 +130,13 @@ export const CATEGORIAS: { valor: string; label: string; tipo: "ingreso" | "gast
   { valor: "patentes",       label: "Patentes",           tipo: "gasto" },
   { valor: "gastos_banco",   label: "Gastos bancarios",   tipo: "gasto" },
   { valor: "viaticos",       label: "Viáticos/Movilidad", tipo: "gasto" },
-  { valor: "garantia_postventa", label: "Garantías post-venta", tipo: "gasto" },
+  { valor: "reparaciones",   label: "Reparaciones y mantenimiento", tipo: "gasto",
+    ayuda: "Arreglos del local, herramientas o vehículos de la agencia. Si es un auto para vender, va en Prep. de unidades." },
+  { valor: "garantia_postventa", label: "Garantías post-venta", tipo: "gasto",
+    ayuda: "Arreglos de un auto que ya se vendió." },
   { valor: "pago_obra",      label: "Pago de obra",       tipo: "gasto" },
-  { valor: "retiro_socios",  label: "Retiro de efectivo (dueños)", tipo: "gasto" },
+  { valor: "retiro_socios",  label: "Retiro de efectivo (dueños)", tipo: "gasto",
+    ayuda: "Lo que se llevan los dueños. Baja la caja, pero no resta del resultado del mes." },
   { valor: "otros_gastos",   label: "Otros gastos",       tipo: "gasto" },
 ];
 

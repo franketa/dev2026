@@ -5,7 +5,8 @@ import { Trash2 } from "lucide-react";
 import { avisoOk, avisoError, SIN_PERMISO } from "@/lib/aviso";
 import { sql } from "@/lib/db";
 import { requierePermiso } from "@/lib/auth";
-import { leerMovimiento } from "@/lib/caja";
+import { leerMovimiento, guardarMovimiento } from "@/lib/caja";
+import { vehiculosParaCostos } from "@/lib/costos";
 import { plata, fecha } from "@/lib/format";
 import { CATEGORIAS } from "@/lib/constantes";
 import { Encabezado, Panel, PanelTitulo, Boton } from "@/components/ui";
@@ -34,9 +35,12 @@ export default async function CorregirMovimiento({ params }: { params: Promise<a
   const id = Number((await params).id) || 0;
   const [mv] = await sql`SELECT * FROM caja_movimientos WHERE id = ${id}`;
   if (!mv) notFound();
-  const cuentas = await sql`SELECT id, nombre FROM caja_cuentas
-                            WHERE activa OR id IN (${mv.cuenta_id}, ${mv.cuenta_destino_id ?? 0})
-                            ORDER BY posicion, id`;
+  const [cuentas, vehiculos] = await Promise.all([
+    sql`SELECT id, nombre FROM caja_cuentas
+        WHERE activa OR id IN (${mv.cuenta_id}, ${mv.cuenta_destino_id ?? 0})
+        ORDER BY posicion, id`,
+    vehiculosParaCostos(sql),
+  ]);
   const atado = !!(mv.venta_id || mv.costo_id);
 
   async function guardar(fd: FormData) {
@@ -47,6 +51,21 @@ export default async function CorregirMovimiento({ params }: { params: Promise<a
     if (!antes || antes.venta_id || antes.costo_id) return avisoError("Este movimiento no se puede corregir desde Caja.");
     const d = leerMovimiento(fd);
     if (typeof d === "string") return avisoError(d);
+    // Una preparación que recién ahora tiene auto pasa a ser el costo de
+    // cada auto elegido, con su parte del egreso atada al costo.
+    if (d.vehiculos.length) {
+      await sql.begin(async (tx) => {
+        await tx`DELETE FROM caja_movimientos WHERE id = ${id}`;
+        await guardarMovimiento(tx, d, usr.id);
+        await tx`INSERT INTO auditoria (usuario_id, entidad, entidad_id, accion, detalle)
+                 VALUES (${usr.id}, 'caja', ${id}, 'corregir',
+                         ${`Asignado a ${d.vehiculos.length} auto(s) como costo. Antes: ` + resumen(antes)})`;
+      });
+      revalidatePath("/caja");
+      for (const v of d.vehiculos) revalidatePath(`/vehiculos/${v}`);
+      await avisoOk(d.vehiculos.length > 1 ? `Repartido entre ${d.vehiculos.length} autos` : "Sumado al costo del auto");
+      redirect("/caja");
+    }
     await sql.begin(async (tx) => {
       await tx`
         UPDATE caja_movimientos SET
@@ -85,11 +104,11 @@ export default async function CorregirMovimiento({ params }: { params: Promise<a
         <Encabezado volver="/caja" titulo="Corregir movimiento" detalle={resumen(mv)} />
         <Panel>
           <p className="text-[13px] text-[var(--c-tinta-media)] leading-relaxed">
-            Este movimiento salió de {mv.venta_id ? "un cobro de una venta" : "un costo de la unidad"} y se corrige desde ahí{mv.venta_id ? " (Corregir → Quitar el cobro)" : ""},
+            Este movimiento salió de {mv.venta_id ? "un cobro de una venta" : "un costo de la unidad"} y se corrige desde ahí{mv.venta_id ? " (Corregir → Quitar el cobro)" : " (Costos → quitar el costo con el tacho)"},
             para que no quede distinto de la caja.
           </p>
           <div className="mt-4">
-            <Boton href={mv.venta_id ? `/ventas/${mv.venta_id}/editar` : `/vehiculos/${mv.vehiculo_id}`} variante="suave">
+            <Boton href={mv.venta_id ? `/ventas/${mv.venta_id}/editar` : `/vehiculos/${mv.vehiculo_id}?tab=costos`} variante="suave">
               {mv.venta_id ? "Ir a la venta" : "Ir a la unidad"}
             </Boton>
           </div>
@@ -112,7 +131,7 @@ export default async function CorregirMovimiento({ params }: { params: Promise<a
         detalle="El cambio impacta en el saldo de la cuenta. Cómo estaba antes queda guardado en Auditoría." />
       <Panel>
         <form action={guardar} className="grid sm:grid-cols-4 gap-3 items-end">
-          <CamposMovimiento cuentas={cuentas as any} inicial={inicial} />
+          <CamposMovimiento cuentas={cuentas as any} vehiculos={vehiculos as any} inicial={inicial} />
           <div className="sm:col-span-4 flex flex-wrap gap-2">
             <Boton tipo="submit">Guardar cambios</Boton>
             <Boton href="/caja" variante="fantasma">Cancelar</Boton>

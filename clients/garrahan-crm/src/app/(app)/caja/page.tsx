@@ -6,7 +6,8 @@ import { sql } from "@/lib/db";
 import { requierePermiso, veCostos } from "@/lib/auth";
 import { plata, plataCorta, fecha } from "@/lib/format";
 import { CATEGORIAS } from "@/lib/constantes";
-import { leerMovimiento } from "@/lib/caja";
+import { leerMovimiento, guardarMovimiento } from "@/lib/caja";
+import { vehiculosParaCostos } from "@/lib/costos";
 import {
   Encabezado, KPI, GrillaKPI, Panel, PanelTitulo, Chip, Tabla, TH, TD,
   FilaVacia, Boton, Campo, Monto,
@@ -27,12 +28,17 @@ export default async function Caja({ searchParams }: { searchParams: Promise<any
   const cuentaF = p.cuenta || "";
   const esDueno = u.rol === "dueno";
 
-  const where = cuentaF ? sql`WHERE m.cuenta_id = ${Number(cuentaF)}` : sql``;
+  // Las preparaciones sin auto no suman al costo de ninguna unidad ni al
+  // resultado: se listan aparte para asignarles el auto.
+  const sinAuto = p.sinauto === "1";
+  const where = sinAuto
+    ? sql`WHERE m.tipo = 'egreso' AND m.categoria = 'prep_unidad' AND m.vehiculo_id IS NULL`
+    : cuentaF ? sql`WHERE m.cuenta_id = ${Number(cuentaF)}` : sql``;
 
-  const [saldos, movimientos, cuentas, mes, porCategoria] = await Promise.all([
+  const [saldos, movimientos, cuentas, mes, porCategoria, vehiculos, [huerfanos]] = await Promise.all([
     sql`SELECT s.* FROM v_saldos s JOIN caja_cuentas c ON c.id = s.id
         WHERE c.activa ORDER BY s.moneda, c.posicion, s.id`,
-    sql`SELECT m.*, c.nombre AS cuenta, cd.nombre AS destino, v.dominio
+    sql`SELECT m.*, c.nombre AS cuenta, cd.nombre AS destino, v.dominio, v.marca, v.modelo
         FROM caja_movimientos m
         JOIN caja_cuentas c ON c.id = m.cuenta_id
         LEFT JOIN caja_cuentas cd ON cd.id = m.cuenta_destino_id
@@ -50,6 +56,9 @@ export default async function Caja({ searchParams }: { searchParams: Promise<any
         WHERE tipo = 'egreso' AND fecha >= date_trunc('month', current_date)
           AND categoria IS NOT NULL
         GROUP BY categoria ORDER BY total DESC LIMIT 8`,
+    vehiculosParaCostos(sql),
+    sql`SELECT count(*)::int AS n, COALESCE(SUM(equivalente_ars),0) AS total FROM caja_movimientos
+        WHERE tipo = 'egreso' AND categoria = 'prep_unidad' AND vehiculo_id IS NULL`,
   ]);
 
   const m = mes[0] || {};
@@ -66,16 +75,13 @@ export default async function Caja({ searchParams }: { searchParams: Promise<any
     if (!veCostos(usr)) return avisoError(SIN_PERMISO);
     const d = leerMovimiento(fd);
     if (typeof d === "string") return avisoError(d);
-    await sql`
-      INSERT INTO caja_movimientos
-        (fecha, tipo, cuenta_id, cuenta_destino_id, categoria, descripcion, contraparte,
-         monto, moneda, cotizacion, equivalente_ars, forma_pago, usuario_id)
-      VALUES (${d.fecha}, ${d.tipo}, ${d.cuenta}, ${d.destino}, ${d.categoria}, ${d.descripcion},
-              ${d.contraparte}, ${d.monto}, ${d.moneda}, ${d.cotizacion}, ${d.equivalente},
-              ${d.forma_pago}, ${usr.id})`;
+    await sql.begin((tx) => guardarMovimiento(tx, d, usr.id));
     const tipo = d.tipo;
     revalidatePath("/caja");
-    await avisoOk(tipo === "ingreso" ? "Ingreso registrado" : tipo === "transferencia" ? "Transferencia registrada" : "Egreso registrado");
+    for (const v of d.vehiculos) revalidatePath(`/vehiculos/${v}`);
+    await avisoOk(d.vehiculos.length > 1 ? `Egreso registrado y repartido entre ${d.vehiculos.length} autos`
+      : d.vehiculos.length ? "Egreso registrado y sumado al costo del auto"
+      : tipo === "ingreso" ? "Ingreso registrado" : tipo === "transferencia" ? "Transferencia registrada" : "Egreso registrado");
   }
 
   return (
@@ -113,13 +119,24 @@ export default async function Caja({ searchParams }: { searchParams: Promise<any
         ))}
       </div>
 
+      {esDueno && huerfanos.n > 0 && !sinAuto && (
+        <div className="mt-4 rounded-xl border border-[var(--c-amarillo)] bg-[var(--c-amarillo-fondo)] px-4 py-3
+          flex flex-wrap items-center justify-between gap-3">
+          <p className="text-[13px] text-[var(--c-tinta-clara)] leading-relaxed">
+            Hay <b>{huerfanos.n} {huerfanos.n === 1 ? "gasto" : "gastos"} de preparación sin auto</b> ({plata(huerfanos.total)}):
+            no {huerfanos.n === 1 ? "suma" : "suman"} al costo de ninguna unidad ni al resultado.
+          </p>
+          <Boton href="/caja?sinauto=1" variante="suave">Asignarles el auto</Boton>
+        </div>
+      )}
+
       <div className="grid lg:grid-cols-3 gap-4 mt-4">
         {/* ------------------------------------------------- nuevo movimiento */}
         <Panel className="lg:col-span-2">
           <PanelTitulo titulo="Nuevo movimiento"
-            detalle="Si el gasto es de un auto, cargalo desde la ficha de la unidad." />
+            detalle="Si el gasto es de un auto para vender, elegí Prep. de unidades y el auto: se suma a su costo." />
           <form action={nuevoMovimiento} className="grid sm:grid-cols-4 gap-3 items-end">
-            <CamposMovimiento cuentas={cuentas as any} />
+            <CamposMovimiento cuentas={cuentas as any} vehiculos={vehiculos as any} />
             <div className="sm:col-span-4"><Boton tipo="submit"><Plus size={15} /> Registrar</Boton></div>
           </form>
         </Panel>
@@ -148,8 +165,11 @@ export default async function Caja({ searchParams }: { searchParams: Promise<any
 
       {/* ----------------------------------------------------- movimientos */}
       <div className="flex items-center justify-between mt-6 mb-3">
-        <h2 className="text-[15px] font-semibold">Movimientos</h2>
-        {cuentaF && <Link href="/caja" className="text-[12.5px] text-[var(--c-primario)] hover:underline">Ver todas las cuentas</Link>}
+        <h2 className="text-[15px] font-semibold">
+          {sinAuto ? "Preparaciones sin auto: tocá el lápiz y elegí el auto" : "Movimientos"}
+        </h2>
+        {sinAuto && <Link href="/caja" className="text-[12.5px] text-[var(--c-primario)] hover:underline">Ver todos</Link>}
+        {cuentaF && !sinAuto && <Link href="/caja" className="text-[12.5px] text-[var(--c-primario)] hover:underline">Ver todas las cuentas</Link>}
       </div>
 
       <Tabla>
@@ -179,9 +199,9 @@ export default async function Caja({ searchParams }: { searchParams: Promise<any
                 {mv.contraparte && <div className="text-[11.5px] text-[var(--c-tinta-tenue)]">{mv.contraparte}</div>}
               </TD>
               <TD>
-                {mv.dominio ? (
+                {mv.vehiculo_id ? (
                   <Link href={`/vehiculos/${mv.vehiculo_id}`} className="text-[12px] text-[var(--c-enlace)] hover:underline">
-                    {mv.dominio}
+                    {mv.dominio || `${mv.marca} ${mv.modelo}`}
                   </Link>
                 ) : <span className="text-[var(--c-tinta-tenue)]">—</span>}
               </TD>

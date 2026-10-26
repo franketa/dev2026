@@ -5,6 +5,7 @@ import { Plus, Receipt, Wrench, FileText, Pencil, Globe, Trash2, Star, ChevronLe
 import { avisoOk, avisoError, SIN_PERMISO } from "@/lib/aviso";
 import { sql } from "@/lib/db";
 import { requierePermiso, veCostos, puede } from "@/lib/auth";
+import { registrarCosto } from "@/lib/costos";
 import { plata, numero, km as fkm, dominio, porcentaje, fecha } from "@/lib/format";
 import { ESTADOS_VEHICULO, ALERTAS, TIPO_ADQUISICION, TIPOS_COSTO } from "@/lib/constantes";
 import {
@@ -35,8 +36,13 @@ export default async function Vehiculo({ params, searchParams }: { params: Promi
 
   const editar = puede(u, "vehiculos.editar");
 
-  const [costos, movimientos, ficha, documentos, proveedores, ordenes, fotos] = await Promise.all([
-    sql`SELECT c.*, p.nombre AS proveedor FROM vehiculo_costos c
+  const esDueno = u.rol === "dueno";
+
+  const [costos, movimientos, ficha, documentos, proveedores, ordenes, fotos, cuentas] = await Promise.all([
+    sql`SELECT c.*, p.nombre AS proveedor,
+               (SELECT cu.nombre FROM caja_movimientos m JOIN caja_cuentas cu ON cu.id = m.cuenta_id
+                WHERE m.costo_id = c.id LIMIT 1) AS pagado_desde
+        FROM vehiculo_costos c
         LEFT JOIN proveedores p ON p.id = c.proveedor_id
         WHERE c.vehiculo_id = ${id} ORDER BY c.fecha DESC, c.id DESC`,
     sql`SELECT m.*, cu.nombre AS cuenta FROM caja_movimientos m
@@ -49,6 +55,8 @@ export default async function Vehiculo({ params, searchParams }: { params: Promi
                (SELECT count(*) FROM orden_items i WHERE i.orden_id = o.id AND i.hecho)::int AS hechos
         FROM ordenes_taller o WHERE o.vehiculo_id = ${id} ORDER BY o.id DESC`,
     sql`SELECT id FROM vehiculo_fotos WHERE vehiculo_id = ${id} ORDER BY posicion, id`,
+    // El costo de la unidad va en pesos: solo se paga desde cuentas en pesos.
+    sql`SELECT id, nombre FROM caja_cuentas WHERE activa AND moneda = 'ARS' ORDER BY posicion, id`,
   ]);
   const enLaWeb = v.publicado && v.estado === "disponible";
 
@@ -63,16 +71,50 @@ export default async function Vehiculo({ params, searchParams }: { params: Promi
     if (!veCostos(usr)) return avisoError(SIN_PERMISO);
     const monto = Number(fd.get("monto") || 0);
     if (!monto) return avisoError("Falta el monto.");
-    await sql`
-      INSERT INTO vehiculo_costos (vehiculo_id, tipo, detalle, proveedor_id, fecha, monto, origen)
-      VALUES (${id}, ${String(fd.get("tipo") || "Otro")}, ${String(fd.get("detalle") || "")},
-              ${fd.get("proveedor") ? Number(fd.get("proveedor")) : null},
-              ${String(fd.get("fecha") || new Date().toISOString().slice(0, 10))},
-              ${monto}, 'manual')`;
-    await sql`INSERT INTO auditoria (usuario_id, entidad, entidad_id, accion, detalle)
-              VALUES (${usr.id}, 'vehiculo', ${id}, 'costo_agregado', ${"$" + monto})`;
+    const pago = String(fd.get("cuenta") || "");
+    if (!pago) return avisoError("Elegí de qué cuenta salió la plata, o «No registrar en Caja».");
+    const cuenta = pago === "no" ? 0 : Number(pago);
+    const tipo = String(fd.get("tipo") || "Otro");
+    const detalle = String(fd.get("detalle") || "").trim();
+    const proveedor = fd.get("proveedor") ? Number(fd.get("proveedor")) : null;
+    const [prov] = proveedor ? await sql`SELECT nombre FROM proveedores WHERE id = ${proveedor}` : [];
+    const [auto] = await sql`SELECT marca, modelo FROM vehiculos WHERE id = ${id}`;
+    await sql.begin(async (tx) => {
+      await registrarCosto(tx, {
+        vehiculo: Number(id), tipo, detalle, proveedor, monto,
+        fecha: String(fd.get("fecha") || new Date().toISOString().slice(0, 10)),
+      }, cuenta ? {
+        cuenta, monto, moneda: "ARS", cotizacion: 1, forma_pago: "",
+        descripcion: `${detalle || tipo} · ${auto.marca} ${auto.modelo}`, contraparte: prov?.nombre || "",
+      } : null, usr.id);
+      await tx`INSERT INTO auditoria (usuario_id, entidad, entidad_id, accion, detalle)
+               VALUES (${usr.id}, 'vehiculo', ${id}, 'costo_agregado',
+                       ${"$" + monto + (cuenta ? " · registrado en Caja" : "")})`;
+    });
     revalidatePath(`/vehiculos/${id}`);
-    await avisoOk("Costo agregado");
+    revalidatePath("/caja");
+    await avisoOk(cuenta ? "Costo agregado y registrado en Caja" : "Costo agregado");
+  }
+
+  /** Quita un costo cargado a mano y, si se había pagado desde Caja, también ese egreso. */
+  async function quitarCosto(fd: FormData) {
+    "use server";
+    const usr = await requierePermiso("vehiculos");
+    if (usr.rol !== "dueno") return avisoError(SIN_PERMISO);
+    const costo = Number(fd.get("costo") || 0);
+    const [c] = await sql`SELECT * FROM vehiculo_costos WHERE id = ${costo} AND vehiculo_id = ${id}`;
+    if (!c) return avisoError("Ese costo ya no está.");
+    if (c.origen !== "manual") return avisoError("Ese costo sale de una orden de taller: se corrige desde la orden.");
+    await sql.begin(async (tx) => {
+      const caja = await tx`DELETE FROM caja_movimientos WHERE costo_id = ${costo} RETURNING id`;
+      await tx`DELETE FROM vehiculo_costos WHERE id = ${costo}`;
+      await tx`INSERT INTO auditoria (usuario_id, entidad, entidad_id, accion, detalle)
+               VALUES (${usr.id}, 'vehiculo', ${id}, 'costo_quitado',
+                       ${`${c.tipo} · ${c.detalle || "—"} · $${Number(c.monto)}` + (caja.length ? " · también se borró de Caja" : "")})`;
+    });
+    revalidatePath(`/vehiculos/${id}`);
+    revalidatePath("/caja");
+    await avisoOk("Costo quitado");
   }
 
   async function cambiarEstado(fd: FormData) {
@@ -344,7 +386,7 @@ export default async function Vehiculo({ params, searchParams }: { params: Promi
           <Panel>
             <PanelTitulo titulo="Agregar un costo"
               detalle="Se suma al costo de esta unidad y recalcula el margen en el momento." />
-            <form action={agregarCosto} className="grid sm:grid-cols-5 gap-3 items-end">
+            <form action={agregarCosto} className="grid sm:grid-cols-3 lg:grid-cols-6 gap-3 items-end">
               <Campo label="Tipo">
                 <select name="tipo" className="campo">
                   {TIPOS_COSTO.map((t) => <option key={t} value={t}>{t}</option>)}
@@ -362,8 +404,15 @@ export default async function Vehiculo({ params, searchParams }: { params: Promi
               <Campo label="Monto">
                 <input name="monto" type="number" step="0.01" required className="campo" placeholder="0" />
               </Campo>
+              <Campo label="Se pagó desde" ancho="sm:col-span-2 lg:col-span-2">
+                <select name="cuenta" required className="campo" defaultValue="">
+                  <option value="" disabled>Elegí…</option>
+                  {cuentas.map((c: any) => <option key={c.id} value={c.id}>{c.nombre} (sale de Caja)</option>)}
+                  <option value="no">No registrar en Caja (no se pagó o ya está cargado)</option>
+                </select>
+              </Campo>
               <input type="hidden" name="fecha" value={new Date().toISOString().slice(0, 10)} />
-              <div className="sm:col-span-5">
+              <div className="sm:col-span-3 lg:col-span-6">
                 <Boton tipo="submit"><Plus size={15} /> Agregar costo</Boton>
               </div>
             </form>
@@ -374,22 +423,41 @@ export default async function Vehiculo({ params, searchParams }: { params: Promi
               <tr>
                 <TH>Tipo</TH><TH>Detalle</TH><TH>Origen</TH><TH>Fecha</TH>
                 <TH>Proveedor</TH><TH alinear="right">Monto</TH><TH alinear="right">Acumulado</TH>
+                {esDueno && <TH><span className="sr-only">Quitar</span></TH>}
               </tr>
             </thead>
             <tbody>
-              {costos.length === 0 && <FilaVacia cols={7} mensaje="Esta unidad todavía no tiene costos cargados." />}
+              {costos.length === 0 && <FilaVacia cols={esDueno ? 8 : 7} mensaje="Esta unidad todavía no tiene costos cargados." />}
               {(() => { let acc = 0; return costos.map((c: any) => {
                 acc += Number(c.monto);
                 return (
                   <tr key={c.id} className="hover:bg-[var(--c-hover)]">
                     <TD className="font-medium">{c.tipo}</TD>
-                    <TD className="text-[var(--c-tinta-media)]">{c.detalle || "—"}</TD>
+                    <TD className="text-[var(--c-tinta-media)]">
+                      {c.detalle || "—"}
+                      {c.pagado_desde && <div className="text-[11.5px] text-[var(--c-tinta-tenue)]">Pagado desde {c.pagado_desde}</div>}
+                    </TD>
                     <TD><Chip tono={c.origen === "taller" ? "naranja" : "gris"}>
                       {c.origen === "taller" ? "Taller" : "Manual"}</Chip></TD>
                     <TD className="text-[var(--c-tinta-media)]">{fecha(c.fecha)}</TD>
                     <TD className="text-[var(--c-tinta-media)]">{c.proveedor || "—"}</TD>
                     <TD alinear="right">{plata(c.monto)}</TD>
                     <TD alinear="right" className="text-[var(--c-tinta-tenue)]">{plata(acc)}</TD>
+                    {esDueno && (
+                      <TD alinear="right">
+                        {c.origen === "manual" && (
+                          <form action={quitarCosto}>
+                            <input type="hidden" name="costo" value={c.id} />
+                            <button type="submit" aria-label="Quitar el costo"
+                              title={c.pagado_desde ? "Quita el costo y su egreso en Caja" : "Quitar el costo"}
+                              className="inline-grid place-items-center h-7 w-7 rounded-lg text-[var(--c-tinta-tenue)]
+                                hover:text-[var(--c-rojo-alto)] hover:bg-[var(--c-activo)]">
+                              <Trash2 size={14} />
+                            </button>
+                          </form>
+                        )}
+                      </TD>
+                    )}
                   </tr>
                 );
               }); })()}
