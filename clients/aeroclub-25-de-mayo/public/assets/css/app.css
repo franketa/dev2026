@@ -333,7 +333,7 @@ p { margin: 0; }
   display: grid; gap: 18px;
   padding: 22px 20px;
   border-radius: var(--r-l);
-  background: var(--tinta);
+  background: #014F90;
   color: #fff;
 }
 .saldo__ala { position: absolute; right: -90px; top: -46px; width: 300px; pointer-events: none; }

@@ -1,7 +1,7 @@
 // Service worker mínimo: permite instalar la app y abre la estructura rápido.
 // Los datos (API, cupones) siempre van a la red: nunca se muestra un saldo viejo.
-const VERSION = 'a25-v3';
-const BASE = ['/app', '/assets/css/app.css', '/assets/img/escudo-256.png?v=2', '/assets/img/favicon.png?v=2'];
+const VERSION = 'a25-v4';
+const BASE = ['/app', '/assets/css/app.css?v=2', '/assets/img/escudo-256.png?v=2', '/assets/img/favicon.png?v=2'];
 
 self.addEventListener('install', (e) => {
   e.waitUntil(caches.open(VERSION).then(c => c.addAll(BASE)).then(() => self.skipWaiting()));
