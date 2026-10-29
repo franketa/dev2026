@@ -1,0 +1,839 @@
+<!DOCTYPE html>
+<html lang="es-AR">
+<head>
+<meta charset="UTF-8">
+<title>Guía del piloto y del alumno · Aeroclub 25 de Mayo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Barlow+Semi+Condensed:wght@600;700&display=swap" rel="stylesheet">
+<script>
+  // Un solo HTML, dos PDF: ?f=movil (hoja tipo celular, para WhatsApp) o ?f=a4 (para imprimir).
+  const f = new URLSearchParams(location.search).get('f') === 'a4' ? 'a4' : 'movil';
+  document.documentElement.className = `f-${f}`;
+  const pagina = f === 'a4' ? 'size: A4; margin: 16mm 17mm 18mm;' : 'size: 108mm 192mm; margin: 9mm 8mm 12mm;';
+  document.write(`<style>@page { ${pagina} @bottom-center { content: counter(page); font: 600 8pt 'Barlow', sans-serif; color: #8A97AD; } } @page :first { margin: 0; @bottom-center { content: none; } }</style>`);
+</script>
+<style>
+  :root {
+    --tinta: #172A4F; --tinta-2: #3C4C6B; --gris: #5C6B84; --gris-2: #8A97AD;
+    --azul: #014F90; --anillo: #5F79AD; --celeste: #C5DCE4; --celeste-2: #E3EEF3; --papel: #F3F6F9;
+    --linea: #D8E0EA; --rojo: #D43B2F; --verde: #23734B; --verde-fondo: #E4F2EA;
+    --ambar: #9A6212; --ambar-fondo: #FBF0DC; --peligro: #A3231A; --peligro-fondo: #FBE6E4;
+    --f-texto: 'Barlow', system-ui, sans-serif; --f-titulo: 'Barlow Semi Condensed', 'Barlow', sans-serif;
+  }
+  * { box-sizing: border-box; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  html { background: #fff; }
+  body { margin: 0; font-family: var(--f-texto); color: var(--tinta-2); line-height: 1.45; }
+  .f-movil body { font-size: 9.6pt; }
+  .f-a4 body { font-size: 10.6pt; }
+  h1, h2, h3 { font-family: var(--f-titulo); color: var(--tinta); line-height: 1.1; margin: 0; }
+  p { margin: 0 0 .55em; }
+  b, strong { color: var(--tinta); font-weight: 600; }
+  ul, ol { margin: 0 0 .6em; padding-left: 1.2em; }
+  li { margin-bottom: .25em; }
+  li::marker { color: var(--rojo); font-weight: 700; }
+
+  /* ── Portada ─────────────────────────────────────────── */
+  .portada { position: relative; overflow: hidden; break-after: page; display: grid; grid-template-rows: 46% 1fr; background: #fff; }
+  .f-movil .portada { width: 108mm; height: 192mm; }
+  .f-a4 .portada { width: 210mm; height: 297mm; }
+  .portada__cielo { position: relative; overflow: hidden; background: radial-gradient(120% 90% at 20% 0%, #EAF3F7 0%, transparent 60%), linear-gradient(180deg, #D6E7EE 0%, var(--celeste) 100%); }
+  .portada__ala { position: absolute; left: -8%; bottom: -12%; width: 120%; }
+  .portada__pista { position: absolute; left: 7%; top: 9%; display: flex; gap: .5em; font-family: var(--f-titulo); font-weight: 700; letter-spacing: .12em; color: rgba(23, 42, 79, .32); }
+  .f-movil .portada__pista { font-size: 22pt; }
+  .f-a4 .portada__pista { font-size: 44pt; }
+  .portada__pista span + span { padding-left: .5em; border-left: 2px solid rgba(23, 42, 79, .2); }
+  .portada__cuerpo { position: relative; padding: 0 8%; }
+  .portada__escudo { position: absolute; top: 0; left: 8%; transform: translateY(-55%); border-radius: 50%; background: #fff; box-shadow: 0 0 0 2mm #fff, 0 3mm 9mm rgba(23, 42, 79, .25); }
+  .f-movil .portada__escudo { width: 30mm; height: 30mm; }
+  .f-a4 .portada__escudo { width: 56mm; height: 56mm; }
+  .portada__textos { padding-top: 22mm; }
+  .f-a4 .portada__textos { padding-top: 42mm; }
+  .portada__club { font-family: var(--f-titulo); font-weight: 700; color: var(--rojo); letter-spacing: .08em; text-transform: uppercase; }
+  .f-movil .portada__club { font-size: 9pt; }
+  .f-a4 .portada__club { font-size: 14pt; }
+  .portada h1 { margin: 2mm 0 4mm; }
+  .f-movil .portada h1 { font-size: 27pt; }
+  .f-a4 .portada h1 { font-size: 52pt; }
+  .portada__bajada { color: var(--gris); }
+  .f-movil .portada__bajada { font-size: 10.5pt; }
+  .f-a4 .portada__bajada { font-size: 16pt; max-width: 150mm; }
+  .portada__pie { position: absolute; left: 8%; right: 8%; bottom: 8mm; display: flex; justify-content: space-between; align-items: end; gap: 4mm; color: var(--gris-2); font-size: 8pt; border-top: 1px solid var(--linea); padding-top: 3mm; }
+  .f-a4 .portada__pie { font-size: 10pt; bottom: 14mm; }
+  .portada__pie strong { color: var(--azul); font-size: 1.15em; display: block; }
+
+  /* ── Índice ──────────────────────────────────────────── */
+  .indice { break-after: page; }
+  .indice h2 { font-size: 20pt; margin-bottom: 4mm; }
+  .indice ol { list-style: none; padding: 0; margin: 0; counter-reset: cap; }
+  .indice li { display: flex; gap: 3mm; align-items: baseline; padding: 1.8mm 0; border-bottom: 1px solid var(--linea); margin: 0; }
+  .indice li span { font-family: var(--f-titulo); font-weight: 700; color: var(--rojo); min-width: 7mm; }
+  .indice li b { font-weight: 600; }
+  .indice li small { display: block; color: var(--gris); font-size: .88em; }
+  .nota-ejemplo { margin-top: 5mm; }
+
+  /* ── Capítulos ───────────────────────────────────────── */
+  .cap { break-before: page; }
+  .cap__cab { display: flex; align-items: center; gap: 3mm; padding-bottom: 2.5mm; margin-bottom: 3.5mm; border-bottom: 2.5px solid var(--celeste); position: relative; }
+  .cap__cab::after { content: ''; position: absolute; left: 0; bottom: -2.5px; width: 18mm; height: 2.5px; background: var(--rojo); }
+  .cap__num { font-family: var(--f-titulo); font-weight: 700; color: #fff; background: var(--azul); border-radius: 2mm; display: grid; place-items: center; flex: none; }
+  .f-movil .cap__num { width: 9mm; height: 9mm; font-size: 13pt; }
+  .f-a4 .cap__num { width: 12mm; height: 12mm; font-size: 17pt; }
+  .f-movil .cap h2 { font-size: 17pt; }
+  .f-a4 .cap h2 { font-size: 24pt; }
+  .bajada { color: var(--gris); font-size: 1.06em; margin-bottom: 4mm; }
+  h3 { margin: 0 0 1.5mm; }
+  .f-movil h3 { font-size: 12pt; }
+  .f-a4 h3 { font-size: 14pt; }
+
+  .bloque { break-inside: avoid; margin-bottom: 5mm; }
+  .f-movil .bloque { display: grid; gap: 3mm; }
+  .f-a4 .bloque { display: grid; grid-template-columns: 1fr 68mm; gap: 8mm; align-items: start; }
+  .f-a4 .bloque--ancho { grid-template-columns: 1fr; }
+  .f-a4 .bloque--izq { grid-template-columns: 68mm 1fr; }
+  .f-a4 .bloque--izq figure { order: -1; }
+  .bloque--suelto { break-inside: auto; }
+  figure { margin: 0; text-align: center; break-inside: avoid; }
+  figure img { display: inline-block; max-width: 100%; }
+  .pantalla img { border: 1.6px solid var(--tinta); border-radius: 4.5mm; box-shadow: 0 1.5mm 5mm rgba(23, 42, 79, .15); }
+  .f-movil .pantalla img { max-height: 118mm; }
+  .f-a4 .pantalla img { max-height: 132mm; }
+  .recorte img { border: 1px solid var(--linea); border-radius: 3mm; background: var(--papel); }
+  .f-movil .recorte img { max-width: 78mm; max-height: 100mm; }
+  .f-a4 .recorte img { max-width: 68mm; max-height: 120mm; }
+  .recorte--chico img { max-height: 40mm !important; }
+  figcaption { font-size: .8em; color: var(--gris-2); margin-top: 1.5mm; }
+  .fila-figs { display: flex; gap: 3mm; justify-content: center; align-items: flex-start; }
+  .fila-figs figure { flex: 1; }
+
+  /* Cajas */
+  .caja { border-radius: 2.5mm; padding: 2.5mm 3.5mm; margin: 2mm 0 3mm; break-inside: avoid; border-left: 1.2mm solid; }
+  .caja p:last-child, .caja ul:last-child { margin-bottom: 0; }
+  .caja__tit { font-family: var(--f-titulo); font-weight: 700; text-transform: uppercase; letter-spacing: .06em; font-size: .82em; display: block; margin-bottom: .6mm; }
+  .caja--tip { background: var(--celeste-2); border-color: var(--azul); }
+  .caja--tip .caja__tit { color: var(--azul); }
+  .caja--ojo { background: var(--ambar-fondo); border-color: #D99A2B; }
+  .caja--ojo .caja__tit { color: var(--ambar); }
+  .caja--mal { background: var(--peligro-fondo); border-color: var(--rojo); }
+  .caja--mal .caja__tit { color: var(--peligro); }
+
+  /* Chips como en la app */
+  .chip { display: inline-flex; align-items: center; gap: 1.2mm; padding: .3mm 2.2mm; border-radius: 99px; font-size: .84em; font-weight: 600; white-space: nowrap; background: #EDF1F6; color: var(--tinta-2); }
+  .chip::before { content: ''; width: 1.6mm; height: 1.6mm; border-radius: 50%; background: var(--anillo); }
+  .chip--ok { background: var(--verde-fondo); color: var(--verde); } .chip--ok::before { background: #2E9A62; }
+  .chip--pend { background: var(--ambar-fondo); color: var(--ambar); } .chip--pend::before { background: #D99A2B; }
+  .chip--mal { background: var(--peligro-fondo); color: var(--peligro); } .chip--mal::before { background: var(--rojo); }
+  .chip--neutro { background: #EEF0F3; color: var(--gris); } .chip--neutro::before { background: var(--gris-2); }
+  .estados { list-style: none; padding: 0; }
+  .estados li { display: grid; grid-template-columns: auto 1fr; gap: 2.5mm; align-items: baseline; margin-bottom: 1.4mm; }
+
+  .boton { display: inline-block; padding: .2mm 2mm; border-radius: 1.5mm; background: var(--rojo); color: #fff; font-weight: 600; font-size: .9em; white-space: nowrap; }
+  .boton--sec { background: #fff; color: var(--tinta); border: 1px solid var(--linea); }
+  .tecla { display: inline-block; padding: 0 1.4mm; border: 1px solid var(--linea); border-bottom-width: 2px; border-radius: 1.2mm; font-weight: 600; color: var(--tinta); background: #fff; font-size: .9em; }
+
+  /* Pasos numerados */
+  .pasos { list-style: none; padding: 0; counter-reset: paso; }
+  .pasos > li { counter-increment: paso; position: relative; padding-left: 7.5mm; margin-bottom: 2mm; }
+  .pasos > li::before { content: counter(paso); position: absolute; left: 0; top: .1em; width: 5mm; height: 5mm; border-radius: 50%; background: var(--rojo); color: #fff; font: 700 .8em/5mm var(--f-titulo); text-align: center; }
+
+  /* Tabla de minutos */
+  .tabla { width: 100%; border-collapse: collapse; font-size: .9em; break-inside: avoid; }
+  .tabla th, .tabla td { padding: 1mm 1.5mm; border-bottom: 1px solid var(--linea); text-align: left; }
+  .tabla th { font-family: var(--f-titulo); color: var(--tinta); background: var(--celeste-2); }
+  .tabla td:last-child, .tabla th:last-child { text-align: right; font-weight: 600; color: var(--tinta); }
+  .tablas-min { display: grid; grid-template-columns: 1fr 1fr; gap: 3mm; }
+
+  /* Calendario del cobro */
+  .linea-tiempo { list-style: none; padding: 0; margin: 2mm 0 4mm; position: relative; }
+  .linea-tiempo::before { content: ''; position: absolute; left: 4.4mm; top: 2mm; bottom: 2mm; width: 2px; background: var(--celeste); }
+  .linea-tiempo li { position: relative; padding-left: 12mm; margin-bottom: 3mm; break-inside: avoid; }
+  .linea-tiempo li::before { content: attr(data-dia); position: absolute; left: 0; top: 0; width: 9mm; height: 9mm; border-radius: 50%; background: var(--azul); color: #fff; font: 700 .78em/1 var(--f-titulo); display: grid; place-items: center; text-align: center; }
+  .linea-tiempo li.rojo::before { background: var(--rojo); }
+  .linea-tiempo b { display: block; }
+
+  .cupon-suma { border: 1px solid var(--linea); border-radius: 2.5mm; overflow: hidden; break-inside: avoid; margin: 2mm 0 3mm; }
+  .cupon-suma div { display: flex; justify-content: space-between; gap: 3mm; padding: 1.3mm 3mm; border-bottom: 1px solid var(--linea); }
+  .cupon-suma div:last-child { border: 0; background: var(--azul); color: #fff; font-weight: 700; }
+  .cupon-suma span:last-child { font-weight: 600; color: var(--tinta); white-space: nowrap; }
+  .cupon-suma div:last-child span { color: #fff; }
+
+  /* Preguntas */
+  .faq { break-inside: avoid; margin-bottom: 3.2mm; padding-bottom: 2.6mm; border-bottom: 1px dashed var(--linea); }
+  .faq h3 { font-size: 1.08em; font-family: var(--f-texto); font-weight: 700; }
+  .f-a4 .faqs { columns: 2; column-gap: 9mm; }
+
+  .cierre { break-before: page; text-align: center; padding-top: 18mm; }
+  .cierre img { width: 34mm; }
+  .f-a4 .cierre img { width: 50mm; }
+  .cierre h2 { margin: 5mm 0 2mm; font-size: 20pt; }
+  .cierre .creditos { color: var(--gris-2); font-size: .8em; margin-top: 14mm; }
+  .cierre__ala { width: 70%; margin: 8mm auto 0; display: block; opacity: .9; }
+  /* Celular: la hoja es chica, el texto fluye y sólo las imágenes no se cortan. */
+  .f-movil .bloque { break-inside: auto; margin-bottom: 4mm; }
+  .f-movil .pantalla img { max-height: 98mm; }
+  .f-movil .recorte img { max-height: 92mm; }
+  .cap__cab, .bajada, h3 { break-after: avoid; }
+  .f-movil .estados li { grid-template-columns: 1fr; gap: .4mm; margin-bottom: 1.8mm; }
+  .f-movil .estados li span:first-child { justify-self: start; }
+  .f-movil .indice li { padding: 1.1mm 0; }
+  .f-movil .indice h2 { font-size: 16pt; margin-bottom: 2mm; }
+  .f-movil .indice li small { display: none; }
+</style>
+</head>
+<body>
+
+<!-- PORTADA -->
+<section class="portada">
+  <div class="portada__cielo">
+    <div class="portada__pista"><span>03</span><span>21</span></div>
+    <img class="portada__ala" src="img/ala.svg" alt="">
+  </div>
+  <div class="portada__cuerpo">
+    <img class="portada__escudo" src="img/escudo.png" alt="Escudo del Aeroclub 25 de Mayo">
+    <div class="portada__textos">
+      <div class="portada__club">Aeroclub 25 de Mayo</div>
+      <h1>Guía del piloto y del alumno</h1>
+      <p class="portada__bajada">Cómo cargar tus vuelos, seguir tu cuenta y pagar tu cupón desde el celular.</p>
+    </div>
+  </div>
+  <div class="portada__pie">
+    <div><strong>aeroclub25demayo.com.ar</strong>El sistema del club</div>
+    <div style="text-align:right">Versión octubre 2026</div>
+  </div>
+</section>
+
+<!-- ÍNDICE -->
+<section class="indice">
+  <h2>Qué vas a encontrar</h2>
+  <ol>
+    <li><span>01</span><div><b>Qué es el sistema</b><small>Para qué sirve y qué podés hacer</small></div></li>
+    <li><span>02</span><div><b>Entrar por primera vez</b><small>Tu usuario y tu contraseña</small></div></li>
+    <li><span>03</span><div><b>Tenerlo como app en el celular</b><small>Android y iPhone</small></div></li>
+    <li><span>04</span><div><b>Cómo moverte</b><small>La barra de abajo y los botones "?"</small></div></li>
+    <li><span>05</span><div><b>Inicio</b><small>Tu saldo, cómo pagar y tus últimos vuelos</small></div></li>
+    <li><span>06</span><div><b>Cargar un vuelo</b><small>Paso a paso, al bajarte del avión</small></div></li>
+    <li><span>07</span><div><b>Mis vuelos</b><small>Todo lo que volaste, mes por mes</small></div></li>
+    <li><span>08</span><div><b>Mi cuenta</b><small>Cupones, pagos y movimientos</small></div></li>
+    <li><span>09</span><div><b>El cupón</b><small>Qué dice y cómo leerlo</small></div></li>
+    <li><span>10</span><div><b>Perfil</b><small>Contraseña, datos y email</small></div></li>
+    <li><span>11</span><div><b>Cómo se cobra</b><small>El cierre de cada mes, paso a paso</small></div></li>
+    <li><span>12</span><div><b>Avisos y bloqueos</b><small>CMA, falta de pago y email</small></div></li>
+    <li><span>13</span><div><b>Preguntas frecuentes</b><small>Lo que más se consulta</small></div></li>
+  </ol>
+  <div class="caja caja--tip nota-ejemplo"><span class="caja__tit">Sobre las imágenes</span>
+    <p>Las pantallas de esta guía son de una piloto de ejemplo, "Sofía Cabrera". Los nombres, importes y datos para transferir son <b>inventados</b>. Para pagar, usá siempre los datos que ves en <b>tu</b> app.</p></div>
+</section>
+
+<!-- 01 -->
+<section class="cap">
+  <header class="cap__cab"><span class="cap__num">01</span><h2>Qué es el sistema</h2></header>
+  <p class="bajada">Es la página del club donde cada socio anota lo que vuela y sigue su cuenta. Reemplaza a la planilla de Excel.</p>
+  <div class="bloque bloque--ancho">
+    <div>
+      <h3>Con el sistema podés</h3>
+      <ul>
+        <li><b>Cargar tus vuelos</b> apenas te bajás del avión: avión, horario y si volaste con instructor.</li>
+        <li><b>Ver cuánto debés</b> o si tenés saldo a favor, y de dónde sale cada número.</li>
+        <li><b>Descargar tu cupón</b> de cada mes en PDF.</li>
+        <li><b>Avisar que pagaste</b>, con la foto del comprobante si querés.</li>
+        <li><b>Ver todas tus horas</b>, por mes y desde el principio, y bajarlas a Excel.</li>
+        <li><b>Contar las novedades del avión</b> (aceite, una cubierta baja, la radio) para que le lleguen a mantenimiento.</li>
+      </ul>
+      <h3>Dónde se usa</h3>
+      <p>Entrás desde el navegador en <b>aeroclub25demayo.com.ar</b>. Funciona en el celular, en la tablet y en la compu, y no hace falta bajar nada de Play Store ni de App Store. Si querés, lo podés dejar como una app más en tu celular (capítulo 3).</p>
+      <p>Necesita internet (señal o wifi). Si en el hangar no hay señal, cargá el vuelo apenas tengas.</p>
+      <div class="caja caja--tip"><span class="caja__tit">Lo más importante</span>
+        <p>Cargá cada vuelo <b>el mismo día</b>, apenas aterrizás. Revisá bien los datos antes de aceptar: una vez guardado, sólo tesorería lo puede corregir.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 02 -->
+<section class="cap">
+  <header class="cap__cab"><span class="cap__num">02</span><h2>Entrar por primera vez</h2></header>
+  <p class="bajada">Tesorería te da de alta y te pasa tu usuario (tu email) y una contraseña temporal.</p>
+  <div class="bloque">
+    <div>
+      <h3>La pantalla de ingreso</h3>
+      <ol class="pasos">
+        <li>Abrí <b>aeroclub25demayo.com.ar</b> en el navegador del celular.</li>
+        <li>En <b>Email</b>, escribí el email que le diste al club.</li>
+        <li>En <b>Contraseña</b>, escribí la que te pasó tesorería. Con el ojito de la derecha podés ver lo que escribiste.</li>
+        <li>Tocá <span class="boton">Entrar</span>.</li>
+      </ol>
+      <p>Si te aparece <b>"Email o contraseña incorrectos"</b>, fijate que el email esté bien escrito y probá de nuevo.</p>
+      <figure class="recorte recorte--chico"><img src="img/01b-ingreso-error.jpg" alt="Mensaje de error al ingresar"></figure>
+    </div>
+    <figure class="pantalla"><img src="img/01-ingreso.jpg" alt="Pantalla de ingreso"></figure>
+  </div>
+  <div class="bloque">
+    <div>
+      <h3>Elegí tu propia contraseña</h3>
+      <p>La primera vez, el sistema te da la bienvenida y te pide cambiar la contraseña temporal por una que sepas sólo vos.</p>
+      <ol class="pasos">
+        <li>En <b>Contraseña temporal</b>, escribí la que te dio tesorería.</li>
+        <li>En <b>Contraseña nueva</b>, elegí una de <b>8 caracteres o más</b>.</li>
+        <li>En <b>Repetila</b>, escribila otra vez igual.</li>
+        <li>Tocá <span class="boton">Guardar contraseña</span>. Listo: entrás a la pantalla de Inicio.</li>
+      </ol>
+      <div class="caja caja--ojo"><span class="caja__tit">¿Te olvidaste la contraseña?</span>
+        <p>Pedile una nueva a tesorería. Te van a dar otra temporal, y al entrar la cambiás de nuevo por una tuya.</p></div>
+      <p>La sesión queda abierta en tu celular: no tenés que poner la contraseña cada vez. Si usás un celular o una compu prestada, acordate de <b>salir</b> desde Perfil.</p>
+    </div>
+    <figure class="pantalla"><img src="img/02-bienvenida.jpg" alt="Pantalla de bienvenida para cambiar la contraseña"></figure>
+  </div>
+</section>
+
+<!-- 03 -->
+<section class="cap">
+  <header class="cap__cab"><span class="cap__num">03</span><h2>Tenerlo como app en el celular</h2></header>
+  <p class="bajada">Con dos toques, el sistema queda en la pantalla de inicio de tu celular, con el escudo del club, y se abre como cualquier app.</p>
+  <div class="bloque bloque--ancho">
+    <div>
+      <h3>En Android (con Chrome)</h3>
+      <ol class="pasos">
+        <li>Entrá a <b>aeroclub25demayo.com.ar</b> desde <b>Chrome</b>.</li>
+        <li>Tocá los <b>tres puntitos</b> <span class="tecla">⋮</span> de arriba a la derecha.</li>
+        <li>Elegí <b>"Agregar a la pantalla principal"</b> o <b>"Instalar aplicación"</b> (depende del celular).</li>
+        <li>Confirmá con <b>Instalar</b> o <b>Agregar</b>.</li>
+      </ol>
+      <div class="caja caja--tip"><span class="caja__tit">Atajo</span>
+        <p>En Android, si mantenés apretado el ícono del club, aparece el atajo <b>"Cargar vuelo"</b>: te lleva directo a la carga.</p></div>
+      <h3>En iPhone (con Safari)</h3>
+      <ol class="pasos">
+        <li>Entrá a <b>aeroclub25demayo.com.ar</b> desde <b>Safari</b> (en iPhone tiene que ser Safari).</li>
+        <li>Tocá el botón <b>Compartir</b> <span class="tecla">⬆</span> (el cuadradito con la flecha hacia arriba).</li>
+        <li>Bajá y elegí <b>"Agregar a inicio"</b>.</li>
+        <li>Tocá <b>Agregar</b>, arriba a la derecha.</li>
+      </ol>
+      <p>Desde ahí, abrís el sistema tocando el escudo del Aeroclub en tu pantalla, como cualquier otra app.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 04 -->
+<section class="cap">
+  <header class="cap__cab"><span class="cap__num">04</span><h2>Cómo moverte</h2></header>
+  <p class="bajada">Abajo de todo tenés siempre la misma barra, con las cinco secciones del sistema.</p>
+  <div class="bloque bloque--ancho">
+    <figure class="recorte"><img src="img/03g-nav.jpg" alt="Barra de navegación de abajo" style="max-width:100%;max-height:none"></figure>
+    <div>
+      <ul>
+        <li><b>Inicio</b>: tu resumen. Cuánto debés, cómo pagar y tus últimos vuelos (capítulo 5).</li>
+        <li><b>Vuelos</b>: todos tus vuelos, mes por mes (capítulo 7).</li>
+        <li><b>Cargar</b>, el botón rojo con el <b>+</b>: para anotar un vuelo nuevo (capítulo 6).</li>
+        <li><b>Cuenta</b>: tus cupones, tus pagos y todos los movimientos (capítulo 8).</li>
+        <li><b>Perfil</b>: tu contraseña, tus datos y el botón para salir (capítulo 10).</li>
+      </ul>
+      <p>Arriba a la derecha aparece un círculo con tus iniciales: también te lleva a tu Perfil.</p>
+    </div>
+  </div>
+  <div class="bloque">
+    <div>
+      <h3>Los botones "?"</h3>
+      <p>Al lado de algunos números vas a ver un círculo con un signo de pregunta. Si lo tocás, se abre un globo que te explica <b>de dónde sale ese número</b>: por ejemplo, cómo se forma tu saldo, con el cupón anterior, los pagos y los servicios.</p>
+      <p>Para cerrarlo, tocá en cualquier otro lugar de la pantalla.</p>
+      <div class="caja caja--tip"><span class="caja__tit">Consejo</span>
+        <p>Si algún número no te cierra, antes de consultar tocá el "?". Casi siempre ahí está la respuesta.</p></div>
+    </div>
+    <figure class="pantalla"><img src="img/04-ayuda-saldo.jpg" alt="Globo de ayuda abierto sobre el saldo"></figure>
+  </div>
+</section>
+
+<!-- 05 -->
+<section class="cap">
+  <header class="cap__cab"><span class="cap__num">05</span><h2>Inicio</h2></header>
+  <p class="bajada">Es lo primero que ves al entrar: tu situación con el club de un vistazo.</p>
+  <div class="bloque">
+    <div>
+      <h3>Arriba de todo</h3>
+      <p>Te saluda con tu nombre y la fecha de hoy. Si hay algo importante (por ejemplo, que se te vence el CMA), el aviso aparece acá, antes que nada. Los avisos están en el capítulo 12.</p>
+      <h3>La tarjeta azul: tu saldo</h3>
+      <p>El título te dice en qué situación estás:</p>
+      <ul>
+        <li><b>Tu saldo a pagar</b>: le debés ese importe al club.</li>
+        <li><b>Tenés saldo a favor</b>: pagaste de más; se descuenta de lo próximo.</li>
+        <li><b>Tu cuenta</b>, con $ 0: estás al día.</li>
+      </ul>
+    </div>
+    <figure class="pantalla"><img src="img/03-inicio.jpg" alt="Pantalla de Inicio"></figure>
+  </div>
+  <div class="bloque">
+    <div>
+      <p>Abajo del importe hay una etiqueta con el estado:</p>
+      <ul class="estados">
+        <li><span class="chip chip--ok">Estás al día</span><span>No debés nada.</span></li>
+        <li><span class="chip chip--pend">Vence el 10/11/2026</span><span>Tenés un cupón por pagar y esa es la fecha límite.</span></li>
+        <li><span class="chip chip--mal">Cupón vencido</span><span>Pasó la fecha y el cupón sigue sin pagar.</span></li>
+        <li><span class="chip chip--pend">Pago parcial</span><span>Pagaste una parte: te dice cuánto falta.</span></li>
+        <li><span class="chip chip--pend">Cupón pagado. Lo nuevo va en el próximo</span><span>El último cupón está pago; lo que debés es de después (por ejemplo, un servicio).</span></li>
+      </ul>
+      <p>En la parte de abajo de la tarjeta:</p>
+      <ul>
+        <li><b>Volaste en (mes)</b>: tus horas del mes en curso.</li>
+        <li><b>Vuelos para el próximo cierre</b>: lo que suman los vuelos que cargaste y todavía no entraron en un cupón. <b>No está incluido en el saldo</b>: se suma el día del cierre.</li>
+      </ul>
+    </div>
+    <figure class="recorte"><img src="img/03a-saldo.jpg" alt="Tarjeta del saldo"></figure>
+  </div>
+  <div class="bloque">
+    <div>
+      <h3>Cómo pagar</h3>
+      <p>Si tenés algo para pagar, aparece esta caja con los datos para transferir: <b>alias</b>, <b>CBU</b>, titular, CUIT y banco. Con los botones <span class="boton boton--sec">Copiar</span> copiás el alias o el CBU sin tener que escribirlos, y los pegás en la app de tu banco.</p>
+      <p>Cuando hayas transferido, tocá <span class="boton">Informar el pago</span>. Así tesorería lo encuentra y lo descuenta de tu saldo (lo explicamos en el capítulo 8).</p>
+      <div class="caja caja--ojo"><span class="caja__tit">Ojo</span>
+        <p>Los datos de esta imagen son de ejemplo. Usá siempre los que aparecen en <b>tu</b> app.</p></div>
+    </div>
+    <figure class="recorte"><img src="img/03b-pagar.jpg" alt="Caja con los datos para pagar"></figure>
+  </div>
+  <div class="bloque">
+    <div>
+      <h3>El botón Cargar vuelo</h3>
+      <p>El botón rojo grande te lleva directo a anotar un vuelo. Hace lo mismo que el <b>+</b> de la barra de abajo.</p>
+      <p>Si tu cuenta está bloqueada o tenés el CMA vencido, el botón aparece gris, con un candado, y te dice por qué (capítulo 12).</p>
+    </div>
+    <figure class="recorte recorte--chico"><img src="img/03c-cta-cargar.jpg" alt="Botón Cargar vuelo"></figure>
+  </div>
+  <div class="bloque">
+    <div>
+      <h3>Último cupón</h3>
+      <p>Te muestra el importe de tu último cupón, de qué mes es y si está pagado. Con <span class="boton boton--sec">Ver cupón en PDF</span> lo abrís para verlo, guardarlo o mandarlo. Con <b>Ver cuenta</b> vas a todos tus cupones.</p>
+      <p>Si todavía no tuviste ningún cierre, te dice cuándo se genera tu primer cupón.</p>
+    </div>
+    <figure class="recorte"><img src="img/03d-ultimo-cupon.jpg" alt="Último cupón"></figure>
+  </div>
+  <div class="bloque">
+    <div>
+      <h3>Últimos vuelos</h3>
+      <p>Tus cinco vuelos más recientes. Cada uno muestra la matrícula, la fecha, el horario, con quién volaste, las horas y el importe. Si le tocás encima, ves todo el detalle. Con <b>Ver todos</b> vas a Mis vuelos (capítulo 7).</p>
+    </div>
+    <figure class="recorte"><img src="img/03e-ultimos-vuelos.jpg" alt="Últimos vuelos"></figure>
+  </div>
+  <div class="bloque">
+    <div>
+      <h3>Novedades de la flota</h3>
+      <p>Acá ves lo que anotaron los pilotos sobre los aviones (aceite, combustible, algo que no anda) y que mantenimiento <b>todavía no revisó</b>. Antes de volar, conviene pegarle una mirada.</p>
+      <p>Cuando mantenimiento lo revisa, la novedad desaparece de esta lista.</p>
+    </div>
+    <figure class="recorte"><img src="img/03h-novedades.jpg" alt="Novedades de la flota"></figure>
+  </div>
+  <div class="bloque">
+    <div>
+      <h3>Tus horas por avión</h3>
+      <p>Si este mes ya volaste, al final aparece una tarjeta por cada avión que usaste: cuántas horas y vuelos hiciste vos en ese avión, y lo que sale la hora con instructor y sin instructor.</p>
+    </div>
+    <figure class="recorte"><img src="img/03f-horas-avion.jpg" alt="Tus horas por avión"></figure>
+  </div>
+</section>
+
+<!-- 06 -->
+<section class="cap">
+  <header class="cap__cab"><span class="cap__num">06</span><h2>Cargar un vuelo</h2></header>
+  <p class="bajada">Se hace en menos de un minuto. Tocá el <b>+</b> rojo de la barra de abajo o el botón <b>Cargar vuelo</b> de Inicio, y completá los seis pasos.</p>
+  <div class="bloque">
+    <div>
+      <div class="caja caja--mal"><span class="caja__tit">Antes de empezar</span>
+        <p>Una vez que aceptás el vuelo, <b>ya no lo podés cambiar ni borrar</b>. Si te equivocás, avisale a tesorería. Por eso, al final el sistema te muestra todo para que lo revises.</p></div>
+      <p>Arriba de la pantalla te lo recuerda: <i>"Cargalo apenas bajes del avión. Revisalo bien: una vez aceptado, no se puede modificar."</i></p>
+    </div>
+    <figure class="pantalla"><img src="img/05-cargar.jpg" alt="Pantalla Cargar vuelo"></figure>
+  </div>
+  <div class="bloque">
+    <div>
+      <h3>1. Avión</h3>
+      <p>Tocá el avión en el que volaste. Cada tarjeta muestra la matrícula, el modelo y lo que sale la hora sin instructor. El elegido queda marcado con un tilde azul.</p>
+    </div>
+    <figure class="recorte"><img src="img/05a-paso1.jpg" alt="Paso 1: avión"></figure>
+  </div>
+  <div class="bloque">
+    <div>
+      <h3>2. Fecha</h3>
+      <p>Ya viene puesta la fecha de hoy. Si estás cargando un vuelo de otro día, tocala y elegí la fecha real. No se pueden poner fechas futuras.</p>
+    </div>
+    <figure class="recorte recorte--chico"><img src="img/05b-paso2.jpg" alt="Paso 2: fecha"></figure>
+  </div>
+  <div class="bloque">
+    <div>
+      <h3>3. Horario</h3>
+      <p>Escribí la hora de <b>salida</b> y la de <b>llegada</b>, en formato de 24 horas: primero la hora y después los minutos. Por ejemplo, las 2 y media de la tarde es <b>14</b> y <b>30</b>.</p>
+      <p>En el celular se abre el teclado de números y, cuando completás la hora, el cursor pasa solo a los minutos. Si escribís "7", queda como "07".</p>
+      <p>Si el vuelo pasó la medianoche (salida 23:40, llegada 00:30), no pasa nada: el sistema lo calcula bien.</p>
+    </div>
+    <figure class="recorte"><img src="img/05c-paso3.jpg" alt="Paso 3: horario"></figure>
+  </div>
+  <div class="bloque">
+    <div>
+      <h3>4. Tiempo de vuelo</h3>
+      <p>No lo escribís vos: <b>se calcula solo</b> con la salida y la llegada, según la tabla de minutos del club. Al lado ves el <b>importe</b> que va a tener el vuelo, que se suma a tu cuenta en el cierre del mes.</p>
+      <p>Si el vuelo da más de 6 horas, te avisa para que revises el horario.</p>
+    </div>
+    <figure class="recorte"><img src="img/05d-paso4.jpg" alt="Paso 4: tiempo de vuelo calculado"></figure>
+  </div>
+  <div class="bloque bloque--ancho">
+    <div>
+      <h3>La tabla de minutos del club</h3>
+      <p>Las horas se cuentan en décimas (0,1 h). Así se pasan los minutos a décimas:</p>
+      <div class="tablas-min">
+        <table class="tabla">
+          <tr><th>Minutos</th><th>Horas</th></tr>
+          <tr><td>3 a 8</td><td>0,1</td></tr>
+          <tr><td>9 a 14</td><td>0,2</td></tr>
+          <tr><td>15 a 20</td><td>0,3</td></tr>
+          <tr><td>21 a 26</td><td>0,4</td></tr>
+          <tr><td>27 a 33</td><td>0,5</td></tr>
+        </table>
+        <table class="tabla">
+          <tr><th>Minutos</th><th>Horas</th></tr>
+          <tr><td>34 a 39</td><td>0,6</td></tr>
+          <tr><td>40 a 45</td><td>0,7</td></tr>
+          <tr><td>46 a 51</td><td>0,8</td></tr>
+          <tr><td>52 a 57</td><td>0,9</td></tr>
+          <tr><td>58 a 60</td><td>1,0</td></tr>
+        </table>
+      </div>
+      <p style="margin-top:2mm">Pasada la hora, se cuentan las horas enteras y la tabla se aplica a los minutos que sobran. <b>Ejemplo:</b> de 14:30 a 15:42 son 72 minutos = 1 hora + 12 minutos = <b>1,2 h</b>.</p>
+    </div>
+  </div>
+  <div class="bloque">
+    <div>
+      <h3>5. ¿Volaste con instructor?</h3>
+      <p>Elegí <b>Sin instructor</b> o <b>Con instructor</b>. Cada opción muestra su precio por hora.</p>
+      <p>Si volaste con instructor, abajo aparece la lista <b>Instructor</b>: elegí con quién volaste. Si sos alumno, casi siempre va a ser "Con instructor".</p>
+    </div>
+    <figure class="recorte"><img src="img/05e-paso5.jpg" alt="Paso 5: instructor"></figure>
+  </div>
+  <div class="bloque">
+    <div>
+      <h3>6. Novedades y notas</h3>
+      <p>Es opcional, pero muy útil. Anotá cualquier cosa del avión: si le pusiste aceite o nafta, si algo hace un ruido raro, si una cubierta está baja. <b>Le llega a tesorería y a mantenimiento</b>, y los demás pilotos la ven en Inicio hasta que mantenimiento la revisa.</p>
+    </div>
+    <figure class="recorte"><img src="img/05f-paso6.jpg" alt="Paso 6: novedades"></figure>
+  </div>
+  <div class="bloque">
+    <div>
+      <h3>Guardar y revisar</h3>
+      <ol class="pasos">
+        <li>Tocá <span class="boton">Guardar vuelo</span>, abajo de todo. Si falta algo, el sistema te dice qué (por ejemplo, "Elegí qué instructor voló con vos").</li>
+        <li>Se abre <b>"Revisá tu vuelo"</b> con todo lo que cargaste: avión, fecha, horario, tiempo, instructor, importe y novedades.</li>
+        <li>Si está todo bien, tocá <span class="boton">Aceptar y guardar</span>. Si hay algo mal, tocá <span class="boton boton--sec">Cancelar</span>, corregilo y volvé a guardar.</li>
+      </ol>
+    </div>
+    <figure class="pantalla"><img src="img/06-revisa-vuelo.jpg" alt="Ventana Revisá tu vuelo"></figure>
+  </div>
+  <div class="bloque">
+    <div>
+      <h3>¡Vuelo guardado!</h3>
+      <p>Vas a ver un tilde verde, las horas que volaste y el importe que se va a facturar en el cierre del mes. Desde ahí podés ir a <b>Ver mis vuelos</b> o <b>Cargar otro</b>.</p>
+      <p>A veces aparece un aviso, por ejemplo:</p>
+      <ul>
+        <li><b>"Ya había otro vuelo igual"</b>: puede que lo hayas cargado dos veces. Si fue así, avisale a tesorería para que anule uno.</li>
+        <li><b>"Ese mes ya se cerró"</b>: cargaste un vuelo de un mes que ya se facturó. No hay problema: va en tu próximo cupón.</li>
+      </ul>
+      <div class="caja caja--ojo"><span class="caja__tit">Si no te deja guardar</span>
+        <p>Si te dice que <b>falta la tarifa</b> de ese avión, avisale a tesorería: tienen que cargar el precio para esa fecha.</p></div>
+    </div>
+    <figure class="pantalla"><img src="img/07-vuelo-guardado.jpg" alt="Pantalla Vuelo guardado"></figure>
+  </div>
+</section>
+
+<!-- 07 -->
+<section class="cap">
+  <header class="cap__cab"><span class="cap__num">07</span><h2>Mis vuelos</h2></header>
+  <p class="bajada">Todos tus vuelos, ordenados por mes. Entrás con <b>Vuelos</b>, en la barra de abajo.</p>
+  <div class="bloque">
+    <div>
+      <h3>Elegir el mes</h3>
+      <p>Arriba está el mes que estás viendo. Con las flechitas <span class="tecla">‹</span> <span class="tecla">›</span> pasás al mes anterior o al siguiente.</p>
+      <h3>Bajar tus horas a Excel</h3>
+      <p>El botón <span class="boton boton--sec">Descargar mis horas (Excel)</span> te baja un archivo con todos tus vuelos desde el principio. Sirve, por ejemplo, para pasarlos a tu libro de vuelo.</p>
+    </div>
+    <figure class="pantalla"><img src="img/08-mis-vuelos.jpg" alt="Pantalla Mis vuelos"></figure>
+  </div>
+  <div class="bloque">
+    <div>
+      <h3>El resumen del mes</h3>
+      <ul>
+        <li><b>Horas</b>: lo que volaste en el mes, cuántos vuelos fueron y cuánto con instructor.</li>
+        <li><b>Ya facturado</b>: los vuelos del mes que ya entraron en un cupón. Ya están en tu saldo y no se vuelven a cobrar.</li>
+        <li><b>Para el próximo cierre</b>: los vuelos que todavía no entraron en un cupón. Se suman en el próximo cierre.</li>
+      </ul>
+    </div>
+    <figure class="recorte"><img src="img/08a-cifras.jpg" alt="Resumen del mes"></figure>
+  </div>
+  <div class="bloque">
+    <div>
+      <h3>La lista de vuelos</h3>
+      <p>Cada vuelo es una tarjeta con:</p>
+      <ul>
+        <li>A la izquierda, la <b>matrícula</b>, la fecha y el horario. El color de la banda cambia según el avión.</li>
+        <li>En el medio, con quién volaste, el <b>estado</b> y, si escribiste algo, tus novedades.</li>
+        <li>A la derecha, las <b>horas</b> y el <b>importe</b>.</li>
+      </ul>
+      <p>Los estados posibles son:</p>
+      <ul class="estados">
+        <li><span class="chip">Va al próximo cierre</span><span>Todavía no se facturó.</span></li>
+        <li><span class="chip chip--ok">Facturado</span><span>Ya entró en un cupón.</span></li>
+        <li><span class="chip chip--neutro">Anulado</span><span>Tesorería lo anuló (por ejemplo, porque estaba repetido). No se cobra.</span></li>
+      </ul>
+    </div>
+    <figure class="recorte"><img src="img/08b-tiras.jpg" alt="Lista de vuelos del mes"></figure>
+  </div>
+  <div class="bloque">
+    <div>
+      <h3>El detalle de un vuelo</h3>
+      <p>Tocá cualquier vuelo para ver todo: tiempo en minutos, importe y precio por hora, estado, horario, modelo del avión, novedades y quién lo cargó.</p>
+      <p>Abajo está el <b>Historial</b>: cuándo se cargó, si alguien lo corrigió y cuándo entró en el cierre.</p>
+      <p>Como dice el aviso, los vuelos <b>no se pueden modificar</b> una vez aceptados. Si ves un error, avisale a tesorería.</p>
+    </div>
+    <figure class="pantalla"><img src="img/09-detalle-vuelo.jpg" alt="Detalle de un vuelo"></figure>
+  </div>
+  <div class="bloque">
+    <div>
+      <h3>Desde el principio</h3>
+      <p>Al final de la pantalla tenés tus totales desde tu primer vuelo cargado en el sistema: horas totales, cuántas con instructor y cuántas solo, y el detalle por avión.</p>
+      <div class="caja caja--tip"><span class="caja__tit">Para instructores</span>
+        <p>Si además sos instructor, arriba vas a ver dos pestañas: <b>Como piloto</b> y <b>Como instructor</b>. En la segunda ves los vuelos que diste y cuántos alumnos distintos tuviste.</p></div>
+    </div>
+    <figure class="recorte"><img src="img/08c-historico.jpg" alt="Totales desde el principio"></figure>
+  </div>
+</section>
+
+<!-- 08 -->
+<section class="cap">
+  <header class="cap__cab"><span class="cap__num">08</span><h2>Mi cuenta</h2></header>
+  <p class="bajada">Todo lo que tiene que ver con plata: tu saldo, tus cupones, tus pagos y cada movimiento. Entrás con <b>Cuenta</b>, en la barra de abajo.</p>
+  <div class="bloque">
+    <div>
+      <h3>Tu saldo</h3>
+      <p>La tarjeta azul es como la de Inicio: cuánto debés (o tu saldo a favor) y si está <span class="chip chip--pend">Pendiente de pago</span> o <span class="chip chip--ok">Al día</span>.</p>
+      <p>Abajo te muestra los <b>Vuelos para el próximo cierre</b> y las <b>Horas sin facturar</b>: lo que volaste y todavía no entró en un cupón.</p>
+      <p>Debajo de la tarjeta está otra vez la caja <b>Cómo pagar</b>, con el alias y el CBU.</p>
+    </div>
+    <figure class="pantalla"><img src="img/10-cuenta.jpg" alt="Pantalla Mi cuenta"></figure>
+  </div>
+  <div class="bloque">
+    <div>
+      <h3>Informar un pago</h3>
+      <p>Después de transferir, avisale a tesorería desde acá. Tocá <span class="boton">Informar un pago</span> (arriba) o <span class="boton">Informar el pago</span> (en la caja Cómo pagar), y completá:</p>
+      <ol class="pasos">
+        <li><b>Importe</b>: ya viene puesto lo que debés. Si pagaste otro monto, cambialo.</li>
+        <li><b>Fecha del pago</b>: el día que transferiste o pagaste.</li>
+        <li><b>¿Cómo pagaste?</b>: transferencia, efectivo, Mercado Pago u otro.</li>
+        <li><b>Nota</b> (opcional): cualquier aclaración, por ejemplo si pagó otra persona por vos.</li>
+        <li><b>Comprobante</b> (opcional): sacale una foto o elegí la captura de la transferencia.</li>
+        <li>Tocá <span class="boton">Informar pago</span>.</li>
+      </ol>
+      <div class="caja caja--ojo"><span class="caja__tit">Importante</span>
+        <p>El pago <b>no se descuenta enseguida</b>. Queda "En revisión" hasta que tesorería lo encuentra en el banco y lo confirma. Ahí se descuenta de tu saldo.</p></div>
+    </div>
+    <figure class="pantalla"><img src="img/11-informar-pago.jpg" alt="Ventana Informar un pago"></figure>
+  </div>
+  <div class="bloque">
+    <div>
+      <h3>Tus pagos</h3>
+      <p>La lista de todos tus pagos: los que informaste vos, los que cargó tesorería y los que pagaste en rampa. Cada uno tiene su estado:</p>
+      <ul class="estados">
+        <li><span class="chip chip--pend">En revisión</span><span>Lo informaste y tesorería todavía no lo confirmó.</span></li>
+        <li><span class="chip chip--ok">Confirmado</span><span>Ya se descontó de tu saldo.</span></li>
+        <li><span class="chip chip--mal">Rechazado</span><span>Tesorería no lo pudo confirmar. Abajo dice el motivo.</span></li>
+        <li><span class="chip chip--neutro">Anulado</span><span>Se dio de baja (por ejemplo, porque estaba repetido).</span></li>
+      </ul>
+    </div>
+    <figure class="recorte"><img src="img/10d-tus-pagos.jpg" alt="Lista de tus pagos"></figure>
+  </div>
+  <div class="bloque">
+    <div>
+      <h3>Cupones</h3>
+      <p>Un cupón por cada mes cerrado, con el número, la fecha de vencimiento, las horas, el total y el estado. Con <span class="boton boton--sec">PDF</span> abrís el cupón (capítulo 9).</p>
+      <ul class="estados">
+        <li><span class="chip chip--pend">Pendiente</span><span>Todavía no lo pagaste y no venció.</span></li>
+        <li><span class="chip chip--mal">Vencido</span><span>Pasó el vencimiento y no está pagado.</span></li>
+        <li><span class="chip chip--pend">Pago parcial</span><span>Pagaste una parte.</span></li>
+        <li><span class="chip chip--ok">Pagado</span><span>Está todo pago.</span></li>
+        <li><span class="chip chip--ok">Sin deuda</span><span>Ese mes no tenías nada para pagar (o tenías saldo a favor).</span></li>
+        <li><span class="chip chip--neutro">Pasó al cupón siguiente</span><span>No se pagó a tiempo y el saldo se sumó al cupón del mes siguiente. Pagando el último, queda todo saldado.</span></li>
+      </ul>
+    </div>
+    <figure class="recorte"><img src="img/10b-cupones.jpg" alt="Lista de cupones"></figure>
+  </div>
+  <div class="bloque">
+    <div>
+      <h3>Movimientos</h3>
+      <p>Es el detalle de tu cuenta, renglón por renglón, como un resumen del banco:</p>
+      <ul>
+        <li>Los importes con <b>+</b> suman a lo que debés: vuelos, servicios (hangaraje, combustible, etc.), cuota social y derecho de aeronave.</li>
+        <li>Los importes con <b>−</b> (en verde) restan: tus pagos y los créditos.</li>
+      </ul>
+      <p>Los servicios tienen un botón <b>Ticket</b> para ver el comprobante en PDF. Los vuelos aparecen acá recién cuando entran en el cierre del mes.</p>
+    </div>
+    <figure class="recorte"><img src="img/10c-movimientos.jpg" alt="Movimientos de la cuenta"></figure>
+  </div>
+</section>
+
+<!-- 09 -->
+<section class="cap">
+  <header class="cap__cab"><span class="cap__num">09</span><h2>El cupón</h2></header>
+  <p class="bajada">Todos los meses, en el cierre, se genera un cupón con todo lo del mes. Lo abrís en PDF desde Inicio o desde Mi cuenta, y lo podés guardar, imprimir o mandar.</p>
+  <div class="bloque">
+    <div>
+      <h3>Qué dice el cupón</h3>
+      <ul>
+        <li><b>Arriba</b>: el número de cupón y el mes.</li>
+        <li><b>Socio</b>: tu nombre y tus datos.</li>
+        <li><b>Total a pagar</b>, en el recuadro azul, con la fecha de vencimiento. Si ya está pago, lleva el sello <b>PAGADO</b>.</li>
+        <li><b>Resumen de cuenta</b>: cómo se llega al total. Saldo del cierre anterior, vuelos del período, servicios y otros conceptos, pagos recibidos y total.</li>
+        <li><b>Cómo pagar</b>: el alias y los datos para transferir.</li>
+        <li><b>Detalle</b>: cada vuelo, servicio y pago del mes, con fecha, horas, precio e importe.</li>
+      </ul>
+      <div class="caja caja--tip"><span class="caja__tit">Consejo</span>
+        <p>Si querés revisar un vuelo del cupón, buscalo en <b>Mis vuelos</b> con esa fecha y tocalo para ver el detalle.</p></div>
+    </div>
+    <figure class="recorte"><img src="img/14-cupon.jpg" alt="Cupón en PDF" style="max-height:none"></figure>
+  </div>
+</section>
+
+<!-- 10 -->
+<section class="cap">
+  <header class="cap__cab"><span class="cap__num">10</span><h2>Perfil</h2></header>
+  <p class="bajada">Tus datos y tu contraseña. Entrás con <b>Perfil</b>, en la barra de abajo, o tocando tus iniciales arriba a la derecha.</p>
+  <div class="bloque">
+    <div>
+      <h3>Cambiar contraseña</h3>
+      <p>Cuando quieras, podés cambiar tu contraseña: escribí la actual, la nueva (8 caracteres o más), repetila y tocá <span class="boton">Guardar contraseña</span>.</p>
+    </div>
+    <figure class="pantalla"><img src="img/12-perfil.jpg" alt="Pantalla Perfil"></figure>
+  </div>
+  <div class="bloque">
+    <div>
+      <h3>Tus datos</h3>
+      <p>Ves los datos que tiene el club de vos: nombre, email, celular, DNI, licencia y hasta cuándo está vigente tu <b>CMA</b>.</p>
+      <p>Si tu email dice <span class="chip chip--pend">Sin verificar</span>, tocá <b>Mandarme el link</b>. Te llega un mail: abrilo y tocá el link para confirmar que el email es tuyo. Si no lo ves, buscalo en <b>spam</b>.</p>
+      <h3>Pedir un cambio de datos</h3>
+      <p>Tus datos los actualiza tesorería. Si algo está mal o cambió (tu celular, tu email, el CMA renovado), tocá <span class="boton boton--sec">Pedir un cambio de datos</span>, escribí qué hay que cambiar y mandalo: le llega a tesorería por mail.</p>
+      <h3>Salir</h3>
+      <p>Abajo de todo está el botón rojo <b>Salir</b>. Usalo si entraste desde un celular o una compu que no es tuya.</p>
+    </div>
+    <figure class="recorte"><img src="img/12a-datos.jpg" alt="Tus datos"></figure>
+  </div>
+</section>
+
+<!-- 11 -->
+<section class="cap">
+  <header class="cap__cab"><span class="cap__num">11</span><h2>Cómo se cobra</h2></header>
+  <p class="bajada">El club cobra por mes calendario. Así es el recorrido de un mes, desde que volás hasta que pagás.</p>
+  <div class="bloque bloque--ancho">
+    <div>
+      <ol class="linea-tiempo">
+        <li data-dia="MES"><b>Durante el mes: volás y cargás</b>Cada vuelo que cargás queda como "Va al próximo cierre". También se pueden sumar servicios que te carguen rampa o tesorería (hangaraje, combustible, limpieza, etc.), cada uno con su ticket.</li>
+        <li data-dia="1" class="rojo"><b>Día 1, a las 0 h: el cierre</b>El sistema cierra el mes solo. Todos tus vuelos del mes pasan a <span class="chip chip--ok">Facturado</span> y se genera tu cupón.</li>
+        <li data-dia="1-10"><b>Del 1 al 10: pagás</b>Abrís el cupón, transferís a los datos del club y lo informás desde la app.</li>
+        <li data-dia="10" class="rojo"><b>Día 10: vence el cupón</b>Si no lo pagaste, figura como <span class="chip chip--mal">Vencido</span>, y lo que debés se suma al cupón del mes siguiente.</li>
+        <li data-dia="✓"><b>Tesorería confirma tu pago</b>Cuando lo encuentra en el banco, lo confirma y se descuenta de tu saldo.</li>
+      </ol>
+      <h3>Qué entra en tu cupón</h3>
+      <div class="cupon-suma">
+        <div><span>Lo que debías del cupón anterior (si quedó algo)</span><span>+</span></div>
+        <div><span>Tus vuelos del mes: horas × precio por hora del avión</span><span>+</span></div>
+        <div><span>Servicios cargados a tu cuenta</span><span>+</span></div>
+        <div><span>Derecho de aeronave (una vez por mes, si volaste)</span><span>+</span></div>
+        <div><span>Cuota social del mes</span><span>+</span></div>
+        <div><span>Pagos que hiciste en el mes</span><span>−</span></div>
+        <div><span>Total a pagar</span><span>=</span></div>
+      </div>
+      <ul>
+        <li>El <b>precio por hora</b> depende del avión y de si volaste con instructor o sin instructor. Se usa el precio vigente <b>el día del vuelo</b>.</li>
+        <li>Los importes del derecho de aeronave y de la cuota social los define el club.</li>
+        <li>Si cargás tarde un vuelo de un mes que ya se cerró, se cobra en el <b>próximo</b> cupón, con su fecha real.</li>
+        <li>Un pago que informaste se descuenta cuando tesorería lo confirma, no antes.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- 12 -->
+<section class="cap">
+  <header class="cap__cab"><span class="cap__num">12</span><h2>Avisos y bloqueos</h2></header>
+  <p class="bajada">Cuando hay algo que tenés que saber, aparece un aviso arriba de todo, en Inicio.</p>
+  <div class="bloque bloque--izq">
+    <figure class="recorte recorte--chico"><img src="img/13e-email.jpg" alt="Aviso de email sin confirmar"></figure>
+    <div>
+      <h3>Confirmá tu email</h3>
+      <p>El club todavía no sabe si tu email es correcto. Tocá el aviso, después <b>Mandarme el link</b>, y abrí el mail que te llega. Así el club se asegura de tener bien tu email para escribirte.</p>
+    </div>
+  </div>
+  <div class="bloque bloque--izq">
+    <figure class="recorte recorte--chico"><img src="img/13d-cma-por-vencer.jpg" alt="Aviso de CMA por vencer"></figure>
+    <div>
+      <h3>Tu CMA está por vencer</h3>
+      <p>Desde 30 días antes del vencimiento del certificado médico (CMA), el sistema te lo recuerda. Cuando lo renueves, pasale la fecha nueva a tesorería (podés usar <b>Pedir un cambio de datos</b>, en Perfil).</p>
+    </div>
+  </div>
+  <div class="bloque bloque--izq">
+    <figure class="recorte recorte--chico"><img src="img/13c-cma-vencido.jpg" alt="Aviso de CMA vencido"></figure>
+    <div>
+      <h3>CMA vencido</h3>
+      <p>Con el CMA vencido <b>no podés cargar vuelos</b>. Seguís pudiendo entrar, ver tu cuenta y pagar. Cuando lo renueves y tesorería cargue la fecha nueva, vuelve todo a la normalidad.</p>
+    </div>
+  </div>
+  <div class="bloque bloque--izq">
+    <figure class="recorte recorte--chico"><img src="img/13a-bloqueado.jpg" alt="Aviso de cuenta bloqueada"></figure>
+    <div>
+      <h3>Cuenta bloqueada por falta de pago</h3>
+      <p>Si tesorería bloquea tu cuenta por deuda:</p>
+      <ul>
+        <li>Podés entrar, ver tu cuenta, tus cupones e <b>informar pagos</b>.</li>
+        <li><b>No podés cargar vuelos</b>: el botón Cargar vuelo aparece gris, con un candado.</li>
+        <li>Los servicios que uses en rampa se cobran en el momento.</li>
+      </ul>
+      <p>Si ya pagaste, informá el pago o hablá con tesorería. Cuando se regulariza, te habilitan de nuevo.</p>
+    </div>
+  </div>
+  <div class="bloque bloque--izq">
+    <figure class="recorte recorte--chico"><img src="img/13b-cargar-bloqueado.jpg" alt="Botón Cargar vuelo bloqueado"></figure>
+    <div><p>Así se ve el botón de carga cuando está bloqueado, por deuda o por el CMA.</p></div>
+  </div>
+</section>
+
+<!-- 13 -->
+<section class="cap">
+  <header class="cap__cab"><span class="cap__num">13</span><h2>Preguntas frecuentes</h2></header>
+  <div class="faqs">
+    <div class="faq"><h3>Me equivoqué al cargar un vuelo, ¿qué hago?</h3>
+      <p>Avisale a tesorería con el avión, la fecha y qué está mal. Ellos lo corrigen o lo anulan. Vos no lo podés cambiar una vez aceptado.</p></div>
+    <div class="faq"><h3>¿Cargué el mismo vuelo dos veces?</h3>
+      <p>El sistema te avisa si encuentra uno igual. Pedile a tesorería que anule el repetido: el anulado no se cobra.</p></div>
+    <div class="faq"><h3>¿Me olvidé de cargar un vuelo de hace unos días?</h3>
+      <p>Cargalo igual, con la fecha real en el paso 2. Si ese mes ya se cerró, se cobra en tu próximo cupón.</p></div>
+    <div class="faq"><h3>¿Por qué el vuelo de hoy no aparece en mi saldo?</h3>
+      <p>Porque los vuelos se suman a tu saldo el día del cierre (el 1 de cada mes). Mientras tanto, los ves en "Vuelos para el próximo cierre".</p></div>
+    <div class="faq"><h3>¿Ya pagué y sigo debiendo?</h3>
+      <p>Fijate en Mi cuenta, en "Tus pagos". Si no está, informalo. Si dice <span class="chip chip--pend">En revisión</span>, falta que tesorería lo confirme. Si dice <span class="chip chip--mal">Rechazado</span>, ahí mismo está el motivo.</p></div>
+    <div class="faq"><h3>¿Tengo que informar el pago si lo hice en efectivo en el club?</h3>
+      <p>Si se lo diste en mano a tesorería o en rampa, lo cargan ellos y aparece en "Tus pagos". Si no lo ves después de unos días, consultá.</p></div>
+    <div class="faq"><h3>¿Me olvidé la contraseña?</h3>
+      <p>Pedile una nueva a tesorería. Te dan una temporal y al entrar elegís una tuya.</p></div>
+    <div class="faq"><h3>¿Cambié de celular o de email?</h3>
+      <p>En Perfil, tocá "Pedir un cambio de datos" y contá qué cambió. Si cambiaste de teléfono, entrás igual con tu email y tu contraseña.</p></div>
+    <div class="faq"><h3>¿Mi instructor no aparece en la lista?</h3>
+      <p>Avisale a tesorería: tienen que marcarlo como instructor en el sistema. Mientras tanto, no cargues el vuelo como "Sin instructor".</p></div>
+    <div class="faq"><h3>¿Puedo usarlo desde la compu?</h3>
+      <p>Sí. Entrá a aeroclub25demayo.com.ar desde cualquier navegador. En la compu, el menú aparece a la izquierda en vez de abajo.</p></div>
+    <div class="faq"><h3>¿El vuelo terminó después de la medianoche?</h3>
+      <p>Cargalo con la fecha del día en que salió. El sistema calcula bien el tiempo aunque la llegada sea al día siguiente.</p></div>
+    <div class="faq"><h3>¿No me deja cargar el vuelo?</h3>
+      <p>Leé el mensaje rojo: te dice qué falta. Si dice que tu cuenta está bloqueada o tu CMA vencido, mirá el capítulo 12. Si dice que falta la tarifa, avisale a tesorería.</p></div>
+  </div>
+</section>
+
+<!-- CIERRE -->
+<section class="cierre">
+  <img src="img/escudo.png" alt="Escudo del Aeroclub 25 de Mayo">
+  <h2>¿Te quedó alguna duda?</h2>
+  <p>Consultá con tesorería del Aeroclub.</p>
+  <p><b>aeroclub25demayo.com.ar</b></p>
+  <img class="cierre__ala" src="img/ala.svg" alt="">
+  <p class="creditos">Aeroclub 25 de Mayo · Fundado el 4 de septiembre de 1939<br>Powered by VentureByte and LcGlobal.</p>
+</section>
+
+</body>
+</html>
