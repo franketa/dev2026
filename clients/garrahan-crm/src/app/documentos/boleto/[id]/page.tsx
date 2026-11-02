@@ -82,9 +82,9 @@ export default async function Boleto({ params }: { params: Promise<any> }) {
 
         <p className="text-[11.5px] leading-snug mb-4 text-justify">
           En la ciudad de {e.localidad || "Chivilcoy"}, provincia de {e.provincia || "Buenos Aires"},
-          a los {new Date(v.fecha).getDate()} días del mes de{" "}
-          {new Date(v.fecha).toLocaleDateString("es-AR", { month: "long" })} de{" "}
-          {new Date(v.fecha).getFullYear()}, entre <b>{e.razon_social || "Garrahan Automotores"}</b>,
+          a los {new Date(v.fecha).getUTCDate()} días del mes de{" "}
+          {new Date(v.fecha).toLocaleDateString("es-AR", { month: "long", timeZone: "UTC" })} de{" "}
+          {new Date(v.fecha).getUTCFullYear()}, entre <b>{e.razon_social || "Garrahan Automotores"}</b>,
           en adelante <b>EL VENDEDOR</b>, y <b>{comprador}</b>, en adelante <b>EL COMPRADOR</b>,
           se conviene la compraventa del automotor que se detalla, sujeta a las condiciones
           que se establecen a continuación.
