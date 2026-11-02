@@ -53,3 +53,17 @@ export async function recalcularSaldo(ventaId: number, tx: Tx = sql) {
              fecha_cobro = ${saldada ? c.fecha_cobro ?? new Date().toISOString().slice(0, 10) : null}
            WHERE id = ${c.id}`;
 }
+
+/**
+ * El número de boleto que le toca a una venta nueva. Sale del contador de la
+ * empresa (lo que se fija en Configuración) y nunca repite uno ya usado.
+ */
+export async function tomarNroBoleto(tx: Tx = sql): Promise<number> {
+  const [r] = await tx`
+    UPDATE empresa SET boleto_proximo =
+      GREATEST(COALESCE(boleto_proximo, 1), (SELECT COALESCE(max(nro_boleto), 0) + 1 FROM ventas)) + 1
+    WHERE id = 1 RETURNING boleto_proximo - 1 AS nro`;
+  if (r) return Number(r.nro);
+  const [m] = await tx`SELECT COALESCE(max(nro_boleto), 0) + 1 AS nro FROM ventas`;
+  return Number(m.nro);
+}

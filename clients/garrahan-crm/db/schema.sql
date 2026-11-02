@@ -546,6 +546,20 @@ CREATE TABLE IF NOT EXISTS propuestas (
 );
 CREATE INDEX IF NOT EXISTS propuestas_lead_idx ON propuestas(lead_id);
 
+-- ------------------------------------------------- numeración del boleto
+-- El boleto lleva su propio número, que sigue la numeración que la agencia
+-- ya venía usando en papel. No es el id de la venta: ese no se puede mover.
+-- empresa.boleto_proximo es el contador; cada venta nueva toma uno.
+ALTER TABLE ventas ADD COLUMN IF NOT EXISTS nro_boleto int;
+ALTER TABLE empresa ADD COLUMN IF NOT EXISTS boleto_proximo int;
+UPDATE ventas v SET nro_boleto = n.nro
+  FROM (SELECT id, row_number() OVER (ORDER BY id)::int AS nro FROM ventas) n
+  WHERE n.id = v.id AND NOT EXISTS (SELECT 1 FROM ventas WHERE nro_boleto IS NOT NULL);
+CREATE UNIQUE INDEX IF NOT EXISTS ventas_nro_boleto_idx ON ventas(nro_boleto);
+INSERT INTO empresa (id) VALUES (1) ON CONFLICT (id) DO NOTHING;
+UPDATE empresa SET boleto_proximo = (SELECT COALESCE(max(nro_boleto), 0) + 1 FROM ventas)
+  WHERE id = 1 AND boleto_proximo IS NULL;
+
 -- ============================================================================
 -- Vista: costo real y margen por unidad. Una sola fuente de verdad.
 -- La compra NO es un gasto del mes: es el valor de toma de la unidad.
