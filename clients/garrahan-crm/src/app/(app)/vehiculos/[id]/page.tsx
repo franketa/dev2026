@@ -1,11 +1,12 @@
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
-import { Plus, Receipt, Wrench, FileText, Pencil, Globe, Trash2, Star, ChevronLeft, ChevronRight } from "lucide-react";
+import { Plus, Receipt, HandCoins, Wrench, FileText, Pencil, Globe, Trash2, Star, ChevronLeft, ChevronRight } from "lucide-react";
 import { avisoOk, avisoError, SIN_PERMISO } from "@/lib/aviso";
 import { sql } from "@/lib/db";
 import { requierePermiso, veCostos, puede } from "@/lib/auth";
 import { registrarCosto } from "@/lib/costos";
+import { ventaActiva } from "@/lib/ventas";
 import { plata, numero, km as fkm, dominio, porcentaje, fecha } from "@/lib/format";
 import { ESTADOS_VEHICULO, ALERTAS, TIPO_ADQUISICION, TIPOS_COSTO } from "@/lib/constantes";
 import {
@@ -37,6 +38,8 @@ export default async function Vehiculo({ params, searchParams }: { params: Promi
   const editar = puede(u, "vehiculos.editar");
 
   const esDueno = u.rol === "dueno";
+  // La venta del auto, para llegar directo a cobrarle al cliente lo que trae.
+  const venta = await ventaActiva(Number(id));
 
   const [costos, movimientos, ficha, documentos, proveedores, ordenes, fotos, cuentas] = await Promise.all([
     sql`SELECT c.*, p.nombre AS proveedor,
@@ -221,7 +224,9 @@ export default async function Vehiculo({ params, searchParams }: { params: Promi
                 <FileText size={15} /> Mandato
               </a>
             )}
-            {!["vendido", "baja"].includes(v.estado) && (
+            {venta ? (
+              <Boton href={`/ventas/${venta.id}#cobrar`}><HandCoins size={15} /> Cobrar / ver la venta</Boton>
+            ) : !["vendido", "baja"].includes(v.estado) && (
               <Boton href={`/ventas/nueva?vehiculo=${id}`}><Receipt size={15} /> Crear venta</Boton>
             )}
           </>

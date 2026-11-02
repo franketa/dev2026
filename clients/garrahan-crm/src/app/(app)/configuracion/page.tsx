@@ -15,6 +15,7 @@ export default async function Configuracion() {
   await requierePermiso("configuracion");
   const [e] = await sql`SELECT * FROM empresa WHERE id = 1`;
   const [cot] = await sql`SELECT * FROM cotizaciones ORDER BY fecha DESC LIMIT 1`;
+  const [bol] = await sql`SELECT count(*)::int AS n, max(nro_boleto) AS ultimo, min(nro_boleto) AS primero FROM ventas`;
 
   async function guardar(fd: FormData) {
     "use server";
@@ -30,6 +31,41 @@ export default async function Configuracion() {
         provincia = EXCLUDED.provincia, telefono = EXCLUDED.telefono, email = EXCLUDED.email`;
     revalidatePath("/configuracion");
     await avisoOk("Datos de la empresa guardados");
+  }
+
+  /**
+   * El próximo número de boleto, para seguir la numeración que se venía
+   * usando en papel. Con «renumerar», los boletos ya cargados en el sistema
+   * pasan a numerarse desde ese número, en el orden en que se cargaron.
+   */
+  async function guardarNumeracion(fd: FormData) {
+    "use server";
+    const usr = await requierePermiso("configuracion");
+    const desde = Number(fd.get("boleto_proximo") || 0);
+    if (!Number.isInteger(desde) || desde < 1) return avisoError("Poné un número entero, de 1 en adelante.");
+    const renumerar = fd.get("renumerar") === "si";
+    const r = await sql.begin(async (tx) => {
+      if (renumerar) {
+        // En dos pasos, para no chocar con un número que ya existe a mitad de camino.
+        await tx`UPDATE ventas SET nro_boleto = -id`;
+        await tx`UPDATE ventas v SET nro_boleto = n.nro
+                 FROM (SELECT id, (${desde} - 1 + row_number() OVER (ORDER BY id))::int AS nro FROM ventas) n
+                 WHERE n.id = v.id`;
+      } else {
+        const [m] = await tx`SELECT max(nro_boleto) AS ultimo FROM ventas`;
+        if (m?.ultimo && desde <= Number(m.ultimo)) return `El último boleto cargado es el N° ${m.ultimo}: el próximo tiene que ser mayor, o tildá «renumerar».`;
+      }
+      const [m] = await tx`SELECT COALESCE(max(nro_boleto), 0) + 1 AS prox FROM ventas`;
+      const prox = renumerar ? Number(m.prox) : desde;
+      await tx`UPDATE empresa SET boleto_proximo = ${prox} WHERE id = 1`;
+      await tx`INSERT INTO auditoria (usuario_id, entidad, entidad_id, accion, detalle)
+               VALUES (${usr.id}, 'empresa', 1, 'numeracion_boleto',
+                       ${renumerar ? `Boletos renumerados desde el N° ${desde}; el próximo es el ${prox}` : `Próximo boleto: N° ${prox}`})`;
+      return null;
+    });
+    if (r) return avisoError(r);
+    revalidatePath("/configuracion");
+    await avisoOk(renumerar ? "Boletos renumerados" : "Numeración guardada");
   }
 
   async function guardarCotizacion(fd: FormData) {
@@ -109,6 +145,25 @@ export default async function Configuracion() {
                      defaultValue={cot?.valor || ""} />
             </Campo>
             <Boton tipo="submit" variante="suave">Actualizar</Boton>
+          </form>
+        </Panel>
+
+        <Panel className="lg:col-span-3">
+          <PanelTitulo titulo="Numeración del boleto"
+            detalle="Para seguir con la numeración que ya venías usando en papel. Cada venta nueva toma el número que sigue." />
+          <form action={guardarNumeracion} className="grid sm:grid-cols-3 gap-4 items-end">
+            <Campo label="El próximo boleto sale con el N°">
+              <input name="boleto_proximo" type="number" min="1" step="1" required className="campo"
+                defaultValue={e?.boleto_proximo ?? (Number(bol?.ultimo || 0) + 1)} />
+            </Campo>
+            <label className="flex items-start gap-2 text-[12.5px] text-[var(--c-tinta-clara)] sm:col-span-2 pb-2">
+              <input type="checkbox" name="renumerar" value="si" className="mt-0.5" />
+              <span>
+                Renumerar también los {bol?.n || 0} boletos ya cargados en el sistema, desde ese número
+                {bol?.n ? `(hoy van del N° ${bol.primero} al ${bol.ultimo})` : ""}.
+              </span>
+            </label>
+            <div><Boton tipo="submit" variante="suave">Guardar numeración</Boton></div>
           </form>
         </Panel>
 

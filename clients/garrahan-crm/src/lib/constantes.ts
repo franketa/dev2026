@@ -113,8 +113,10 @@ export const CHECKLIST_TALLER = [
 /* ----------------------------------------------------------------- caja */
 /** La ayuda se ve al elegir la categoría: aclara dónde va lo que se presta a dudas. */
 export const CATEGORIAS: { valor: string; label: string; tipo: "ingreso" | "gasto"; ayuda?: string }[] = [
-  { valor: "venta_usado",    label: "Operación usado",    tipo: "ingreso" },
-  { valor: "venta_0km",      label: "Operación 0km",      tipo: "ingreso" },
+  { valor: "venta_usado",    label: "Operación usado",    tipo: "ingreso",
+    ayuda: "Si es plata de un auto vendido o señado, cargala desde la venta (Registrar un cobro): baja el saldo, entra a Caja y sale el recibo." },
+  { valor: "venta_0km",      label: "Operación 0km",      tipo: "ingreso",
+    ayuda: "Si es plata de un auto vendido o señado, cargala desde la venta (Registrar un cobro): baja el saldo, entra a Caja y sale el recibo." },
   { valor: "servicios_taller", label: "Servicios/Taller", tipo: "ingreso",
     ayuda: "Lo que cobra el taller por trabajos a terceros." },
   { valor: "otros_ingresos", label: "Otros ingresos",     tipo: "ingreso" },

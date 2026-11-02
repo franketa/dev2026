@@ -8,7 +8,9 @@ import { ESTADOS_VENTA, ESTADOS_TRAMITE } from "@/lib/constantes";
 import { Encabezado, Panel, PanelTitulo, Boton, Campo } from "@/components/ui";
 import PagosVenta from "@/components/pagos-venta";
 import { avisar, enlace, plataAviso, t } from "@/lib/telegram";
-import { ventaActiva } from "@/lib/ventas";
+import { ventaActiva, tomarNroBoleto } from "@/lib/ventas";
+import { clientesParaVenta, guardarCliente } from "@/lib/clientes";
+import CamposCliente from "@/components/campos-cliente";
 
 export const dynamic = "force-dynamic";
 
@@ -23,7 +25,7 @@ export default async function NuevaVenta({ searchParams }: { searchParams: Promi
     sql`SELECT id, marca, modelo, anio, dominio, precio_venta, precio_minimo, inversor_id, sucursal_id
         FROM vehiculos WHERE estado IN ('disponible','reservado') OR id = ${p.vehiculo || 0}
         ORDER BY marca, modelo`,
-    sql`SELECT id, nombre, apellido, dni_cuit FROM clientes ORDER BY nombre LIMIT 500`,
+    clientesParaVenta(sql),
     sql`SELECT id, nombre, comision_pct FROM usuarios
         WHERE activo AND rol IN ('vendedor','gerente','dueno') ORDER BY nombre`,
     sql`SELECT id, nombre FROM sucursales WHERE activa ORDER BY nombre`,
@@ -71,29 +73,22 @@ export default async function NuevaVenta({ searchParams }: { searchParams: Promi
     // a tiempo hay que decidir qué pasa con la unidad, y el sistema lo avisa.
     const esReserva = estado === "reserva";
 
-    // Cliente: o se elige uno existente, o se crea al vuelo con lo que se tipeó.
-    let clienteId = num("cliente_id");
-    const nuevoCliente = txt("cliente_nuevo");
-    if (!clienteId && nuevoCliente) {
-      const [c] = await sql`
-        INSERT INTO clientes (nombre, dni_cuit, telefono, email)
-        VALUES (${nuevoCliente}, ${txt("cliente_dni")}, ${txt("cliente_telefono")}, ${txt("cliente_email")})
-        RETURNING id`;
-      clienteId = c.id;
-    }
+    // Cliente: uno ya cargado (con lo que se le haya corregido) o uno nuevo.
+    const clienteId = await guardarCliente(sql, fd);
 
     const [veh] = await sql`SELECT inversor_id, sucursal_id, marca, modelo FROM vehiculos WHERE id = ${vehiculoId}`;
 
     const [venta] = await sql`
       INSERT INTO ventas (vehiculo_id, cliente_id, vendedor_id, inversor_id, sucursal_id, lead_id,
                           fecha, estado, precio, descuento, sena, comision,
-                          facturado, estado_tramite, observaciones)
+                          facturado, estado_tramite, observaciones, nro_boleto)
       VALUES (${vehiculoId}, ${clienteId}, ${num("vendedor_id")}, ${veh?.inversor_id ?? null},
               ${num("sucursal_id") ?? veh?.sucursal_id ?? null}, ${num("lead_id")},
               ${fechaVenta}, ${estado}, ${precio}, ${descuento}, 0,
               ${num("comision") ?? 0},
               ${String(fd.get("facturado") || "pendiente")},
-              ${String(fd.get("estado_tramite") || "iniciado")}, ${txt("observaciones")})
+              ${String(fd.get("estado_tramite") || "iniciado")}, ${txt("observaciones")},
+              ${await tomarNroBoleto()})
       RETURNING id`;
 
     /* ------------------------------------------------------------- pagos
@@ -195,7 +190,8 @@ export default async function NuevaVenta({ searchParams }: { searchParams: Promi
     const leadId = num("lead_id");
     if (leadId) {
       await sql`UPDATE leads SET estado = ${estado === "completada" ? "vendido" : "reservado"},
-                                 etapa = 'cierre', actualizado_en = now()
+                                 etapa = 'cierre', actualizado_en = now(),
+                                 cliente_id = COALESCE(cliente_id, ${clienteId})
                 WHERE id = ${leadId}`;
       await sql`INSERT INTO lead_interacciones (lead_id, tipo, detalle, usuario_id)
                 VALUES (${leadId}, 'cambio_estado', ${"Se generó la venta #" + venta.id}, ${usr.id})`;
@@ -266,16 +262,6 @@ export default async function NuevaVenta({ searchParams }: { searchParams: Promi
               <input name="fecha" type="date" className="campo"
                 defaultValue={new Date().toISOString().slice(0, 10)} />
             </Campo>
-            <Campo label="Cliente">
-              <select name="cliente_id" className="campo" defaultValue={l?.cliente_id ?? ""}>
-                <option value="">Cargar uno nuevo abajo</option>
-                {clientes.map((c: any) => (
-                  <option key={c.id} value={c.id}>
-                    {c.nombre} {c.apellido || ""} {c.dni_cuit ? "· " + c.dni_cuit : ""}
-                  </option>
-                ))}
-              </select>
-            </Campo>
             <Campo label="Vendedor">
               <select name="vendedor_id" className="campo" defaultValue={u.id}>
                 <option value="">Sin asignar</option>
@@ -285,23 +271,9 @@ export default async function NuevaVenta({ searchParams }: { searchParams: Promi
           </div>
 
           <div className="mt-4 pt-4 border-t border-[var(--c-borde)]">
-            <p className="text-[12px] text-[var(--c-tinta-tenue)] mb-3">
-              Si el comprador todavía no está cargado, completá estos campos y se crea solo.
-            </p>
-            <div className="grid sm:grid-cols-4 gap-4">
-              <Campo label="Nombre y apellido">
-                <input name="cliente_nuevo" className="campo" defaultValue={l?.nombre ?? ""} />
-              </Campo>
-              <Campo label="DNI / CUIT">
-                <input name="cliente_dni" className="campo" />
-              </Campo>
-              <Campo label="Teléfono">
-                <input name="cliente_telefono" className="campo" defaultValue={l?.telefono ?? ""} />
-              </Campo>
-              <Campo label="Email">
-                <input name="cliente_email" type="email" className="campo" defaultValue={l?.email ?? ""} />
-              </Campo>
-            </div>
+            <span className="etiqueta block mb-3">El comprador (sale así en el boleto)</span>
+            <CamposCliente clientes={clientes as any} inicial={l?.cliente_id ?? null}
+              sugerido={l ? { nombre: l.nombre || "", telefono: l.telefono || "", email: l.email || "" } : undefined} />
           </div>
         </Panel>
 

@@ -260,6 +260,10 @@ input:focus-visible, select:focus-visible, textarea:focus-visible, button:focus-
 .propuesta { page: propuesta; }
 @page propuesta { size: A4; margin: 12mm 14mm; }
 
+/* El boleto va en una sola hoja A4: dos ejemplares, cada uno de una hoja. */
+.boleto { page: boleto; }
+@page boleto { size: A4; margin: 10mm 12mm; }
+
 /* ------------------------------------------------------------------ avisos
    "Guardado" y errores, abajo de la pantalla (components/avisos.tsx).        */
 @keyframes aviso-entra {

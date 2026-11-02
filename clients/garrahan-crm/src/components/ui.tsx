@@ -35,10 +35,10 @@ export function Punto({ tono = "gris" }: { tono?: Tono }) {
 }
 
 /* ------------------------------------------------------------------ paneles */
-export function Panel({ children, className = "", padding = true }:
-  { children: ReactNode; className?: string; padding?: boolean }) {
+export function Panel({ children, className = "", padding = true, id }:
+  { children: ReactNode; className?: string; padding?: boolean; id?: string }) {
   return (
-    <div className={`bg-[var(--c-panel)] border border-[var(--c-borde)] rounded-xl ${padding ? "p-5" : ""} ${className}`}>
+    <div id={id} className={`bg-[var(--c-panel)] border border-[var(--c-borde)] rounded-xl ${padding ? "p-5" : ""} ${className}`}>
       {children}
     </div>
   );

@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { sql } from "@/lib/db";
 import { requierePermiso } from "@/lib/auth";
 import { plata, fecha, numero } from "@/lib/format";
@@ -55,10 +56,10 @@ export default async function Cobranzas() {
         <thead><tr>
           <TH>Cliente</TH><TH>Concepto</TH><TH>Vencimiento</TH>
           <TH alinear="right">Monto</TH><TH alinear="right">Cobrado</TH>
-          <TH alinear="right">Saldo</TH><TH>Estado</TH>
+          <TH alinear="right">Saldo</TH><TH>Estado</TH><TH></TH>
         </tr></thead>
         <tbody>
-          {filas.length === 0 && <FilaVacia cols={7} mensaje="No hay cobranzas registradas." />}
+          {filas.length === 0 && <FilaVacia cols={8} mensaje="No hay cobranzas registradas." />}
           {filas.map((f: any) => {
             const moneda = (f.moneda || "ARS") as "ARS" | "USD";
             return (
@@ -78,6 +79,15 @@ export default async function Cobranzas() {
                 <TD alinear="right" className="font-medium">{plata(f.saldo, moneda)}</TD>
                 <TD><Chip tono={f.estado === "cobrado" ? "verde" : f.vencida ? "rojo" : "amarillo"}>
                   {f.estado}</Chip></TD>
+                <TD alinear="right">
+                  {f.venta_id && f.estado !== "cobrado" && (
+                    <Link href={`/ventas/${f.venta_id}#cobrar`}
+                      className="inline-flex rounded-md border border-[var(--c-azul-borde)] bg-[var(--c-azul-fondo)]
+                        px-2 py-1 text-[11.5px] text-[var(--c-enlace)] hover:bg-[var(--c-azul-fondo-alto)] whitespace-nowrap">
+                      Registrar cobro
+                    </Link>
+                  )}
+                </TD>
               </tr>
             );
           })}

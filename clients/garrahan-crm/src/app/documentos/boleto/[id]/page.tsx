@@ -32,9 +32,11 @@ export default async function Boleto({ params }: { params: Promise<any> }) {
   const e = emp[0] || {};
   const final = Number(v.precio) - Number(v.descuento);
   const comprador = [v.c_apellido, v.c_nombre].filter(Boolean).join(", ") || "—";
+  const faltan = !v.cliente_id ? ["todo: no hay comprador cargado"]
+    : [!v.c_doc && "el DNI", !v.c_dir && "el domicilio", !v.c_loc && "la localidad"].filter(Boolean) as string[];
 
   const L = ({ t, children }: any) => (
-    <div className="flex gap-2 py-[3px]">
+    <div className="flex gap-2 py-[2px]">
       <span className="text-[11px] uppercase tracking-wide text-gray-500 w-[120px] shrink-0 print:text-black">{t}</span>
       <span className="text-[12.5px] font-medium">{children ?? "—"}</span>
     </div>
@@ -46,12 +48,22 @@ export default async function Boleto({ params }: { params: Promise<any> }) {
         <a href={`/ventas/${id}`} className="text-[13px] text-[var(--c-tinta-media)] hover:text-white">← Volver a la venta</a>
         <BotonImprimir />
       </div>
+      {faltan.length > 0 && (
+        <div className="no-imprimir max-w-[800px] mx-auto mb-4 px-6">
+          <p className="rounded-lg border border-[var(--c-amarillo-borde)] bg-[var(--c-amarillo-fondo)] px-4 py-2.5
+            text-[13px] text-[var(--c-tinta-clara)]">
+            Al comprador le falta {faltan.join(", ")}: sale en blanco.{" "}
+            <a href={`/ventas/${id}`} className="text-[var(--c-enlace)] underline">Completalo en la venta</a>
+            {" "}(panel Comprador) y volvé a abrir el boleto.
+          </p>
+        </div>
+      )}
 
-      <div className="hoja max-w-[800px] mx-auto bg-white text-black p-12 rounded-lg print:rounded-none shadow-2xl print:shadow-none">
+      <div className="hoja boleto max-w-[800px] mx-auto bg-white text-black p-10 rounded-lg print:rounded-none shadow-2xl print:shadow-none">
         {/* ------------------------------------------------------ encabezado */}
-        <div className="flex items-start gap-4 border-b-2 border-black pb-4 mb-6">
+        <div className="flex items-start gap-4 border-b-2 border-black pb-3 mb-4">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/logo.png" alt="Garrahan" className="h-16 w-16 shrink-0" />
+          <img src="/logo.png" alt="Garrahan" className="h-14 w-14 shrink-0" />
           <div>
             <h1 className="text-[19px] font-bold uppercase tracking-tight">
               {e.razon_social || "Garrahan Automotores"}
@@ -63,12 +75,12 @@ export default async function Boleto({ params }: { params: Promise<any> }) {
           </div>
           <div className="text-right ml-auto">
             <div className="text-[13px] font-bold uppercase">Boleto de compraventa</div>
-            <div className="text-[11px] text-gray-700 mt-0.5">N° {String(v.id).padStart(6, "0")}</div>
+            <div className="text-[11px] text-gray-700 mt-0.5">N° {String(v.nro_boleto ?? v.id).padStart(6, "0")}</div>
             <div className="text-[11px] text-gray-700">{fecha(v.fecha)}</div>
           </div>
         </div>
 
-        <p className="text-[12px] leading-relaxed mb-6 text-justify">
+        <p className="text-[11.5px] leading-snug mb-4 text-justify">
           En la ciudad de {e.localidad || "Chivilcoy"}, provincia de {e.provincia || "Buenos Aires"},
           a los {new Date(v.fecha).getDate()} días del mes de{" "}
           {new Date(v.fecha).toLocaleDateString("es-AR", { month: "long" })} de{" "}
@@ -79,9 +91,9 @@ export default async function Boleto({ params }: { params: Promise<any> }) {
         </p>
 
         {/* --------------------------------------------------------- partes */}
-        <div className="grid grid-cols-2 gap-8 mb-6">
+        <div className="grid grid-cols-2 gap-8 mb-4">
           <div>
-            <h2 className="text-[11px] font-bold uppercase border-b border-gray-300 pb-1 mb-2">El comprador</h2>
+            <h2 className="text-[11px] font-bold uppercase border-b border-gray-300 pb-1 mb-1.5">El comprador</h2>
             <L t="Nombre">{comprador}</L>
             <L t="DNI / CUIT">{v.c_doc}</L>
             <L t="Domicilio">{v.c_dir}</L>
@@ -89,7 +101,7 @@ export default async function Boleto({ params }: { params: Promise<any> }) {
             <L t="Teléfono">{v.c_tel}</L>
           </div>
           <div>
-            <h2 className="text-[11px] font-bold uppercase border-b border-gray-300 pb-1 mb-2">La operación</h2>
+            <h2 className="text-[11px] font-bold uppercase border-b border-gray-300 pb-1 mb-1.5">La operación</h2>
             <L t="Fecha">{fecha(v.fecha)}</L>
             <L t="Vendedor">{v.vendedor}</L>
             <L t="Entrega">{v.fecha_entrega ? fecha(v.fecha_entrega) : "A convenir"}</L>
@@ -97,8 +109,8 @@ export default async function Boleto({ params }: { params: Promise<any> }) {
         </div>
 
         {/* -------------------------------------------------------- vehículo */}
-        <h2 className="text-[11px] font-bold uppercase border-b border-gray-300 pb-1 mb-2">El automotor</h2>
-        <div className="grid grid-cols-2 gap-8 mb-6">
+        <h2 className="text-[11px] font-bold uppercase border-b border-gray-300 pb-1 mb-1.5">El automotor</h2>
+        <div className="grid grid-cols-2 gap-8 mb-4">
           <div>
             <L t="Marca">{v.marca}</L>
             <L t="Modelo">{v.modelo} {v.version || ""}</L>
@@ -115,8 +127,8 @@ export default async function Boleto({ params }: { params: Promise<any> }) {
         </div>
 
         {/* ---------------------------------------------------------- precio */}
-        <h2 className="text-[11px] font-bold uppercase border-b border-gray-300 pb-1 mb-2">Precio y forma de pago</h2>
-        <table className="w-full text-[12px] mb-3">
+        <h2 className="text-[11px] font-bold uppercase border-b border-gray-300 pb-1 mb-1.5">Precio y forma de pago</h2>
+        <table className="w-full text-[12px] mb-2">
           <tbody>
             <tr className="border-b border-gray-200">
               <td className="py-1.5">Precio convenido</td>
@@ -135,12 +147,12 @@ export default async function Boleto({ params }: { params: Promise<any> }) {
           </tbody>
         </table>
 
-        <p className="text-[11.5px] italic mb-4">
+        <p className="text-[11px] italic mb-3">
           Son pesos {enLetras(final)} con 00/100.
         </p>
 
         {pagos.length > 0 && (
-          <table className="w-full text-[12px] mb-6">
+          <table className="w-full text-[11.5px] mb-4">
             <thead>
               <tr className="border-b border-gray-300">
                 <th className="text-left py-1 text-[10.5px] uppercase text-gray-600">Medio</th>
@@ -161,8 +173,8 @@ export default async function Boleto({ params }: { params: Promise<any> }) {
         )}
 
         {/* -------------------------------------------------------- cláusulas */}
-        <h2 className="text-[11px] font-bold uppercase border-b border-gray-300 pb-1 mb-2">Condiciones</h2>
-        <ol className="text-[11px] leading-relaxed space-y-1.5 mb-8 list-decimal pl-4 text-justify">
+        <h2 className="text-[11px] font-bold uppercase border-b border-gray-300 pb-1 mb-1.5">Condiciones</h2>
+        <ol className="text-[10.5px] leading-snug space-y-1 mb-5 list-decimal pl-4 text-justify">
           <li>EL COMPRADOR declara conocer y aceptar el estado general del automotor, que recibe
             en el estado en que se encuentra y que ha revisado a su entera satisfacción.</li>
           <li>EL VENDEDOR se obliga a entregar la documentación necesaria para la transferencia
@@ -176,14 +188,14 @@ export default async function Boleto({ params }: { params: Promise<any> }) {
         </ol>
 
         {v.observaciones && (
-          <div className="mb-8">
-            <h2 className="text-[11px] font-bold uppercase border-b border-gray-300 pb-1 mb-2">Observaciones</h2>
-            <p className="text-[11.5px] whitespace-pre-line">{v.observaciones}</p>
+          <div className="mb-5">
+            <h2 className="text-[11px] font-bold uppercase border-b border-gray-300 pb-1 mb-1.5">Observaciones</h2>
+            <p className="text-[11px] whitespace-pre-line">{v.observaciones}</p>
           </div>
         )}
 
         {/* ---------------------------------------------------------- firmas */}
-        <div className="grid grid-cols-2 gap-16 mt-16">
+        <div className="grid grid-cols-2 gap-16 mt-12">
           {["El vendedor", "El comprador"].map((t) => (
             <div key={t} className="text-center">
               <div className="border-t border-black pt-2">
@@ -194,7 +206,7 @@ export default async function Boleto({ params }: { params: Promise<any> }) {
           ))}
         </div>
 
-        <p className="text-[9.5px] text-gray-500 text-center mt-10">
+        <p className="text-[9.5px] text-gray-500 text-center mt-5">
           Se firman dos ejemplares de un mismo tenor y a un solo efecto.
         </p>
       </div>

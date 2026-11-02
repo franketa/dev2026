@@ -7,6 +7,8 @@ import { requierePermiso } from "@/lib/auth";
 import { plata, fecha } from "@/lib/format";
 import { MEDIOS_PAGO, ESTADOS_LEAD } from "@/lib/constantes";
 import { recalcularSaldo, sincronizarAuto } from "@/lib/ventas";
+import { clientesParaVenta, guardarCliente } from "@/lib/clientes";
+import CamposCliente from "@/components/campos-cliente";
 import { Encabezado, Panel, PanelTitulo, Boton, Campo, Tabla, TH, TD, FilaVacia, Chip } from "@/components/ui";
 
 export const dynamic = "force-dynamic";
@@ -43,9 +45,7 @@ export default async function CorregirVenta({ params }: { params: Promise<any> }
                             AND m.monto = p.monto AND m.moneda = p.moneda AND m.fecha = p.fecha)
                      ORDER BY (m.venta_pago_id IS NOT NULL) DESC, m.id LIMIT 1) AS cuenta
         FROM venta_pagos p WHERE p.venta_id = ${id} ORDER BY p.fecha, p.id`,
-    sql`SELECT id, nombre, apellido, dni_cuit FROM clientes
-        WHERE id IN (SELECT id FROM clientes ORDER BY nombre LIMIT 500) OR id = ${v.cliente_id ?? 0}
-        ORDER BY nombre`,
+    clientesParaVenta(sql),
     sql`SELECT id, nombre FROM usuarios
         WHERE (activo AND rol IN ('vendedor','gerente','dueno')) OR id = ${v.vendedor_id ?? 0} ORDER BY nombre`,
     sql`SELECT id, nombre FROM sucursales WHERE activa OR id = ${v.sucursal_id ?? 0} ORDER BY nombre`,
@@ -65,11 +65,19 @@ export default async function CorregirVenta({ params }: { params: Promise<any> }
     const fechaVenta = String(fd.get("fecha") || "");
     if (!fechaVenta) return avisoError("Falta la fecha.");
     const facturado = String(fd.get("facturado") || "pendiente");
+    const nro = num("nro_boleto");
+    if (nro !== null) {
+      if (!(nro > 0) || !Number.isInteger(nro)) return avisoError("El número de boleto tiene que ser un número entero.");
+      const [otra] = await sql`SELECT id FROM ventas WHERE nro_boleto = ${nro} AND id <> ${id}`;
+      if (otra) return avisoError(`El boleto N° ${nro} ya es de la venta #${otra.id}.`);
+    }
 
     const [antes] = await sql`SELECT * FROM ventas WHERE id = ${id}`;
     await sql.begin(async (tx) => {
+      const clienteId = await guardarCliente(tx, fd);
       await tx`UPDATE ventas SET
-                 fecha = ${fechaVenta}, cliente_id = ${num("cliente_id")}, vendedor_id = ${num("vendedor_id")},
+                 nro_boleto = COALESCE(${nro}, nro_boleto),
+                 fecha = ${fechaVenta}, cliente_id = ${clienteId}, vendedor_id = ${num("vendedor_id")},
                  sucursal_id = ${num("sucursal_id")}, precio = ${precio}, descuento = ${num("descuento") ?? 0},
                  comision = ${num("comision") ?? 0}, facturado = ${facturado},
                  observaciones = ${String(fd.get("observaciones") || "").trim() || null}
@@ -78,7 +86,7 @@ export default async function CorregirVenta({ params }: { params: Promise<any> }
       await tx`INSERT INTO auditoria (usuario_id, entidad, entidad_id, accion, detalle)
                VALUES (${usr.id}, 'venta', ${id}, 'corregir',
                        ${`Antes: ${iso(antes.fecha)} · precio ${plata(antes.precio)} · descuento ${plata(antes.descuento)} · ` +
-                         `cliente #${antes.cliente_id ?? "—"} · vendedor #${antes.vendedor_id ?? "—"} · comisión ${plata(antes.comision)}`})`;
+                         `boleto N° ${antes.nro_boleto ?? "—"} · cliente #${antes.cliente_id ?? "—"} · vendedor #${antes.vendedor_id ?? "—"} · comisión ${plata(antes.comision)}`})`;
     });
     revalidatePath(`/ventas/${id}`);
     await avisoOk("Venta corregida");
@@ -170,15 +178,9 @@ export default async function CorregirVenta({ params }: { params: Promise<any> }
             <Campo label="Fecha">
               <input name="fecha" type="date" required className="campo" defaultValue={iso(v.fecha)} />
             </Campo>
-            <Campo label="Cliente" ancho="lg:col-span-2">
-              <select name="cliente_id" className="campo" defaultValue={v.cliente_id ?? ""}>
-                <option value="">Sin cliente</option>
-                {clientes.map((c: any) => (
-                  <option key={c.id} value={c.id}>
-                    {c.nombre} {c.apellido || ""} {c.dni_cuit ? "· " + c.dni_cuit : ""}
-                  </option>
-                ))}
-              </select>
+            <Campo label="N° de boleto">
+              <input name="nro_boleto" type="number" min="1" step="1" className="campo"
+                defaultValue={v.nro_boleto ?? ""} />
             </Campo>
             <Campo label="Vendedor">
               <select name="vendedor_id" className="campo" defaultValue={v.vendedor_id ?? ""}>
@@ -215,6 +217,10 @@ export default async function CorregirVenta({ params }: { params: Promise<any> }
             <Campo label="Observaciones" ancho="sm:col-span-2 lg:col-span-3">
               <input name="observaciones" className="campo" defaultValue={v.observaciones ?? ""} />
             </Campo>
+            <div className="sm:col-span-2 lg:col-span-4 pt-4 border-t border-[var(--c-borde)]">
+              <span className="etiqueta block mb-3">El comprador (sale así en el boleto)</span>
+              <CamposCliente clientes={clientes as any} inicial={v.cliente_id ?? null} />
+            </div>
             <div className="sm:col-span-2 lg:col-span-4 flex gap-2">
               <Boton tipo="submit">Guardar cambios</Boton>
               <Boton href={`/ventas/${id}`} variante="fantasma">Cancelar</Boton>

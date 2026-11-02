@@ -1,7 +1,7 @@
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
-import { FileText, Plus, Pencil } from "lucide-react";
+import { FileText, Plus, Pencil, HandCoins } from "lucide-react";
 import { avisoOk, avisoError } from "@/lib/aviso";
 import { sql } from "@/lib/db";
 import { requierePermiso, veCostos } from "@/lib/auth";
@@ -14,6 +14,8 @@ import {
 import SelectEstado from "@/components/select-estado";
 import { avisar, enlace, plataAviso, t } from "@/lib/telegram";
 import { ventaActiva, sincronizarAuto } from "@/lib/ventas";
+import { clientesParaVenta, guardarCliente } from "@/lib/clientes";
+import CamposCliente from "@/components/campos-cliente";
 
 export const dynamic = "force-dynamic";
 
@@ -27,6 +29,7 @@ export default async function Venta({ params }: { params: Promise<any> }) {
   const [v] = await sql`
     SELECT vt.*, x.marca, x.modelo, x.anio, x.dominio, x.costo_total, x.km,
            c.nombre AS cliente, c.apellido AS cliente_apellido, c.dni_cuit, c.telefono,
+           c.direccion AS cliente_direccion, c.localidad AS cliente_localidad,
            us.nombre AS vendedor, s.nombre AS sucursal, i.nombre AS inversor,
            pv.marca AS permuta_marca, pv.modelo AS permuta_modelo
     FROM ventas vt
@@ -39,12 +42,13 @@ export default async function Venta({ params }: { params: Promise<any> }) {
     WHERE vt.id = ${id}`;
   if (!v) notFound();
 
-  const [pagos, cobranzas, financiaciones, cuentas, postventa] = await Promise.all([
+  const [pagos, cobranzas, financiaciones, cuentas, postventa, clientes] = await Promise.all([
     sql`SELECT * FROM venta_pagos WHERE venta_id = ${id} ORDER BY fecha, id`,
     sql`SELECT * FROM cobranzas WHERE venta_id = ${id} ORDER BY vencimiento`,
     sql`SELECT * FROM financiaciones WHERE venta_id = ${id} ORDER BY id`,
     sql`SELECT id, nombre, moneda FROM caja_cuentas WHERE activa ORDER BY nombre`,
     sql`SELECT * FROM postventa WHERE venta_id = ${id}`,
+    clientesParaVenta(sql),
   ]);
 
   const total = Number(v.precio) - Number(v.descuento);
@@ -117,6 +121,23 @@ export default async function Venta({ params }: { params: Promise<any> }) {
       `Cargó ${t(usr.nombre)}.`);
     revalidatePath(`/ventas/${id}`);
     await avisoOk(esSena ? "Seña registrada" : "Cobro registrado");
+    // Lo que sigue a cobrar es darle el recibo al cliente: se abre directo.
+    redirect(`/documentos/recibo/${pago.id}`);
+  }
+
+  /** Completar o corregir el comprador: lo que falte (DNI, domicilio) sale después en el boleto. */
+  async function guardarComprador(fd: FormData) {
+    "use server";
+    const usr = await requierePermiso("ventas");
+    const clienteId = await guardarCliente(sql, fd);
+    if (!clienteId) return avisoError("Completá al menos el nombre del comprador.");
+    await sql`UPDATE ventas SET cliente_id = ${clienteId} WHERE id = ${id}`;
+    await sql`UPDATE cobranzas SET cliente_id = ${clienteId} WHERE venta_id = ${id}`;
+    await sql`INSERT INTO auditoria (usuario_id, entidad, entidad_id, accion, detalle)
+              VALUES (${usr.id}, 'venta', ${id}, 'comprador',
+                      ${`cliente #${v.cliente_id ?? "—"} → #${clienteId}`})`;
+    revalidatePath(`/ventas/${id}`);
+    await avisoOk("Datos del comprador guardados");
   }
 
   async function extenderSena(fd: FormData) {
@@ -201,6 +222,9 @@ export default async function Venta({ params }: { params: Promise<any> }) {
             <Boton href={`/documentos/boleto/${v.id}`} variante="suave" target="_blank">
               <FileText size={15} /> Boleto de compraventa
             </Boton>
+            {v.estado !== "cancelada" && (
+              <Boton href="#cobrar" variante="suave"><HandCoins size={15} /> Registrar un cobro</Boton>
+            )}
             <Boton href={`/vehiculos/${v.vehiculo_id}`} variante="suave">Ver la unidad</Boton>
             {u.rol === "dueno" && (
               <Boton href={`/ventas/${v.id}/editar`} variante="suave"><Pencil size={15} /> Corregir</Boton>
@@ -270,9 +294,9 @@ export default async function Venta({ params }: { params: Promise<any> }) {
 
           {/* ------------------------------------------------------ nuevo pago */}
           {v.estado !== "cancelada" && (
-            <Panel>
+            <Panel className="scroll-mt-20" id="cobrar">
               <PanelTitulo titulo="Registrar un cobro"
-                detalle="Se descuenta del saldo y entra a la cuenta que elijas." />
+                detalle="Se descuenta del saldo, entra a la cuenta que elijas y te abre el recibo para imprimir." />
               <form action={agregarPago} className="grid sm:grid-cols-3 lg:grid-cols-6 gap-3 items-end">
                 <Campo label="Medio">
                   <select name="medio" className="campo" defaultValue="efectivo">
@@ -398,9 +422,23 @@ export default async function Venta({ params }: { params: Promise<any> }) {
             <PanelTitulo titulo="Comprador" />
             <Dato label="Nombre">{v.cliente ? `${v.cliente} ${v.cliente_apellido || ""}` : "—"}</Dato>
             <Dato label="DNI / CUIT">{v.dni_cuit || "—"}</Dato>
+            <Dato label="Domicilio">
+              {[v.cliente_direccion, v.cliente_localidad].filter(Boolean).join(", ") || "—"}
+            </Dato>
             <Dato label="Teléfono">{v.telefono || "—"}</Dato>
             <Dato label="Vendedor">{v.vendedor || "Sin asignar"}</Dato>
             <Dato label="Sucursal">{v.sucursal || "—"}</Dato>
+            <details className="mt-3" open={!v.cliente_id || !v.dni_cuit || !v.cliente_direccion}>
+              <summary className="cursor-pointer text-[12.5px] text-[var(--c-enlace)] hover:underline">
+                {!v.cliente_id ? "Cargar el comprador"
+                  : !v.dni_cuit || !v.cliente_direccion ? "Faltan datos para el boleto: completalos"
+                  : "Corregir datos del comprador"}
+              </summary>
+              <form action={guardarComprador} className="mt-3 space-y-3">
+                <CamposCliente clientes={clientes as any} inicial={v.cliente_id ?? null} compacto />
+                <Boton tipo="submit" variante="suave">Guardar comprador</Boton>
+              </form>
+            </details>
           </Panel>
 
           <Panel>
