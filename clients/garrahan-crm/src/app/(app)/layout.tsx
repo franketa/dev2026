@@ -2,6 +2,7 @@ import Sidebar from "@/components/sidebar";
 import Buscador from "@/components/buscador";
 import Migas from "@/components/migas";
 import EstadoOperacion from "@/components/estado-operacion";
+import BotonLeads from "@/components/boton-leads";
 import Tema from "@/components/tema";
 import { sql } from "@/lib/db";
 import { requiereSesion, permisosDe } from "@/lib/auth";
@@ -35,6 +36,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
           border-b border-[var(--c-borde)] flex items-center gap-3 px-4 lg:px-7">
           <div className="hidden md:flex min-w-0 flex-1 pl-11 lg:pl-0"><Migas /></div>
           <div className="flex-1 md:flex-none pl-11 md:pl-0"><Buscador /></div>
+          <BotonLeads usuario={u} />
           <EstadoOperacion usuario={u} />
           {cot && (
             <div className="hidden sm:flex items-center gap-2 rounded-lg border border-[var(--c-borde)]
