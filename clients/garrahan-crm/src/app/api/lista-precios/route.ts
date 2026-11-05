@@ -52,7 +52,7 @@ export async function GET() {
   try {
     const logo = await readFile(join(process.cwd(), "public", "logo-horizontal.png"));
     const id = libro.addImage({ buffer: logo as any, extension: "png" });
-    hoja.addImage(id, { tl: { col: 1.6, row: 0.15 }, ext: { width: 360, height: 54 } });
+    hoja.addImage(id, { tl: { col: 2.1, row: 0.12 }, ext: { width: 360, height: 54 } });
   } catch { /* sin logo, la lista sale igual */ }
   const ahora = new Date(Date.now() - 3 * 3600e3);
   const mes = hoja.getCell("H2");
