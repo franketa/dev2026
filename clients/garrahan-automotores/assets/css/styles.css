@@ -169,6 +169,10 @@ h1, h2, h3 { font-family: 'Oswald', sans-serif; font-weight: 600; line-height: 1
 @media (max-width: 480px) {
   .novedad__brand { flex-basis: calc(50% - 5px); }
 }
+/* En el celular la sección de marcas chinas no se muestra: queda solo en escritorio y tablet. */
+@media (max-width: 768px) {
+  .novedad { display: none; }
+}
 
 /* ===== Stock ===== */
 .stock { background: var(--bg); }
