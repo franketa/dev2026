@@ -546,6 +546,41 @@ CREATE TABLE IF NOT EXISTS propuestas (
 );
 CREATE INDEX IF NOT EXISTS propuestas_lead_idx ON propuestas(lead_id);
 
+-- ------------------------------------------- permuta como parte del pago
+-- El usado tomado en permuta se guardaba en la venta pero no como pago, así
+-- que su valor quedaba como saldo a cobrar. A las ventas que no lo tienen se
+-- les agrega el renglón «Permuta» y se recalcula su saldo con la misma cuenta
+-- del sistema (precio − descuento − lo pagado). Una sola sentencia: lo que ya
+-- tiene su renglón no se vuelve a tocar.
+WITH faltan AS (
+  SELECT v.id, v.permuta_valor, v.fecha,
+         trim(concat_ws(' ', x.marca, x.modelo, x.anio, upper(x.dominio))) AS ref
+  FROM ventas v LEFT JOIN vehiculos x ON x.id = v.permuta_vehiculo_id
+  WHERE COALESCE(v.permuta_valor, 0) > 0
+    AND NOT EXISTS (SELECT 1 FROM venta_pagos p WHERE p.venta_id = v.id AND p.medio = 'permuta')
+), nuevos AS (
+  INSERT INTO venta_pagos (venta_id, medio, monto, moneda, cotizacion, fecha, referencia, es_sena)
+  SELECT id, 'permuta', permuta_valor, 'ARS', 1, fecha, NULLIF(ref, ''), false FROM faltan
+  RETURNING venta_id, monto
+), s AS (
+  -- Los pagos que ya estaban más el renglón recién agregado (que esta misma
+  -- sentencia todavía no ve en la tabla).
+  SELECT v.id AS venta_id,
+         v.precio - v.descuento - n.monto
+           - COALESCE((SELECT SUM(p.monto * CASE WHEN p.moneda = 'USD' THEN COALESCE(p.cotizacion, 1) ELSE 1 END)
+                       FROM venta_pagos p WHERE p.venta_id = v.id), 0) AS falta
+  FROM nuevos n JOIN ventas v ON v.id = n.venta_id
+), nuevo_monto AS (
+  SELECT c.id, GREATEST(c.cobrado, round(c.cobrado + CASE WHEN c.moneda = 'USD'
+           THEN s.falta / NULLIF(c.cotizacion, 0) ELSE s.falta END)) AS monto, c.cobrado
+  FROM cobranzas c JOIN s ON s.venta_id = c.venta_id
+  WHERE c.id = (SELECT max(id) FROM cobranzas WHERE venta_id = s.venta_id)
+)
+UPDATE cobranzas c SET
+  monto = m.monto,
+  estado = CASE WHEN m.monto - m.cobrado <= 0.5 THEN 'cobrado' ELSE c.estado END
+FROM nuevo_monto m WHERE m.id = c.id;
+
 -- ------------------------------------------------- numeración del boleto
 -- El boleto lleva su propio número, que sigue la numeración que la agencia
 -- ya venía usando en papel. No es el id de la venta: ese no se puede mover.

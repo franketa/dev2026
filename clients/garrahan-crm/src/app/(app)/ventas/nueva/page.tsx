@@ -154,6 +154,18 @@ export default async function NuevaVenta({ searchParams }: { searchParams: Promi
                 ON CONFLICT (vehiculo_id) DO NOTHING`;
       await sql`UPDATE ventas SET permuta_vehiculo_id = ${nuevo.id}, permuta_valor = ${permutaValor}
                 WHERE id = ${venta.id}`;
+
+      // El usado que se toma es parte del pago: si no se lo cargó también como
+      // renglón «Permuta», se agrega solo. Sin esto el valor del usado quedaba
+      // como saldo que el cliente debía.
+      if (!medios.includes("permuta")) {
+        const ref = [permutaMarca, txt("permuta_modelo"), num("permuta_anio"), txt("permuta_dominio")?.toUpperCase()]
+          .filter(Boolean).join(" ");
+        await sql`
+          INSERT INTO venta_pagos (venta_id, medio, monto, moneda, cotizacion, fecha, referencia, es_sena)
+          VALUES (${venta.id}, 'permuta', ${permutaValor}, 'ARS', 1, ${fechaVenta}, ${ref || null}, false)`;
+        cobrado += permutaValor;
+      }
     }
 
     /* ------------------------------------------------------ financiación */

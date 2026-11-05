@@ -17,7 +17,7 @@ export default async function Recibo({ params }: { params: Promise<any> }) {
   const { id } = await params;
 
   const [p] = await sql`
-    SELECT vp.*, v.id AS venta_id, v.precio, v.descuento, v.sena_vence,
+    SELECT vp.*, v.id AS venta_id, v.nro_boleto, v.precio, v.descuento, v.sena_vence,
            x.marca, x.modelo, x.anio, x.dominio,
            c.nombre AS c_nombre, c.apellido AS c_apellido, c.dni_cuit AS c_doc,
            c.direccion AS c_dir, c.localidad AS c_loc,
@@ -34,8 +34,9 @@ export default async function Recibo({ params }: { params: Promise<any> }) {
     sql`SELECT * FROM empresa WHERE id = 1`,
     // Solo lo cobrado hasta este recibo: reimprimir uno viejo no puede
     // mostrar como entregados pagos que llegaron después.
-    sql`SELECT monto, moneda, cotizacion FROM venta_pagos
-        WHERE venta_id = ${p.venta_id} AND (fecha, id) <= (${p.fecha}::date, ${p.id})`,
+    sql`SELECT id, medio, monto, moneda, cotizacion FROM venta_pagos
+        WHERE venta_id = ${p.venta_id} AND (fecha, id) <= (${p.fecha}::date, ${p.id})
+        ORDER BY fecha, id`,
   ]);
   const e = emp[0] || {};
 
@@ -43,6 +44,13 @@ export default async function Recibo({ params }: { params: Promise<any> }) {
   const total = Number(p.precio) - Number(p.descuento);
   const acumulado = todos.reduce((a: number, x: any) => a + enPesos(x), 0);
   const saldo = Math.max(0, total - acumulado);
+  const conPermuta = todos.some((x: any) => x.medio === "permuta");
+
+  // El recibo lleva el número del boleto de la venta. Si la venta tiene más de
+  // un cobro, del segundo en adelante se agrega -2, -3…, en el orden en que entraron.
+  const base = String(p.nro_boleto ?? p.venta_id).padStart(6, "0");
+  const orden = todos.filter((x: any) => x.medio !== "permuta").findIndex((x: any) => x.id === p.id) + 1;
+  const numero = orden > 1 ? `${base}-${orden}` : base;
   const comprador = [p.c_apellido, p.c_nombre].filter(Boolean).join(", ") || "—";
 
   const L = ({ t, children }: any) => (
@@ -83,7 +91,7 @@ export default async function Recibo({ params }: { params: Promise<any> }) {
             <div className="text-[13px] font-bold uppercase tracking-wide">
               {p.es_sena ? "Recibo de seña" : "Recibo"}
             </div>
-            <div className="text-[19px] font-bold tabular">N° {String(p.id).padStart(6, "0")}</div>
+            <div className="text-[19px] font-bold tabular">N° {numero}</div>
             <div className="text-[11.5px] text-gray-600 print:text-black mt-1">{fecha(p.fecha)}</div>
           </div>
         </div>
@@ -121,7 +129,7 @@ export default async function Recibo({ params }: { params: Promise<any> }) {
           <div>
             <h2 className="text-[11px] uppercase tracking-wide font-bold border-b border-gray-300
               print:border-black pb-1 mb-2">En concepto de</h2>
-            <L t="Operación">{p.es_sena ? "Seña de reserva — " : ""}Venta N° {p.venta_id}</L>
+            <L t="Operación">{p.es_sena ? "Seña de reserva — " : ""}Boleto N° {base}</L>
             {p.es_sena && p.sena_vence && <L t="Reserva válida hasta">{fecha(p.sena_vence)}</L>}
             <L t="Unidad">{p.marca} {p.modelo} {p.anio || ""}</L>
             <L t="Dominio">{p.dominio ? String(p.dominio).toUpperCase() : "—"}</L>
@@ -138,7 +146,7 @@ export default async function Recibo({ params }: { params: Promise<any> }) {
               <td className="py-1.5 text-right tabular">{plata(total)}</td>
             </tr>
             <tr className="border-b border-gray-200 print:border-black">
-              <td className="py-1.5">Entregado hasta hoy (incluye este recibo)</td>
+              <td className="py-1.5">Entregado hasta hoy (incluye este recibo{conPermuta ? " y el usado en parte de pago" : ""})</td>
               <td className="py-1.5 text-right tabular">{plata(acumulado)}</td>
             </tr>
             <tr className="font-bold">
@@ -150,7 +158,7 @@ export default async function Recibo({ params }: { params: Promise<any> }) {
 
         <p className="text-[11px] text-gray-600 print:text-black leading-relaxed mb-10">
           El presente recibo se extiende como constancia del pago detallado y queda sujeto
-          a las condiciones del boleto de compraventa de la operación N° {p.venta_id}.
+          a las condiciones del boleto de compraventa N° {base}.
           {saldo > 0 && " No cancela la totalidad de la operación."}
         </p>
 
