@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Plus, Search, Wrench, Receipt, Columns3, LayoutGrid, Table2 } from "lucide-react";
+import { Plus, Search, Wrench, Receipt, Columns3, LayoutGrid, Table2, FileSpreadsheet } from "lucide-react";
 import { sql } from "@/lib/db";
 import { requierePermiso, veCostos } from "@/lib/auth";
 import { plata, plataCorta, numero, km as fkm, dominio, porcentaje } from "@/lib/format";
@@ -215,6 +215,13 @@ export default async function Vehiculos({ searchParams }: { searchParams: Promis
           <>
             <ImprimirListado />
             <Exportar que="vehiculos" />
+            {/* Va como <a>: es una descarga, no una navegación. */}
+            <a href="/api/lista-precios" download title="Excel con los autos disponibles y su precio al público"
+              className="inline-flex items-center justify-center gap-2 rounded-lg px-3.5 py-2
+                text-[13px] font-semibold transition-colors bg-[var(--c-activo)] hover:bg-[var(--c-activo-alto)]
+                text-[var(--c-tinta-clara)] border border-[var(--c-borde)]">
+              <FileSpreadsheet size={15} /> Lista de precios
+            </a>
             <Boton href="/vehiculos/nuevo"><Plus size={15} /> Nuevo vehículo</Boton>
           </>
         }
