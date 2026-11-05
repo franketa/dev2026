@@ -260,9 +260,12 @@ input:focus-visible, select:focus-visible, textarea:focus-visible, button:focus-
 .propuesta { page: propuesta; }
 @page propuesta { size: A4; margin: 12mm 14mm; }
 
-/* El boleto va en una sola hoja A4: dos ejemplares, cada uno de una hoja. */
-.boleto { page: boleto; }
+/* Boleto, recibo y mandato van siempre en una sola hoja A4. Si el contenido
+   no entra, components/una-hoja.tsx lo achica al imprimir. */
+.boleto, .una-hoja { page: boleto; }
 @page boleto { size: A4; margin: 10mm 12mm; }
+/* Cómo se mide antes de imprimir: el ancho útil de la A4, sin el relleno de pantalla. */
+.hoja--midiendo { width: 186mm; max-width: none !important; padding: 0 !important; }
 
 /* ------------------------------------------------------------------ avisos
    "Guardado" y errores, abajo de la pantalla (components/avisos.tsx).        */

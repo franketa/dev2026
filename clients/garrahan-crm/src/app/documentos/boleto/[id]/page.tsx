@@ -4,6 +4,7 @@ import { requierePermiso } from "@/lib/auth";
 import { plata, fecha, dominio, km as fkm } from "@/lib/format";
 import { MEDIOS_PAGO } from "@/lib/constantes";
 import BotonImprimir from "@/components/boton-imprimir";
+import UnaHoja from "@/components/una-hoja";
 import { enLetras } from "@/lib/letras";
 
 export const dynamic = "force-dynamic";
@@ -72,6 +73,7 @@ export default async function Boleto({ params }: { params: Promise<any> }) {
       )}
 
       <div className="hoja boleto max-w-[800px] mx-auto bg-white text-black p-10 rounded-lg print:rounded-none shadow-2xl print:shadow-none">
+        <UnaHoja />
         {/* ------------------------------------------------------ encabezado */}
         <div className="flex items-start gap-4 border-b-2 border-black pb-3 mb-4">
           {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -108,13 +110,11 @@ export default async function Boleto({ params }: { params: Promise<any> }) {
             <h2 className="text-[11px] font-bold uppercase border-b border-gray-300 pb-1 mb-1.5">El comprador</h2>
             <L t="Nombre">{comprador}</L>
             <L t="DNI / CUIT">{v.c_doc}</L>
-            <L t="Domicilio">{v.c_dir}</L>
-            <L t="Localidad">{v.c_loc}</L>
+            <L t="Domicilio">{[v.c_dir, v.c_loc].filter(Boolean).join(", ") || null}</L>
             <L t="Teléfono">{v.c_tel}</L>
           </div>
           <div>
             <h2 className="text-[11px] font-bold uppercase border-b border-gray-300 pb-1 mb-1.5">La operación</h2>
-            <L t="Fecha">{fecha(v.fecha)}</L>
             <L t="Vendedor">{v.vendedor}</L>
             <L t="Entrega">{v.fecha_entrega ? fecha(v.fecha_entrega) : "A convenir"}</L>
           </div>
@@ -128,13 +128,13 @@ export default async function Boleto({ params }: { params: Promise<any> }) {
             <L t="Modelo">{v.modelo} {v.version || ""}</L>
             <L t="Año">{v.anio}</L>
             <L t="Dominio">{dominio(v.dominio)}</L>
-            <L t="Kilometraje">{fkm(v.km)}</L>
           </div>
           <div>
             <L t="N° de motor">{v.nro_motor}</L>
             <L t="N° de chasis">{v.nro_chasis}</L>
             <L t="Color">{v.color}</L>
             <L t="Combustible">{v.combustible}</L>
+            <L t="Kilometraje">{fkm(v.km)}</L>
           </div>
         </div>
 
@@ -142,29 +142,31 @@ export default async function Boleto({ params }: { params: Promise<any> }) {
         <h2 className="text-[11px] font-bold uppercase border-b border-gray-300 pb-1 mb-1.5">Precio y forma de pago</h2>
         <table className="w-full text-[12px] mb-2">
           <tbody>
-            <tr className="border-b border-gray-200">
-              <td className="py-1.5">Precio convenido</td>
-              <td className="py-1.5 text-right tabular">{plata(v.precio)}</td>
-            </tr>
             {Number(v.descuento) > 0 && (
-              <tr className="border-b border-gray-200">
-                <td className="py-1.5">Bonificación</td>
-                <td className="py-1.5 text-right tabular">− {plata(v.descuento)}</td>
-              </tr>
+              <>
+                <tr className="border-b border-gray-200">
+                  <td className="py-1">Precio convenido</td>
+                  <td className="py-1 text-right tabular">{plata(v.precio)}</td>
+                </tr>
+                <tr className="border-b border-gray-200">
+                  <td className="py-1">Bonificación</td>
+                  <td className="py-1 text-right tabular">− {plata(v.descuento)}</td>
+                </tr>
+              </>
             )}
             <tr className={`font-bold ${toma > 0 ? "border-b border-gray-300" : "border-b-2 border-black"}`}>
-              <td className="py-1.5">Total</td>
-              <td className="py-1.5 text-right tabular">{plata(final)}</td>
+              <td className="py-1">{Number(v.descuento) > 0 ? "Total" : "Precio convenido"}</td>
+              <td className="py-1 text-right tabular">{plata(final)}</td>
             </tr>
             {toma > 0 && (
               <>
                 <tr className="border-b border-gray-200">
-                  <td className="py-1.5">Menos: usado que se recibe en parte de pago (detallado abajo)</td>
-                  <td className="py-1.5 text-right tabular">− {plata(toma)}</td>
+                  <td className="py-1">Menos: usado que se recibe en parte de pago (detallado abajo)</td>
+                  <td className="py-1 text-right tabular">− {plata(toma)}</td>
                 </tr>
                 <tr className="border-b-2 border-black font-bold">
-                  <td className="py-1.5">Diferencia a abonar</td>
-                  <td className="py-1.5 text-right tabular">{plata(diferencia)}</td>
+                  <td className="py-1">Diferencia a abonar</td>
+                  <td className="py-1 text-right tabular">{plata(diferencia)}</td>
                 </tr>
               </>
             )}
@@ -251,7 +253,7 @@ export default async function Boleto({ params }: { params: Promise<any> }) {
         )}
 
         {/* ---------------------------------------------------------- firmas */}
-        <div className="grid grid-cols-2 gap-16 mt-12">
+        <div className="grid grid-cols-2 gap-16 mt-10">
           {["El vendedor", "El comprador"].map((t) => (
             <div key={t} className="text-center">
               <div className="border-t border-black pt-2">

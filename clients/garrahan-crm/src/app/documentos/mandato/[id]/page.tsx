@@ -4,6 +4,7 @@ import { requierePermiso } from "@/lib/auth";
 import { plata, fecha, km as fkm } from "@/lib/format";
 import { enLetras } from "@/lib/letras";
 import BotonImprimir from "@/components/boton-imprimir";
+import UnaHoja from "@/components/una-hoja";
 
 export const dynamic = "force-dynamic";
 
@@ -84,8 +85,9 @@ export default async function Mandato({ params }: { params: Promise<any> }) {
         <BotonImprimir />
       </div>
 
-      <div className="hoja max-w-[800px] mx-auto bg-white text-black p-12 rounded-lg
+      <div className="hoja una-hoja max-w-[800px] mx-auto bg-white text-black p-12 rounded-lg
         print:rounded-none shadow-2xl print:shadow-none">
+        <UnaHoja />
 
         {/* ------------------------------------------------------ encabezado */}
         <div className="flex items-start gap-4 border-b-2 border-black pb-4 mb-6">
