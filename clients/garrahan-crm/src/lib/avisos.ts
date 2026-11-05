@@ -39,7 +39,7 @@ export async function armarResumen(): Promise<string | null> {
     sql`SELECT pv.venta_id, c.nombre AS cliente, c.telefono, x.marca, x.modelo
         FROM postventa pv JOIN ventas v ON v.id = pv.venta_id
         LEFT JOIN clientes c ON c.id = v.cliente_id LEFT JOIN vehiculos x ON x.id = v.vehiculo_id
-        WHERE v.estado <> 'cancelada' AND pv.contacto_7 IS NULL AND current_date - pv.entrega >= 7`,
+        WHERE v.estado <> 'cancelada' AND pv.contacto_7 IS NULL AND current_date - pv.entrega >= 2`,
     sql`SELECT pv.venta_id, c.nombre AS cliente, x.marca, x.modelo, current_date - pv.entrega AS dias
         FROM postventa pv JOIN ventas v ON v.id = pv.venta_id
         LEFT JOIN clientes c ON c.id = v.cliente_id LEFT JOIN vehiculos x ON x.id = v.vehiculo_id
@@ -75,7 +75,7 @@ export async function armarResumen(): Promise<string | null> {
       cruzaron.map((v: any) => `• ${enlace("/vehiculos/" + v.id, `${v.marca} ${v.modelo} ${v.anio || ""}`)}: ${v.dias_stock} días`).join("\n"));
   }
   const pv: string[] = [];
-  for (const l of max(llamados)) pv.push(`• Llamar a ${t(l.cliente || "cliente")} (${t(l.marca)} ${t(l.modelo)}) — 7 días de la entrega`);
+  for (const l of max(llamados)) pv.push(`• Llamar a ${t(l.cliente || "cliente")} (${t(l.marca)} ${t(l.modelo)}) — 48 hs de la entrega`);
   for (const x of max(transferencias)) pv.push(`• Transferencia demorada: ${t(x.marca)} ${t(x.modelo)} de ${t(x.cliente || "—")}, ${x.dias} días`);
   for (const v of max(vtv)) pv.push(`• VTV de ${t(v.cliente || "—")} (${t(v.marca)} ${t(v.modelo)}) vence el ${fc(v.vtv_vence)}`);
   if (pv.length) bloques.push(`🤝 ${enlace("/postventa", "Postventa")}\n` + pv.join("\n"));

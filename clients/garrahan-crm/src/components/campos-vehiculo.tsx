@@ -1,6 +1,7 @@
 import { ESTADOS_VEHICULO, TIPO_ADQUISICION } from "@/lib/constantes";
 import { CARROCERIAS, TRACCIONES } from "@/lib/vehiculo-form";
 import { Panel, PanelTitulo, Campo } from "@/components/ui";
+import Equipamiento from "@/components/equipamiento";
 
 const iso = (d: any) => (d ? new Date(d).toISOString().slice(0, 10) : "");
 
@@ -226,11 +227,10 @@ export default function CamposVehiculo({
             <input name="precio_oferta" type="number" step="0.01" min="0" className="campo"
               defaultValue={x.precio_oferta ?? ""} />
           </Campo>
-          <Campo label="Equipamiento (uno por renglón)" ancho="sm:col-span-2 lg:col-span-3">
-            <textarea name="equipamiento" rows={3} className="campo"
-              placeholder={"Aire acondicionado\nLlantas de aleación\nCámara de retroceso"}
-              defaultValue={x.equipamiento ?? ""} />
-          </Campo>
+          <div className="sm:col-span-2 lg:col-span-4">
+            <span className="etiqueta block mb-1.5">Equipamiento (tildá lo que tiene)</span>
+            <Equipamiento inicial={x.equipamiento ?? ""} />
+          </div>
           <Campo label="Descripción para la web" ancho="sm:col-span-2 lg:col-span-4">
             <textarea name="descripcion_web" rows={3} className="campo"
               placeholder="Único dueño, service oficial, cubiertas nuevas…"

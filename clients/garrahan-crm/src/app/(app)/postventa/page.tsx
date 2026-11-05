@@ -12,8 +12,11 @@ import SelectEstado from "@/components/select-estado";
 
 export const dynamic = "force-dynamic";
 
+/** El primer llamado de postventa: a las 48 horas de la entrega. */
+const DIAS_PRIMER_LLAMADO = 2;
+
 /**
- * Lo que pasa después de entregar el auto: el llamado a los 7 días, el
+ * Lo que pasa después de entregar el auto: el llamado a las 48 horas, el
  * seguimiento de la transferencia y la VTV. Después, los contactos a 30 y 90
  * días, que es de donde salen los referidos.
  */
@@ -36,7 +39,8 @@ export default async function Postventa({ searchParams }: { searchParams: Promis
     ORDER BY pv.entrega DESC`;
 
   const debe = (f: any, dias: number, hecho: any) => !hecho && Number(f.dias) >= dias;
-  const llamadoPendiente = (f: any) => debe(f, 7, f.contacto_7);
+  // El primer llamado es a las 48 horas de la entrega (la columna conserva el nombre de cuando era a los 7 días).
+  const llamadoPendiente = (f: any) => debe(f, DIAS_PRIMER_LLAMADO, f.contacto_7);
   const contactoPendiente = (f: any) => debe(f, 30, f.contacto_30) || debe(f, 90, f.contacto_90);
   const transferenciaDemorada = (f: any) =>
     !TRAMITE_TERMINADO.includes(f.estado_tramite) && Number(f.dias) >= DIAS_TRANSFERENCIA;
@@ -130,10 +134,10 @@ export default async function Postventa({ searchParams }: { searchParams: Promis
   return (
     <>
       <Encabezado titulo="Postventa"
-        detalle="Llamado a los 7 días de la entrega, transferencia, VTV y contactos a 30 y 90 días." />
+        detalle="Llamado a las 48 horas de la entrega, transferencia, VTV y contactos a 30 y 90 días." />
 
       <GrillaKPI>
-        <KPI label="Llamados de 7 días pendientes" valor={numero(filas.filter(llamadoPendiente).length)}
+        <KPI label="Llamados de 48 hs pendientes" valor={numero(filas.filter(llamadoPendiente).length)}
           tono={filas.some(llamadoPendiente) ? "rojo" : "verde"} />
         <KPI label="Transferencias demoradas" valor={numero(filas.filter(transferenciaDemorada).length)}
           tono={filas.some(transferenciaDemorada) ? "amarillo" : "verde"}
@@ -158,7 +162,7 @@ export default async function Postventa({ searchParams }: { searchParams: Promis
         <thead>
           <tr>
             <TH>Cliente</TH><TH>Unidad</TH><TH>Entrega</TH>
-            <TH alinear="center">7 días</TH><TH alinear="center">30 / 90</TH>
+            <TH alinear="center">48 hs</TH><TH alinear="center">30 / 90</TH>
             <TH>Transferencia</TH><TH>VTV</TH><TH></TH>
           </tr>
         </thead>
@@ -193,8 +197,8 @@ export default async function Postventa({ searchParams }: { searchParams: Promis
               <TD alinear="center">
                 {f.contacto_7
                   ? <span title={f.resultado_7 || ""}><Chip tono="verde">Llamado</Chip></span>
-                  : Number(f.dias) >= 7 ? <Chip tono="rojo">Llamar</Chip>
-                  : <span className="text-[11.5px] text-[var(--c-tinta-tenue)]">en {7 - Number(f.dias)} d</span>}
+                  : Number(f.dias) >= DIAS_PRIMER_LLAMADO ? <Chip tono="rojo">Llamar</Chip>
+                  : <span className="text-[11.5px] text-[var(--c-tinta-tenue)]">en {DIAS_PRIMER_LLAMADO - Number(f.dias)} d</span>}
               </TD>
               <TD alinear="center">
                 <div className="flex justify-center gap-1">
@@ -232,7 +236,7 @@ export default async function Postventa({ searchParams }: { searchParams: Promis
                     <input type="hidden" name="id" value={f.id} />
                     <Campo label="Contacto">
                       <select name="hito" className="campo" defaultValue={hitoSugerido(f)}>
-                        <option value="7">Llamado a los 7 días</option>
+                        <option value="7">Llamado a las 48 hs</option>
                         <option value="30">Contacto a 30 días</option>
                         <option value="90">Contacto a 90 días</option>
                       </select>

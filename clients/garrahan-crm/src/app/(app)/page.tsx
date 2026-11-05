@@ -60,13 +60,13 @@ export default async function Dashboard() {
       (SELECT count(*) FROM leads l WHERE l.estado = 'nuevo' AND ${leadsVisibles(u)}
          AND l.creado_en < now() - make_interval(hours => ${HORAS_SIN_CONTACTAR}))::int AS leads,
       (SELECT count(*) FROM postventa pv JOIN ventas v ON v.id = pv.venta_id
-         WHERE v.estado <> 'cancelada' AND pv.contacto_7 IS NULL AND current_date - pv.entrega >= 7)::int AS llamados,
+         WHERE v.estado <> 'cancelada' AND pv.contacto_7 IS NULL AND current_date - pv.entrega >= 2)::int AS llamados,
       (SELECT count(*) FROM cobranzas WHERE estado NOT IN ('cobrado','incobrable')
          AND vencimiento < current_date AND monto > cobrado)::int AS cobros`;
   const paraHoy = [
     { n: pend.senas, texto: "señas vencen hoy, mañana o ya vencieron", href: "/ventas?estado=reserva", ver: puede(u, "ventas") },
     { n: pend.leads, texto: `leads nuevos sin contactar hace más de ${HORAS_SIN_CONTACTAR} h`, href: "/leads?estado=nuevo", ver: puede(u, "leads") },
-    { n: pend.llamados, texto: "llamados de postventa a los 7 días", href: "/postventa", ver: puede(u, "ventas") },
+    { n: pend.llamados, texto: "llamados de postventa a las 48 hs", href: "/postventa", ver: puede(u, "ventas") },
     { n: pend.cobros, texto: "cobros o cuotas vencidas", href: "/cobranzas", ver: puede(u, "cobranzas") },
   ].filter((x) => x.ver && Number(x.n) > 0);
 
