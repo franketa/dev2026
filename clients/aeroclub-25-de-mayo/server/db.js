@@ -321,6 +321,15 @@ CREATE TABLE IF NOT EXISTS novedades_revisadas (
   comentario TEXT
 );
 
+-- Caja (módulo de tesorería): documentos JSON por ruta (movs/m0001, pend/P-001, socios/s001, cuentas/c001, app/cfg).
+-- No se cruza con la cuenta corriente de los socios: los saldos los calcula la pantalla.
+CREATE TABLE IF NOT EXISTS tesoreria_docs (
+  ruta TEXT PRIMARY KEY,
+  json TEXT NOT NULL,
+  actualizado_en TEXT NOT NULL DEFAULT (datetime('now')),
+  actualizado_por TEXT
+);
+
 -- Vuelos: nunca se borran. Se editan sólo mientras están abiertos (antes del cierre del mes).
 CREATE TRIGGER IF NOT EXISTS vuelos_no_delete BEFORE DELETE ON vuelos
 BEGIN SELECT RAISE(ABORT, 'Los vuelos no se borran: se anulan'); END;

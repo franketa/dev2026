@@ -1,0 +1,136 @@
+/* Tesorería — estilos propios, acotados a .tes. Usa los tokens del sitio (con respaldo). */
+.tes{--t-tinta:var(--tinta,#172A4F);--t-gris:var(--gris,#5C6B84);--t-azul:var(--azul,#3F5C99);--t-linea:var(--linea,#D8E0EA);--t-linea2:var(--linea-2,#E8EDF3);--t-papel:var(--papel,#F3F6F9);--t-blanco:var(--blanco,#fff);--t-celeste:var(--celeste-2,#E3EEF3);--t-rojo:var(--peligro,#A3231A);--t-ambar:var(--ambar-fondo,#FBF0DC);--t-ambar-b:var(--ambar,#9A6212);position:relative;color:var(--t-tinta);font-family:var(--f-texto,'Barlow',system-ui,sans-serif)}
+.tes *{box-sizing:border-box}
+.tes .muted{color:var(--t-gris)}.tes .chico{font-size:.85rem}
+.tes-tabs{display:flex;gap:2px;overflow-x:auto;border-bottom:1px solid var(--t-linea);margin:0 0 16px;scrollbar-width:thin}
+.tes-tabs button{flex:none;background:none;border:0;border-bottom:3px solid transparent;padding:10px 14px;font:inherit;font-weight:600;color:var(--t-gris);cursor:pointer;white-space:nowrap}
+.tes-tabs button:hover{color:var(--t-tinta)}
+.tes-tabs button[aria-selected=true]{color:var(--t-azul);border-bottom-color:var(--t-azul)}
+.tes-stack{display:flex;flex-direction:column;gap:16px}
+.tes-grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr));gap:16px}
+.tes-pad{padding:14px 16px}.tes-sep{border-bottom:1px solid var(--t-linea2)}
+.tes-ctl{display:flex;flex-wrap:wrap;gap:14px;align-items:flex-end}
+.tes-inline{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.tes-nota{color:var(--t-gris);font-size:.88rem;margin:8px 16px 12px}
+.tes-h{font-size:1.1rem;margin:0 0 8px}.tes-h:not(:first-child){margin-top:18px}
+.tes-ins{margin:0 0 4px;padding-left:20px;line-height:1.55}.tes-ins li{margin:4px 0}
+.tes-estado{margin-right:auto}
+.tes-add{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;padding:14px 16px;align-items:end}
+.tes-add .tes-l{grid-column:span 2}
+@media(max-width:520px){.tes-add .tes-l{grid-column:span 1}}
+.tes .campo{display:flex;flex-direction:column;gap:4px;min-width:0}
+.tes .campo__label{font-size:.78rem;font-weight:600;color:var(--t-gris);text-transform:uppercase;letter-spacing:.03em}
+.tes input,.tes select{font:inherit;color:inherit;background:var(--t-blanco);border:1px solid var(--t-linea);border-radius:var(--r-s,6px);padding:7px 9px;min-width:0;width:100%;min-height:36px}
+.tes input:focus,.tes select:focus{outline:2px solid var(--anillo,#5F79AD);outline-offset:0;border-color:var(--t-azul)}
+.tes .tes-inline input{width:auto}
+.tes input.tes-fuera{background:var(--t-ambar);border-color:var(--t-ambar-b)}
+.tes-seg{display:inline-flex;border:1px solid var(--t-linea);border-radius:var(--r-s,6px);overflow:hidden}
+.tes-seg button{background:var(--t-blanco);border:0;padding:7px 18px;font:inherit;font-weight:600;color:var(--t-gris);cursor:pointer;min-height:36px}
+.tes-seg button[aria-pressed=true]{background:var(--t-azul);color:#fff}
+.tes .tabla-caja{overflow-x:auto}
+.tes table{border-collapse:collapse;width:100%}
+.tes th{text-align:left;font-size:.78rem;text-transform:uppercase;letter-spacing:.03em;color:var(--t-gris);padding:8px 10px;background:var(--t-papel);border-bottom:1px solid var(--t-linea);white-space:nowrap}
+.tes td{padding:6px 10px;border-bottom:1px solid var(--t-linea2);vertical-align:middle}
+.tes .num{text-align:right;font-variant-numeric:tabular-nums}
+.tes td.tes-calc{background:var(--t-papel);white-space:nowrap}
+.tes .monto--neg{color:var(--t-rojo)}
+.tes tr.tes-tot td{font-weight:700;background:var(--t-celeste)}
+.tes .tes-grid td input,.tes .tes-grid td select{padding:5px 7px;min-height:32px}
+.tes .w-d{min-width:136px}.tes .w-s{min-width:120px}.tes .w-n{min-width:112px}.tes .w-m{min-width:180px}.tes .w-l{min-width:220px}
+.tes .tes-grid td.num input{text-align:right}
+.tes-barcell{position:relative;min-width:150px}
+.tes-barcell i{position:absolute;left:0;top:6px;bottom:6px;background:var(--t-celeste);border-radius:0 4px 4px 0;z-index:0}
+.tes-barcell span{position:relative;z-index:1}
+.tes-kv{display:grid;grid-template-columns:1fr auto;gap:6px 16px;margin:0}.tes-kv dt{color:var(--t-gris)}.tes-kv dd{margin:0;font-weight:700;text-align:right}
+.tes .tes-peligro{color:var(--t-rojo)}
+.tes-toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--t-tinta);color:#fff;padding:10px 16px;border-radius:var(--r-m,10px);box-shadow:0 6px 24px rgba(0,0,0,.25);z-index:50;max-width:calc(100vw - 32px)}
+.tes-toast[hidden]{display:none}
+.tes [hidden]{display:none!important}
+.tes .tes-solo-edit{cursor:pointer}
+.tes-scroll{max-height:60vh;overflow:auto}
+.tes .tes-grid-chk{width:auto}
+
+/* ---- Densidad compacta: datos 10 pt, títulos 11 pt ---- */
+.tes{font-size:10pt;line-height:1.3}
+.tes h1,.tes h2,.tes .panel__cab h2,.tes .tes-h{font-size:11pt;line-height:1.3;margin:0}
+.tes .vista__cab{margin-bottom:10px;gap:8px 16px}
+.tes .vista__cab p{font-size:10pt;margin:2px 0 0}
+.tes .panel__cab{padding:7px 12px}
+.tes .btn{font-size:10pt;min-height:26px;padding:3px 10px}
+.tes .btn--chico{min-height:22px;padding:1px 8px;font-size:9pt}
+.tes-tabs{margin-bottom:10px}
+.tes-tabs button{font-size:10pt;padding:6px 10px}
+.tes-stack{gap:10px}.tes-grid2{gap:10px}
+.tes-pad{padding:8px 12px}
+.tes-ctl{gap:10px}
+.tes-nota{font-size:9pt;margin:6px 12px 8px}
+.tes-add{gap:8px;padding:8px 12px;grid-template-columns:repeat(auto-fill,minmax(130px,1fr))}
+.tes .campo{gap:2px}
+.tes .campo__label{font-size:8.5pt}
+.tes input,.tes select{font-size:10pt;padding:2px 6px;min-height:24px;line-height:1.2}
+.tes-seg button{font-size:10pt;padding:2px 12px;min-height:24px}
+.tes th{font-size:8.5pt;padding:4px 8px}
+.tes td{padding:2px 8px}
+.tes .tes-grid td input,.tes .tes-grid td select{padding:1px 5px;min-height:22px}
+.tes td .chip,.tes .chip{font-size:8.5pt;padding:0 8px}
+.tes .tes-grid td .btn{min-height:20px}
+.tes-barcell i{top:3px;bottom:3px}
+.tes-kv{gap:3px 12px}
+.tes-toast{font-size:10pt;padding:6px 12px}
+.tes .aviso{font-size:10pt;padding:6px 10px}
+.tes .w-d{min-width:118px}.tes .w-s{min-width:100px}.tes .w-n{min-width:96px}.tes .w-m{min-width:140px}.tes .w-l{min-width:190px}
+.tes-ins{line-height:1.4}.tes-ins li{margin:2px 0}
+.tes .vacio{padding:16px 12px}
+
+/* ---- Celdas de datos tipo planilla: sin aspecto de botón ---- */
+.tes .tes-grid td input,.tes .tes-grid td select{background:transparent;border:0;border-radius:0;box-shadow:none;padding:1px 2px;min-height:20px;width:100%;appearance:none;-webkit-appearance:none;-moz-appearance:textfield;text-overflow:ellipsis;cursor:text}
+.tes .tes-grid td select{cursor:pointer}
+.tes .tes-grid td input::-webkit-outer-spin-button,.tes .tes-grid td input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+.tes .tes-grid td input[type=date]::-webkit-calendar-picker-indicator{opacity:0;width:0;padding:0;margin:0}
+.tes .tes-grid td input:hover,.tes .tes-grid td select:hover{background:var(--t-papel)}
+.tes .tes-grid td input:focus,.tes .tes-grid td select:focus{background:var(--t-blanco);outline:2px solid var(--anillo,#5F79AD);outline-offset:-2px;border:0}
+.tes .tes-grid td input.tes-fuera{background:var(--t-ambar);border:0}
+.tes .tes-grid td input[data-t=num]{text-align:right}
+.tes .tes-grid td .btn{border:0;background:none}
+
+/* ---- Lista desplegable propia ---- */
+.tes-pop{position:fixed;z-index:60;background:var(--t-blanco);border:1px solid var(--t-linea);border-radius:6px;box-shadow:0 8px 24px rgba(0,0,0,.18);overflow-y:auto;font-size:10pt;padding:2px 0}
+.tes-pop[hidden]{display:none!important}
+.tes-pop>div{padding:3px 10px;cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tes-pop>div:hover,.tes-pop>div.act{background:var(--t-celeste)}
+.tes-pop .tes-pop-vacio{cursor:default;color:var(--t-gris)}
+.tes-pop .muted{margin-left:6px;font-size:9pt}
+.tes-pop{scrollbar-gutter:stable;overscroll-behavior:contain}
+.tes-pop::-webkit-scrollbar{width:12px}
+.tes-pop::-webkit-scrollbar-track{background:var(--t-papel)}
+.tes-pop::-webkit-scrollbar-thumb{background:var(--t-linea);border-radius:6px;border:2px solid var(--t-papel)}
+.tes-pop::-webkit-scrollbar-thumb:hover{background:var(--t-gris)}
+/* Planilla de ingresos y gastos: la barra horizontal siempre visible (caja con alto acotado, scroll en ambos ejes) */
+.tes .tabla-caja.tes-fija{overflow:auto;max-height:calc(100vh - var(--tes-top,0px) - var(--tes-cab-h,70px) - var(--tes-fijo-h,0px) - 24px);min-height:200px}
+.tes .tabla-caja.tes-fija thead th{position:sticky;top:0;z-index:2}
+.tes .tabla-caja.tes-fija::-webkit-scrollbar{height:14px;width:14px}
+.tes .tabla-caja.tes-fija::-webkit-scrollbar-thumb{background:#9aa5b1;border-radius:7px;border:3px solid transparent;background-clip:content-box}
+.tes .tabla-caja.tes-fija::-webkit-scrollbar-track{background:#e8ecf0}
+/* Columnas más compactas en Ingresos y gastos / Pendientes para evitar el scroll horizontal */
+.tes .tes-grid .w-d{min-width:104px}.tes .tes-grid .w-s{min-width:84px}.tes .tes-grid .w-n{min-width:84px}.tes .tes-grid .w-m{min-width:108px}.tes .tes-grid .w-l{min-width:150px}
+.tes .tes-grid td,.tes .tes-grid th{padding-left:4px;padding-right:4px}
+.tes .tes-grid td input,.tes .tes-grid td select{padding:4px 5px}
+.tes .tes-grid th{white-space:normal;line-height:1.15}
+.tes .tes-grid input[type=date]{min-width:0;width:100%;padding-right:2px}
+.tes .tes-grid .w-d{min-width:100px}
+.tes .tes-grid input[type=date]{font-size:9pt;padding-left:3px}.tes .tes-grid .w-s{min-width:76px}.tes .tes-grid .w-n{min-width:78px}
+/* Encabezado (título, botones y solapas) fijo: al hacer scroll solo se mueve el contenido */
+.tes .tes-cab{position:sticky;top:var(--tes-top,0px);z-index:20;background:var(--t-papel);padding-top:6px;margin-bottom:10px;box-shadow:0 1px 0 var(--t-linea)}
+.tes .tes-cab .vista__cab p{display:none}
+.tes .tes-cab .vista__cab{margin-bottom:4px;align-items:center}
+.tes .tes-cab .vista__cab h1{font-size:1.25rem}
+.tes .tes-cab .tes-tabs{margin-bottom:0}
+/* Planilla de ingresos y gastos: Ref. doc. a la mitad; la última columna ajustada al botón Borrar */
+.tes .tes-mov th:nth-last-child(2),.tes .tes-mov td:nth-last-child(2){width:64px;min-width:64px;max-width:64px}
+.tes .tes-mov td:nth-last-child(2) input{min-width:0;width:100%}
+.tes .tes-fija th:last-child,.tes .tes-fija td:last-child{width:1%;white-space:nowrap}
+
+/* Panel superior de cada solapa (agregar, filtros, resumen) fijo debajo del encabezado */
+.tes .tes-fijo{position:sticky;top:calc(var(--tes-top,0px) + var(--tes-cab-h,70px));z-index:15;background:var(--t-papel);display:flex;flex-direction:column;gap:10px;padding-bottom:10px}
+.tes .tes-fijo .tes-grid2{margin:0}
+@media (max-height:620px){.tes .tes-fijo{position:static}.tes .tabla-caja.tes-fija{max-height:none}}

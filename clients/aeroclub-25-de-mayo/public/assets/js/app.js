@@ -40,6 +40,8 @@ const RUTAS = [
   { ruta: '/admin/reportes', vista: reportes, titulo: 'Reportes', para: 'staff' },
   { ruta: '/admin/registro', vista: registro, titulo: 'Registro', para: 'staff' },
   { ruta: '/admin/ajustes', vista: ajustes, titulo: 'Configuración', para: 'staff' },
+  // Caja: el módulo de Guillermo. Se baja recién al abrirlo, así los pilotos no cargan 90 KB que no usan.
+  { ruta: '/admin/tesoreria', vista: async (ctx) => (await import('./views/tesoreria.js')).default(ctx), titulo: 'Caja', para: 'staff' },
   { ruta: '/mantenimiento', vista: novedades, titulo: 'Novedades', para: 'mantenimiento' },
   { ruta: '/rampa', vista: nuevoTicket, titulo: 'Nuevo ticket', para: 'rampa' },
   { ruta: '/rampa/tickets', vista: misTickets, titulo: 'Tickets', para: 'rampa' },
@@ -119,11 +121,12 @@ function itemMenu(it, actual) {
 }
 
 const MI_ACTIVIDAD = [{ href: '#/inicio', txt: 'Mi resumen', ic: 'inicio' }, MENU_PILOTO[2], MENU_PILOTO[3]];
+const ITEM_CAJA = { href: '#/admin/tesoreria', txt: 'Caja', ic: 'cierre' };
 
 function pintarMenus(actual) {
   let lateral;
   if (esStaff()) {
-    lateral = html`${itemMenu(MENU_PILOTO[1], actual)}<div class="menu__grupo">Administración</div>${MENU_ADMIN.map(i => itemMenu(i, actual))}<div class="menu__grupo">Mi actividad</div>${MI_ACTIVIDAD.map(i => itemMenu(i, actual))}`;
+    lateral = html`${itemMenu(MENU_PILOTO[1], actual)}<div class="menu__grupo">Administración</div>${MENU_ADMIN.map(i => itemMenu(i, actual))}<div class="menu__grupo">Mi actividad</div>${MI_ACTIVIDAD.map(i => itemMenu(i, actual))}${itemMenu(ITEM_CAJA, actual)}`;
   } else if (rol() === 'rampa') {
     lateral = MENU_RAMPA.filter(i => i.href !== '#/perfil').map(i => itemMenu(i, actual));
   } else if (rol() === 'mantenimiento') {
@@ -173,7 +176,7 @@ function abrirCajon() {
   pintar(cajon, html`<div class="menu">
     <div class="menu__grupo">Administración</div>${MENU_ADMIN.map(i => itemMenu(i, actual))}
     <div class="menu__grupo">Mi actividad</div>
-    ${MI_ACTIVIDAD.map(i => itemMenu(i, actual))}${itemMenu(MENU_PILOTO[4], actual)}
+    ${MI_ACTIVIDAD.map(i => itemMenu(i, actual))}${itemMenu(ITEM_CAJA, actual)}${itemMenu(MENU_PILOTO[4], actual)}
     <button type="button" data-salir>${icono('salir')}<span>Salir</span></button>
   </div>`);
   document.body.append(fondo, cajon);
@@ -207,6 +210,7 @@ async function navegar(opciones = {}) {
   document.getElementById('barra-seccion').textContent = destino.titulo;
   document.title = `${destino.titulo} · Aeroclub 25 de Mayo`;
 
+  $vista.style.maxWidth = '';            // Caja libera el ancho en algunas solapas: al salir vuelve a lo normal
   const mio = ++token;
   const el = document.createElement('div');
   if (!opciones.mantener) pintar($vista, cargando());

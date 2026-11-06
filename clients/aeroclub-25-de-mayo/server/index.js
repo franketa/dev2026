@@ -1,10 +1,11 @@
 const express = require('express');
 const path = require('path');
 const { db } = require('./db');
-const { requireAuth, requireStaff, requireRampa, requireMantenimiento, exigirOrigenPropio } = require('./middleware/auth');
+const { requireAuth, requireAdmin, requireStaff, requireRampa, requireMantenimiento, exigirOrigenPropio } = require('./middleware/auth');
 const authRouter = require('./routes/auth');
 const { router: appRouter, enviarPdf } = require('./routes/app');
 const adminRouter = require('./routes/admin');
+const { crearRouter: crearRouterCaja } = require('./routes/tesoreria');
 const mantenimientoRouter = require('./routes/mantenimiento');
 const { router: rampaRouter, enviarTicket } = require('./routes/rampa');
 const cierres = require('./services/cierres');
@@ -55,6 +56,7 @@ app.get('/salud', (req, res) => {
 // ── API ─────────────────────────────────────────────────────────────────────
 app.use('/api', exigirOrigenPropio);
 app.use('/api/auth', authRouter);
+app.use('/api/admin/tesoreria', requireAuth, crearRouterCaja(express, { db, requiereStaff: requireStaff, requiereAdmin: requireAdmin }));
 app.use('/api/admin', requireAuth, requireStaff, adminRouter);
 app.use('/api/rampa', requireAuth, requireRampa, rampaRouter);
 app.use('/api/mantenimiento', requireAuth, requireMantenimiento, mantenimientoRouter);
@@ -99,6 +101,7 @@ app.get('/verificar-email/:token', (req, res) => {
 // ── Páginas ─────────────────────────────────────────────────────────────────
 app.get('/', (req, res) => res.sendFile(path.join(PUBLIC, 'index.html')));
 app.get('/app', (req, res) => res.sendFile(path.join(PUBLIC, 'app.html')));
+app.get('/caja', (req, res) => res.redirect('/app#/admin/tesoreria'));
 app.get('/sw.js', (req, res) => {
   res.setHeader('Cache-Control', 'no-cache');
   res.sendFile(path.join(PUBLIC, 'sw.js'));
