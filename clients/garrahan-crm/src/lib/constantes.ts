@@ -1,0 +1,176 @@
+/** Vocabulario del negocio. Los textos son los que usa Garrahan. */
+
+export type Tono = "verde" | "azul" | "violeta" | "naranja" | "rojo" | "amarillo" | "gris" | "celeste";
+
+export const ESTADOS_VEHICULO: Record<string, { label: string; tono: Tono }> = {
+  disponible:   { label: "Disponible",   tono: "verde" },
+  reservado:    { label: "Señado",       tono: "azul" },
+  en_revision:  { label: "En Revisión",  tono: "violeta" },
+  en_taller:    { label: "En Taller",    tono: "naranja" },
+  en_detailing: { label: "En Detailing", tono: "celeste" },
+  vendido:      { label: "Vendido",      tono: "gris" },
+  baja:         { label: "Dado de baja", tono: "rojo" },
+  // Se publica en la web pero no es stock: no suma unidades ni capital.
+  promocion:    { label: "Solo web (no es stock)", tono: "amarillo" },
+};
+
+export const ALERTAS: Record<string, { label: string; tono: Tono }> = {
+  verde:    { label: "OK",        tono: "verde" },
+  amarillo: { label: "+30 días",  tono: "amarillo" },
+  naranja:  { label: "+60 días",  tono: "naranja" },
+  rojo:     { label: "+90 días",  tono: "rojo" },
+};
+
+export const TIPO_ADQUISICION: Record<string, string> = {
+  compra_directa: "Compra directa",
+  permuta: "Permuta",
+  consignacion: "Consignación",
+};
+
+/* ---------------------------------------------------------------- leads
+   Dos niveles, como AutoGestion: la etapa agrupa estados. Asi el vendedor
+   ve el avance y el dueño ve el embudo.                                    */
+export const ETAPAS_LEAD = [
+  { valor: "captacion",    label: "Captación",    estados: ["nuevo", "contactado", "sin_respuesta"] },
+  { valor: "calificacion", label: "Calificación", estados: ["calificado"] },
+  { valor: "negociacion",  label: "Negociación",  estados: ["visita_agendada", "en_negociacion"] },
+  { valor: "cierre",       label: "Cierre",       estados: ["reservado", "vendido"] },
+  { valor: "cerrado",      label: "Cerrados",     estados: ["postergado", "perdido"] },
+];
+
+export const ESTADOS_LEAD: Record<string, { label: string; tono: Tono; etapa: string }> = {
+  nuevo:           { label: "Nuevo",           tono: "azul",     etapa: "captacion" },
+  contactado:      { label: "Contactado",      tono: "amarillo", etapa: "captacion" },
+  sin_respuesta:   { label: "Sin respuesta",   tono: "gris",     etapa: "captacion" },
+  calificado:      { label: "Calificado",      tono: "celeste",  etapa: "calificacion" },
+  visita_agendada: { label: "Visita agendada", tono: "violeta",  etapa: "negociacion" },
+  en_negociacion:  { label: "En negociación",  tono: "naranja",  etapa: "negociacion" },
+  reservado:       { label: "Reservado",       tono: "azul",     etapa: "cierre" },
+  vendido:         { label: "Vendido",         tono: "verde",    etapa: "cierre" },
+  postergado:      { label: "Postergado",      tono: "gris",     etapa: "cerrado" },
+  perdido:         { label: "Perdido",         tono: "rojo",     etapa: "cerrado" },
+};
+
+export const ORIGENES_LEAD: Record<string, string> = {
+  showroom: "Showroom",
+  whatsapp: "WhatsApp",
+  instagram: "Instagram",
+  facebook: "Facebook",
+  web: "Sitio Web",
+  portal: "Portal",
+  referido: "Referido",
+  telefono: "Teléfono",
+  otro: "Otro",
+};
+
+/* --------------------------------------------------------------- ventas */
+export const ESTADOS_VENTA: Record<string, { label: string; tono: Tono }> = {
+  reserva:    { label: "Reserva",    tono: "azul" },
+  en_proceso: { label: "En Proceso", tono: "amarillo" },
+  completada: { label: "Completada", tono: "verde" },
+  cancelada:  { label: "Cancelada",  tono: "rojo" },
+};
+
+export const MEDIOS_PAGO: Record<string, string> = {
+  efectivo: "Efectivo",
+  transferencia: "Transferencia",
+  permuta: "Permuta",
+  financiacion: "Financiación",
+  cheque: "Cheque",
+  tarjeta: "Tarjeta",
+  mercadopago: "Mercado Pago",
+  otro: "Otro",
+};
+
+export const ESTADOS_TRAMITE: Record<string, string> = {
+  iniciado: "Iniciado",
+  cert_08: "08 certificado",
+  presentado: "Presentado",
+  inscripto: "Inscripto",
+  entregado: "Entregado",
+};
+
+/* --------------------------------------------------------------- taller */
+export const ESTADOS_TALLER: Record<string, { label: string; tono: Tono }> = {
+  en_revision:  { label: "En Revisión",  tono: "violeta" },
+  en_taller:    { label: "En Taller",    tono: "naranja" },
+  en_detailing: { label: "En Detailing", tono: "celeste" },
+  completado:   { label: "Completado",   tono: "verde" },
+};
+
+/** Checklist de preparación por defecto. Es el que se carga en cada orden. */
+export const CHECKLIST_TALLER = [
+  "Revisión mecánica general",
+  "Cambio de aceite y filtros",
+  "Frenos y neumáticos",
+  "Chapa y pintura",
+  "Tapizado e interior",
+  "Detailing / pulido",
+  "Documentación y VTV",
+  "Control final",
+];
+
+/* ----------------------------------------------------------------- caja */
+/** La ayuda se ve al elegir la categoría: aclara dónde va lo que se presta a dudas. */
+export const CATEGORIAS: { valor: string; label: string; tipo: "ingreso" | "gasto"; ayuda?: string }[] = [
+  { valor: "venta_usado",    label: "Operación usado",    tipo: "ingreso",
+    ayuda: "Si es plata de un auto vendido o señado, cargala desde la venta (Registrar un cobro): baja el saldo, entra a Caja y sale el recibo." },
+  { valor: "venta_0km",      label: "Operación 0km",      tipo: "ingreso",
+    ayuda: "Si es plata de un auto vendido o señado, cargala desde la venta (Registrar un cobro): baja el saldo, entra a Caja y sale el recibo." },
+  { valor: "servicios_taller", label: "Servicios/Taller", tipo: "ingreso",
+    ayuda: "Lo que cobra el taller por trabajos a terceros." },
+  { valor: "otros_ingresos", label: "Otros ingresos",     tipo: "ingreso" },
+  { valor: "compra_unidad",  label: "Compra de unidades", tipo: "gasto",
+    ayuda: "La compra de un auto. Conviene cargarla al dar de alta la unidad, que ya la registra en Caja." },
+  { valor: "prep_unidad",    label: "Prep. de unidades",  tipo: "gasto",
+    ayuda: "Arreglos, lustrado, repuestos o gestoría de un auto para vender. Se suma al costo del auto elegido." },
+  { valor: "sueldos",        label: "Sueldos y RRSS",     tipo: "gasto" },
+  { valor: "alquiler",       label: "Alquiler",           tipo: "gasto" },
+  { valor: "publicidad",     label: "Publicidad",         tipo: "gasto" },
+  { valor: "servicios",      label: "Servicios",          tipo: "gasto" },
+  { valor: "impuestos",      label: "Impuestos",          tipo: "gasto" },
+  { valor: "patentes",       label: "Patentes",           tipo: "gasto" },
+  { valor: "gastos_banco",   label: "Gastos bancarios",   tipo: "gasto" },
+  { valor: "viaticos",       label: "Viáticos/Movilidad", tipo: "gasto" },
+  { valor: "reparaciones",   label: "Reparaciones y mantenimiento", tipo: "gasto",
+    ayuda: "Arreglos del local, herramientas o vehículos de la agencia. Si es un auto para vender, va en Prep. de unidades." },
+  { valor: "garantia_postventa", label: "Garantías post-venta", tipo: "gasto",
+    ayuda: "Arreglos de un auto que ya se vendió." },
+  { valor: "pago_obra",      label: "Pago de obra",       tipo: "gasto" },
+  { valor: "retiro_socios",  label: "Retiro de efectivo (dueños)", tipo: "gasto",
+    ayuda: "Lo que se llevan los dueños. Baja la caja, pero no resta del resultado del mes." },
+  { valor: "otros_gastos",   label: "Otros gastos",       tipo: "gasto" },
+];
+
+/**
+ * De quién es la unidad. No es una etiqueta: cambia qué significa la plata que
+ * deja al venderse. Una unidad propia deja margen; una en consignación deja
+ * comisión, porque el auto nunca fue de la agencia.
+ */
+export const PROPIEDAD: Record<string, { label: string; corto: string; tono: Tono; deja: string }> = {
+  propia:       { label: "Propia",          corto: "Propia",   tono: "verde",   deja: "margen" },
+  inversor:     { label: "De un inversor",  corto: "Inversor", tono: "violeta", deja: "margen" },
+  consignacion: { label: "En consignación", corto: "Consig.",  tono: "celeste", deja: "comisión" },
+};
+
+/** Lo que la agencia gana con una unidad que no es suya es comisión, no margen. */
+export const GANA_COMISION = ["consignacion"];
+
+/** La compra y la preparación NO son gasto del mes: son costo de la unidad. */
+export const CATEGORIAS_INVENTARIO = ["compra_unidad", "prep_unidad"];
+
+/** Lo que se llevan los dueños sale de la caja pero no es gasto: es lo que ganó el negocio. */
+export const CATEGORIA_RETIRO = "retiro_socios";
+
+export const TIPOS_COSTO = [
+  "Mecánica", "Chapa y pintura", "Detailing", "Repuestos", "Neumáticos",
+  "Gestoría", "Transporte", "Administrativo", "Publicidad", "Otro",
+];
+
+/* ------------------------------------------------------------ postventa */
+/** Una transferencia que pasa este plazo desde la entrega sin inscribirse está demorada. */
+export const DIAS_TRANSFERENCIA = 15;
+/** La VTV se avisa con este margen antes de vencer. */
+export const DIAS_VTV = 30;
+/** Estados del trámite en que la transferencia ya no necesita seguimiento. */
+export const TRAMITE_TERMINADO = ["inscripto", "entregado"];
