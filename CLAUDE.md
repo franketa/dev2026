@@ -38,7 +38,8 @@ npm run lint     # ESLint
 
 ## Conventions
 
-- **Branch naming**: `claude/<client-name>` for feature branches (e.g., `claude/tienda-box`)
+- **Una sola carpeta**: todo se trabaja en `Proyectos/dev2026`. No crear git worktrees ni copias `dev2026-<cliente>` al lado (se consolidaron el 2026-11-11; el respaldo está en `Proyectos/_respaldos/`).
+- **Branch naming**: `claude/<client-name>` for feature branches (e.g., `claude/tienda-box`). Coolify deploya desde `master`, así que una rama se mergea a master y se pushea antes de deployar.
 - **file edition**: Each time you do a edition on any file, or multiple files, you should do a commit, ALWAYS.
 - **Deployment**: Each client folder is deployed independently to Coolify by pointing to its subdirectory
 - **Static sites use BEM-style CSS** with component-scoped class names (e.g., `nav__logo`, `nav__toggle`)
