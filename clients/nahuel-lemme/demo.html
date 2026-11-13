@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="es-AR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Modo demo · Nahuel Lemme Peluquería</title>
+<meta name="description" content="Esta peluquería está en modo demo: los turnos online todavía no están activos.">
+<!-- Sitio de muestra: sacar el noindex cuando salga a producción. -->
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#0e0d0c">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..900;1,6..96,400..900&family=Hanken+Grotesk:wght@300..800&display=swap">
+<link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body class="pagina-demo">
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <symbol id="i-tijera" viewBox="0 0 24 24"><circle cx="6" cy="7" r="2.5"/><circle cx="6" cy="17" r="2.5"/><path d="M8.2 8.4 20 18M8.2 15.6 20 6"/></symbol>
+  <symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 21s-6.5-6.1-6.5-11a6.5 6.5 0 0 1 13 0c0 4.9-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.3"/></symbol>
+  <symbol id="i-calendario" viewBox="0 0 24 24"><path d="M4 5h16v15H4zM4 9.5h16M8 3v4M16 3v4"/></symbol>
+  <symbol id="i-mensaje" viewBox="0 0 24 24"><path d="M4 5h16v11H10l-4.5 4v-4H4z"/></symbol>
+</svg>
+
+<a class="saltar" href="#contenido">Saltar al contenido</a>
+
+<header class="barra">
+  <div class="wrap barra__fila">
+    <a class="nl-firma nl-firma--chica nl-firma--linea" href="index.html" aria-label="Nahuel Lemme Peluquería, ir al inicio"><span class="nl-firma__nombre">Nahuel Lemme</span><span class="nl-firma__rubro">Peluquería</span></a>
+    <a class="nl-btn nl-btn--linea nl-btn--chico" id="volver" href="index.html">Volver</a>
+  </div>
+</header>
+
+<!-- Todos los botones de turno del sitio llegan acá mientras no haya backend de reservas. -->
+<main id="contenido">
+  <section class="demo" aria-labelledby="demo-titulo">
+    <div class="wrap">
+      <div class="demo__cuerpo">
+        <p class="nl-banda">Modo demo</p>
+        <h1 class="display-xl" id="demo-titulo"><span class="pal"><span style="--i:0">Esta</span></span> <span class="pal"><span style="--i:1">peluquería</span></span> <span class="pal"><span style="--i:2">está</span></span> <span class="pal"><span style="--i:3">en</span></span> <span class="pal"><span style="--i:4">modo</span></span> <span class="pal"><span style="--i:5">demo.</span></span></h1>
+        <p class="cuerpo-lg">Los turnos online todavía no están activos. Esta web es una muestra de cómo va a quedar la del salón.</p>
+        <p class="demo__motivo" id="demo-motivo" hidden></p>
+      </div>
+
+      <div class="pasos">
+        <h2 class="titulo">Así va a ser pedir turno</h2>
+        <ol class="pasos__lista">
+          <li class="paso">
+            <svg class="icono" aria-hidden="true"><use href="#i-tijera"/></svg>
+            <p class="nl-sobretitulo">Paso 1 de 3</p>
+            <p class="paso__nombre">Servicio</p>
+            <p class="nota">Color, corte o peinado.</p>
+          </li>
+          <li class="paso">
+            <svg class="icono" aria-hidden="true"><use href="#i-calendario"/></svg>
+            <p class="nl-sobretitulo">Paso 2 de 3</p>
+            <p class="paso__nombre">Día y hora</p>
+            <p class="nota">Ves los horarios libres y elegís el tuyo.</p>
+          </li>
+          <li class="paso">
+            <svg class="icono" aria-hidden="true"><use href="#i-mensaje"/></svg>
+            <p class="nl-sobretitulo">Paso 3 de 3</p>
+            <p class="paso__nombre">Tus datos</p>
+            <p class="nota">Nombre y WhatsApp. Te llega la confirmación.</p>
+          </li>
+        </ol>
+      </div>
+
+      <div class="demo__acciones">
+        <a class="nl-btn nl-btn--oro" href="index.html">Volver al inicio</a>
+        <a class="nl-btn nl-btn--texto" href="https://www.instagram.com/nahuellemmepeluqueria_/" target="_blank" rel="noopener noreferrer">Ver Instagram</a>
+      </div>
+      <p class="legal demo__firma">Demo desarrollada por <a href="https://www.venturebyte.com.ar" target="_blank" rel="noopener noreferrer">VentureByte</a>.</p>
+    </div>
+  </section>
+</main>
+
+<script src="assets/js/main.js" defer></script>
+</body>
+</html>
