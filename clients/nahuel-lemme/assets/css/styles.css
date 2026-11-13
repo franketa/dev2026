@@ -326,3 +326,11 @@ ol,ul{list-style:none}
   *,*::before,*::after{animation:none!important;transition:none!important}
   .hero__foto>img{translate:none}
 }
+
+/* Bodoni Moda con menos contraste: a tamaño de título el eje óptico afina demasiado
+   los trazos finos (se notaba sobre todo en las bandas claras). Se fija un tamaño
+   óptico bajo para que los finos tengan cuerpo. Va al final porque `font:` lo reinicia. */
+.display-xl,.display-lg,.titulo,.cita,.nl-servicio__titulo,.nl-firma__nombre,.paso__nombre,.cinta__grupo li{font-variation-settings:"opsz" 14}
+/* Con el tamaño óptico bajo las letras quedan más sueltas: se aprieta la interletra en los títulos grandes. */
+.display-xl{letter-spacing:-.025em}
+.display-lg{letter-spacing:-.018em}
