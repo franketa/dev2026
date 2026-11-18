@@ -17,6 +17,8 @@ const verificacion = require('../services/verificacion');
 const tickets = require('../services/tickets');
 const pagosInformados = require('../services/pagosInformados');
 const respaldos = require('../services/respaldos');
+const liquidaciones = require('../services/liquidaciones');
+const { MIME_XLSX } = require('../services/xlsx');
 const { requireAdmin } = require('../middleware/auth');
 const { enviarPdf, enviarComprobante } = require('./app');
 const { enviarTicket } = require('./rampa');
@@ -395,6 +397,14 @@ router.get('/cierres/:id', (req, res) => {
   const base = (cfg.url_publica || `${req.protocol}://${req.get('host')}`).replace(/\/$/, '');
   d.cupones = d.cupones.map(c => ({ ...c, whatsapp: linkWhatsApp(c, d.cierre, cfg, base), link: `${base}/c/${c.token}` }));
   res.json(d);
+});
+
+// Excel del mes para el módulo de facturación: una fila por concepto de cada cupón.
+router.get('/cierres/:id/liquidaciones', (req, res) => {
+  const { archivo, contenido } = liquidaciones.exportar(Number(req.params.id));
+  res.setHeader('Content-Type', MIME_XLSX);
+  res.setHeader('Content-Disposition', `attachment; filename="${archivo}"`);
+  res.send(contenido);
 });
 
 function linkWhatsApp(c, cierre, cfg, base) {

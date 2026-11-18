@@ -173,6 +173,13 @@ function sinAnuladosDelPeriodo(movimientos) {
   return movimientos.filter(m => !anulados.has(m.id) && !(m.anula_id && anulados.has(m.anula_id)));
 }
 
+// Concepto de un renglón del detalle: el vuelo se describe por avión e instructor (la fecha y las horas van en sus columnas).
+function conceptoDetalle(m) {
+  return m.tipo === 'vuelo'
+    ? `${m.matricula} ${m.vuelo_tipo === 'instruccion' ? `con instructor ${m.instructor}` : 'sin instructor'}`
+    : m.concepto;
+}
+
 // El cupón entra en una sola hoja: el resumen y "Cómo pagar" van lado a lado, y si el detalle es largo
 // las filas se achican. Sólo un mes con muchísimos movimientos pasa a una segunda hoja.
 function generarCupon({ cupon, movimientos, config, estado }) {
@@ -220,9 +227,7 @@ function generarCupon({ cupon, movimientos, config, estado }) {
 
   // ── Detalle de movimientos ────────────────────────────────────────────────────
   const lista = sinAnuladosDelPeriodo(movimientos);
-  const conceptoDe = (m) => (m.tipo === 'vuelo'
-    ? `${m.matricula} ${m.vuelo_tipo === 'instruccion' ? `con instructor ${m.instructor}` : 'sin instructor'}`
-    : m.concepto);
+  const conceptoDe = conceptoDetalle;
   // Tamaño de letra según lo que haya que listar: de 9,5 a 7,5 puntos para que entre en la hoja.
   const pie = 790;
   const disponible = pie - 16 - (y + 38);          // 38: título "Detalle" y encabezado de la tabla
@@ -372,4 +377,4 @@ function generarTicket(t, config) {
 
 function capital(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
 
-module.exports = { generarCupon, generarTicket, ALA };
+module.exports = { generarCupon, generarTicket, sinAnuladosDelPeriodo, conceptoDetalle, ALA };

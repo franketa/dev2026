@@ -55,6 +55,7 @@ Usuarios de la demo: `tesoreria@aeroclub25demayo.com.ar` / `demo1234` (tesorerí
 | Cierre mensual en una sola transacción; la "simulación" corre el cierre real y lo revierte | `server/services/cierres.js` |
 | Vuelos cargados tarde de un mes ya cerrado entran en el cierre siguiente con su fecha real | `cierres.correrCierre()` |
 | El período es el mes calendario; el cierre automático corre el día 5 del mes siguiente a las 9 (configurable), así los vuelos cargados tarde entran en su mes. En orden y sin saltear meses | `cierres.cierreAutomatico()` |
+| Excel para facturar: desde el detalle de un cierre se baja un `.xlsx` con una fila por concepto de cada cupón (formato del módulo de facturación de tesorería). Van todos los movimientos, también los pagos en negativo, para que saldo anterior + ítems = total | `server/services/liquidaciones.js`, `xlsx.js` |
 | Tickets de servicios: un movimiento `servicio` por ticket, con el precio del día congelado en sus ítems. No se editan: se anulan (contraasiento) y se hace otro | `server/services/tickets.js` |
 | Derecho de aeronave: se cobra en el cierre, una sola vez por piloto y por mes volado (`derechos_aeronave`). Con precio en cero no se cobra | `tickets.cobrarDerechos()` |
 | Historial de pagos: lo que informa el socio y lo que cobra rampa no toca el saldo hasta que tesorería lo confirma; lo que carga tesorería entra confirmado. Un pago anulado o borrado del libro queda como 'anulado' en el historial | `server/services/pagosInformados.js` |

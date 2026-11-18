@@ -98,6 +98,7 @@ export async function detalleCierre(ctx) {
     <div class="vista__cab">
       <div><a class="volver" href="#/admin/cierres">${icono('izq')} Cierres</a><h1 style="text-transform:capitalize">${nombrePeriodo(cierre.periodo)}</h1>
         <p>Cerrado el ${fechaHora(cierre.creado_en)} ${cierre.automatico ? 'automáticamente' : `por ${cierre.cerrado_por_nombre}`}. ${cierre.cantidad_vuelos} vuelos, ${horas(cierre.total_decimas)}.</p></div>
+      ${cupones.length ? html`<div class="vista__acciones"><a class="btn btn--sec" href="/api/admin/cierres/${cierre.id}/liquidaciones" download title="Un renglón por cada concepto de cada cupón, para el módulo de facturación">${icono('descargar')} Excel para facturar</a></div>` : ''}
     </div>
 
     <div class="cifras">
