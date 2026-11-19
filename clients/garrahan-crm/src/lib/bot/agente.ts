@@ -10,7 +10,7 @@ import { atender, DEFINICIONES, type Accion, type Contexto } from "./herramienta
  * su propia base. La clave va por variable de entorno (ANTHROPIC_API_KEY).
  */
 
-const MODELO = "claude-opus-5-5";
+const MODELO = "claude-sonnet-5-5";
 /** Vueltas de herramientas por mensaje. Una venta completa usa cuatro o cinco. */
 const MAX_VUELTAS = 12;
 
