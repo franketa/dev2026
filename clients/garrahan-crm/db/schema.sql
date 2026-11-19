@@ -595,6 +595,53 @@ INSERT INTO empresa (id) VALUES (1) ON CONFLICT (id) DO NOTHING;
 UPDATE empresa SET boleto_proximo = (SELECT COALESCE(max(nro_boleto), 0) + 1 FROM ventas)
   WHERE id = 1 AND boleto_proximo IS NULL;
 
+-- ------------------------------------------------- asistente de Telegram
+-- El equipo le manda audios al bot y un agente los resuelve contra el sistema.
+-- Cada usuario vincula su Telegram desde «Mi cuenta»: el asistente actúa con
+-- ese usuario y sus permisos.
+ALTER TABLE usuarios ADD COLUMN IF NOT EXISTS telegram_id bigint;
+CREATE UNIQUE INDEX IF NOT EXISTS usuarios_telegram_idx ON usuarios(telegram_id) WHERE telegram_id IS NOT NULL;
+
+-- El código de un solo uso que se le manda al bot para vincularse.
+CREATE TABLE IF NOT EXISTS bot_vinculos (
+  codigo     text PRIMARY KEY,
+  usuario_id int NOT NULL REFERENCES usuarios(id) ON DELETE CASCADE,
+  vence      timestamptz NOT NULL
+);
+
+-- Telegram reintenta lo que no le contestaron: cada mensaje se atiende una vez.
+CREATE TABLE IF NOT EXISTS bot_updates (
+  update_id   bigint PRIMARY KEY,
+  recibido_en timestamptz NOT NULL DEFAULT now()
+);
+
+-- La charla en curso de cada persona en cada chat, para poder repreguntar.
+-- Dura media hora sin movimiento; no es un historial.
+CREATE TABLE IF NOT EXISTS bot_conversaciones (
+  chat_id        bigint NOT NULL,
+  telegram_id    bigint NOT NULL,
+  mensajes       text NOT NULL,
+  actualizado_en timestamptz NOT NULL DEFAULT now(),
+  PRIMARY KEY (chat_id, telegram_id)
+);
+
+-- Los cambios que el asistente preparó y esperan el botón Confirmar. Nada se
+-- guarda en el sistema hasta que la misma persona lo confirma.
+CREATE TABLE IF NOT EXISTS bot_pendientes (
+  id          serial PRIMARY KEY,
+  chat_id     bigint NOT NULL,
+  telegram_id bigint NOT NULL,
+  usuario_id  int NOT NULL REFERENCES usuarios(id) ON DELETE CASCADE,
+  acciones    jsonb NOT NULL,          -- [{ tipo, datos, resumen }]
+  texto       text NOT NULL,           -- el mensaje que se mandó, para reescribirlo al resolver
+  mensaje_id  bigint,
+  estado      text NOT NULL DEFAULT 'pendiente'
+              CHECK (estado IN ('pendiente','confirmada','cancelada','vencida')),
+  creado_en   timestamptz NOT NULL DEFAULT now(),
+  resuelto_en timestamptz
+);
+CREATE INDEX IF NOT EXISTS bot_pendientes_chat_idx ON bot_pendientes(chat_id, telegram_id) WHERE estado = 'pendiente';
+
 -- ============================================================================
 -- Vista: costo real y margen por unidad. Una sola fuente de verdad.
 -- La compra NO es un gasto del mes: es el valor de toma de la unidad.

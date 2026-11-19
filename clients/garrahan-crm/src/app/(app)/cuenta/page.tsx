@@ -3,16 +3,50 @@ import { redirect } from "next/navigation";
 import bcrypt from "bcryptjs";
 import { avisoOk, avisoError } from "@/lib/aviso";
 import { sql } from "@/lib/db";
+import crypto from "crypto";
 import { requiereSesion, hash, ROLES } from "@/lib/auth";
+import { datosDelBot, telegramConfigurado } from "@/lib/telegram";
+import { asistenteConfigurado } from "@/lib/bot";
 import { Encabezado, Panel, PanelTitulo, Boton, Campo, Dato, Chip } from "@/components/ui";
 
 export const dynamic = "force-dynamic";
 
+/** Sin O/0 ni I/1/L: el código a veces se tipea a mano en el grupo. */
+const LETRAS = "ABCDEFGHJKMNPQRSTUVWXYZ23456789";
+const MINUTOS_CODIGO = 15;
+
 export default async function Cuenta() {
   const u = await requiereSesion();
 
-  const [yo] = await sql`SELECT nombre, email, telefono, rol, creado_en FROM usuarios WHERE id = ${u.id}`;
+  const [yo] = await sql`SELECT nombre, email, telefono, rol, creado_en, telegram_id FROM usuarios WHERE id = ${u.id}`;
   const rol = ROLES.find((r) => r.valor === u.rol);
+
+  // El asistente de Telegram: solo se ofrece si el bot existe en el servidor.
+  const hayBot = telegramConfigurado();
+  const [codigo] = hayBot && !yo?.telegram_id
+    ? await sql`SELECT codigo FROM bot_vinculos WHERE usuario_id = ${u.id} AND vence > now() ORDER BY vence DESC LIMIT 1`
+    : [];
+  const bot = hayBot && codigo ? await datosDelBot() : null;
+
+  async function generarCodigo() {
+    "use server";
+    const usr = await requiereSesion();
+    const nuevo = Array.from({ length: 10 }, () => LETRAS[crypto.randomInt(LETRAS.length)]).join("");
+    await sql`DELETE FROM bot_vinculos WHERE usuario_id = ${usr.id}`;
+    await sql`INSERT INTO bot_vinculos (codigo, usuario_id, vence)
+              VALUES (${nuevo}, ${usr.id}, now() + make_interval(mins => ${MINUTOS_CODIGO}))`;
+    revalidatePath("/cuenta");
+  }
+
+  async function desvincular() {
+    "use server";
+    const usr = await requiereSesion();
+    await sql`UPDATE usuarios SET telegram_id = NULL WHERE id = ${usr.id}`;
+    await sql`INSERT INTO auditoria (usuario_id, entidad, entidad_id, accion, detalle)
+              VALUES (${usr.id}, 'usuario', ${usr.id}, 'telegram_desvinculado', 'propia')`;
+    revalidatePath("/cuenta");
+    await avisoOk("Telegram desvinculado");
+  }
 
   async function cambiarClave(fd: FormData) {
     "use server";
@@ -101,6 +135,48 @@ export default async function Cuenta() {
             primero que prueba cualquiera que conozca el negocio.
           </p>
         </Panel>
+
+        {hayBot && (
+          <Panel className="lg:col-span-2">
+            <PanelTitulo titulo="Asistente por Telegram"
+              detalle="Mandale un audio al bot y carga o consulta en el sistema por vos, con tu usuario y tus permisos. Antes de guardar un cambio te lo muestra y lo confirmás con un botón." />
+            {yo?.telegram_id ? (
+              <div className="flex flex-wrap items-center gap-3">
+                <Chip tono="verde">Tu Telegram está vinculado</Chip>
+                <form action={desvincular}><Boton tipo="submit" variante="suave">Desvincular</Boton></form>
+              </div>
+            ) : codigo ? (
+              <div className="space-y-3 text-[13px] text-[var(--c-tinta-clara)]">
+                {bot?.username && (
+                  <p>
+                    Desde el teléfono, abrí este link y tocá <b>Iniciar</b>:{" "}
+                    <a href={`https://t.me/${bot.username}?start=${codigo.codigo}`} target="_blank" rel="noopener noreferrer"
+                      className="text-[var(--c-enlace)] hover:underline break-all">
+                      t.me/{bot.username}?start={codigo.codigo}
+                    </a>
+                  </p>
+                )}
+                <p>
+                  {bot?.username ? "O mandale" : "Mandale"} al bot este mensaje:{" "}
+                  <code className="px-1.5 py-0.5 rounded bg-[var(--c-hover)] text-[var(--c-tinta)] tabular">/vincular {codigo.codigo}</code>
+                </p>
+                <p className="text-[11.5px] text-[var(--c-tinta-tenue)]">
+                  El código vale {MINUTOS_CODIGO} minutos y sirve una sola vez. No lo compartas: quien lo use queda como vos.
+                </p>
+                <form action={generarCodigo}><Boton tipo="submit" variante="suave">Generar otro código</Boton></form>
+              </div>
+            ) : (
+              <div className="space-y-3">
+                {!asistenteConfigurado() && (
+                  <p className="text-[12.5px] text-[var(--c-tinta-media)]">
+                    El asistente todavía no está activado en el servidor. Podés dejar tu Telegram vinculado igual.
+                  </p>
+                )}
+                <form action={generarCodigo}><Boton tipo="submit">Vincular Telegram</Boton></form>
+              </div>
+            )}
+          </Panel>
+        )}
       </div>
     </>
   );

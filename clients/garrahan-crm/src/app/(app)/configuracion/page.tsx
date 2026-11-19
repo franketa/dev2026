@@ -8,7 +8,9 @@ export const dynamic = "force-dynamic";
 
 import { revalidatePath } from "next/cache";
 import { Boton, Campo, PanelTitulo } from "@/components/ui";
-import { avisar, telegramConfigurado } from "@/lib/telegram";
+import { avisar, telegramConfigurado, tg } from "@/lib/telegram";
+import { agenteConfigurado } from "@/lib/bot/agente";
+import { transcripcionConfigurada } from "@/lib/bot/transcribir";
 import { mandarResumen } from "@/lib/avisos";
 
 export default async function Configuracion() {
@@ -107,6 +109,28 @@ export default async function Configuracion() {
   const tokenOk = telegramConfigurado();
   const chatActual = e?.telegram_chat || process.env.TELEGRAM_CHAT_ID || "";
 
+  // El asistente por audio: qué le falta para andar, dicho en la pantalla y no en un log.
+  const yo = tokenOk ? await tg<any>("getMe") : null;
+  const vinculados = tokenOk ? await sql`SELECT nombre FROM usuarios WHERE telegram_id IS NOT NULL AND activo ORDER BY nombre` : [];
+  const asistente: { ok: boolean; texto: string }[] = !tokenOk ? [] : [
+    agenteConfigurado()
+      ? { ok: true, texto: "El agente está activo." }
+      : { ok: false, texto: "Falta la clave de Claude en el servidor (ANTHROPIC_API_KEY): sin ella el bot solo manda avisos." },
+    transcripcionConfigurada()
+      ? { ok: true, texto: "Escucha audios." }
+      : { ok: false, texto: "Falta la clave de ElevenLabs en el servidor (ELEVENLABS_API_KEY): sin ella solo entiende texto." },
+    (process.env.CRM_PUBLIC_URL || "").startsWith("https://")
+      ? { ok: true, texto: "Telegram sabe dónde mandarle los mensajes." }
+      : { ok: false, texto: "Falta la dirección pública del sistema (CRM_PUBLIC_URL, con https): Telegram no tiene a dónde mandar los mensajes." },
+    !yo ? { ok: false, texto: "No se pudo consultar el bot en Telegram." }
+      : yo.can_read_all_group_messages
+        ? { ok: true, texto: "Recibe los audios del grupo." }
+        : { ok: false, texto: "El bot no recibe los audios que se mandan al grupo (sí por privado). Para que los reciba: en BotFather, /setprivacy → elegí el bot → Disable; después sacá el bot del grupo y volvé a agregarlo." },
+    vinculados.length
+      ? { ok: true, texto: "Usuarios vinculados: " + vinculados.map((v: any) => v.nombre).join(", ") + "." }
+      : { ok: false, texto: "Todavía nadie vinculó su Telegram. Cada uno lo hace desde Mi cuenta." },
+  ];
+
   return (
     <>
       <Encabezado titulo="Configuración" detalle="Los datos que salen impresos en los documentos." />
@@ -190,6 +214,20 @@ export default async function Configuracion() {
                 <div className="flex flex-wrap gap-2">
                   <form action={probarTelegram}><Boton tipo="submit" variante="suave">Mandar un mensaje de prueba</Boton></form>
                   <form action={resumenAhora}><Boton tipo="submit" variante="suave">Mandar el resumen de hoy</Boton></form>
+                </div>
+                <div className="pt-3 border-t border-[var(--c-borde)]">
+                  <span className="etiqueta block mb-2">Asistente por audio</span>
+                  <p className="text-[12.5px] text-[var(--c-tinta-media)] leading-relaxed mb-2">
+                    El equipo le manda un audio al bot y un agente consulta o carga en el sistema, con el
+                    usuario y los permisos de quien habla. Cada cambio se confirma con un botón antes de guardarse.
+                  </p>
+                  <ul className="space-y-1.5 text-[12.5px] leading-relaxed">
+                    {asistente.map((a) => (
+                      <li key={a.texto} className={a.ok ? "text-[var(--c-tinta-clara)]" : "text-[var(--c-amarillo)]"}>
+                        {a.ok ? "✓" : "•"} {a.texto}
+                      </li>
+                    ))}
+                  </ul>
                 </div>
               </div>
             </div>

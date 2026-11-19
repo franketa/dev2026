@@ -4,19 +4,13 @@ import { avisoOk, avisoError } from "@/lib/aviso";
 import { sql } from "@/lib/db";
 import { requierePermiso, veTodosLosLeads } from "@/lib/auth";
 import { puedeVerLead } from "@/lib/leads";
+import { editarLead } from "@/lib/leads-operar";
 import { Encabezado, Boton } from "@/components/ui";
 import CamposLead from "@/components/campos-lead";
 
 export const dynamic = "force-dynamic";
 
-/** Cómo se nombra cada dato en el historial del lead. */
-const NOMBRES: Record<string, string> = {
-  nombre: "nombre", telefono: "teléfono", email: "email", origen: "origen", asesor_id: "asesor",
-  sucursal_id: "sucursal", cliente_id: "cliente", vehiculo_id: "unidad", vehiculo_texto: "lo que pidió",
-  presupuesto: "presupuesto", entrega_usado: "entrega usado", usado_detalle: "usado",
-  tasacion: "tasación", proxima_accion: "próxima acción", fecha_proxima: "fecha de la próxima acción",
-  observaciones: "observaciones", motivo_perdida: "motivo de la pérdida",
-};
+
 
 /**
  * Todos los datos del lead, para corregirlos. El estado no: se cambia desde
@@ -44,10 +38,6 @@ export default async function EditarLead({ params }: { params: Promise<any> }) {
   async function guardar(fd: FormData) {
     "use server";
     const usr = await requierePermiso("leads.editar");
-    if (!(await puedeVerLead(usr, id))) return avisoError("Ese lead no es tuyo.");
-    const [antes] = await sql`SELECT * FROM leads WHERE id = ${id}`;
-    if (!antes) return avisoError("Ese lead ya no existe.");
-
     const txt = (k: string) => {
       const v = String(fd.get(k) ?? "").trim();
       return v === "" ? null : v;
@@ -56,42 +46,28 @@ export default async function EditarLead({ params }: { params: Promise<any> }) {
       const v = fd.get(k);
       return v === null || String(v).trim() === "" ? null : Number(v);
     };
-    const nombre = txt("nombre");
-    if (!nombre) return avisoError("Falta el nombre.");
 
     const nuevo: Record<string, any> = {
-      nombre, telefono: txt("telefono"), email: txt("email"),
-      origen: String(fd.get("origen") || antes.origen),
-      asesor_id: veTodosLosLeads(usr) ? num("asesor_id") : antes.asesor_id,
+      nombre: txt("nombre"), telefono: txt("telefono"), email: txt("email"),
       sucursal_id: num("sucursal_id"), cliente_id: num("cliente_id"),
       vehiculo_id: num("vehiculo_id"), vehiculo_texto: txt("vehiculo_texto"),
       presupuesto: num("presupuesto"),
       entrega_usado: fd.get("entrega_usado") === "on", usado_detalle: txt("usado_detalle"), tasacion: num("tasacion"),
       proxima_accion: txt("proxima_accion"), fecha_proxima: txt("fecha_proxima"),
       observaciones: txt("observaciones"),
-      motivo_perdida: antes.estado === "perdido" ? txt("motivo_perdida") : antes.motivo_perdida,
+      // Fuera de un lead perdido no hay motivo que corregir: editarLead lo deja como estaba.
+      motivo_perdida: txt("motivo_perdida"),
     };
+    if (fd.get("origen")) nuevo.origen = String(fd.get("origen"));
+    // El asesor solo viaja en el formulario de quien puede reasignar.
+    if (veTodosLosLeads(usr)) nuevo.asesor_id = num("asesor_id");
 
-    const comparable = (k: string, v: any) => {
-      if (v === null || v === undefined || v === "") return "";
-      if (k === "fecha_proxima") return new Date(v).toISOString().slice(0, 10);
-      if (["presupuesto", "tasacion", "asesor_id", "sucursal_id", "cliente_id", "vehiculo_id"].includes(k)) return String(Number(v));
-      return String(v);
-    };
-    const cambios = Object.keys(nuevo).filter((k) => comparable(k, nuevo[k]) !== comparable(k, antes[k]));
-    if (cambios.length === 0) {
+    const r = await editarLead(usr, id, nuevo);
+    if ("error" in r) return avisoError(r.error);
+    if (r.cambios.length === 0) {
       await avisoOk("No había nada para cambiar");
       redirect(`/leads/${id}`);
     }
-
-    await sql.begin(async (tx) => {
-      await tx`UPDATE leads SET ${tx(nuevo)}, actualizado_en = now() WHERE id = ${id}`;
-      await tx`INSERT INTO lead_interacciones (lead_id, tipo, detalle, usuario_id)
-               VALUES (${id}, 'nota', ${"Datos corregidos: " + cambios.map((k) => NOMBRES[k] || k).join(", ")}, ${usr.id})`;
-      await tx`INSERT INTO auditoria (usuario_id, entidad, entidad_id, accion, detalle)
-               VALUES (${usr.id}, 'lead', ${id}, 'editar',
-                       ${cambios.map((k) => `${NOMBRES[k] || k}: ${comparable(k, antes[k]) || "—"} → ${comparable(k, nuevo[k]) || "—"}`).join(" · ")})`;
-    });
     revalidatePath(`/leads/${id}`);
     revalidatePath("/leads");
     await avisoOk("Lead actualizado");

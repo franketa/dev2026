@@ -1,9 +1,8 @@
 import { redirect } from "next/navigation";
-import { avisarLeadNuevo } from "@/lib/leads";
+import { crearLead } from "@/lib/leads-operar";
 import { avisoOk, avisoError } from "@/lib/aviso";
 import { sql } from "@/lib/db";
 import { requierePermiso } from "@/lib/auth";
-import { ORIGENES_LEAD, ESTADOS_LEAD } from "@/lib/constantes";
 import { Encabezado, Boton } from "@/components/ui";
 import CamposLead from "@/components/campos-lead";
 
@@ -33,34 +32,18 @@ export default async function NuevoLead({ searchParams }: { searchParams: Promis
       return v === null || String(v).trim() === "" ? null : Number(v);
     };
 
-    const nombre = txt("nombre");
-    if (!nombre) return avisoError("Falta el nombre.");
-
-    const estado = String(fd.get("estado") || "nuevo");
-    const etapa = ESTADOS_LEAD[estado]?.etapa || "captacion";
-
-    const [l] = await sql`
-      INSERT INTO leads (cliente_id, nombre, telefono, email, origen, etapa, estado,
-                         asesor_id, vehiculo_id, vehiculo_texto, presupuesto,
-                         entrega_usado, usado_detalle, tasacion,
-                         proxima_accion, fecha_proxima, observaciones, sucursal_id, creado_por)
-      VALUES (${num("cliente_id")}, ${nombre}, ${txt("telefono")}, ${txt("email")},
-              ${String(fd.get("origen") || "showroom")}, ${etapa}, ${estado},
-              ${num("asesor_id")}, ${num("vehiculo_id")}, ${txt("vehiculo_texto")},
-              ${num("presupuesto")},
-              ${fd.get("entrega_usado") === "on"}, ${txt("usado_detalle")}, ${num("tasacion")},
-              ${txt("proxima_accion")}, ${txt("fecha_proxima")},
-              ${txt("observaciones")}, ${num("sucursal_id")}, ${usr.id})
-      RETURNING id`;
-
-    await sql`INSERT INTO lead_interacciones (lead_id, tipo, detalle, usuario_id)
-              VALUES (${l.id}, 'nota', ${"Lead cargado desde " + (ORIGENES_LEAD[String(fd.get("origen") || "showroom")] || "showroom")}, ${usr.id})`;
-    await sql`INSERT INTO auditoria (usuario_id, entidad, entidad_id, accion, detalle)
-              VALUES (${usr.id}, 'lead', ${l.id}, 'alta', ${nombre})`;
-
-    await avisarLeadNuevo(l.id);
+    const r = await crearLead(usr, {
+      cliente_id: num("cliente_id"), nombre: txt("nombre"), telefono: txt("telefono"), email: txt("email"),
+      origen: String(fd.get("origen") || "showroom"), estado: String(fd.get("estado") || "nuevo"),
+      asesor_id: num("asesor_id"), vehiculo_id: num("vehiculo_id"), vehiculo_texto: txt("vehiculo_texto"),
+      presupuesto: num("presupuesto"),
+      entrega_usado: fd.get("entrega_usado") === "on", usado_detalle: txt("usado_detalle"), tasacion: num("tasacion"),
+      proxima_accion: txt("proxima_accion"), fecha_proxima: txt("fecha_proxima"),
+      observaciones: txt("observaciones"), sucursal_id: num("sucursal_id"),
+    });
+    if ("error" in r) return avisoError(r.error);
     await avisoOk("Lead cargado");
-    redirect(`/leads/${l.id}`);
+    redirect(`/leads/${r.id}`);
   }
 
   return (

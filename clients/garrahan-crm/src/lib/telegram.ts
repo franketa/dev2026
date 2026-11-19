@@ -11,7 +11,64 @@ import { sql } from "./db";
 
 export const telegramConfigurado = () => Boolean(process.env.TELEGRAM_BOT_TOKEN);
 
-async function chatDestino(): Promise<string | null> {
+// TELEGRAM_API_URL solo existe para probar contra un servidor falso.
+const apiTelegram = () => process.env.TELEGRAM_API_URL || "https://api.telegram.org";
+
+/**
+ * Una llamada cualquiera a la API del bot (la usa el asistente: recibir,
+ * contestar, botones). Devuelve el `result`, o null si falló: el motivo queda
+ * en el log, nunca el token.
+ */
+export async function tg<T = any>(metodo: string, cuerpo: Record<string, unknown> = {}, ms = 10000): Promise<T | null> {
+  const token = process.env.TELEGRAM_BOT_TOKEN;
+  if (!token) return null;
+  try {
+    const r = await fetch(`${apiTelegram()}/bot${token}/${metodo}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(cuerpo),
+      signal: AbortSignal.timeout(ms),
+    });
+    const j: any = await r.json().catch(() => null);
+    if (!r.ok || !j?.ok) {
+      console.error(`Telegram ${metodo}:`, r.status, String(j?.description || "").slice(0, 200));
+      return null;
+    }
+    return j.result as T;
+  } catch (err: any) {
+    console.error(`Telegram ${metodo}:`, err?.name === "TimeoutError" ? "sin respuesta" : "no se pudo conectar");
+    return null;
+  }
+}
+
+/** Baja un archivo que alguien le mandó al bot (un audio). Telegram deja hasta 20 MB. */
+export async function descargarDeTelegram(fileId: string): Promise<Buffer | null> {
+  const token = process.env.TELEGRAM_BOT_TOKEN;
+  const f = await tg<{ file_path?: string }>("getFile", { file_id: fileId });
+  if (!token || !f?.file_path) return null;
+  try {
+    const r = await fetch(`${apiTelegram()}/file/bot${token}/${f.file_path}`, { signal: AbortSignal.timeout(30000) });
+    if (!r.ok) return null;
+    return Buffer.from(await r.arrayBuffer());
+  } catch {
+    console.error("Telegram: no se pudo bajar el archivo");
+    return null;
+  }
+}
+
+let elBot: { id: number; username: string; lee_grupos: boolean } | null = null;
+
+/** Quién es el bot: su usuario (para el link y las menciones) y si lee los mensajes de un grupo. */
+export async function datosDelBot() {
+  if (elBot) return elBot;
+  const me = await tg<any>("getMe");
+  if (!me) return null;
+  elBot = { id: Number(me.id), username: String(me.username || ""), lee_grupos: !!me.can_read_all_group_messages };
+  return elBot;
+}
+
+/** El chat del equipo: el de Configuración o, si no hay, TELEGRAM_CHAT_ID. */
+export async function chatDestino(): Promise<string | null> {
   try {
     const [e] = await sql`SELECT telegram_chat FROM empresa WHERE id = 1`;
     return (e?.telegram_chat || process.env.TELEGRAM_CHAT_ID || "").trim() || null;
@@ -36,9 +93,7 @@ export async function avisar(html: string): Promise<boolean> {
   const chat = await chatDestino();
   if (!chat) return false;
   try {
-    // TELEGRAM_API_URL solo existe para probar contra un servidor falso.
-    const api = process.env.TELEGRAM_API_URL || "https://api.telegram.org";
-    const r = await fetch(`${api}/bot${token}/sendMessage`, {
+    const r = await fetch(`${apiTelegram()}/bot${token}/sendMessage`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({

@@ -12,14 +12,13 @@ import {
   FilaVacia, Boton, Dato, Campo, Monto, Progreso,
 } from "@/components/ui";
 import SelectEstado from "@/components/select-estado";
-import { avisar, enlace, plataAviso, t } from "@/lib/telegram";
-import { ventaActiva, sincronizarAuto } from "@/lib/ventas";
+import { registrarPago, cambiarEstadoVenta, extenderSena as extenderSenaVenta } from "@/lib/ventas-operar";
 import { clientesParaVenta, guardarCliente } from "@/lib/clientes";
 import CamposCliente from "@/components/campos-cliente";
 
 export const dynamic = "force-dynamic";
 
-const MEDIOS_A_CAJA = ["efectivo", "transferencia", "tarjeta", "mercadopago", "cheque"];
+
 
 export default async function Venta({ params }: { params: Promise<any> }) {
   const u = await requierePermiso("ventas");
@@ -64,65 +63,12 @@ export default async function Venta({ params }: { params: Promise<any> }) {
   async function agregarPago(fd: FormData) {
     "use server";
     const usr = await requierePermiso("ventas");
-    const monto = Number(fd.get("monto") || 0);
-    if (!monto) return avisoError("Falta el monto.");
-    const medio = String(fd.get("medio") || "efectivo");
-    const moneda = String(fd.get("moneda") || "ARS") === "USD" ? "USD" : "ARS";
-    const cot = moneda === "USD" ? Number(fd.get("cotizacion") || 1) : 1;
-    const f = String(fd.get("fecha") || new Date().toISOString().slice(0, 10));
-
-    // Mientras la operación está en reserva, lo que entra es seña (o refuerzo).
-    const esSena = v.estado === "reserva";
-    const [pago] = await sql`
-      INSERT INTO venta_pagos (venta_id, medio, monto, moneda, cotizacion, fecha, referencia, es_sena)
-      VALUES (${id}, ${medio}, ${monto}, ${moneda}, ${cot}, ${f},
-              ${String(fd.get("referencia") || "") || null}, ${esSena})
-      RETURNING id`;
-    if (esSena) {
-      await sql`UPDATE ventas SET sena = sena + ${monto * cot},
-                  sena_vence = COALESCE(sena_vence, ${f}::date + 7)
-                WHERE id = ${id}`;
-    }
-
-    const cuenta = fd.get("cuenta_id") ? Number(fd.get("cuenta_id")) : null;
-    if (cuenta && MEDIOS_A_CAJA.includes(medio)) {
-      await sql`
-        INSERT INTO caja_movimientos (cuenta_id, tipo, categoria, descripcion, monto, moneda,
-                                      cotizacion, equivalente_ars, fecha, vehiculo_id, venta_id,
-                                      venta_pago_id, usuario_id)
-        VALUES (${cuenta}, 'ingreso', 'venta_usado', ${"Cobro venta #" + id}, ${monto},
-                ${moneda}, ${cot}, ${monto * cot}, ${f}, ${v.vehiculo_id}, ${id}, ${pago.id}, ${usr.id})`;
-    }
-
-    // El saldo abierto se va descontando solo: si se salda, la cobranza se cierra.
-    const enPesos = monto * cot;
-    const [ab] = await sql`SELECT id, monto, cobrado, moneda, cotizacion FROM cobranzas
-                           WHERE venta_id = ${id} AND estado <> 'cobrado'
-                           ORDER BY vencimiento LIMIT 1`;
-    if (ab) {
-      // La cobranza lleva su propia moneda: hay que imputar el cobro en esa
-      // moneda, no en pesos, o un saldo en dólares se cancelaría con la cifra
-      // equivocada apenas se mueva la cotización.
-      const monedaDeuda = (ab.moneda || "ARS") as "ARS" | "USD";
-      const imputado = monedaDeuda === "USD"
-        ? (moneda === "USD" ? monto : enPesos / Number(ab.cotizacion || cot || 1))
-        : enPesos;
-      const nuevo = Number(ab.cobrado) + imputado;
-      await sql`UPDATE cobranzas
-                SET cobrado = ${nuevo},
-                    estado = ${nuevo >= Number(ab.monto) ? "cobrado" : "pendiente"},
-                    fecha_cobro = ${nuevo >= Number(ab.monto) ? f : null},
-                    forma_cobro = ${MEDIOS_PAGO[medio] || medio}
-                WHERE id = ${ab.id}`;
-    }
-    await avisar(`💵 <b>${esSena ? "Seña registrada" : "Cobro registrado"}</b> · ` +
-      `${enlace("/ventas/" + id, "venta #" + id)}\n` +
-      `${t(v.marca)} ${t(v.modelo)} · ${plataAviso(monto, moneda)} en ${t(MEDIOS_PAGO[medio] || medio)}. ` +
-      `Cargó ${t(usr.nombre)}.`);
+    const r = await registrarPago(usr, Number(id), fd);
+    if ("error" in r) return avisoError(r.error);
     revalidatePath(`/ventas/${id}`);
-    await avisoOk(esSena ? "Seña registrada" : "Cobro registrado");
+    await avisoOk(r.esSena ? "Seña registrada" : "Cobro registrado");
     // Lo que sigue a cobrar es darle el recibo al cliente: se abre directo.
-    redirect(`/documentos/recibo/${pago.id}`);
+    redirect(`/documentos/recibo/${r.pagoId}`);
   }
 
   /** Completar o corregir el comprador: lo que falte (DNI, domicilio) sale después en el boleto. */
@@ -144,10 +90,8 @@ export default async function Venta({ params }: { params: Promise<any> }) {
     "use server";
     const usr = await requierePermiso("ventas");
     const nueva = String(fd.get("sena_vence") || "");
-    if (!/^\d{4}-\d{2}-\d{2}$/.test(nueva)) return avisoError("Elegí la fecha nueva.");
-    await sql`UPDATE ventas SET sena_vence = ${nueva} WHERE id = ${id}`;
-    await sql`INSERT INTO auditoria (usuario_id, entidad, entidad_id, accion, detalle)
-              VALUES (${usr.id}, 'venta', ${id}, 'sena_vence', ${nueva})`;
+    const r = await extenderSenaVenta(usr, Number(id), nueva);
+    if ("error" in r) return avisoError(r.error);
     revalidatePath(`/ventas/${id}`);
     await avisoOk(`La seña ahora vence el ${nueva.split("-").reverse().join("/")}`);
   }
@@ -155,39 +99,10 @@ export default async function Venta({ params }: { params: Promise<any> }) {
   async function cambiarEstado(fd: FormData) {
     "use server";
     const usr = await requierePermiso("ventas");
-    const nuevo = String(fd.get("estado") || "");
-    if (!ESTADOS_VENTA[nuevo]) return avisoError("Ese estado no existe.");
-    const otra = await ventaActiva(v.vehiculo_id, Number(id));
-    if (nuevo !== "cancelada" && otra) {
-      return avisoError(`La unidad ya tiene la venta #${otra.id}: no puede haber dos ventas vivas del mismo auto.`);
-    }
-    await sql`UPDATE ventas SET estado = ${nuevo} WHERE id = ${id}`;
-
-    // El estado del auto sigue a sus ventas: cancelar esta lo devuelve al
-    // stock, salvo que haya otra venta del mismo auto.
-    const estadoAuto = await sincronizarAuto(v.vehiculo_id);
-
-    // Cerrar la venta abre el seguimiento de postventa, una sola vez.
-    if (nuevo === "completada") {
-      await sql`INSERT INTO postventa (venta_id, vtv_vence)
-                SELECT ${id}, (SELECT vtv_vence FROM vehiculo_ficha WHERE vehiculo_id = ${v.vehiculo_id})
-                WHERE NOT EXISTS (SELECT 1 FROM postventa WHERE venta_id = ${id})`;
-    }
-    if (nuevo !== v.estado && nuevo === "completada") {
-      await avisar(`✅ <b>Venta cerrada</b> · ${enlace("/ventas/" + id, "#" + id)}\n` +
-        `${t(v.marca)} ${t(v.modelo)} por ${plataAviso(total)}\n` +
-        `La unidad sale del stock y de la web. Cerró ${t(usr.nombre)}.`);
-    } else if (nuevo !== v.estado && nuevo === "cancelada" && estadoAuto === "disponible") {
-      await avisar(`↩️ <b>Operación cancelada</b> · ${enlace("/ventas/" + id, "#" + id)}\n` +
-        `${t(v.marca)} ${t(v.modelo)} vuelve a estar disponible (y a la web).`);
-    }
-    await sql`INSERT INTO auditoria (usuario_id, entidad, entidad_id, accion, detalle)
-              VALUES (${usr.id}, 'venta', ${id}, 'estado', ${nuevo})`;
+    const r = await cambiarEstadoVenta(usr, Number(id), String(fd.get("estado") || ""));
+    if ("error" in r) return avisoError(r.error);
     revalidatePath(`/ventas/${id}`);
-    await avisoOk(nuevo === "completada" ? "Venta cerrada. La unidad salió del stock y de la web."
-      : nuevo === "cancelada" ? (estadoAuto === "disponible" ? "Operación cancelada. La unidad volvió al stock y a la web."
-        : `Operación cancelada. La unidad sigue en la venta #${otra?.id}.`)
-      : `Operación: ${ESTADOS_VENTA[nuevo].label}`);
+    await avisoOk(r.mensaje);
   }
 
   async function cambiarTramite(fd: FormData) {

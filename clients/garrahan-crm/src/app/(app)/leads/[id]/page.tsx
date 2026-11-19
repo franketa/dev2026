@@ -6,6 +6,7 @@ import { avisoOk, avisoError } from "@/lib/aviso";
 import { sql } from "@/lib/db";
 import { requierePermiso, puede } from "@/lib/auth";
 import { puedeVerLead } from "@/lib/leads";
+import { registrarSeguimiento, cambiarEstadoLead, marcarLeadPerdido } from "@/lib/leads-operar";
 import { plata, fecha, numero, numeroWhatsApp } from "@/lib/format";
 import { ESTADOS_LEAD, ETAPAS_LEAD, ORIGENES_LEAD } from "@/lib/constantes";
 import {
@@ -64,23 +65,13 @@ export default async function Lead({ params }: { params: Promise<any> }) {
   async function registrar(fd: FormData) {
     "use server";
     const usr = await requierePermiso("leads");
-    if (!(await puedeVerLead(usr, Number(id)))) return avisoError("Ese lead no es tuyo.");
-    const detalle = String(fd.get("detalle") || "").trim();
-    if (!detalle) return avisoError("Escribí qué pasó.");
-    await sql`INSERT INTO lead_interacciones (lead_id, tipo, detalle, usuario_id)
-              VALUES (${id}, ${String(fd.get("tipo") || "nota")}, ${detalle}, ${usr.id})`;
-
-    // Si la interacción trae la próxima acción, se pisa la anterior: es la vigente.
-    const prox = String(fd.get("proxima_accion") || "").trim();
-    const cuando = String(fd.get("fecha_proxima") || "").trim();
-    if (prox || cuando) {
-      await sql`UPDATE leads SET proxima_accion = COALESCE(NULLIF(${prox}, ''), proxima_accion),
-                                 fecha_proxima  = COALESCE(NULLIF(${cuando}, '')::date, fecha_proxima),
-                                 actualizado_en = now()
-                WHERE id = ${id}`;
-    } else {
-      await sql`UPDATE leads SET actualizado_en = now() WHERE id = ${id}`;
-    }
+    const r = await registrarSeguimiento(usr, Number(id), {
+      tipo: String(fd.get("tipo") || "nota"),
+      detalle: String(fd.get("detalle") || ""),
+      proxima_accion: String(fd.get("proxima_accion") || ""),
+      fecha_proxima: String(fd.get("fecha_proxima") || ""),
+    });
+    if ("error" in r) return avisoError(r.error);
     revalidatePath(`/leads/${id}`);
     await avisoOk("Seguimiento registrado");
   }
@@ -88,28 +79,17 @@ export default async function Lead({ params }: { params: Promise<any> }) {
   async function cambiarEstado(fd: FormData) {
     "use server";
     const usr = await requierePermiso("leads");
-    if (!(await puedeVerLead(usr, Number(id)))) return avisoError("Ese lead no es tuyo.");
-    const nuevo = String(fd.get("estado") || "");
-    const etapa = ESTADOS_LEAD[nuevo]?.etapa;
-    if (!etapa) return avisoError("Ese estado no existe.");
-    await sql`UPDATE leads SET estado = ${nuevo}, etapa = ${etapa}, actualizado_en = now()
-              WHERE id = ${id}`;
-    await sql`INSERT INTO lead_interacciones (lead_id, tipo, detalle, usuario_id)
-              VALUES (${id}, 'cambio_estado', ${"Pasó a " + ESTADOS_LEAD[nuevo].label}, ${usr.id})`;
+    const r = await cambiarEstadoLead(usr, Number(id), String(fd.get("estado") || ""));
+    if ("error" in r) return avisoError(r.error);
     revalidatePath(`/leads/${id}`);
-    await avisoOk(`Lead pasado a ${ESTADOS_LEAD[nuevo].label}`);
+    await avisoOk(`Lead pasado a ${r.label}`);
   }
 
   async function marcarPerdido(fd: FormData) {
     "use server";
     const usr = await requierePermiso("leads");
-    if (!(await puedeVerLead(usr, Number(id)))) return avisoError("Ese lead no es tuyo.");
-    const motivo = String(fd.get("motivo") || "").trim();
-    await sql`UPDATE leads SET estado = 'perdido', etapa = 'cerrado',
-                               motivo_perdida = ${motivo || null}, actualizado_en = now()
-              WHERE id = ${id}`;
-    await sql`INSERT INTO lead_interacciones (lead_id, tipo, detalle, usuario_id)
-              VALUES (${id}, 'cambio_estado', ${"Perdido" + (motivo ? ": " + motivo : "")}, ${usr.id})`;
+    const r = await marcarLeadPerdido(usr, Number(id), String(fd.get("motivo") || ""));
+    if ("error" in r) return avisoError(r.error);
     revalidatePath(`/leads/${id}`);
     await avisoOk("Lead marcado como perdido");
   }

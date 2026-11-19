@@ -29,7 +29,8 @@ inicial **no está en el código**, va por variable de entorno.
 ```
 db/schema.sql        Esquema completo + vistas de cálculo
 scripts/setup-db.mjs Instalación y datos de arranque
-src/lib/             db, auth (5 roles), formatos es-AR, vocabulario del negocio
+src/lib/             db, auth (roles), formatos es-AR, vocabulario del negocio
+src/lib/bot/         El asistente de Telegram (ver «El asistente por audio»)
 src/components/      ui.tsx (KPI, Chip, Tabla, Progreso…), sidebar, selects
 src/app/(app)/       Las pantallas, todas detrás de sesión
 src/app/documentos/  Boleto de compraventa (imprimible, fuera del layout)
@@ -101,15 +102,55 @@ cancelada) y un resumen a las 9 (señas por vencer, cuotas vencidas, autos de +6
 postventa, leads sin contactar). El reloj está en `src/instrumentation.ts`; cada resumen
 se manda una vez por día (`avisos_enviados`). El chat se elige en Configuración.
 
+## El asistente por audio
+
+El mismo bot también escucha. Alguien del equipo le manda un audio («vino Juan Pérez por
+la Amarok, entrega un Gol 2015, llamarlo el viernes»), se transcribe con ElevenLabs y un
+agente (Claude) lo resuelve contra el sistema: consulta stock, leads, clientes y ventas, y
+prepara altas de leads, seguimientos, reservas, ventas y cobros.
+
+```
+src/app/api/telegram/webhook   Donde Telegram deja cada mensaje y cada botón tocado
+src/lib/bot/index.ts           Quién habla, en qué chat, la conversación y las confirmaciones
+src/lib/bot/transcribir.ts     Audio → texto
+src/lib/bot/agente.ts          El bucle de Claude con las herramientas
+src/lib/bot/herramientas.ts    Lo que el agente puede consultar y cambiar
+src/lib/leads-operar.ts        Las operaciones de leads (las usan las pantallas y el agente)
+src/lib/ventas-operar.ts       Las de ventas y cobros (ídem)
+```
+
+**Actúa como la persona que le habla.** Cada usuario vincula su Telegram desde *Mi
+cuenta* (un código de un solo uso). El agente trabaja con ese usuario: usa `puede()`,
+`leadsVisibles()` y las mismas operaciones que las pantallas, así que no puede más que
+él. Felipe sigue sin ver costos por Telegram. En el grupo no se muestran costos ni
+márgenes a nadie: se piden por privado.
+
+**Nada se guarda sin confirmar.** Una herramienta de cambio no ejecuta: valida el pedido
+contra la base y arma un renglón («Seña: Efectivo $ 2.000.000 → cuenta Efectivo»). La
+respuesta lleva ese detalle y los botones Confirmar / Cancelar; recién al confirmar —y
+solo quien lo pidió— corre la operación. El detalle lo arma el código, no el modelo: lo
+que se lee es lo que se ejecuta. Una propuesta se cae sola a la hora, o si la persona
+sigue hablando.
+
+**Dónde atiende.** En un chat privado con el bot y en el chat del equipo (el de
+Configuración). En el grupo solo reacciona a audios, a respuestas a sus mensajes y cuando
+lo nombran. Para que le lleguen los audios del grupo hay que apagarle el modo privacidad
+en BotFather (`/setprivacy` → Disable) y volver a agregarlo al grupo.
+
+El webhook se registra solo al arrancar si están las claves. Configuración muestra qué
+le falta al asistente para andar.
+
 ## Variables de entorno
 
 | Variable | Para qué |
 |---|---|
 | `DATABASE_URL` | Postgres |
-| `CRM_PUBLIC_URL` | URL pública del CRM (links de fotos y de los avisos) |
+| `CRM_PUBLIC_URL` | URL pública del CRM (links de fotos y de los avisos, y el webhook del bot) |
 | `WEB_API_KEY` | Clave compartida con el sitio para cargar leads. La misma va en el sitio |
 | `TELEGRAM_BOT_TOKEN` | Token del bot. Sin esto no hay avisos |
 | `TELEGRAM_CHAT_ID` | Chat por defecto, si no se elige uno en Configuración |
+| `ANTHROPIC_API_KEY` | Clave de Claude. Sin esto el bot no atiende: solo manda avisos |
+| `ELEVENLABS_API_KEY` | Clave de ElevenLabs para transcribir. Sin esto el asistente solo entiende texto |
 
 ## Deploy
 
